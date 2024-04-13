@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 11:52:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/10 22:38:51 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/04/13 12:23:11 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,14 @@
 # define GCOBJ "\e[1;34mGC: obj: "
 # define GCSWEEP "\e[1;35mGC: sweep: "
 # define GCPUSH "\e[1;32mGC: push: "
+# define GCTRAP "\e[1;33mGC: pushtrap: "
 # define GCPOP "\e[1;31mGC: pop: "
+
+# define PTRAP_ENABLE 0x1U
+# define PTRAP_DISABLE 0x2U
+# define PTRAP_FLUSH 0xCU
+# define PTRAP_CLEAN 0x4U
+# define PTRAP_POP 0x8U
 
 # ifndef GC_START 
 #  define GC_START 256 
@@ -66,6 +73,12 @@ void	*ft_pusharr(const void *blk);
 
 void	ft_pushn(size_t blks, ...);
 /**   push   **/
+
+/**   pushtrap   **/
+uint8_t	ft_pushtrap_status(void);
+
+void	ft_pushtrap(uint8_t op);
+/**   pushtrap   **/
 
 /**   stack   **/
 void	ft_stackrm(t_stack *node);

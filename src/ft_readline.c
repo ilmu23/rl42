@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/11 16:34:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/04/13 12:29:02 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,20 @@ char	*ft_readline(const char *p, t_rl_histmode mode)
 	struct termios	old;
 	struct termios	new;
 	char			*out;
+	uint8_t			ptrap_stat;
 
 	ft_rl_init();
 	tcgetattr(0, &old);
 	new = old;
 	new.c_lflag &= (~ICANON & ~ECHO);
 	tcsetattr(0, TCSANOW, &new);
+	ptrap_stat = ft_pushtrap_status();
+	ft_pushtrap(PTRAP_DISABLE);
 	if (mode != OFF)
 		out = getline(p, mode, ft_rl_hist_duphist(*ft_rl_hist_gethead()));
 	else
 		out = getline(p, mode, NULL);
+	ft_pushtrap(ptrap_stat);
 	tcsetattr(0, TCSANOW, &old);
 	return (out);
 }
