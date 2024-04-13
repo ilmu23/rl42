@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/04/13 12:47:28 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/04/13 14:21:22 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,6 +50,9 @@ FILES	=	ft_readline.c \
 			ft_rl_initkeys.c \
 			ft_rl_input.c \
 			ft_rl_input_utils.c \
+			ft_rl_keymap.c \
+			ft_rl_keymap_lists.c \
+			ft_rl_keymap_utils.c \
 			ft_rl_term_utils.c \
 			ft_rl_utils.c \
 			ft_rl_utils2.c \
