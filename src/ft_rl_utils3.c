@@ -6,13 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 13:37:42 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/11 16:31:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/04/13 12:52:01 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline char	**gethlp(void);
+static inline size_t	*_getmaxlen(void);
 
 size_t	ft_rl_getinputlen(t_rl_input *input)
 {
@@ -29,19 +29,19 @@ size_t	ft_rl_getinputlen(t_rl_input *input)
 	return (len);
 }
 
-char	*ft_rl_gethlcolor(void)
+size_t	ft_rl_input_getmaxlen(void)
 {
-	return (*gethlp());
+	return (*_getmaxlen());
 }
 
-void	ft_rl_sethlcolor(const char *s)
+void	ft_rl_input_setmaxlen(size_t maxlen)
 {
-	*gethlp() = (char *)s;
+	*_getmaxlen() = maxlen;
 }
 
-static inline char	**gethlp(void)
+static inline size_t	*_getmaxlen(void)
 {
-	static char	*hlcolor = NULL;
+	static size_t	maxlen;
 
-	return (&hlcolor);
+	return (&maxlen);
 }

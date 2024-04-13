@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 14:20:03 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/13 11:19:36 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/04/13 12:55:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ uint8_t	ft_rl_dcl(t_rl_input *input)
 
 uint8_t	ft_rl_ins(t_rl_input *input)
 {
+	if (input->maxlen && ft_rl_getinputlen(input) == input->maxlen)
+		return (1);
 	ft_rl_addchar(input);
 	ft_rl_redisplay(input, LINE);
 	return (1);
@@ -47,6 +49,8 @@ uint8_t	ft_rl_ins(t_rl_input *input)
 
 uint8_t	ft_rl_del(t_rl_input *input)
 {
+	if (!input->head)
+		return (1);
 	ft_rl_rmchar(input);
 	ft_rl_redisplay(input, LINE);
 	return (1);

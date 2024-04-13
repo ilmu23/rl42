@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/04/13 12:21:33 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/04/13 12:47:28 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ OBJDIR	=	obj
 INCDIR	=	inc
 
 FILES	=	ft_readline.c \
+			ft_rl_color.c \
 			ft_rl_complete.c \
 			ft_rl_complete2.c \
 			ft_rl_complete3.c \

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/13 11:07:06 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/04/13 12:49:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 uint8_t		ft_rl_getinput(t_rl_input *input);
 void		ft_rl_addchar(t_rl_input *input);
 void		ft_rl_rmchar(t_rl_input *input);
+
+// ft_rl_color.c
+char		*ft_rl_gethlcolor(void);
 
 // ft_rl_word.c
 t_rl_word	*ft_rl_splitword(t_rl_word *w1);
@@ -119,7 +122,7 @@ uint16_t	ft_rl_isdir(const char *path);
 
 // ft_rl_utils3.c
 size_t		ft_rl_getinputlen(t_rl_input *input);
-char		*ft_rl_gethlcolor(void);
+size_t		ft_rl_input_getmaxlen(void);
 
 // ft_rl_keymap_utils.c
 void		ft_rl_map_err(const char *k, const char *fn, void *ks, void *fns);
