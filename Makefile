@@ -6,11 +6,11 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/04/13 12:08:22 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/04/13 12:21:33 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	=	ft_readline.a
+NAME	=	libft_readline.a
 
 BUILD	=	normal
 
@@ -64,16 +64,16 @@ OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 all: $(NAME)
 
 $(NAME): $(OBJDIR) $(OBJS)
-	@printf "\e[1;35mFT_READLINE >\e[m Creating %s\n" $@
+	@printf "\e[1;35mFT_RL >\e[m Creating %s\n" $@
 	@ar -crs $(NAME) $(OBJS)
-	@printf "\e[1;35mFT_READLINE >\e[m \e[1mDone!\e[m\n"
+	@printf "\e[1;35mFT_RL >\e[m \e[1mDone!\e[m\n"
 
 $(OBJDIR):
-	@printf "\e[1;35mFT_READLINE >\e[m Creating objdir\n"
+	@printf "\e[1;35mFT_RL >\e[m Creating objdir\n"
 	@mkdir -p $(OBJDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@printf "\e[1;35mFT_READLINE >\e[m Compiling %s\n" $@
+	@printf "\e[1;35mFT_RL >\e[m Compiling %s\n" $@
 	@$(CC) $(CFLAGS) -I$(INCDIR) -c $< -o $@
 
 clean:
