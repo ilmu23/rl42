@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/13 12:29:02 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/04/13 12:59:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ static inline char	*getline(const char *p, t_rl_histmode mode, t_list *hist)
 	t_rl_input	*input;
 
 	input = ft_push(ft_calloc(1, sizeof(*input)));
-	*input = (t_rl_input){.prompt = p, .plen = getplen(p)};
+	*input = (t_rl_input){.prompt = p, .plen = getplen(p),
+		.maxlen = ft_rl_input_getmaxlen()};
 	input->cursor = ft_rl_getcursor(input);
 	input->cursor->col += input->plen;
 	if (mode != OFF)
