@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/05/27 00:12:47 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/05/27 02:16:36 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,7 @@ FNDIR	=	fns
 HISTDIR	=	hist
 INITDIR	=	init
 KEYDIR	=	keys
+TERMDIR	=	term
 
 FNFILES		=	move.c \
 				hist.c \
@@ -53,6 +54,9 @@ INITFILES	=	init.c \
 KEYFILES	=	keymap.c \
 				utils.c
 
+TERMFILES	=	cursor.c \
+				utils.c
+
 FILES	=	rl42.c \
 			color.c \
 			error.c \
@@ -60,7 +64,8 @@ FILES	=	rl42.c \
 			$(addprefix $(FNDIR)/, $(FNFILES)) \
 			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
 			$(addprefix $(INITDIR)/, $(INITFILES)) \
-			$(addprefix $(KEYDIR)/, $(KEYFILES))
+			$(addprefix $(KEYDIR)/, $(KEYFILES)) \
+			$(addprefix $(TERMDIR)/, $(TERMFILES))
 
 SRCS	=	$(addprefix $(SRCDIR)/, $(FILES))
 OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
@@ -81,6 +86,7 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
 	@mkdir -p $(OBJDIR)/$(INITDIR)
 	@mkdir -p $(OBJDIR)/$(KEYDIR)
+	@mkdir -p $(OBJDIR)/$(TERMDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@

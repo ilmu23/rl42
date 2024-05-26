@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/27 00:03:13 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/27 02:11:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,18 @@ int32_t			ft_rl_perror(void);
 // exec.c
 uint8_t			ft_rl_execmap(rl_input_t *input);
 
+
+/**  term  **/
+
+/**   cursor.c   **/
+rl_cursor_t		*ft_rl_cursor_init(void);
+void			ft_rl_cursor_getpos(int16_t *row, int16_t *col);
+void			ft_rl_cursor_setpos(rl_cursor_t *cursor);
+
+/**   utils.c   **/
+void			ft_rl_updatetermsize(void);
+
+/**  term  **/
 
 /**  hist  **/
 
