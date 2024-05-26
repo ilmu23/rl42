@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/05/26 20:33:54 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/05/27 00:12:47 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,6 +54,7 @@ KEYFILES	=	keymap.c \
 				utils.c
 
 FILES	=	rl42.c \
+			color.c \
 			error.c \
 			exec.c \
 			$(addprefix $(FNDIR)/, $(FNFILES)) \

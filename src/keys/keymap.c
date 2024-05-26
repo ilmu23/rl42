@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 19:00:14 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/27 00:01:14 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	ft_rl_addkey(const char *key, const uint64_t value)
 
 	val = ft_push(ft_alloc(sizeof(*val)));
 	if (!val)
-		ft_exit(ft_rl_perror());
+		exit(ft_rl_perror());
 	*val = value;
 	ft_mapadd(g_keys, key, val);
 	ft_popblk(val);
@@ -54,7 +54,7 @@ void	ft_rl_addfunc(const char *func, const rl_fn_t f)
 
 	fn = ft_push(ft_alloc(sizeof(*fn)));
 	if (!fn)
-		ft_exit(ft_rl_perror());
+		exit(ft_rl_perror());
 	*fn = f;
 	ft_mapadd(g_funcs, func, fn);
 	ft_popblk(fn);
@@ -66,7 +66,7 @@ static inline rl_map_t	*_newmapping(const uint64_t *key, const rl_fn_t *func)
 
 	out = ft_alloc(sizeof(*out));
 	if (!out)
-		ft_exit(ft_rl_perror());
+		exit(ft_rl_perror());
 	return (ft_memcpy(out, &(rl_map_t){.key = *key, .f = *func}, sizeof(*out)));
 }
 

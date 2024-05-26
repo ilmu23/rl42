@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 20:53:18 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/27 00:03:18 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,13 @@ void	ft_rl_init(void)
 	g_funcs = ft_mapnew();
 	g_maps = ft_mapnew();
 	if (!g_keys || !g_funcs || !g_maps)
-		ft_exit(ft_rl_perror());
+		exit(ft_rl_perror());
 	if (atexit(_rl_exit))
-		ft_exit(ft_rl_perror());
+		exit(ft_rl_perror());
 	ft_rl_hist_load(_FT_RL_HFILE);
 	ft_rl_initkeys();
 	ft_rl_initfuncs();
-//	ft_rl_sethlcolor(SGR_FG6);
+	ft_rl_sethlcolor(SGR_FG6);
 	_ft_rl_defaultbinds();
 	init = 1;
 }

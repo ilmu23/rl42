@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 20:23:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 21:51:34 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/27 00:00:19 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ rl_histnode_t	*ft_rl_hist_mknode(const char *line)
 
 	out = ft_push(ft_alloc(sizeof(*out)));
 	if (!out)
-		ft_exit(ft_rl_perror());
+		exit(ft_rl_perror());
 	out->line = ft_push(ft_strdup(line));
 	out->edit = NULL;
 	return (out);

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 20:27:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/27 00:03:13 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FT_RL_INTERNAL_H
 # include "rl42.h"
 # include "ft_rl_fns.h"
+# include "ft_rl_term.h"
 # include "ft_rl_globals.h"
 
 // error.c

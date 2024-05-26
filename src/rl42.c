@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 19:55:23 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/27 00:01:51 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 t_hmap	*g_keys;
 t_hmap	*g_funcs;
 t_hmap	*g_maps;
+
+const char	*g_hlcolor;
 
 const t_list	*g_hist;
 const t_list	*g_hist_cur;
