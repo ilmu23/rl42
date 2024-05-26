@@ -1,33 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_rl_color.c                                      :+:      :+:    :+:   */
+/*   ft_rl_defines.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/13 12:46:51 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/13 12:46:57 by ivalimak         ###   ########.fr       */
+/*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
+/*   Updated: 2024/05/26 00:24:45 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef FT_RL_DEFINES_H
+# define FT_RL_DEFINES_H
 
-static inline char	**gethlp(void);
+// Version
+# define _FT_RL_VERSION "2.0.0"
 
-char	*ft_rl_gethlcolor(void)
-{
-	return (*gethlp());
-}
+// Path to history file
+# ifndef _FT_RL_HFILE
+#  define _FT_RL_HFILE "~/.rl_history"
+# endif /* _FT_RL_HFILE */
 
-void	ft_rl_sethlcolor(const char *s)
-{
-	*gethlp() = (char *)s;
-}
+// History size
+# ifndef _FT_RL_HSIZE
+#  define _FT_RL_HSIZE 100
+# endif /* _FT_RL_HSIZE */
 
-static inline char	**gethlp(void)
-{
-	static char	*hlcolor = NULL;
+// History modes
+# define FT_RL_HIST_ON 0x1U
+# define FT_RL_HIST_OFF 0x2U
+# define FT_RL_HIST_NOUP 0x4U
 
-	return (&hlcolor);
-}
-
+#endif

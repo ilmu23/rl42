@@ -1,37 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_rl_wildcard_utils.c                             :+:      :+:    :+:   */
+/*   fn_text.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 17:36:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/11 21:52:24 by ivalimak         ###   ########.fr       */
+/*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
+/*   Updated: 2024/05/26 02:15:49 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-uint8_t	ft_rl_wc_checkalloc(t_rl_wc *cur, t_rl_wc *prv, char **patterns)
+uint8_t	ft_rl_eof(rl_input_t *input)
 {
-	if (!cur || !patterns)
-	{
-		ft_popblks(5, cur, prv, cur->pattern, prv->pattern, patterns);
-		if (patterns)
-		{
-			while (*patterns)
-				ft_popblk(patterns++);
-		}
-		return (0);
-	}
 	return (1);
+	(void)input;
 }
 
-void	ft_rl_wc_rmdot(t_list *matches)
+uint8_t	ft_rl_del(rl_input_t *input)
 {
-	while (matches)
-	{
-		ft_strlcpy(matches->blk, matches->blk + 2, ft_strlen(matches->blk) - 1);
-		matches = matches->next;
-	}
+	return (1);
+	(void)input;
+}
+
+uint8_t	ft_rl_ins(rl_input_t *input)
+{
+	return (1);
+	(void)input;
+}
+
+uint8_t	ft_rl_upw(rl_input_t *input)
+{
+	return (1);
+	(void)input;
+}
+
+uint8_t	ft_rl_dnw(rl_input_t *input)
+{
+	return (1);
+	(void)input;
+}
+
+uint8_t	ft_rl_caw(rl_input_t *input)
+{
+	return (1);
+	(void)input;
 }

@@ -6,11 +6,11 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/04/13 14:21:22 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/05/26 03:25:06 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	=	libft_readline.a
+NAME	=	librl42.a
 
 BUILD	=	normal
 
@@ -26,64 +26,64 @@ CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
 SRCDIR	=	src
 OBJDIR	=	obj
 INCDIR	=	inc
+LIBDIR	=	libft
+
+LFT		=	$(LIBDIR)/libft.a
+INC		=	-I$(INCDIR) -I$(LIBDIR)/$(INCDIR)
+
+INITDIR	=	init
+MAPDIR	=	maps
+FNDIR	=	fns
+
+INITFILES	=	ft_rl_init.c \
+				ft_rl_initfuncs.c \
+				ft_rl_initkeys.c
+
+MAPFILES	=	ft_rl_keymap.c \
+				ft_rl_keymap_utils.c
+
+FNFILES		=	fn_move.c \
+				fn_hist.c \
+				fn_text.c \
+				fn_comp.c \
+				fn_misc.c
 
 FILES	=	ft_readline.c \
-			ft_rl_color.c \
-			ft_rl_complete.c \
-			ft_rl_complete2.c \
-			ft_rl_complete3.c \
-			ft_rl_complete_utils.c \
-			ft_rl_cursor.c \
-			ft_rl_debug_utils.c \
+			ft_rl_error.c \
 			ft_rl_exec.c \
-			ft_rl_fn.c \
-			ft_rl_fn2.c \
-			ft_rl_fn3.c \
-			ft_rl_fn4.c \
-			ft_rl_fn5.c \
-			ft_rl_history.c \
-			ft_rl_history_file.c \
-			ft_rl_history_search.c \
-			ft_rl_history_utils.c \
-			ft_rl_init.c \
-			ft_rl_initfuncs.c \
-			ft_rl_initkeys.c \
-			ft_rl_input.c \
-			ft_rl_input_utils.c \
-			ft_rl_keymap.c \
-			ft_rl_keymap_lists.c \
-			ft_rl_keymap_utils.c \
-			ft_rl_term_utils.c \
-			ft_rl_utils.c \
-			ft_rl_utils2.c \
-			ft_rl_utils3.c \
-			ft_rl_wildcard.c \
-			ft_rl_wildcard_utils.c \
-			ft_rl_word.c \
-			ft_rl_word_replace.c
+			$(addprefix $(INITDIR)/, $(INITFILES)) \
+			$(addprefix $(MAPDIR)/, $(MAPFILES)) \
+			$(addprefix $(FNDIR)/, $(FNFILES))
 
 SRCS	=	$(addprefix $(SRCDIR)/, $(FILES))
 OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 all: $(NAME)
 
-$(NAME): $(OBJDIR) $(OBJS)
-	@printf "\e[1;35mFT_RL >\e[m Creating %s\n" $@
+$(NAME): $(LFT) $(OBJDIR) $(OBJS)
+	@printf "\e[1;35mRL42 >\e[m Creating %s\n" $@
 	@ar -crs $(NAME) $(OBJS)
-	@printf "\e[1;35mFT_RL >\e[m \e[1mDone!\e[m\n"
+	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
+
+$(LFT):
+	@make --no-print-directory -C $(LIBDIR) BUILD=$(BUILD)
 
 $(OBJDIR):
-	@printf "\e[1;35mFT_RL >\e[m Creating objdir\n"
-	@mkdir -p $(OBJDIR)
+	@printf "\e[1;35mRL42 >\e[m Creating objdirs\n"
+	@mkdir -p $(OBJDIR)/$(INITDIR)
+	@mkdir -p $(OBJDIR)/$(MAPDIR)
+	@mkdir -p $(OBJDIR)/$(FNDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@printf "\e[1;35mFT_RL >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) -c $< -o $@
+	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
+	@make --no-print-directory -C $(LIBDIR) clean
 	@rm -f $(OBJS)
 
 fclean: clean
+	@make --no-print-directory -C $(LIBDIR) fclean
 	@rm -rf $(OBJDIR)
 	@rm -f $(NAME)
 

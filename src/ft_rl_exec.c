@@ -6,22 +6,16 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:40 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/03/28 15:46:46 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/26 03:57:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-uint8_t	ft_rl_execmap(t_rl_input *input, uint64_t key)
+uint8_t	ft_rl_execmap(rl_input_t *input)
 {
-	t_list	*keymaps;
+	rl_map_t	*mapping;
 
-	keymaps = *ft_rl_getkeymaps();
-	while (keymaps)
-	{
-		if (((t_rl_map *)keymaps->blk)->key == key)
-			return (((t_rl_map *)keymaps->blk)->f(input));
-		keymaps = keymaps->next;
-	}
-	return (1);
+	mapping = ft_mapget(g_maps, input->keystr);
+	return ((*mapping->f)(input));
 }

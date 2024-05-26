@@ -1,47 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_rl_utils3.c                                     :+:      :+:    :+:   */
+/*   fn_misc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 13:37:42 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/13 12:52:01 by ivalimak         ###   ########.fr       */
+/*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
+/*   Updated: 2024/05/26 02:17:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline size_t	*_getmaxlen(void);
-
-size_t	ft_rl_getinputlen(t_rl_input *input)
+uint8_t	ft_rl_mta(rl_input_t *input)
 {
-	size_t		len;
-	t_rl_word	*w;
-
-	len = 0;
-	w = input->head;
-	while (w)
-	{
-		len += w->len;
-		w = w->next;
-	}
-	return (len);
+	return (1);
+	(void)input;
 }
 
-size_t	ft_rl_input_getmaxlen(void)
+uint8_t	ft_rl_dcl(rl_input_t *input)
 {
-	return (*_getmaxlen());
+	return (1);
+	(void)input;
 }
 
-void	ft_rl_input_setmaxlen(size_t maxlen)
+uint8_t	ft_rl_hlc(rl_input_t *input)
 {
-	*_getmaxlen() = maxlen;
-}
-
-static inline size_t	*_getmaxlen(void)
-{
-	static size_t	maxlen;
-
-	return (&maxlen);
+	return (1);
+	(void)input;
 }

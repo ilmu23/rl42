@@ -6,14 +6,18 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/13 11:17:53 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/26 03:35:45 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline void	ft_rl_defaultbinds(void);
-static inline void	ft_rl_defaultbinds2(void);
+static inline void	_ft_rl_defaultbinds(void);
+static inline void	_ft_rl_defaultbinds2(void);
+
+t_hmap	*g_keys;
+t_hmap	*g_funcs;
+t_hmap	*g_maps;
 
 void	ft_rl_init(void)
 {
@@ -21,15 +25,20 @@ void	ft_rl_init(void)
 
 	if (init)
 		return ;
-	ft_rl_hist_load(RL_HFNAME);
-	ft_rl_initkeys(ft_rl_getkeys());
-	ft_rl_initfuncs(ft_rl_getfuncs());
-	ft_rl_sethlcolor(SGR_FG6);
-	ft_rl_defaultbinds();
+	g_keys = ft_mapnew();
+	g_funcs = ft_mapnew();
+	g_maps = ft_mapnew();
+	if (!g_keys || !g_funcs || !g_maps)
+		ft_exit(ft_rl_perror());
+//	ft_rl_hist_load(_FT_RL_HFILE);
+	ft_rl_initkeys();
+	ft_rl_initfuncs();
+//	ft_rl_sethlcolor(SGR_FG6);
+	_ft_rl_defaultbinds();
 	init = 1;
 }
 
-static inline void	ft_rl_defaultbinds(void)
+static inline void	_ft_rl_defaultbinds(void)
 {
 	static char		key[2] = "!";
 	static uint8_t	val = KEY_BANG;
@@ -55,10 +64,10 @@ static inline void	ft_rl_defaultbinds(void)
 	ft_rl_map("<C-l>", "clear-screen", QREMAP);
 	ft_rl_map("<RET>", "accept-line", QREMAP);
 	ft_rl_map("<C-d>", "end-of-file", QREMAP);
-	ft_rl_defaultbinds2();
+	_ft_rl_defaultbinds2();
 }
 
-static inline void	ft_rl_defaultbinds2(void)
+static inline void	_ft_rl_defaultbinds2(void)
 {
 	ft_rl_map("<C-p>", "previous-history", QREMAP);
 	ft_rl_map("<C-n>", "next-history", QREMAP);
@@ -75,5 +84,4 @@ static inline void	ft_rl_defaultbinds2(void)
 	ft_rl_map("<ESC>", "prefix-meta", QREMAP);
 	ft_rl_map("<M-q>", "discard-line", QREMAP);
 	ft_rl_map("<M-h>", "set-highlight-color", QREMAP);
-	ft_rl_map("<F-1>", "rl-dbg-print-input", QREMAP);
 }
