@@ -1,21 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_rl_exec.c                                       :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/26 12:28:40 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 03:57:09 by ivalimak         ###   ########.fr       */
+/*   Created: 2024/05/26 01:58:06 by ivalimak          #+#    #+#             */
+/*   Updated: 2024/05/26 20:45:25 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <errno.h>
+#include <string.h>
 #include "ft_rl_internal.h"
+#include "ft_stdio/ft_printf.h"
 
-uint8_t	ft_rl_execmap(rl_input_t *input)
+int32_t	ft_rl_perror(void)
 {
-	rl_map_t	*mapping;
+	const int32_t	err = errno;
+	const char		*msg;
 
-	mapping = ft_mapget(g_maps, input->keystr);
-	return ((*mapping->f)(input));
+	msg = ft_push(ft_strlower(ft_strdup(strerror(err))));
+	if (!msg || !*msg)
+		msg = strerror(err);
+	ft_dprintf(2, "ft_readline: %s\n", msg);
+	return (err);
 }

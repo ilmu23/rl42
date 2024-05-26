@@ -1,31 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fn_misc.c                                          :+:      :+:    :+:   */
+/*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 02:17:32 by ivalimak         ###   ########.fr       */
+/*   Created: 2024/03/26 12:28:40 by ivalimak          #+#    #+#             */
+/*   Updated: 2024/05/26 19:07:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-uint8_t	ft_rl_mta(rl_input_t *input)
+uint8_t	ft_rl_execmap(rl_input_t *input)
 {
-	return (1);
-	(void)input;
-}
+	rl_map_t	*mapping;
 
-uint8_t	ft_rl_dcl(rl_input_t *input)
-{
-	return (1);
-	(void)input;
-}
-
-uint8_t	ft_rl_hlc(rl_input_t *input)
-{
-	return (1);
-	(void)input;
+	mapping = ft_mapget(g_maps, input->keystr);
+	return ((*mapping->f)(input));
 }

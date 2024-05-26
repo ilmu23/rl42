@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_rl_keymap.c                                     :+:      :+:    :+:   */
+/*   keymap.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 03:50:35 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/26 19:00:14 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_readline.h"
 #include "ft_rl_internal.h"
+#include "ft_stdio/ft_printf.h"
 
 static inline rl_map_t	*_newmapping(const uint64_t *key, const rl_fn_t *func);
 static inline void		_err(const uint64_t *key, const rl_fn_t *func);
@@ -40,11 +40,12 @@ void	ft_rl_addkey(const char *key, const uint64_t value)
 {
 	uint64_t	*val;
 
-	val = ft_alloc(sizeof(*val));
+	val = ft_push(ft_alloc(sizeof(*val)));
 	if (!val)
 		ft_exit(ft_rl_perror());
 	*val = value;
 	ft_mapadd(g_keys, key, val);
+	ft_popblk(val);
 }
 
 void	ft_rl_addfunc(const char *func, const rl_fn_t f)

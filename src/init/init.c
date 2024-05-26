@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_rl_init.c                                       :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 03:35:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/26 20:53:18 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,7 @@
 
 static inline void	_ft_rl_defaultbinds(void);
 static inline void	_ft_rl_defaultbinds2(void);
-
-t_hmap	*g_keys;
-t_hmap	*g_funcs;
-t_hmap	*g_maps;
+static inline void	_rl_exit(void);
 
 void	ft_rl_init(void)
 {
@@ -30,7 +27,9 @@ void	ft_rl_init(void)
 	g_maps = ft_mapnew();
 	if (!g_keys || !g_funcs || !g_maps)
 		ft_exit(ft_rl_perror());
-//	ft_rl_hist_load(_FT_RL_HFILE);
+	if (atexit(_rl_exit))
+		ft_exit(ft_rl_perror());
+	ft_rl_hist_load(_FT_RL_HFILE);
 	ft_rl_initkeys();
 	ft_rl_initfuncs();
 //	ft_rl_sethlcolor(SGR_FG6);
@@ -84,4 +83,11 @@ static inline void	_ft_rl_defaultbinds2(void)
 	ft_rl_map("<ESC>", "prefix-meta", QREMAP);
 	ft_rl_map("<M-q>", "discard-line", QREMAP);
 	ft_rl_map("<M-h>", "set-highlight-color", QREMAP);
+}
+
+static inline void	_rl_exit(void)
+{
+	ft_rl_hist_save(_FT_RL_HFILE);
+	ft_popall();
+	ft_clean();
 }

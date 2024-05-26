@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/05/26 03:25:06 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/05/26 20:33:54 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,29 +31,35 @@ LIBDIR	=	libft
 LFT		=	$(LIBDIR)/libft.a
 INC		=	-I$(INCDIR) -I$(LIBDIR)/$(INCDIR)
 
-INITDIR	=	init
-MAPDIR	=	maps
 FNDIR	=	fns
+HISTDIR	=	hist
+INITDIR	=	init
+KEYDIR	=	keys
 
-INITFILES	=	ft_rl_init.c \
-				ft_rl_initfuncs.c \
-				ft_rl_initkeys.c
+FNFILES		=	move.c \
+				hist.c \
+				text.c \
+				comp.c \
+				misc.c
 
-MAPFILES	=	ft_rl_keymap.c \
-				ft_rl_keymap_utils.c
+HISTFILES	=	history.c \
+				historyfile.c \
+				utils.c
 
-FNFILES		=	fn_move.c \
-				fn_hist.c \
-				fn_text.c \
-				fn_comp.c \
-				fn_misc.c
+INITFILES	=	init.c \
+				initfuncs.c \
+				initkeys.c
 
-FILES	=	ft_readline.c \
-			ft_rl_error.c \
-			ft_rl_exec.c \
+KEYFILES	=	keymap.c \
+				utils.c
+
+FILES	=	rl42.c \
+			error.c \
+			exec.c \
+			$(addprefix $(FNDIR)/, $(FNFILES)) \
+			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
 			$(addprefix $(INITDIR)/, $(INITFILES)) \
-			$(addprefix $(MAPDIR)/, $(MAPFILES)) \
-			$(addprefix $(FNDIR)/, $(FNFILES))
+			$(addprefix $(KEYDIR)/, $(KEYFILES))
 
 SRCS	=	$(addprefix $(SRCDIR)/, $(FILES))
 OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
@@ -70,9 +76,10 @@ $(LFT):
 
 $(OBJDIR):
 	@printf "\e[1;35mRL42 >\e[m Creating objdirs\n"
-	@mkdir -p $(OBJDIR)/$(INITDIR)
-	@mkdir -p $(OBJDIR)/$(MAPDIR)
 	@mkdir -p $(OBJDIR)/$(FNDIR)
+	@mkdir -p $(OBJDIR)/$(HISTDIR)
+	@mkdir -p $(OBJDIR)/$(INITDIR)
+	@mkdir -p $(OBJDIR)/$(KEYDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@

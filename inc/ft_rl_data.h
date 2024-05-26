@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 01:56:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/26 21:47:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,46 +14,53 @@
 # define FT_RL_DATA_H
 # include "libft.h"
 
-typedef enum e_rl_etype
+typedef enum e_rl_etype			rl_etype_t;
+typedef enum e_rl_wtype			rl_wtype_t;
+typedef enum e_rl_rdmode		rl_rdmode_t;
+typedef enum e_rl_mapmode		rl_mapmode_t;
+
+typedef struct s_rl_histnode	rl_histnode_t;
+typedef struct s_rl_cursor		rl_cursor_t;
+typedef struct s_rl_input		rl_input_t;
+typedef struct s_rl_map			rl_map_t;
+typedef struct s_rl_wc			rl_wc_t;
+
+typedef uint8_t	(*rl_fn_t)(rl_input_t *);
+
+enum e_rl_etype
 {
 	ACL,
 	EOF
-}	rl_etype_t;
+};
 
-typedef enum e_rl_wtype
+enum e_rl_wtype
 {
 	SPACE,
 	NORMAL
-}	rl_wtype_t;
+};
 
-typedef enum e_rl_rdmode
+enum e_rl_rdmode
 {
 	ALL,
 	LINE,
 	PROMPT
-}	rl_rdmode_t;
+};
 
-typedef enum e_rl_mapmode
+enum e_rl_mapmode
 {
 	WARN,
 	QUIET,
 	REMAP,
 	QREMAP
-}	rl_mapmode_t;
-
-typedef struct s_rl_word	rl_word_t;
-
-struct s_rl_word
-{
-	size_t		i;
-	size_t		len;
-	char		*word;
-	rl_wtype_t	wtype;
-	rl_word_t	*next;
-	rl_word_t	*prev;
 };
 
-typedef struct s_rl_cursor
+struct s_rl_histnode
+{
+	const char	*line;
+	const char	*edit;
+};
+
+struct s_rl_cursor
 {
 	int16_t	t_rows;
 	int16_t	t_cols;
@@ -61,33 +68,31 @@ typedef struct s_rl_cursor
 	int16_t	i_col;
 	int16_t	row;
 	int16_t	col;
-}	rl_cursor_t;
+};
 
-typedef struct s_rl_input
+struct s_rl_input
 {
-	size_t		plen;
-	size_t		maxlen;
-	const char	*prompt;
-	const char	*keystr;
-	rl_etype_t	exittype;
-	rl_cursor_t	*cursor;
-	rl_word_t	*current;
-	rl_word_t	*head;
-	uint64_t	key;
-}	rl_input_t;
+	char			*line;
+	const char		*prompt;
+	const char		*keystr;
+	rl_etype_t		exittype;
+	rl_cursor_t		*cursor;
+	const uint64_t	maxlen;
+	const uint64_t	plen;
+	uint64_t		len;
+	uint64_t		key;
+};
 
-typedef uint8_t	(*rl_fn_t)(rl_input_t *);
-
-typedef struct s_rl_map
+struct s_rl_map
 {
 	const uint64_t	key;
 	const rl_fn_t	f;
-}	rl_map_t;
+};
 
-typedef struct s_rl_wc
+struct s_rl_wc
 {
-	char	*pattern;
-	t_list	*matches;
-}	rl_wc_t;
+	const char		*pattern;
+	const t_list	*matches;
+};
 
 #endif
