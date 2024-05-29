@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 18:59:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 14:34:43 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("reverse-search-history", ft_rl_rsh);
 	ft_rl_addfunc("forward-search-history", ft_rl_fsh);
 	ft_rl_addfunc("end-of-file", ft_rl_eof);
+	ft_rl_addfunc("backward-remove-char", ft_rl_bdl);
 	ft_rl_addfunc("remove-char", ft_rl_del);
 	ft_rl_addfunc("self-insert", ft_rl_ins);
 	ft_rl_addfunc("upcase-word", ft_rl_upw);

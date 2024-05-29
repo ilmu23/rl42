@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/05/29 06:16:45 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/05/29 13:59:15 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,7 +52,9 @@ INITFILES	=	init.c \
 				initfuncs.c \
 				initkeys.c
 
-INPUTFILES	=	utils.c
+INPUTFILES	=	add.c \
+				rm.c \
+				utils.c
 
 KEYFILES	=	keymap.c \
 				utils.c

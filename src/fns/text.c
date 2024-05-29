@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 11:40:19 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 14:37:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,16 @@ uint8_t	ft_rl_eof(rl_input_t *input)
 
 uint8_t	ft_rl_del(rl_input_t *input)
 {
-	if (input->len == 0)
+	if (input->len == 0 || input->i == input->len)
+		return (1);
+	ft_rl_rmchar_back(input);
+	ft_rl_redisplay(input);
+	return (1);
+}
+
+uint8_t	ft_rl_bdl(rl_input_t *input)
+{
+	if (input->len == 0 || input->i == 0)
 		return (1);
 	ft_rl_rmchar(input);
 	ft_rl_redisplay(input);
@@ -36,11 +45,7 @@ uint8_t	ft_rl_ins(rl_input_t *input)
 	if (input->i != input->len)
 		ft_rl_redisplay(input);
 	else
-	{
 		ft_putchar_fd(input->key, 1);
-//		input->cursor->col++;
-//		ft_rl_cursor_setpos(input->cursor);
-	}
 	return (1);
 }
 

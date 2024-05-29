@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/27 02:08:49 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 14:34:12 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ static inline void	_ft_rl_defaultbinds(void)
 		ft_rl_map(key, "self-insert", QREMAP);
 		*key = ++val;
 	}
-	ft_rl_map("<BCK>", "remove-char", QREMAP);
 	ft_rl_map("<DEL>", "remove-char", QREMAP);
+	ft_rl_map("<BCK>", "backward-remove-char", QREMAP);
 	ft_rl_map("<C-a>", "beginning-of-line", QREMAP);
 	ft_rl_map("<C-e>", "end-of-line", QREMAP);
 	ft_rl_map("<HME>", "beginning-of-line", QREMAP);

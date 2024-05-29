@@ -1,6 +1,6 @@
 *.a
 *.o
-*.out
+*.out*
 *test*
 .cache
 .clangd
