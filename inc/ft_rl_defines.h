@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 00:24:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 05:21:19 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@
 # ifndef _FT_RL_HSIZE
 #  define _FT_RL_HSIZE 100
 # endif /* _FT_RL_HSIZE */
+
+// Keystr buffer length
+# define _KEYSTR_LEN 16
+
+// Keyshift mask
+# define _KEYSHIFT_MASK 0x00000000000000FFULL
 
 // History modes
 # define FT_RL_HIST_ON 0x1U

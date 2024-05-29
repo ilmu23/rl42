@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/27 00:51:26 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 01:06:48 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ struct s_rl_input
 	char			*line;
 	const char		*prompt;
 	const char		*keystr;
+	int8_t			keybufsize;
 	rl_etype_t		exittype;
 	rl_cursor_t		*cursor;
 	const uint64_t	plen;

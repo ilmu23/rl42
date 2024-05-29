@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/27 02:11:30 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 01:31:00 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void			ft_rl_initfuncs(void);
 /**  keys  **/
 
 /**   utils.c   **/
+uint8_t			ft_rl_iskey(const uint64_t key);
 char			*ft_rl_keystr(const uint64_t key);
 
 /**  keys  **/
