@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 19:48:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/03/28 15:51:49 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 05:54:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,19 @@
 # include "ft_rl_data.h"
 
 // misc
+# define TERM_CRNL "\r\n"
 # define TERM_STATUS "\e[6n"
 # define TERM_CUR_SOL "\e[1G"
 # define TERM_CUR_RESET "\e[1;1H"
 
 // clear
-# define TERM_CLEAR_END "\e[0J"
-# define TERM_CLEAR_START "\e[1J"
-# define TERM_CLEAR_SCREEN "\e[2J"
-# define TERM_CLEAR_BUFFER "\e[3J"
-# define TERM_CLEAR_LINE_END "\e[0K"
-# define TERM_CLEAR_LINE_START "\e[1K"
-# define TERM_CLEAR_LINE_WHOLE "\e[2K"
+# define TERM_CLEAR_END "\e[?25l\e[0J\e[?25h"
+# define TERM_CLEAR_START "\e[?25l\e[1J\e[?25h"
+# define TERM_CLEAR_SCREEN "\e[?25l\e[2J\e[?25h"
+# define TERM_CLEAR_BUFFER "\e[?25l\e[3J\e[?25h"
+# define TERM_CLEAR_LINE_END "\e[?25l\e[0K\e[?25h"
+# define TERM_CLEAR_LINE_START "\e[?25l\e[1K\e[?25h"
+# define TERM_CLEAR_LINE_WHOLE "\e[?25l\e[2K\e[?25h"
 
 // scroll
 # define TERM_SCROLL_UP "\e[1S"

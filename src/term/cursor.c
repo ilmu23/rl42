@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 00:49:44 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/27 02:05:24 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 06:29:54 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ rl_cursor_t	*ft_rl_cursor_init(void)
 	if (!out)
 		exit(ft_rl_perror());
 	ft_rl_cursor_getpos(&out->row, &out->col);
-	out->i_row = out->row;
-	out->i_col = out->col;
+	out->p_row = out->row;
+	out->p_col = out->col;
 	return (out);
 }
 

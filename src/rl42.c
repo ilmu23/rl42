@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 05:26:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 07:48:46 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ char	*ft_readline(const char *p, uint8_t opts)
 	ft_rl_init();
 	g_hist_cur = NULL;
 	if (!(opts & FT_RL_HIST_OFF))
+	{
+		ft_rl_hist_newnode();
 		g_hist_cur = g_hist;
+	}
 	out = _getline(p);
 	tcsetattr(0, TCSANOW, &old);
 	return (out);
@@ -81,8 +84,9 @@ static inline uint64_t	_plen(const char *p)
 
 static inline uint8_t	_getinput(void)
 {
-	uint8_t	shift;
-	uint8_t	rv;
+	uint64_t		keymask;
+	uint8_t			shift;
+	uint8_t			rv;
 
 	if (g_input.keybufsize == 0)
 	{
@@ -90,19 +94,22 @@ static inline uint8_t	_getinput(void)
 		if (g_input.keybufsize == -1)
 			exit(ft_rl_perror());
 	}
-	shift = 0;
-	while (!ft_rl_iskey(g_input.key & (_KEYSHIFT_MASK << (shift * 8))) && shift < g_input.keybufsize)
-		shift++;
+	keymask = _KEYSHIFT_MASK;
+	shift = g_input.keybufsize;
+	while (--shift > 0)
+		keymask |= keymask << 8;
+	while (!ft_rl_iskey(g_input.key & keymask) && shift++ < g_input.keybufsize)
+		keymask >>= 8;
 	if (shift == g_input.keybufsize)
 	{
 		g_input.key = 0;
 		g_input.keybufsize = 0;
 		return (1);
 	}
-	g_input.keystr = ft_rl_keystr(g_input.key & (_KEYSHIFT_MASK << (shift * 8)));
+	g_input.keystr = ft_rl_keystr(g_input.key & keymask);
 	rv = ft_rl_execmap(&g_input);
-	g_input.key = g_input.key >> (++shift * 8);
-	g_input.keybufsize -= shift;
+	g_input.key = g_input.key >> ((g_input.keybufsize - shift) * 8);
+	g_input.keybufsize -= g_input.keybufsize - shift;
 	return (rv);
 }
 
@@ -110,13 +117,15 @@ static inline char	*_getline(const char *p)
 {
 	ft_memcpy(&g_input, &(rl_input_t){.line = NULL, .prompt = p, .keystr = NULL,
 			.exittype = ACL, .cursor = ft_rl_cursor_init(), .plen = _plen(p),
-			.len = 0, .key = 0, .keybufsize = 0}, sizeof(g_input));
+			.len = 0, .key = 0, .keybufsize = 0, .i = 0}, sizeof(g_input));
 	if (g_hist_cur)
 		g_input.line = (char *)((rl_histnode_t *)g_hist_cur->blk)->line;
 	else
 		g_input.line = ft_push(ft_strdup(""));
 	ft_putstr_fd(p, 1);
 	ft_rl_cursor_getpos(&g_input.cursor->row, &g_input.cursor->col);
+	g_input.cursor->i_row = g_input.cursor->row;
+	g_input.cursor->i_col = g_input.cursor->col;
 	while (_getinput())
 		;
 	ft_popblk(g_input.line);

@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/05/27 02:16:36 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/05/29 06:16:45 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,11 +31,12 @@ LIBDIR	=	libft
 LFT		=	$(LIBDIR)/libft.a
 INC		=	-I$(INCDIR) -I$(LIBDIR)/$(INCDIR)
 
-FNDIR	=	fns
-HISTDIR	=	hist
-INITDIR	=	init
-KEYDIR	=	keys
-TERMDIR	=	term
+FNDIR		=	fns
+HISTDIR		=	hist
+INITDIR		=	init
+INPUTDIR	=	input
+KEYDIR		=	keys
+TERMDIR		=	term
 
 FNFILES		=	move.c \
 				hist.c \
@@ -51,6 +52,8 @@ INITFILES	=	init.c \
 				initfuncs.c \
 				initkeys.c
 
+INPUTFILES	=	utils.c
+
 KEYFILES	=	keymap.c \
 				utils.c
 
@@ -64,6 +67,7 @@ FILES	=	rl42.c \
 			$(addprefix $(FNDIR)/, $(FNFILES)) \
 			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
 			$(addprefix $(INITDIR)/, $(INITFILES)) \
+			$(addprefix $(INPUTDIR)/, $(INPUTFILES)) \
 			$(addprefix $(KEYDIR)/, $(KEYFILES)) \
 			$(addprefix $(TERMDIR)/, $(TERMFILES))
 
@@ -85,6 +89,7 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(FNDIR)
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
 	@mkdir -p $(OBJDIR)/$(INITDIR)
+	@mkdir -p $(OBJDIR)/$(INPUTDIR)
 	@mkdir -p $(OBJDIR)/$(KEYDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 

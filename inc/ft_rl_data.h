@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 01:06:48 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 06:26:22 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ struct s_rl_histnode
 
 struct s_rl_cursor
 {
+	int16_t	p_row;
+	int16_t	p_col;
 	int16_t	i_row;
 	int16_t	i_col;
 	int16_t	row;
@@ -79,6 +81,7 @@ struct s_rl_input
 	const uint64_t	plen;
 	uint64_t		len;
 	uint64_t		key;
+	uint64_t		i;
 };
 
 struct s_rl_map

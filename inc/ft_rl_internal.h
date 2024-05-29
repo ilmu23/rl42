@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 05:30:13 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 06:11:31 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,16 @@ void			ft_rl_initkeys(void);
 void			ft_rl_initfuncs(void);
 
 /**  init  **/
+
+
+/**  input  **/
+
+/**   utils.c   **/
+void			ft_rl_rmchar(rl_input_t *input);
+void			ft_rl_addchar(rl_input_t *input, const uint8_t c);
+void			ft_rl_redisplay(const rl_input_t *input);
+
+/**  input  **/
 
 
 /**  keys  **/
