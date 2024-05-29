@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 19:15:47 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 05:31:06 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,6 @@ void		ft_rl_init(void);
 /**  init  **/
 
 
-/**  hist  **/
-
-/**   historyfile.c   **/
-void		ft_rl_hist_load(const char *path);
-void		ft_rl_hist_save(const char *path);
-
-/**  hist  **/
-
-
 /**  keys  **/
 
 /**   keymap.c   **/
@@ -53,8 +44,8 @@ void		ft_rl_addkey(const char *key, const uint64_t value);
 void		ft_rl_addfunc(const char *func, const rl_fn_t f);
 
 /**   utils.c   **/
-uint8_t		ft_rl_ismapped(uint64_t key);
-rl_fn_t		ft_rl_getmap(uint64_t key);
+uint8_t		ft_rl_ismapped(const uint64_t key);
+rl_fn_t		ft_rl_getmap(const uint64_t key);
 void		ft_rl_unmap(const char *key);
 void		ft_rl_unmap_fn(const char *func);
 

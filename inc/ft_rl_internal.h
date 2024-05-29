@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 01:31:00 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 05:30:13 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,10 @@ void			ft_rl_hist_get_next(rl_input_t *input);
 void			ft_rl_hist_get_prev(rl_input_t *input);
 void			ft_rl_hist_get_last(rl_input_t *input);
 void			ft_rl_hist_get_first(rl_input_t *input);
+
+/**   historyfile.c   **/
+void		ft_rl_hist_load(const char *path);
+void		ft_rl_hist_save(const char *path);
 
 /**   utils.c   **/
 rl_histnode_t	*ft_rl_hist_mknode(const char *line);

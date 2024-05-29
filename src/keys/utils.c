@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 05:26:22 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 05:31:24 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static inline void	_ascii(char *keystr, const uint64_t key);
 static inline void	_ctrl(char *keystr, const uint64_t key);
 
-uint8_t	ft_rl_ismapped(uint64_t key)
+uint8_t	ft_rl_ismapped(const uint64_t key)
 {
 	rl_map_t	*mapping;
 
@@ -31,7 +31,7 @@ uint8_t	ft_rl_iskey(const uint64_t key)
 	return (*keystr != '\0');
 }
 
-rl_fn_t	ft_rl_getmap(uint64_t key)
+rl_fn_t	ft_rl_getmap(const uint64_t key)
 {
 	rl_map_t	*mapping;
 
