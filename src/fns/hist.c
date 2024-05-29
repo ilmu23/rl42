@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/26 19:07:50 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 11:40:35 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 uint8_t	ft_rl_acl(rl_input_t *input)
 {
-	return (1);
+	ft_putstr_fd(TERM_CRNL, 1);
+	input->exittype = ACL;
+	return (0);
 	(void)input;
 }
 

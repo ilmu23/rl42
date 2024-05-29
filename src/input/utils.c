@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 06:49:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 11:46:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,6 @@ void	ft_rl_redisplay(const rl_input_t *input)
 	input->cursor->col = input->cursor->i_col + input->i - (input->i != 0);
 	ft_rl_cursor_setpos(input->cursor);
 	ft_printf("%s%s", TERM_CLEAR_END, &input->line[input->i - (input->i != 0)]);
-	input->cursor->col = input->cursor->i_col + input->len;
+	input->cursor->col = input->cursor->i_col + input->i;
 	ft_rl_cursor_setpos(input->cursor);
 }

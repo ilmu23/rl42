@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 06:54:19 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 11:40:19 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 uint8_t	ft_rl_eof(rl_input_t *input)
 {
+	if (input->len != 0)
+		return (1);
 	ft_putstr_fd(TERM_CRNL, 1);
-	exit (0);
-	return (1);
-	(void)input;
+	input->exittype = EOF;
+	return (0);
 }
 
 uint8_t	ft_rl_del(rl_input_t *input)

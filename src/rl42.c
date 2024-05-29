@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 07:48:46 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/29 10:13:11 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ char	*ft_readline(const char *p, uint8_t opts)
 	out = _getline(p);
 	tcsetattr(0, TCSANOW, &old);
 	return (out);
-	(void)opts;
-	(void)p;
 }
 
 static inline uint64_t	_plen(const char *p)
