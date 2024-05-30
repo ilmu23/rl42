@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 11:10:11 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 14:42:20 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ static inline void	_histcommit(const char *line, const uint8_t opts)
 {
 	rl_histnode_t	*node;
 
-	if (opts & FT_RL_HIST_NOUP || g_input.exittype == EOF)
+	if (opts & FT_RL_HIST_NOUP || g_input.exittype == EOF || !*line)
 		ft_rl_hist_rmnode();
 	else
 	{
