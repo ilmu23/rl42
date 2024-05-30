@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 14:34:43 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 09:36:26 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,5 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("prefix-meta", ft_rl_mta);
 	ft_rl_addfunc("discard-line", ft_rl_dcl);
 	ft_rl_addfunc("set-highlight-color", ft_rl_hlc);
+	ft_rl_addfunc("toggle-highlight-mode", ft_rl_hlm);
 }

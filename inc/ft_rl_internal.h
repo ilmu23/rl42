@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 07:43:11 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 08:07:58 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ int32_t			ft_rl_perror(void);
 // exec.c
 uint8_t			ft_rl_execmap(rl_input_t *input);
 
+// color.c
+char			*ft_rl_hlcolor(void);
 
 /**  term  **/
 

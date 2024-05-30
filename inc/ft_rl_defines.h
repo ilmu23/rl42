@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 05:21:19 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 08:31:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,9 @@
 # define FT_RL_HIST_ON 0x1U
 # define FT_RL_HIST_OFF 0x2U
 # define FT_RL_HIST_NOUP 0x4U
+
+// Highlight fg/bg
+# define FT_RL_HL_FG 0x0U
+# define FT_RL_HL_BG 0x1U
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 07:44:06 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 07:54:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ int16_t	g_cols;
 
 uint64_t	g_maxlen;
 
-rl_input_t	g_input;
+rl_hlc_t	g_hlcolor;
 
-const char	*g_hlcolor;
+rl_input_t	g_input;
 
 const t_list	*g_hist;
 const t_list	*g_hist_cur;
