@@ -6,11 +6,12 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 11:40:35 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:24:54 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
+#include <stdio.h>
 
 uint8_t	ft_rl_acl(rl_input_t *input)
 {
@@ -22,26 +23,54 @@ uint8_t	ft_rl_acl(rl_input_t *input)
 
 uint8_t	ft_rl_pvh(rl_input_t *input)
 {
+	if (!ft_rl_hist_get_prev(input))
+		return (1);
+	input->i = 0;
+	ft_rl_redisplay(input);
+	input->i = input->len;
+	input->cursor->row = input->cursor->i_row;
+	input->cursor->col = input->cursor->i_col + input->i;
+	ft_rl_cursor_setpos(input->cursor);
 	return (1);
-	(void)input;
 }
 
 uint8_t	ft_rl_nxh(rl_input_t *input)
 {
+	if (!ft_rl_hist_get_next(input))
+		return (1);
+	input->i = 0;
+	ft_rl_redisplay(input);
+	input->i = input->len;
+	input->cursor->row = input->cursor->i_row;
+	input->cursor->col = input->cursor->i_col + input->i;
+	ft_rl_cursor_setpos(input->cursor);
 	return (1);
-	(void)input;
 }
 
 uint8_t	ft_rl_soh(rl_input_t *input)
 {
+	if (!ft_rl_hist_get_last(input))
+		return (1);
+	input->i = 0;
+	ft_rl_redisplay(input);
+	input->i = input->len;
+	input->cursor->row = input->cursor->i_row;
+	input->cursor->col = input->cursor->i_col + input->i;
+	ft_rl_cursor_setpos(input->cursor);
 	return (1);
-	(void)input;
 }
 
 uint8_t	ft_rl_eoh(rl_input_t *input)
 {
+	if (!ft_rl_hist_get_first(input))
+		return (1);
+	input->i = 0;
+	ft_rl_redisplay(input);
+	input->i = input->len;
+	input->cursor->row = input->cursor->i_row;
+	input->cursor->col = input->cursor->i_col + input->i;
+	ft_rl_cursor_setpos(input->cursor);
 	return (1);
-	(void)input;
 }
 
 uint8_t	ft_rl_rsh(rl_input_t *input)

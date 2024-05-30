@@ -6,19 +6,19 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 19:59:09 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/27 00:00:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:26:56 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_data.h"
 #include "ft_rl_internal.h"
 
-void	ft_rl_hist_get_next(rl_input_t *input)
+uint8_t	ft_rl_hist_get_next(rl_input_t *input)
 {
 	rl_histnode_t	*node;
 
-	if (!g_hist_cur->prev)
-		return ;
+	if (!g_hist_cur || !g_hist_cur->prev)
+		return (0);
 	node = (rl_histnode_t *)g_hist_cur->blk;
 	ft_popblk(node->edit);
 	node->edit = ft_push(ft_strdup(input->line));
@@ -34,14 +34,15 @@ void	ft_rl_hist_get_next(rl_input_t *input)
 	if (!input->line)
 		exit(ft_rl_perror());
 	input->len = ft_strlen(input->line);
+	return (1);
 }
 
-void	ft_rl_hist_get_prev(rl_input_t *input)
+uint8_t	ft_rl_hist_get_prev(rl_input_t *input)
 {
 	rl_histnode_t	*node;
 
-	if (!g_hist_cur->next)
-		return ;
+	if (!g_hist_cur || !g_hist_cur->next)
+		return (0);
 	node = (rl_histnode_t *)g_hist_cur->blk;
 	ft_popblk(node->edit);
 	node->edit = ft_push(ft_strdup(input->line));
@@ -57,14 +58,15 @@ void	ft_rl_hist_get_prev(rl_input_t *input)
 	if (!input->line)
 		exit(ft_rl_perror());
 	input->len = ft_strlen(input->line);
+	return (1);
 }
 
-void	ft_rl_hist_get_last(rl_input_t *input)
+uint8_t	ft_rl_hist_get_last(rl_input_t *input)
 {
 	rl_histnode_t	*node;
 	
-	if (!g_hist_cur->next)
-		return ;
+	if (!g_hist_cur || !g_hist_cur->next)
+		return (0);
 	node = (rl_histnode_t *)g_hist_cur->blk;
 	ft_popblk(node->edit);
 	node->edit = ft_push(ft_strdup(input->line));
@@ -81,14 +83,15 @@ void	ft_rl_hist_get_last(rl_input_t *input)
 	if (!input->line)
 		exit(ft_rl_perror());
 	input->len = ft_strlen(input->line);
+	return (1);
 }
 
-void	ft_rl_hist_get_first(rl_input_t *input)
+uint8_t	ft_rl_hist_get_first(rl_input_t *input)
 {
 	rl_histnode_t	*node;
 
-	if (!g_hist_cur->prev)
-		return ;
+	if (!g_hist_cur || !g_hist_cur->prev)
+		return (0);
 	node = (rl_histnode_t *)g_hist_cur->blk;
 	ft_popblk(node->edit);
 	node->edit = ft_push(ft_strdup(input->line));
@@ -105,4 +108,5 @@ void	ft_rl_hist_get_first(rl_input_t *input)
 	if (!input->line)
 		exit(ft_rl_perror());
 	input->len = ft_strlen(input->line);
+	return (1);
 }

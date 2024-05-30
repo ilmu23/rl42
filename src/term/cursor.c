@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 00:49:44 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 06:29:54 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:18:56 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,13 @@ void	ft_rl_cursor_setpos(rl_cursor_t *cursor)
 	while (cursor->row > g_rows)
 	{
 		ft_putstr_fd(TERM_SCROLL_UP, 1);
+		cursor->i_row--;
 		cursor->row--;
 	}
 	while (cursor->row < 1)
 	{
 		ft_putstr_fd(TERM_SCROLL_DOWN, 1);
+		cursor->i_row++;
 		cursor->row++;
 	}
 	ft_printf("\e[%d;%dH", cursor->row, cursor->col);

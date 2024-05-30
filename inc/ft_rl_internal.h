@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 13:52:43 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:31:37 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,20 +39,21 @@ void			ft_rl_updatetermsize(void);
 /**  hist  **/
 
 /**   history.c   **/
-void			ft_rl_hist_get_next(rl_input_t *input);
-void			ft_rl_hist_get_prev(rl_input_t *input);
-void			ft_rl_hist_get_last(rl_input_t *input);
-void			ft_rl_hist_get_first(rl_input_t *input);
+uint8_t			ft_rl_hist_get_next(rl_input_t *input);
+uint8_t			ft_rl_hist_get_prev(rl_input_t *input);
+uint8_t			ft_rl_hist_get_last(rl_input_t *input);
+uint8_t			ft_rl_hist_get_first(rl_input_t *input);
 
 /**   historyfile.c   **/
-void		ft_rl_hist_load(const char *path);
-void		ft_rl_hist_save(const char *path);
+void			ft_rl_hist_load(const char *path);
+void			ft_rl_hist_save(const char *path);
 
 /**   utils.c   **/
 rl_histnode_t	*ft_rl_hist_mknode(const char *line);
 void			ft_rl_hist_recycle(void);
 void			ft_rl_hist_restore(void);
 void			ft_rl_hist_newnode(void);
+void			ft_rl_hist_rmnode(void);
 
 /**  hist  **/
 

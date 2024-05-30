@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 10:13:11 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:44:59 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ const t_list	*g_hist_cur;
 static inline uint64_t	_plen(const char *p);
 static inline uint8_t	_getinput(void);
 static inline char	*_getline(const char *p);
+static inline void	_histcommit(const char *line, const uint8_t opts);
 
-char	*ft_readline(const char *p, uint8_t opts)
+char	*ft_readline(const char *p, const uint8_t opts)
 {
 	struct termios	old;
 	struct termios	new;
@@ -53,6 +54,8 @@ char	*ft_readline(const char *p, uint8_t opts)
 		g_hist_cur = g_hist;
 	}
 	out = _getline(p);
+	if (!(opts & FT_RL_HIST_OFF))
+		_histcommit(out, opts);
 	tcsetattr(0, TCSANOW, &old);
 	return (out);
 }
@@ -130,4 +133,24 @@ static inline char	*_getline(const char *p)
 	if (g_input.exittype == EOF)
 		return (NULL);
 	return (ft_strdup(g_input.line));
+}
+
+static inline void	_histcommit(const char *line, const uint8_t opts)
+{
+	rl_histnode_t	*node;
+
+	if (opts & FT_RL_HIST_NOUP || g_input.exittype == EOF)
+		ft_rl_hist_rmnode();
+	else
+	{
+		node = (rl_histnode_t *)g_hist->blk;
+		if (node)
+		{
+			ft_popblk(node->line);
+			node->line = ft_push(ft_strdup(line));
+			if (!node->line)
+				exit(ft_rl_perror());
+		}
+	}
+	ft_rl_hist_restore();
 }

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 05:31:06 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:30:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "ft_rl_defines.h"
 
 // rl42.c
-char		*ft_readline(const char *prompt, uint8_t opts);
+char		*ft_readline(const char *prompt, const uint8_t opts);
 
 // color.c
 void		ft_rl_sethlcolor(const char *s);
