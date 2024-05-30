@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 09:29:52 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 11:13:34 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 /**   move.c   **/
 uint8_t	ft_rl_sol(rl_input_t *input);
 uint8_t	ft_rl_eol(rl_input_t *input);
+uint8_t	ft_rl_sow(rl_input_t *input);
+uint8_t	ft_rl_eow(rl_input_t *input);
 uint8_t	ft_rl_fwd(rl_input_t *input);
 uint8_t	ft_rl_bck(rl_input_t *input);
 uint8_t	ft_rl_fwd_w(rl_input_t *input);

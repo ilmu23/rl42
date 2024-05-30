@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 08:07:58 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 12:07:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,11 @@ void			ft_rl_rmchar(rl_input_t *input);
 void			ft_rl_rmchar_back(rl_input_t *input);
 
 /**   utils.c   **/
-void			ft_rl_redisplay(const rl_input_t *input);
+void			ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode);
+void			ft_rl_unsetmark(uint8_t type);
+void			ft_rl_setmark(uint8_t type);
+void			ft_rl_word_start(void);
+void			ft_rl_word_end(void);
 
 /**  input  **/
 

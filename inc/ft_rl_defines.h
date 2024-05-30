@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 08:31:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 10:55:35 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@
 
 // Keyshift mask
 # define _KEYSHIFT_MASK 0x00000000000000FFULL
+
+// Mark types
+# define _MARK_START 0x1U
+# define _MARK_END 0x2U
 
 // History modes
 # define FT_RL_HIST_ON 0x1U

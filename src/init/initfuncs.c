@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 09:36:26 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 11:15:08 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	ft_rl_initfuncs(void)
 {
 	ft_rl_addfunc("beginning-of-line", ft_rl_sol);
 	ft_rl_addfunc("end-of-line", ft_rl_eol);
+	ft_rl_addfunc("beginning-of-word", ft_rl_sow);
+	ft_rl_addfunc("end-of-word", ft_rl_eow);
 	ft_rl_addfunc("forward-char", ft_rl_fwd);
 	ft_rl_addfunc("backward-char", ft_rl_bck);
 	ft_rl_addfunc("forward-word", ft_rl_fwd_w);
