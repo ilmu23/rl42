@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 00:49:44 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 04:18:56 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 07:33:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ rl_cursor_t	*ft_rl_cursor_init(void)
 {
 	rl_cursor_t	*out;
 
-	out = ft_alloc(sizeof(*out));
+	out = ft_push(ft_alloc(sizeof(*out)));
 	if (!out)
 		exit(ft_rl_perror());
 	ft_rl_cursor_getpos(&out->row, &out->col);

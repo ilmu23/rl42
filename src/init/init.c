@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 14:34:12 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 07:43:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,19 @@ void	ft_rl_init(void)
 	ft_rl_sethlcolor(SGR_FG6);
 	_ft_rl_defaultbinds();
 	init = 1;
+}
+
+void	ft_rl_init_input(const char *p, const uint64_t plen)
+{
+	ft_memcpy(&g_input, &(rl_input_t){.line = NULL, .prompt = p, .keystr = NULL,
+			.exittype = ACL, .cursor = ft_rl_cursor_init(), .plen = plen,
+			.len = 0, .key = 0, .keybufsize = 0, .i = 0}, sizeof(g_input));
+	if (g_hist_cur)
+		g_input.line = (char *)((rl_histnode_t *)g_hist_cur->blk)->line;
+	else
+		g_input.line = ft_push(ft_strdup(""));
+	if (!g_input.cursor || !g_input.line)
+		exit(ft_rl_perror());
 }
 
 static inline void	_ft_rl_defaultbinds(void)
@@ -82,13 +95,14 @@ static inline void	_ft_rl_defaultbinds2(void)
 	ft_rl_map("<M-c>", "capitalize-word", QREMAP);
 	ft_rl_map("<TAB>", "complete", QREMAP);
 	ft_rl_map("<ESC>", "prefix-meta", QREMAP);
-	ft_rl_map("<M-q>", "discard-line", QREMAP);
+	ft_rl_map("<C-c>", "discard-line", QREMAP);
 	ft_rl_map("<M-h>", "set-highlight-color", QREMAP);
 }
 
 static inline void	_rl_exit(void)
 {
-	ft_rl_hist_save(_FT_RL_HFILE);
+	if (g_hist)
+		ft_rl_hist_save(_FT_RL_HFILE);
 	ft_popall();
 	ft_clean();
 }

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 04:31:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 07:43:11 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ void			ft_rl_hist_rmnode(void);
 
 
 /**  init  **/
+
+/**   init.c   **/
+void			ft_rl_init_input(const char *p, const uint64_t plen);
 
 /**   initkeys.c   **/
 void			ft_rl_initkeys(void);

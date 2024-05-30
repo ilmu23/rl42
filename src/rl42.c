@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 04:44:59 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/05/30 07:44:06 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,13 +116,7 @@ static inline uint8_t	_getinput(void)
 
 static inline char	*_getline(const char *p)
 {
-	ft_memcpy(&g_input, &(rl_input_t){.line = NULL, .prompt = p, .keystr = NULL,
-			.exittype = ACL, .cursor = ft_rl_cursor_init(), .plen = _plen(p),
-			.len = 0, .key = 0, .keybufsize = 0, .i = 0}, sizeof(g_input));
-	if (g_hist_cur)
-		g_input.line = (char *)((rl_histnode_t *)g_hist_cur->blk)->line;
-	else
-		g_input.line = ft_push(ft_strdup(""));
+	ft_rl_init_input(p, _plen(p));
 	ft_putstr_fd(p, 1);
 	ft_rl_cursor_getpos(&g_input.cursor->row, &g_input.cursor->col);
 	g_input.cursor->i_row = g_input.cursor->row;
