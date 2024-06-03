@@ -6,15 +6,30 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 15:09:10 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:40:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 #include "ft_stdio/ft_printf.h"
 
-static inline uint64_t	_getlongest(const t_list *completions);
 static inline uint64_t	_gettotallen(const t_list *completions);
+
+uint64_t	ft_rl_comp_getlongest(const t_list *completions)
+{
+	uint64_t	longest;
+	uint64_t	len;
+
+	longest = 0;
+	while (completions)
+	{
+		len = ft_strlen(completions->blk);
+		if (len > longest)
+			longest = len;
+		completions = completions->next;
+	}
+	return (longest);
+}
 
 void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur)
 {
@@ -25,7 +40,7 @@ void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void
 	uint64_t	asize;
 	char		*cstr;
 
-	llen = _getlongest(completions);
+	llen = ft_rl_comp_getlongest(completions);
 	cpr = g_cols / (llen + 2);
 	rows = *completions->size / cpr + 1;
 	while (input->cursor->i_row + (int16_t)(input->len / g_cols) + rows > g_rows)
@@ -54,22 +69,6 @@ void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void
 	}
 	ft_printf("\n%s", cstr);
 	ft_rl_cursor_reset(input);
-}
-
-static inline uint64_t	_getlongest(const t_list *completions)
-{
-	uint64_t	longest;
-	uint64_t	len;
-
-	longest = 0;
-	while (completions)
-	{
-		len = ft_strlen(completions->blk);
-		if (len > longest)
-			longest = len;
-		completions = completions->next;
-	}
-	return (longest);
 }
 
 static inline uint64_t	_gettotallen(const t_list *completions)

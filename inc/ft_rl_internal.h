@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 14:23:42 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:39:46 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ uint8_t			ft_rl_isdir(const char *path);
 void			ft_rl_complete(rl_input_t *input);
 
 /**   utils.c   **/
+uint64_t		ft_rl_comp_getlongest(const t_list *completions);
 void			ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur);
 
 /**  comp  **/

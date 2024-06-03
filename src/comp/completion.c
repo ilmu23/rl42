@@ -6,13 +6,14 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 15:27:47 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:50:50 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 static inline t_list	*_complete(const char *pattern);
+static inline t_list	*_increment(t_list *completions, const char *pattern);
 static inline void		_match(const char *pattern, DIR *dir, const t_list **completions);
 static inline void		_buildpath(const char *path, t_list *completions);
 static inline void		_replace(rl_input_t *input, const char *completion);
@@ -65,7 +66,47 @@ static inline t_list	*_complete(const char *pattern)
 		_match(pattern, opendir("."), (const t_list **)&out);
 	_buildpath(path, out);
 	ft_popblk(path);
-	return (out);
+	return (_increment(out, pattern));
+}
+
+static inline t_list	*_increment(t_list *completions, const char *pattern)
+{
+	char		*common;
+	t_list		*start;
+	uint64_t	maxlen;
+	uint8_t		cur;
+	size_t		i;
+
+	if (!completions || !completions->next)
+		return (completions);
+	maxlen = ft_rl_comp_getlongest(completions);
+	common = ft_calloc(maxlen + 1, sizeof(*common));
+	if (!common)
+		exit(ft_rl_perror());
+	i = 0;
+	cur = ((uint8_t *)completions->blk)[i];
+	start = completions;
+	while (cur)
+	{
+		completions = completions->next;
+		if (!completions)
+		{
+			common[i++] = cur;
+			completions = start;
+			cur = ((uint8_t *)completions->blk)[i];
+			continue ;
+		}
+		if (((uint8_t *)completions->blk)[i] == cur)
+			continue ;
+		break ;
+	}
+	if (!*common || ft_strequals(common, pattern))
+		return (start);
+	ft_popblk(completions->blk);
+	completions->blk = ft_push(common);
+	ft_lstpopall(completions->next);
+	completions->next = NULL;
+	return (completions);
 }
 
 static inline void	_match(const char *pattern, DIR *dir, const t_list **completions)
