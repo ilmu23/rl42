@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 08:24:49 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:26:35 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ typedef enum e_rl_mapmode		rl_mapmode_t;
 
 typedef struct s_rl_histnode	rl_histnode_t;
 typedef struct s_rl_cursor		rl_cursor_t;
+typedef struct s_rl_keybuf		rl_keybuf_t;
 typedef struct s_rl_input		rl_input_t;
 typedef struct s_rl_map			rl_map_t;
 typedef struct s_rl_rgb			rl_rgb_t;
@@ -73,17 +74,22 @@ struct s_rl_cursor
 	int16_t	col;
 };
 
+struct s_rl_keybuf
+{
+	uint64_t	key;
+	int8_t		size;
+};
+
 struct s_rl_input
 {
 	char			*line;
 	const char		*prompt;
 	const char		*keystr;
-	int8_t			keybufsize;
 	rl_etype_t		exittype;
 	rl_cursor_t		*cursor;
 	const uint64_t	plen;
-	uint64_t		len;
 	uint64_t		key;
+	uint64_t		len;
 	uint64_t		i;
 };
 

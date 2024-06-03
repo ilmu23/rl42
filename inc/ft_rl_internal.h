@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 12:07:55 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:23:42 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,27 @@ uint8_t			ft_rl_execmap(rl_input_t *input);
 // color.c
 char			*ft_rl_hlcolor(void);
 
+// utils.c
+uint64_t		ft_rl_getkey(void);
+uint8_t			ft_rl_isdir(const char *path);
+
+/**  comp  **/
+
+/**   completion.c   **/
+void			ft_rl_complete(rl_input_t *input);
+
+/**   utils.c   **/
+void			ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur);
+
+/**  comp  **/
+
 /**  term  **/
 
 /**   cursor.c   **/
 rl_cursor_t		*ft_rl_cursor_init(void);
 void			ft_rl_cursor_getpos(int16_t *row, int16_t *col);
 void			ft_rl_cursor_setpos(rl_cursor_t *cursor);
+void			ft_rl_cursor_reset(rl_input_t *input);
 
 /**   utils.c   **/
 void			ft_rl_updatetermsize(void);

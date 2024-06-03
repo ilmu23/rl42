@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 14:42:20 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:26:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ uint64_t	g_mark_e;
 rl_hlc_t	g_hlcolor;
 
 rl_input_t	g_input;
+
+rl_keybuf_t	g_keybuf;
 
 const t_list	*g_hist;
 const t_list	*g_hist_cur;
@@ -87,33 +89,9 @@ static inline uint64_t	_plen(const char *p)
 
 static inline uint8_t	_getinput(void)
 {
-	uint64_t		keymask;
-	uint8_t			shift;
-	uint8_t			rv;
-
-	if (g_input.keybufsize == 0)
-	{
-		g_input.keybufsize = read(0, &g_input.key, sizeof(g_input.key));
-		if (g_input.keybufsize == -1)
-			exit(ft_rl_perror());
-	}
-	keymask = _KEYSHIFT_MASK;
-	shift = g_input.keybufsize;
-	while (--shift > 0)
-		keymask |= keymask << 8;
-	while (!ft_rl_iskey(g_input.key & keymask) && shift++ < g_input.keybufsize)
-		keymask >>= 8;
-	if (shift == g_input.keybufsize)
-	{
-		g_input.key = 0;
-		g_input.keybufsize = 0;
-		return (1);
-	}
-	g_input.keystr = ft_rl_keystr(g_input.key & keymask);
-	rv = ft_rl_execmap(&g_input);
-	g_input.key = g_input.key >> ((g_input.keybufsize - shift) * 8);
-	g_input.keybufsize -= g_input.keybufsize - shift;
-	return (rv);
+	g_input.key = ft_rl_getkey();
+	g_input.keystr = ft_rl_keystr(g_input.key);
+	return (ft_rl_execmap(&g_input));
 }
 
 static inline char	*_getline(const char *p)

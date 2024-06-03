@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 11:14:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:27:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	ft_rl_init_input(const char *p, const uint64_t plen)
 {
 	ft_memcpy(&g_input, &(rl_input_t){.line = NULL, .prompt = p, .keystr = NULL,
 			.exittype = ACL, .cursor = ft_rl_cursor_init(), .plen = plen,
-			.len = 0, .key = 0, .keybufsize = 0, .i = 0}, sizeof(g_input));
+			.len = 0, .key = 0, .i = 0}, sizeof(g_input));
 	if (g_hist_cur)
 		g_input.line = (char *)((rl_histnode_t *)g_hist_cur->blk)->line;
 	else

@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/05/29 13:59:15 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/06/03 14:36:04 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,12 +31,16 @@ LIBDIR	=	libft
 LFT		=	$(LIBDIR)/libft.a
 INC		=	-I$(INCDIR) -I$(LIBDIR)/$(INCDIR)
 
+COMPDIR		=	comp
 FNDIR		=	fns
 HISTDIR		=	hist
 INITDIR		=	init
 INPUTDIR	=	input
 KEYDIR		=	keys
 TERMDIR		=	term
+
+COMPFILES	=	completion.c \
+				utils.c
 
 FNFILES		=	move.c \
 				hist.c \
@@ -66,6 +70,8 @@ FILES	=	rl42.c \
 			color.c \
 			error.c \
 			exec.c \
+			utils.c \
+			$(addprefix $(COMPDIR)/, $(COMPFILES)) \
 			$(addprefix $(FNDIR)/, $(FNFILES)) \
 			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
 			$(addprefix $(INITDIR)/, $(INITFILES)) \
@@ -88,6 +94,7 @@ $(LFT):
 
 $(OBJDIR):
 	@printf "\e[1;35mRL42 >\e[m Creating objdirs\n"
+	@mkdir -p $(OBJDIR)/$(COMPDIR)
 	@mkdir -p $(OBJDIR)/$(FNDIR)
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
 	@mkdir -p $(OBJDIR)/$(INITDIR)
