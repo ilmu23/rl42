@@ -6,12 +6,12 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 12:18:57 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:13:16 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
-#include <stdio.h>
+#include "ft_stdio/ft_printf.h"
 
 uint8_t	ft_rl_mta(rl_input_t *input)
 {
@@ -35,8 +35,10 @@ uint8_t	ft_rl_dcl(rl_input_t *input)
 		ft_rl_hist_newnode();
 		g_hist_cur = g_hist;
 	}
+	ft_rl_eol(input);
+	ft_rl_cursor_reset(input);
 	ft_popblks(2, input->cursor, input->line);
-	ft_putstr_fd(TERM_CRNL, 1);
+	ft_printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
 	ft_rl_init_input(input->prompt, input->plen);
 	ft_putstr_fd(input->prompt, 1);
 	ft_rl_cursor_getpos(&input->cursor->row, &input->cursor->col);
