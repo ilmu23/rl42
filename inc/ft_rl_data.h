@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 15:38:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 21:19:50 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ typedef struct s_rl_input		rl_input_t;
 typedef struct s_rl_map			rl_map_t;
 typedef struct s_rl_rgb			rl_rgb_t;
 typedef struct s_rl_hlc			rl_hlc_t;
-typedef struct s_rl_wc			rl_wc_t;
-
 
 typedef uint8_t	(*rl_fn_t)(rl_input_t *);
 
@@ -112,12 +110,6 @@ struct s_rl_hlc
 	const char	*sgr;
 	rl_rgb_t	rgbval;
 	uint8_t		mode;
-};
-
-struct s_rl_wc
-{
-	const char		*pattern;
-	const t_list	*matches;
 };
 
 #endif
