@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 15:50:50 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 17:26:17 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ static inline void	_replace(rl_input_t *input, const char *completion)
 	g_mark_e = g_mark_s + ft_strlen(completion);
 	input->len = ft_strlen(input->line);
 	input->i = g_mark_e;
-	ft_rl_redisplay(input, ALL);
+	ft_rl_redisplay(input, INPUT);
 }
 
 static inline void	_replace_mult(rl_input_t *input, const t_list *completions)
@@ -177,12 +177,13 @@ static inline void	_replace_mult(rl_input_t *input, const t_list *completions)
 	while (ft_rl_getmap(input->key) == ft_rl_cmp)
 	{
 		_replace(input, completions->blk);
-		ft_rl_comp_display(input, ft_lstfirst(completions), completions->blk);
+		ft_rl_comp_display(input, ft_lstfirst(completions), completions->blk, prv);
+		prv = completions->blk;
 		if (completions->next)
 			completions = completions->next;
 		else
 			completions = ft_lstfirst(completions);
 		input->key = ft_rl_getkey();
 	}
-	ft_rl_redisplay(input, ALL);
+	ft_rl_redisplay(input, CLEAR);
 }

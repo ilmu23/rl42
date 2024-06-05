@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 12:17:48 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 15:49:11 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ uint8_t	ft_rl_eof(rl_input_t *input)
 {
 	if (input->len != 0)
 		return (1);
-	ft_putstr_fd(TERM_CRNL, 1);
+	ft_printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
 	input->exittype = EOF;
 	return (0);
 }
@@ -66,9 +66,8 @@ uint8_t	ft_rl_upw(rl_input_t *input)
 		input->line[i] = ft_toupper(input->line[i]);
 		i++;
 	}
-	ft_rl_unsetmark(_MARK_START);
-	ft_rl_unsetmark(_MARK_END);
-	ft_rl_redisplay(input, ALL);
+	ft_rl_unsetmark(_MARK_START | _MARK_END);
+	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
 
@@ -88,9 +87,8 @@ uint8_t	ft_rl_dnw(rl_input_t *input)
 		input->line[i] = ft_tolower(input->line[i]);
 		i++;
 	}
-	ft_rl_unsetmark(_MARK_START);
-	ft_rl_unsetmark(_MARK_END);
-	ft_rl_redisplay(input, ALL);
+	ft_rl_unsetmark(_MARK_START | _MARK_END);
+	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
 
@@ -108,8 +106,7 @@ uint8_t	ft_rl_caw(rl_input_t *input)
 	input->line[i] = ft_toupper(input->line[i]);
 	while (++i <= g_mark_e)
 		input->line[i] = ft_tolower(input->line[i]);
-	ft_rl_unsetmark(_MARK_START);
-	ft_rl_unsetmark(_MARK_END);
-	ft_rl_redisplay(input, ALL);
+	ft_rl_unsetmark(_MARK_START | _MARK_END);
+	ft_rl_redisplay(input, INPUT);
 	return (1);
 }

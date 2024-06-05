@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 14:26:35 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 15:38:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,10 @@ enum e_rl_wtype
 
 enum e_rl_rdmode
 {
-	ALL,
 	LINE,
-	PROMPT
+	INPUT,
+	PROMPT,
+	CLEAR
 };
 
 enum e_rl_mapmode
