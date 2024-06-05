@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 17:26:17 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 17:26:58 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,10 @@ static inline void	_replace(rl_input_t *input, const char *completion)
 
 static inline void	_replace_mult(rl_input_t *input, const t_list *completions)
 {
-	ft_rl_comp_display(input, ft_lstfirst(completions), NULL);
+	const void	*prv;
+
+	prv = NULL;
+	ft_rl_comp_display(input, ft_lstfirst(completions), NULL, prv);
 	input->key = ft_rl_getkey();
 	while (ft_rl_getmap(input->key) == ft_rl_cmp)
 	{
