@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 17:24:06 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 10:30:23 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,26 +57,16 @@ void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void
 	while (completions)
 	{
 		if (completions->blk == cur)
-		{
-			ft_memcpy(cstr + cslen, ft_rl_hlcolor(), ft_strlen(ft_rl_hlcolor()));
-			cslen = ft_strlen(cstr);
-		}
-		ft_memset(cstr + cslen, ' ', llen - ft_strlen(completions->blk));
-		cslen += llen - ft_strlen(completions->blk);
-		ft_memcpy(cstr + cslen, completions->blk, ft_getblksize(completions->blk));
-		cslen = ft_strlen(cstr);
-		if (completions->blk == cur)
-		{
-			ft_memcpy(cstr + cslen, SGR_RESET, ft_strlen(SGR_RESET));
-			cslen = ft_strlen(cstr);
-		}
+			cslen += ft_snprintf(&cstr[cslen], asize - cslen, "%s%-*s%s", ft_rl_hlcolor(), llen, completions->blk, SGR_RESET);
+		else
+			cslen += ft_snprintf(&cstr[cslen], asize - cslen, "%-*s", llen, completions->blk);
 		if (++i == cpr)
 		{
-			ft_memcpy(cstr + cslen++, "\n", 1);
+			cslen += ft_snprintf(&cstr[cslen], 1, "\n");
 			i = 0;
 		}
 		else
-			ft_memcpy(cstr + cslen++, " ", 1);
+			cslen += ft_snprintf(&cstr[cslen], 1, " ");
 		completions = completions->next;
 	}
 	ft_printf("\n%s", cstr);

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 18:48:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 14:15:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 10:31:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,8 @@ extern rl_keybuf_t	g_keybuf;
 
 extern const t_list	*g_hist;
 extern const t_list	*g_hist_cur;
+
+extern struct termios	g_oldsettings;
+extern struct termios	g_newsettings;
 
 #endif

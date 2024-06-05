@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 14:27:21 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 10:38:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ void	ft_rl_init(void)
 	g_keys = ft_mapnew();
 	g_funcs = ft_mapnew();
 	g_maps = ft_mapnew();
+	tcgetattr(0, &g_oldsettings);
+	g_newsettings = g_oldsettings;
+	g_newsettings.c_iflag &= ~(ICRNL | IXON);
+	g_newsettings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+	tcsetattr(0, TCSANOW, &g_newsettings);
 	if (!g_keys || !g_funcs || !g_maps)
 		ft_exit(ft_rl_perror());
 	if (atexit(_rl_exit))
@@ -32,10 +37,11 @@ void	ft_rl_init(void)
 	ft_rl_hist_load(_FT_RL_HFILE);
 	ft_rl_initkeys();
 	ft_rl_initfuncs();
-	ft_rl_sethlcolor_sgr(SGR_FG4);
-	ft_rl_sethlcolor_rgb(0x42, 0x23, 0x69);
 	_ft_rl_defaultbinds();
 	g_hlcolor.mode = FT_RL_HL_FG;
+	ft_rl_sethlcolor_sgr(SGR_FG4);
+	ft_rl_sethlcolor_rgb(255, 23, 123);
+	tcsetattr(0, TCSANOW, &g_oldsettings);
 	init = 1;
 }
 
@@ -102,6 +108,7 @@ static inline void	_rl_exit(void)
 {
 	if (g_hist)
 		ft_rl_hist_save(_FT_RL_HFILE);
+	tcsetattr(0, TCSANOW, &g_oldsettings);
 	ft_popall();
 	ft_clean();
 }

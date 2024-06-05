@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 14:26:53 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 10:32:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@ rl_keybuf_t	g_keybuf;
 
 const t_list	*g_hist;
 const t_list	*g_hist_cur;
+
+struct termios	g_oldsettings;
+struct termios	g_newsettings;
 /** globals **/
 
 static inline uint64_t	_plen(const char *p);
@@ -41,17 +44,11 @@ static inline void	_histcommit(const char *line, const uint8_t opts);
 
 char	*ft_readline(const char *p, const uint8_t opts)
 {
-	struct termios	old;
-	struct termios	new;
 	char			*out;
 
-	tcgetattr(0, &old);
-	new = old;
-	new.c_iflag &= ~(ICRNL | IXON);
-	new.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-	tcsetattr(0, TCSANOW, &new);
 	ft_rl_init();
 	g_hist_cur = NULL;
+	tcsetattr(0, TCSANOW, &g_newsettings);
 	if (!(opts & FT_RL_HIST_OFF))
 	{
 		ft_rl_hist_newnode();
@@ -60,7 +57,7 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	out = _getline(p);
 	if (!(opts & FT_RL_HIST_OFF))
 		_histcommit(out, opts);
-	tcsetattr(0, TCSANOW, &old);
+	tcsetattr(0, TCSANOW, &g_oldsettings);
 	return (out);
 }
 
