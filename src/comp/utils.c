@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 17:22:11 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 22:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,16 @@ uint64_t	ft_rl_comp_getlongest(const t_list *completions)
 // disgusting
 void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv)
 {
-	uint16_t	i;
-	uint16_t	cpr;
-	uint16_t	rows;
-	uint64_t	llen;
-	rl_cursor_t	curs;
+	const t_list		*blocks;
+	const rl_block_t	*block;
+	int16_t				pos[2];
+	uint64_t			llen;
+	uint16_t			rows;
+	uint16_t			cpr;
+	uint16_t			i;
 
 	llen = ft_rl_comp_getlongest(completions);
-	cpr = g_cols / (llen + 2);
+	cpr = g_cols / (llen + 1);
 	rows = *completions->size / cpr + 1;
 	while (input->cursor->i_row + (int16_t)(input->len / g_cols) + rows > g_rows)
 	{
@@ -51,65 +53,49 @@ void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void
 	if (!cur)
 	{
 		i = 0;
-		ft_putchar_fd('\n', 1);
+		ft_putstr_fd(TERM_CRNL, 1);
+		ft_rl_cursor_getpos(&pos[0], &pos[1]);
 		while (completions)
 		{
+			ft_lstadd_back(&g_blocks, ft_lstnew(ft_rl_newblock(completions->blk, pos)));
 			ft_printf("%-*s", llen, completions->blk);
 			if (++i == cpr)
 			{
-				ft_putchar_fd('\n', 1);
+				ft_putstr_fd(TERM_CRNL, 1);
+				pos[0]++;
+				pos[1] = 1;
 				i = 0;
 			}
 			else
+			{
 				ft_putchar_fd(' ', 1);
+				pos[1] += llen + 1;
+			}
 			completions = completions->next;
 		}
 	}
 	else
 	{
-		i = 0;
-		curs.row = input->cursor->i_row + 1;
-		curs.col = input->cursor->i_col + input->len;
-		while (curs.col >= g_cols)
+		i = 2;
+		blocks = g_blocks;
+		while (i && blocks)
 		{
-			curs.row++;
-			curs.col -= g_cols;
-		}
-		curs.col = 1;
-		while (completions && completions->blk != cur)
-		{
-			if (++i == cpr)
+			block = blocks->blk;
+			if (block->str == cur)
 			{
-				curs.row++;
-				curs.col = 1;
+				ft_rl_cursor_move(block->pos[0], block->pos[1]);
+				ft_putstr_fd(ft_rl_hlcolor(), 1);
+				ft_putstr_fd(block->str, 1);
+				ft_putstr_fd(SGR_RESET, 1);
+				i--;
 			}
-			else
-				curs.col += llen + 1;
-			completions = completions->next;
-		}
-		if (!completions)
-			return ;
-		if (prv && completions->prev)
-		{
-			curs.col -= llen + 1;
-			ft_rl_cursor_setpos(&curs);
-			ft_printf("%-*s", llen, prv);
-			if (i == 0)
-				ft_putchar_fd('\n', 1);
-			else
-				ft_putchar_fd(' ', 1);
-			ft_printf("%s%-*s%s", ft_rl_hlcolor(), llen, cur, SGR_RESET);
-		}
-		else
-		{
-			ft_rl_cursor_setpos(&curs);
-			ft_printf("%s%-*s%s", ft_rl_hlcolor(), llen, cur, SGR_RESET);
-			if (prv)
+			else if (block->str == prv)
 			{
-				curs.col = (llen + 1) * (*completions->size - 1) + 1;
-				ft_rl_cursor_setpos(&curs);
-				ft_printf("%-*s", llen, prv);
+				ft_rl_cursor_move(block->pos[0], block->pos[1]);
+				ft_putstr_fd(block->str, 1);
+				i--;
 			}
+			blocks = blocks->next;
 		}
 	}
 	ft_rl_cursor_reset(input);

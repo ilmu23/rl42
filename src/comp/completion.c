@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 17:26:58 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 22:06:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,4 +189,5 @@ static inline void	_replace_mult(rl_input_t *input, const t_list *completions)
 		input->key = ft_rl_getkey();
 	}
 	ft_rl_redisplay(input, CLEAR);
+	ft_rl_clearblocks();
 }

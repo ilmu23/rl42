@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 10:32:21 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 22:20:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ rl_keybuf_t	g_keybuf;
 
 const t_list	*g_hist;
 const t_list	*g_hist_cur;
+const t_list	*g_blocks;
 
 struct termios	g_oldsettings;
 struct termios	g_newsettings;
@@ -49,6 +50,7 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	ft_rl_init();
 	g_hist_cur = NULL;
 	tcsetattr(0, TCSANOW, &g_newsettings);
+	ft_putstr_fd(TERM_CUR_HIDE, 1);
 	if (!(opts & FT_RL_HIST_OFF))
 	{
 		ft_rl_hist_newnode();
@@ -58,6 +60,7 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	if (!(opts & FT_RL_HIST_OFF))
 		_histcommit(out, opts);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
+	ft_putstr_fd(TERM_CUR_SHOW, 1);
 	return (out);
 }
 

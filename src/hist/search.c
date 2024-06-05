@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 12:39:21 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 21:06:58 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,6 @@ static inline t_list	*_match(const char *pattern, const t_list *cur, const uint8
 
 static inline void	_display(rl_input_t *input, rl_input_t *search)
 {
-	ft_rl_redisplay(input, ALL);
-	ft_rl_redisplay(search, PROMPT);
+	ft_rl_redisplay(input, INPUT);
+	ft_rl_redisplay(search, INPUT);
 }

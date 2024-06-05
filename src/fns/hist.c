@@ -6,18 +6,17 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 15:49:25 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 21:11:10 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
-#include <stdio.h>
 
 uint8_t	ft_rl_acl(rl_input_t *input)
 {
+	ft_putstr_fd(TERM_CRNL, 1);
 	input->exittype = ACL;
 	return (0);
-	(void)input;
 }
 
 uint8_t	ft_rl_pvh(rl_input_t *input)
