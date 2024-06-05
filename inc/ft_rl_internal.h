@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 15:39:46 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 11:44:01 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,12 @@ uint8_t			ft_rl_hist_get_first(rl_input_t *input);
 void			ft_rl_hist_load(const char *path);
 void			ft_rl_hist_save(const char *path);
 
+/**   search.c   **/
+uint8_t			ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction);
+
 /**   utils.c   **/
 rl_histnode_t	*ft_rl_hist_mknode(const char *line);
+char			*ft_rl_hist_get_line(const t_list *node);
 void			ft_rl_hist_recycle(void);
 void			ft_rl_hist_restore(void);
 void			ft_rl_hist_newnode(void);

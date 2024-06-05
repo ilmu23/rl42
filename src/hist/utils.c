@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 20:23:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 04:36:06 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 11:46:20 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,16 @@ rl_histnode_t	*ft_rl_hist_mknode(const char *line)
 	out->line = ft_push(ft_strdup(line));
 	out->edit = NULL;
 	return (out);
+}
+
+char	*ft_rl_hist_get_line(const t_list *node)
+{
+	const rl_histnode_t	*histnode;
+
+	histnode = node->blk;
+	if (histnode->edit)
+		return (ft_push(ft_strdup(histnode->edit)));
+	return (ft_push(ft_strdup(histnode->line)));
 }
 
 void	ft_rl_hist_recycle(void)

@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/06/03 14:36:04 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/06/05 12:17:41 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,6 +50,7 @@ FNFILES		=	move.c \
 
 HISTFILES	=	history.c \
 				historyfile.c \
+				search.c \
 				utils.c
 
 INITFILES	=	init.c \

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 19:59:09 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 04:26:56 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 12:43:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,8 @@ uint8_t	ft_rl_hist_get_next(rl_input_t *input)
 	if (!node->edit)
 		exit(ft_rl_perror());
 	g_hist_cur = g_hist_cur->prev;
-	node = (rl_histnode_t *)g_hist_cur->blk;
 	ft_popblk(input->line);
-	if (node->edit)
-		input->line = ft_push(ft_strdup(node->edit));
-	else
-		input->line = ft_push(ft_strdup(node->line));
+	input->line = ft_rl_hist_get_line(g_hist_cur);
 	if (!input->line)
 		exit(ft_rl_perror());
 	input->len = ft_strlen(input->line);
@@ -49,12 +45,8 @@ uint8_t	ft_rl_hist_get_prev(rl_input_t *input)
 	if (!node->edit)
 		exit(ft_rl_perror());
 	g_hist_cur = g_hist_cur->next;
-	node = (rl_histnode_t *)g_hist_cur->blk;
 	ft_popblk(input->line);
-	if (node->edit)
-		input->line = ft_push(ft_strdup(node->edit));
-	else
-		input->line = ft_push(ft_strdup(node->line));
+	input->line = ft_rl_hist_get_line(g_hist_cur);
 	if (!input->line)
 		exit(ft_rl_perror());
 	input->len = ft_strlen(input->line);
@@ -74,12 +66,8 @@ uint8_t	ft_rl_hist_get_last(rl_input_t *input)
 		exit(ft_rl_perror());
 	while (g_hist_cur->next)
 		g_hist_cur = g_hist_cur->next;
-	node = (rl_histnode_t *)g_hist_cur->blk;
 	ft_popblk(input->line);
-	if (node->edit)
-		input->line = ft_push(ft_strdup(node->edit));
-	else
-		input->line = ft_push(ft_strdup(node->line));
+	input->line = ft_rl_hist_get_line(g_hist_cur);
 	if (!input->line)
 		exit(ft_rl_perror());
 	input->len = ft_strlen(input->line);
@@ -97,14 +85,9 @@ uint8_t	ft_rl_hist_get_first(rl_input_t *input)
 	node->edit = ft_push(ft_strdup(input->line));
 	if (!node->edit)
 		exit(ft_rl_perror());
-	while (g_hist_cur->prev)
-		g_hist_cur = g_hist_cur->prev;
-	node = (rl_histnode_t *)g_hist_cur->blk;
+	g_hist_cur = g_hist;
 	ft_popblk(input->line);
-	if (node->edit)
-		input->line = ft_push(ft_strdup(node->edit));
-	else
-		input->line = ft_push(ft_strdup(node->line));
+	input->line = ft_rl_hist_get_line(g_hist_cur);
 	if (!input->line)
 		exit(ft_rl_perror());
 	input->len = ft_strlen(input->line);

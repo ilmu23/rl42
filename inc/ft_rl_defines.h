@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 10:55:35 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 12:38:46 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,14 @@
 // Mark types
 # define _MARK_START 0x1U
 # define _MARK_END 0x2U
+
+// History search direction
+# define _SEARCH_BCK 0x0U
+# define _SEARCH_FWD 0x1U
+
+// History search prompts
+# define _SEARCH_BCK_PROMPT "failing-bck-i-search: \0"
+# define _SEARCH_FWD_PROMPT "failing-fwd-i-search: \0"
 
 // History modes
 # define FT_RL_HIST_ON 0x1U
