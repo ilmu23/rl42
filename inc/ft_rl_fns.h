@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 10:51:28 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 01:55:14 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ uint8_t	ft_rl_pvh(rl_input_t *input);
 uint8_t	ft_rl_nxh(rl_input_t *input);
 uint8_t	ft_rl_soh(rl_input_t *input);
 uint8_t	ft_rl_eoh(rl_input_t *input);
+uint8_t	ft_rl_rsh(rl_input_t *input);
+uint8_t	ft_rl_fsh(rl_input_t *input);
 uint8_t	ft_rl_rsh_i(rl_input_t *input);
 uint8_t	ft_rl_fsh_i(rl_input_t *input);
 
