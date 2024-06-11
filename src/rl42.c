@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 22:20:44 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 20:46:08 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ char	*ft_readline(const char *p, const uint8_t opts)
 {
 	char			*out;
 
+	ft_push(p);
 	ft_rl_init();
 	g_hist_cur = NULL;
 	tcsetattr(0, TCSANOW, &g_newsettings);
@@ -61,6 +62,7 @@ char	*ft_readline(const char *p, const uint8_t opts)
 		_histcommit(out, opts);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
 	ft_putstr_fd(TERM_CUR_SHOW, 1);
+	ft_popblk(p);
 	return (out);
 }
 
