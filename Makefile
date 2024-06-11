@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/06/05 12:17:41 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/06/11 15:21:52 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,6 +85,13 @@ OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 all: $(NAME)
 
+test: a.out
+
+a.out: $(NAME)
+	@printf "\e[1;35mRL42 >\e[m Compiling test\n"
+	@$(CC) $(CFLAGS) $(INC) test.c -L. -Llibft -lrl42 -lft -o $@
+	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
+
 $(NAME): $(LFT) $(OBJDIR) $(OBJS)
 	@printf "\e[1;35mRL42 >\e[m Creating %s\n" $@
 	@ar -crs $(NAME) $(OBJS)
@@ -117,3 +124,5 @@ fclean: clean
 	@rm -f $(NAME)
 
 re: fclean all
+
+.PHONY: all test clean fclean re

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 13:55:31 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 13:55:32 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 15:28:36 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void	ft_rl_addchar(rl_input_t *input, const uint8_t c)
 	char	*newline;
 
 	newline = NULL;
-	if (ft_getblksize(input->line) == input->len + 1)
+	if (ft_getblksize(input->line) >= input->len + 1)
 	{
-		newline = ft_push(ft_calloc((input->len * 3) + 1, sizeof(*newline)));
+		newline = ft_push(ft_calloc(((input->len + 1) * 3) + 1, sizeof(*newline)));
 		if (!newline)
 			exit(ft_rl_perror());
 	}
