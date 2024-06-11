@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 15:13:16 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:24:36 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ uint8_t	ft_rl_mta(rl_input_t *input)
 {
 	uint16_t	key;
 
+	ft_putstr_fd(TERM_CUR_SHOW, 1);
 	if (read(0, &key, 1) == -1)
 		exit(ft_rl_perror());
+	ft_putstr_fd(TERM_CUR_HIDE, 1);
 	key = key << 8 | '\e';
 	input->keystr = ft_rl_keystr(key);
 	return (ft_rl_execmap(input));
@@ -52,8 +54,10 @@ uint8_t	ft_rl_hlc(rl_input_t *input)
 	uint64_t	key;
 
 	key = 0;
+	ft_putstr_fd(TERM_CUR_SHOW, 1);
 	if (read(0, &key, sizeof(key)) == -1)
 		exit(ft_rl_perror());
+	ft_putstr_fd(TERM_CUR_HIDE, 1);
 	switch (key)
 	{
 		case KEY_NUM_0:
