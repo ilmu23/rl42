@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 19:48:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/03/28 15:51:49 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 22:19:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,13 @@
 # include "ft_rl_data.h"
 
 // misc
+# define TERM_CRNL "\r\n"
 # define TERM_STATUS "\e[6n"
+
+// cursor
 # define TERM_CUR_SOL "\e[1G"
+# define TERM_CUR_HIDE "\e[?25l"
+# define TERM_CUR_SHOW "\e[?25h"
 # define TERM_CUR_RESET "\e[1;1H"
 
 // clear

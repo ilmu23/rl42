@@ -6,155 +6,122 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/04/13 12:49:44 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/05 22:09:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_RL_INTERNAL_H
 # define FT_RL_INTERNAL_H
-# include "ft_readline.h"
+# include "rl42.h"
+# include "ft_rl_fns.h"
+# include "ft_rl_term.h"
+# include "ft_rl_globals.h"
 
-// ft_rl_input.c
-uint8_t		ft_rl_getinput(t_rl_input *input);
-void		ft_rl_addchar(t_rl_input *input);
-void		ft_rl_rmchar(t_rl_input *input);
+// error.c
+int32_t			ft_rl_perror(void);
 
-// ft_rl_color.c
-char		*ft_rl_gethlcolor(void);
+// exec.c
+uint8_t			ft_rl_execmap(rl_input_t *input);
 
-// ft_rl_word.c
-t_rl_word	*ft_rl_splitword(t_rl_word *w1);
-t_rl_word	*ft_rl_joinword(t_rl_word *w1, t_rl_word *w2);
-void		ft_rl_insertword(t_rl_input *input, t_rl_word *newword);
-void		ft_rl_addword(t_rl_input *input, uint8_t c);
-void		ft_rl_rmword(t_rl_input *input, t_rl_word *dword, uint64_t key);
+// color.c
+char			*ft_rl_hlcolor(void);
 
-// ft_rl_word_replace.c
-void		ft_rl_initreplace(t_rl_word *start, t_rl_word *end);
-void		ft_rl_replaceword(t_rl_input *input, t_rl_word *w);
-void		ft_rl_endreplace(void);
+// utils.c
+rl_block_t		*ft_rl_newblock(const char *str, const int16_t pos[2]);
+uint64_t		ft_rl_getkey(void);
+uint8_t			ft_rl_isdir(const char *path);
+void			ft_rl_clearblocks(void);
 
-// ft_rl_cursor.c
-void		ft_rl_shiftcursor(size_t n, uint64_t direction);
+/**  comp  **/
 
-// ft_rl_history.c
-t_rl_input	*ft_rl_hist_getnext(t_rl_input *input, uint8_t cpy);
-t_rl_input	*ft_rl_hist_getprev(t_rl_input *input, uint8_t cpy);
-void		ft_rl_hist_commit(t_rl_input *input);
-void		ft_rl_hist_add(t_list **hist, t_rl_input *input);
+/**   completion.c   **/
+void			ft_rl_complete(rl_input_t *input);
 
-// ft_rl_history_search.c
-uint8_t		ft_rl_hist_search(t_rl_input *input, uint64_t direction);
+/**   utils.c   **/
+uint64_t		ft_rl_comp_getlongest(const t_list *completions);
+void			ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv);
 
-// ft_rl_complete.c
-uint8_t		ft_rl_complete(t_rl_input *input);
+/**  comp  **/
 
-// ft_rl_complete2.c
-t_list		*ft_rl_complete_wc(const char *pattern);
-t_list		*ft_rl_complete_env(const char *pattern);
-t_list		*ft_rl_complete_file(const char *pattern);
+/**  term  **/
 
-// ft_rl_complete3.c
-void		ft_rl_complete_inc(t_list *completions, const char *pattern);
+/**   cursor.c   **/
+rl_cursor_t		*ft_rl_cursor_init(void);
+void			ft_rl_cursor_getpos(int16_t *row, int16_t *col);
+void			ft_rl_cursor_setpos(rl_cursor_t *cursor);
+void			ft_rl_cursor_reset(rl_input_t *input);
+void			ft_rl_cursor_move(const int16_t row, const int16_t col);
 
-// ft_rl_fn.c
-uint8_t		ft_rl_sol(t_rl_input *input);
-uint8_t		ft_rl_eol(t_rl_input *input);
-uint8_t		ft_rl_fwd(t_rl_input *input);
-uint8_t		ft_rl_bck(t_rl_input *input);
-uint8_t		ft_rl_clr(t_rl_input *input);
+/**   utils.c   **/
+void			ft_rl_updatetermsize(void);
 
-// ft_rl_fn2.c
-uint8_t		ft_rl_fwd_w(t_rl_input *input);
-uint8_t		ft_rl_bck_w(t_rl_input *input);
-uint8_t		ft_rl_acl(t_rl_input *input);
-uint8_t		ft_rl_eof(t_rl_input *input);
-uint8_t		ft_rl_pvh(t_rl_input *input);
+/**  term  **/
 
-// ft_rl_fn3.c
-uint8_t		ft_rl_nxh(t_rl_input *input);
-uint8_t		ft_rl_soh(t_rl_input *input);
-uint8_t		ft_rl_eoh(t_rl_input *input);
-uint8_t		ft_rl_rsh(t_rl_input *input);
-uint8_t		ft_rl_fsh(t_rl_input *input);
+/**  hist  **/
 
-// ft_rl_fn4.c
-uint8_t		ft_rl_upw(t_rl_input *input);
-uint8_t		ft_rl_dnw(t_rl_input *input);
-uint8_t		ft_rl_caw(t_rl_input *input);
-uint8_t		ft_rl_cmp(t_rl_input *input);
-uint8_t		ft_rl_mta(t_rl_input *input);
+/**   history.c   **/
+uint8_t			ft_rl_hist_get_next(rl_input_t *input);
+uint8_t			ft_rl_hist_get_prev(rl_input_t *input);
+uint8_t			ft_rl_hist_get_last(rl_input_t *input);
+uint8_t			ft_rl_hist_get_first(rl_input_t *input);
 
-// ft_rl_fn5.c
-uint8_t		ft_rl_hlc(t_rl_input *input);
-uint8_t		ft_rl_dcl(t_rl_input *input);
-uint8_t		ft_rl_ins(t_rl_input *input);
-uint8_t		ft_rl_del(t_rl_input *input);
+/**   historyfile.c   **/
+void			ft_rl_hist_load(const char *path);
+void			ft_rl_hist_save(const char *path);
 
-// ft_rl_exec.c
-uint8_t		ft_rl_execmap(t_rl_input *input, uint64_t key);
+/**   search.c   **/
+uint8_t			ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction);
 
-// ft_rl_initkeys.c
-t_rl_key	*ft_rl_newkey(const char *name, const uint64_t value);
-void		ft_rl_initkeys(t_list **keys);
+/**   utils.c   **/
+rl_histnode_t	*ft_rl_hist_mknode(const char *line);
+char			*ft_rl_hist_get_line(const t_list *node);
+void			ft_rl_hist_recycle(void);
+void			ft_rl_hist_restore(void);
+void			ft_rl_hist_newnode(void);
+void			ft_rl_hist_rmnode(void);
 
-// ft_rl_initfuncs.c
-t_rl_func	*ft_rl_newfunc(const char *name, t_rl_fn f);
-void		ft_rl_initfuncs(t_list **funcs);
+/**  hist  **/
 
-// ft_rl_keymap_lists.c
-t_list		**ft_rl_getkeys(void);
-t_list		**ft_rl_getfuncs(void);
-t_list		**ft_rl_getkeymaps(void);
 
-// ft_rl_utils.c
-t_rl_input	*ft_rl_dupinput(t_rl_input *input);
-t_rl_word	*ft_rl_dupwords(t_rl_word *words);
-char		*ft_rl_inputstr(t_rl_input *input, uint8_t pop);
-void		ft_rl_redisplay(t_rl_input *input, t_rl_rdmode mode);
-void		ft_rl_popwords(t_rl_word *words);
+/**  init  **/
 
-// ft_rl_utils2.c
-t_rl_input	*ft_rl_strinput(const char *s);
-t_rl_word	*ft_rl_strwords(const char *s);
-t_rl_word	*ft_rl_strword(const char *s);
-uint16_t	ft_rl_isdir(const char *path);
+/**   init.c   **/
+void			ft_rl_init_input(const char *p, const uint64_t plen);
 
-// ft_rl_utils3.c
-size_t		ft_rl_getinputlen(t_rl_input *input);
-size_t		ft_rl_input_getmaxlen(void);
+/**   initkeys.c   **/
+void			ft_rl_initkeys(void);
 
-// ft_rl_keymap_utils.c
-void		ft_rl_map_err(const char *k, const char *fn, void *ks, void *fns);
+/**   initfuncs.c   **/
+void			ft_rl_initfuncs(void);
 
-// ft_rl_input_utils.c
-void		ft_rl_updateinput(t_rl_input *input, t_rl_input *newinput);
-void		ft_rl_setcurinput(const t_rl_input *input);
+/**  init  **/
 
-// ft_rl_history_utils.c
-t_list		**ft_rl_hist_gethead(void);
-t_list		**ft_rl_hist_getcurrent(void);
-t_list		*ft_rl_hist_duphist(t_list *hist);
-void		ft_rl_hist_setcurrent(t_list *node);
-void		ft_rl_hist_pop(t_list *hist);
 
-// ft_rl_complete_utils.c
-size_t		ft_rl_complete_getlongest(t_list *completions);
-char		*ft_rl_complete_basename(const char *s);
-void		ft_rl_putcompletion(t_list *st, t_list *c, const char *s, size_t m);
+/**  input  **/
 
-// ft_rl_term_utils.c
-t_rl_cursor	*ft_rl_getcursor(t_rl_input *input);
-void		ft_rl_inputcursor(t_rl_input *input);
-void		ft_rl_resetcursor(t_rl_input *input);
-void		ft_rl_updatecursor(t_rl_cursor *cursor);
+/**   add.c   **/
+void			ft_rl_addchar(rl_input_t *input, const uint8_t c);
 
-// ft_rl_wildcard_utils.c
-uint8_t		ft_rl_wc_checkalloc(t_rl_wc *cur, t_rl_wc *prv, char **patterns);
-void		ft_rl_wc_rmdot(t_list *matches);
+/**   rm.c   **/
+void			ft_rl_rmchar(rl_input_t *input);
+void			ft_rl_rmchar_back(rl_input_t *input);
 
-// ft_rl_debug_utils.c
-uint8_t		ft_rl_dbg_printinput(t_rl_input *input);
-void		ft_rl_dbg_info(t_rl_input *input, uint64_t key);
+/**   utils.c   **/
+void			ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode);
+void			ft_rl_unsetmark(uint8_t type);
+void			ft_rl_setmark(uint8_t type);
+void			ft_rl_word_start(void);
+void			ft_rl_word_end(void);
+
+/**  input  **/
+
+
+/**  keys  **/
+
+/**   utils.c   **/
+uint8_t			ft_rl_iskey(const uint64_t key);
+char			*ft_rl_keystr(const uint64_t key);
+
+/**  keys  **/
 
 #endif
