@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/06/11 15:21:52 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/06/11 16:59:31 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -121,6 +121,8 @@ clean:
 fclean: clean
 	@make --no-print-directory -C $(LIBDIR) fclean
 	@rm -rf $(OBJDIR)
+	@rm -rf a.out.dSYM
+	@rm -f a.out
 	@rm -f $(NAME)
 
 re: fclean all
