@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:11:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 03:50:08 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 22:32:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ uint8_t	ft_rl_fwd_w(rl_input_t *input)
 	if (input->i == input->len)
 		return (1);
 	ft_rl_word_end();
-	input->i++;
+	input->i += (input->i < input->len);
 	while (input->i < input->len && ft_isspace(input->line[input->i]))
 		input->i++;
 	ft_rl_cursor_reset(input);
