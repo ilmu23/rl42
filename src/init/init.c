@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 04:40:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 05:34:26 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ static inline void	_ft_rl_defaultbinds(void)
 	ft_rl_map("<M-K>", "kill-whole-line", QREMAP);
 	ft_rl_map("<M-DEL>", "forward-kill-word", QREMAP);
 	ft_rl_map("<M-BCK>", "backward-kill-word", QREMAP);
+	ft_rl_map("<C-t>", "transpose-characters", QREMAP);
+	ft_rl_map("<M-t>", "transpose-words", QREMAP);
 	ft_rl_map("<TAB>", "complete", QREMAP);
 	ft_rl_map("<ESC>", "prefix-meta", QREMAP);
 	ft_rl_map("<C-c>", "discard-line", QREMAP);

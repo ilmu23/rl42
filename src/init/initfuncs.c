@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 04:24:10 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 05:34:36 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("kill-whole-line", ft_rl_kln);
 	ft_rl_addfunc("forward-kill-word", ft_rl_fkw);
 	ft_rl_addfunc("backward-kill-word", ft_rl_bkw);
+	ft_rl_addfunc("transpose-characters", ft_rl_tpc);
+	ft_rl_addfunc("transpose-words", ft_rl_tpw);
 	ft_rl_addfunc("complete", ft_rl_cmp);
 	ft_rl_addfunc("prefix-meta", ft_rl_mta);
 	ft_rl_addfunc("discard-line", ft_rl_dcl);

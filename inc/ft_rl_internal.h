@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 04:01:04 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 05:19:34 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ void			ft_rl_kill_word(rl_input_t *input, const uint8_t direction);
 
 /**   utils.c   **/
 void			ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode);
+void			ft_rl_swap_words(rl_input_t *input);
 void			ft_rl_unsetmark(uint8_t type);
 void			ft_rl_setmark(uint8_t type);
 void			ft_rl_word_start(void);
