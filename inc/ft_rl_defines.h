@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 02:13:04 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 04:04:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@
 // Mark types
 # define _MARK_START 0x1U
 # define _MARK_END 0x2U
+# define _MARK_USR 0x4U
+
+// Kill directions
+# define _KILL_FWD 0x1U
+# define _KILL_BCK 0x2U
 
 // History search direction
 # define _SEARCH_BCK 0x0U

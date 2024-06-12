@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 03:42:40 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 04:24:10 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,11 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("upcase-word", ft_rl_upw);
 	ft_rl_addfunc("downcase-word", ft_rl_dnw);
 	ft_rl_addfunc("capitalize-word", ft_rl_caw);
+	ft_rl_addfunc("forward-kill-line", ft_rl_fkl);
+	ft_rl_addfunc("backward-kill-line", ft_rl_bkl);
+	ft_rl_addfunc("kill-whole-line", ft_rl_kln);
+	ft_rl_addfunc("forward-kill-word", ft_rl_fkw);
+	ft_rl_addfunc("backward-kill-word", ft_rl_bkw);
 	ft_rl_addfunc("complete", ft_rl_cmp);
 	ft_rl_addfunc("prefix-meta", ft_rl_mta);
 	ft_rl_addfunc("discard-line", ft_rl_dcl);
