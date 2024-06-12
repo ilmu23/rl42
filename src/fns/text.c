@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 22:13:20 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 23:50:46 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,29 +24,62 @@ uint8_t	ft_rl_eof(rl_input_t *input)
 
 uint8_t	ft_rl_del(rl_input_t *input)
 {
-	if (input->len == 0 || input->i == input->len)
-		return (1);
-	ft_rl_rmchar_back(input);
-	ft_rl_redisplay(input, LINE);
+	int32_t	count;
+
+	count = 1;
+	if (g_argument.set)
+		count = ft_rl_getarg();
+	if (input->len == 0 || (input->i == input->len && count > 0))
+		return (2);
+	while (count > 0)
+	{
+		ft_rl_rmchar_back(input);
+		count--;
+	}
+	while (count < 0)
+	{
+		if (ft_rl_bdl(input) == 2)
+			break ;
+		count++;
+	}
+	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
 
 uint8_t	ft_rl_bdl(rl_input_t *input)
 {
-	if (input->len == 0 || input->i == 0)
-		return (1);
-	ft_rl_rmchar(input);
-	ft_rl_redisplay(input, LINE);
+	int32_t	count;
+
+	count = 1;
+	if (g_argument.set)
+		count = ft_rl_getarg();
+	if (input->len == 0 || (input->i == 0 && count > 0))
+		return (2);
+	while (count > 0)
+	{
+		ft_rl_rmchar(input);
+		count--;
+	}
+	while (count < 0)
+	{
+		if (ft_rl_del(input) == 2)
+			break ;
+		count++;
+	}
+	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
 
 uint8_t	ft_rl_ins(rl_input_t *input)
 {
-	ft_rl_addchar(input, input->key);
-	if (input->i != input->len)
-		ft_rl_redisplay(input, LINE);
-	else
-		ft_putchar_fd(input->key, 1);
+	int32_t	count;
+
+	count = 1;
+	if (g_argument.set)
+		count = ft_rl_getarg();
+	while (count-- > 0)
+		ft_rl_addchar(input, input->key);
+	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
 
