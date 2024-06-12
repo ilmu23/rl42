@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 02:29:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 03:47:43 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ static inline void	_ft_rl_defaultbinds(void)
 	ft_rl_map("<M-b>", "backward-word", QREMAP);
 	ft_rl_map("<M-f>", "forward-word", QREMAP);
 	ft_rl_map("<C-l>", "clear-screen", QREMAP);
+	ft_rl_map("<M-.>", "forward-find-character", QREMAP);
+	ft_rl_map("<M-,>", "backward-find-character", QREMAP);
 	ft_rl_map("<RET>", "accept-line", QREMAP);
 	ft_rl_map("<C-d>", "end-of-file", QREMAP);
 	ft_rl_map("<C-p>", "previous-history", QREMAP);

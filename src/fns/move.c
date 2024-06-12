@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:11:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 15:49:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 03:50:08 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,5 +98,39 @@ uint8_t	ft_rl_clr(rl_input_t *input)
 	ft_rl_cursor_getpos(&input->cursor->i_row, &input->cursor->i_col);
 	ft_putstr_fd(input->line, 1);
 	ft_rl_cursor_reset(input);
+	return (1);
+}
+
+uint8_t	ft_rl_ffc(rl_input_t *input)
+{
+	uint64_t	i;
+	uint8_t		c;
+
+	i = input->i + 1;
+	c = ft_rl_getkey();
+	while (i < input->len && input->line[i] != c)
+		i++;
+	if (input->line[i] == c)
+	{
+		input->i = i;
+		ft_rl_cursor_reset(input);
+	}
+	return (1);
+}
+
+uint8_t	ft_rl_bfc(rl_input_t *input)
+{
+	uint64_t	i;
+	uint8_t		c;
+
+	i = input->i - 1;
+	c = ft_rl_getkey();
+	while (i > 0 && input->line[i] != c)
+		i--;
+	if (input->line[i] == c)
+	{
+		input->i = i;
+		ft_rl_cursor_reset(input);
+	}
 	return (1);
 }
