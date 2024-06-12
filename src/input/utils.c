@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 04:38:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 16:26:57 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,32 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 	ft_popblk(clr);
 	input->cursor->col = input->cursor->i_col + input->i;
 	ft_rl_cursor_setpos(input->cursor);
+}
+
+void	ft_rl_swap_words(rl_input_t *input)
+{
+	uint64_t	marks[4];
+	const char	*subs[2];
+
+	ft_rl_fwd_w(input);
+	if (input->i == input->len)
+		ft_rl_word_start();
+	marks[0] = input->i;
+	ft_rl_word_end();
+	marks[1] = ft_min(input->i + 1, input->len);
+	ft_rl_bck_w(input);
+	ft_rl_bck_w(input);
+	marks[2] = input->i;
+	ft_rl_word_end();
+	marks[3] = ++input->i;
+	subs[0] = ft_push(ft_substr(input->line, marks[0], marks[1] - marks[0]));
+	subs[1] = ft_push(ft_substr(input->line, marks[2], marks[3] - marks[2]));
+	if (!subs[0] || !subs[1])
+		exit(ft_rl_perror());
+	ft_snprintf(&input->line[marks[2]], marks[1] - marks[2], "%-*s%s",
+			marks[1] - marks[2] - ft_strlen(subs[1]), subs[0], subs[1]);
+	ft_popblks(2, subs[0], subs[1]);
+	input->i = marks[1];
 }
 
 void	ft_rl_unsetmark(uint8_t type)
