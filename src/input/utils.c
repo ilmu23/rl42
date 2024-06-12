@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 22:15:25 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 23:07:54 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 			input->cursor->row = input->cursor->p_row;
 			input->cursor->col = input->cursor->p_col;
 			break ;
+		case SPROMPT:
+			input->cursor->row = input->cursor->p_row;
+			input->cursor->col = input->cursor->p_col;
+			break ;
 		case CLEAR:
 			input->cursor->row = input->cursor->i_row;
 			input->cursor->col = input->cursor->i_col + input->len;
@@ -47,14 +51,27 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 		clr = ft_strnjoin(3, clr, TERM_CRNL, TERM_CLEAR_LINE_END);
 	ft_push(clr);
 	ft_rl_cursor_setpos(input->cursor);
-	if (mode == LINE)
-		ft_printf("%s%s", clr, &input->line[input->i - (input->i != 0)]);
-	else if (mode == INPUT)
-		ft_printf("%s%s", clr, input->line);
-	else
-		ft_printf("%s%s%s", clr, input->prompt, input->line);
+	switch (mode)
+	{
+		case LINE:
+			ft_printf("%s%s", clr, &input->line[input->i - (input->i != 0)]);
+			break ;
+		case INPUT:
+			ft_printf("%s%s", clr, input->line);
+			break;
+		case PROMPT:
+			ft_printf("%s%s%s", clr, input->prompt, input->line);
+			break ;
+		case SPROMPT:
+			ft_printf("%s%s %s%s", clr, input->sprompt, input->prompt, input->line);
+			break ;
+		case CLEAR:
+			break ;
+	}
 	ft_popblk(clr);
 	input->cursor->col = input->cursor->i_col + input->i;
+	if (mode == SPROMPT)
+		input->cursor->col += ft_strlen(input->sprompt) + 1;
 	ft_rl_cursor_setpos(input->cursor);
 }
 

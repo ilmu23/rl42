@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 22:20:04 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 23:20:39 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,12 @@ uint64_t	ft_rl_getkey(void)
 	key = g_keybuf.key & keymask;
 	g_keybuf.key >>= ((g_keybuf.size - shift) * 8);
 	g_keybuf.size -= g_keybuf.size - shift;
+	if (g_input.sprompt)
+	{
+		ft_popblk(g_input.sprompt);
+		g_input.sprompt = NULL;
+		ft_rl_redisplay(&g_input, PROMPT);
+	}
 	return (key);
 }
 

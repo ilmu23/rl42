@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 05:34:26 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 23:12:52 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void	ft_rl_init(void)
 		ft_exit(ft_rl_perror());
 	if (atexit(_rl_exit))
 		ft_exit(ft_rl_perror());
+	g_argument.set = 0;
+	ft_putstr_fd(TERM_CUR_HIDE, 1);
 	ft_rl_updatetermsize();
 	ft_rl_hist_load(_FT_RL_HFILE);
 	ft_rl_initkeys();
@@ -111,6 +113,17 @@ static inline void	_ft_rl_defaultbinds(void)
 	ft_rl_map("<TAB>", "complete", QREMAP);
 	ft_rl_map("<ESC>", "prefix-meta", QREMAP);
 	ft_rl_map("<C-c>", "discard-line", QREMAP);
+	ft_rl_map("<M-0>", "digit-argument", QREMAP);
+	ft_rl_map("<M-1>", "digit-argument", QREMAP);
+	ft_rl_map("<M-2>", "digit-argument", QREMAP);
+	ft_rl_map("<M-3>", "digit-argument", QREMAP);
+	ft_rl_map("<M-4>", "digit-argument", QREMAP);
+	ft_rl_map("<M-5>", "digit-argument", QREMAP);
+	ft_rl_map("<M-6>", "digit-argument", QREMAP);
+	ft_rl_map("<M-7>", "digit-argument", QREMAP);
+	ft_rl_map("<M-8>", "digit-argument", QREMAP);
+	ft_rl_map("<M-9>", "digit-argument", QREMAP);
+	ft_rl_map("<M-->", "negative-digit-argument", QREMAP);
 	ft_rl_map("<M-h>", "set-highlight-color", QREMAP);
 	ft_rl_map("<M-H>", "toggle-highlight-mode", QREMAP);
 }
