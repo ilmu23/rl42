@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 15:44:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 04:38:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	ft_rl_unsetmark(uint8_t type)
 		case _MARK_END:
 			g_mark_e = 0;
 			break ;
-		case _MARK_START & _MARK_END:
+		case _MARK_START | _MARK_END:
 			g_mark_s = 0;
 			g_mark_e = 0;
 			break ;
@@ -85,7 +85,7 @@ void	ft_rl_setmark(uint8_t type)
 		case _MARK_END:
 			g_mark_e = g_input.i;
 			break ;
-		case _MARK_START & _MARK_END:
+		case _MARK_START | _MARK_END:
 			g_mark_s = g_input.i;
 			g_mark_e = g_input.i;
 			break ;

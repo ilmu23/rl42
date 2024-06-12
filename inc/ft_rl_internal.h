@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 01:54:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 04:01:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,11 @@ void			ft_rl_addchar(rl_input_t *input, const uint8_t c);
 /**   rm.c   **/
 void			ft_rl_rmchar(rl_input_t *input);
 void			ft_rl_rmchar_back(rl_input_t *input);
+
+/**   kill.c   **/
+void			ft_rl_kill_line(rl_input_t *input, const uint8_t direction);
+void			ft_rl_kill_word(rl_input_t *input, const uint8_t direction);
+/**   kill.c   **/
 
 /**   utils.c   **/
 void			ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode);
