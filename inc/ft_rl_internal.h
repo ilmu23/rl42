@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 22:09:44 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 01:54:37 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void			ft_rl_hist_load(const char *path);
 void			ft_rl_hist_save(const char *path);
 
 /**   search.c   **/
+uint8_t			ft_rl_hist_search(rl_input_t *input, const uint8_t direction);
 uint8_t			ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction);
 
 /**   utils.c   **/

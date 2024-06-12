@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 10:51:28 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 03:42:38 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ uint8_t	ft_rl_bck(rl_input_t *input);
 uint8_t	ft_rl_fwd_w(rl_input_t *input);
 uint8_t	ft_rl_bck_w(rl_input_t *input);
 uint8_t	ft_rl_clr(rl_input_t *input);
+uint8_t	ft_rl_ffc(rl_input_t *input);
+uint8_t	ft_rl_bfc(rl_input_t *input);
 
 /**   hist.c   **/
 uint8_t	ft_rl_acl(rl_input_t *input);
@@ -33,6 +35,8 @@ uint8_t	ft_rl_pvh(rl_input_t *input);
 uint8_t	ft_rl_nxh(rl_input_t *input);
 uint8_t	ft_rl_soh(rl_input_t *input);
 uint8_t	ft_rl_eoh(rl_input_t *input);
+uint8_t	ft_rl_rsh(rl_input_t *input);
+uint8_t	ft_rl_fsh(rl_input_t *input);
 uint8_t	ft_rl_rsh_i(rl_input_t *input);
 uint8_t	ft_rl_fsh_i(rl_input_t *input);
 
