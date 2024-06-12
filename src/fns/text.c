@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 05:33:02 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 22:13:20 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,8 @@ uint8_t	ft_rl_tpc(rl_input_t *input)
 
 uint8_t	ft_rl_tpw(rl_input_t *input)
 {
-	if (input->len < 3 || !ft_strchr(input->line, ' '))
+	if (input->len < 3 || !ft_strchr(input->line, ' ')
+		|| input->i < ft_strclen(input->line, ' '))
 		return (1);
 	ft_rl_swap_words(input);
 	ft_rl_redisplay(input, INPUT);

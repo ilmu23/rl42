@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 16:26:57 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 22:15:25 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,28 +60,44 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 
 void	ft_rl_swap_words(rl_input_t *input)
 {
+	uint64_t	tmp;
 	uint64_t	marks[4];
 	const char	*subs[2];
 
-	ft_rl_fwd_w(input);
-	if (input->i == input->len)
-		ft_rl_word_start();
+	while (input->i > 0 && ft_isspace(input->line[input->i]))
+		input->i--;
+	ft_rl_word_start();
 	marks[0] = input->i;
 	ft_rl_word_end();
 	marks[1] = ft_min(input->i + 1, input->len);
-	ft_rl_bck_w(input);
-	ft_rl_bck_w(input);
+	if (input->i < input->len)
+		ft_rl_fwd_w(input);
+	else
+	{
+		ft_rl_bck_w(input);
+		ft_rl_bck_w(input);
+	}
 	marks[2] = input->i;
 	ft_rl_word_end();
-	marks[3] = ++input->i;
-	subs[0] = ft_push(ft_substr(input->line, marks[0], marks[1] - marks[0]));
-	subs[1] = ft_push(ft_substr(input->line, marks[2], marks[3] - marks[2]));
+	input->i += (input->i < input->len);
+	marks[3] = input->i;
+	if (marks[1] > marks[2])
+	{
+		tmp = marks[0];
+		marks[0] = marks[2];
+		marks[2] = tmp;
+		tmp = marks[1];
+		marks[1] = marks[3];
+		marks[3] = tmp;
+	}
+	subs[0] = ft_push(ft_substr(input->line, marks[2], marks[3] - marks[2]));
+	subs[1] = ft_push(ft_substr(input->line, marks[0], marks[1] - marks[0]));
 	if (!subs[0] || !subs[1])
 		exit(ft_rl_perror());
-	ft_snprintf(&input->line[marks[2]], marks[1] - marks[2], "%-*s%s",
-			marks[1] - marks[2] - ft_strlen(subs[1]), subs[0], subs[1]);
+	ft_snprintf(&input->line[marks[0]], marks[3] - marks[0], "%-*s%s",
+			marks[3] - marks[0] - ft_strlen(subs[1]), subs[0], subs[1]);
 	ft_popblks(2, subs[0], subs[1]);
-	input->i = marks[1];
+	input->i = marks[3];
 }
 
 void	ft_rl_unsetmark(uint8_t type)
