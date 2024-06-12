@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 23:28:57 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/13 02:01:18 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,8 @@ uint8_t	ft_rl_arg_n(rl_input_t *input)
 		if (g_argument.arg == _ARG_MIN)
 			break ;
 	}
+	if (g_argument.arg == 0)
+		g_argument.arg = -1;
 	fn = ft_rl_getmap(input->key);
 	if (fn != ft_rl_arg && fn != ft_rl_arg_n)
 		return (fn(input));
