@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 22:15:25 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/13 23:51:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,14 +105,17 @@ void	ft_rl_unsetmark(uint8_t type)
 	switch (type)
 	{
 		case _MARK_START:
-			g_mark_s = 0;
+			g_mark_s.set = 0;
 			break ;
 		case _MARK_END:
-			g_mark_e = 0;
+			g_mark_e.set = 0;
 			break ;
 		case _MARK_START | _MARK_END:
-			g_mark_s = 0;
-			g_mark_e = 0;
+			g_mark_s.set = 0;
+			g_mark_e.set = 0;
+			break ;
+		case _MARK_USR:
+			g_mark_u.set = 0;
 			break ;
 	}
 }
@@ -122,14 +125,22 @@ void	ft_rl_setmark(uint8_t type)
 	switch (type)
 	{
 		case _MARK_START:
-			g_mark_s = g_input.i;
+			g_mark_s.set = 1;
+			g_mark_s.pos = g_input.i;
 			break ;
 		case _MARK_END:
-			g_mark_e = g_input.i;
+			g_mark_e.set = 1;
+			g_mark_e.pos = g_input.i;
 			break ;
 		case _MARK_START | _MARK_END:
-			g_mark_s = g_input.i;
-			g_mark_e = g_input.i;
+			g_mark_s.set = 1;
+			g_mark_e.set = 1;
+			g_mark_s.pos = g_input.i;
+			g_mark_e.pos = g_input.i;
+			break ;
+		case _MARK_USR:
+			g_mark_u.set = 1;
+			g_mark_u.pos = g_input.i;
 			break ;
 	}
 }
