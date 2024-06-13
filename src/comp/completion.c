@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 22:06:04 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 00:06:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	ft_rl_complete(rl_input_t *input)
 		ft_rl_setmark(_MARK_START);
 		ft_rl_word_end();
 		ft_rl_setmark(_MARK_END);
-		pattern = ft_push(ft_substr(input->line, g_mark_s, g_mark_e - g_mark_s));
+		pattern = ft_push(ft_substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos));
 	}
 	completions = _complete(pattern);
 	if (!completions)
@@ -155,8 +155,8 @@ static inline void	_replace(rl_input_t *input, const char *completion)
 {
 	const char	*subs[2];
 
-	subs[0] = ft_push(ft_substr(input->line, 0, g_mark_s));
-	subs[1] = ft_push(ft_substr(input->line, g_mark_e, input->len - g_mark_e));
+	subs[0] = ft_push(ft_substr(input->line, 0, g_mark_s.pos));
+	subs[1] = ft_push(ft_substr(input->line, g_mark_e.pos, input->len - g_mark_e.pos));
 	if (!subs[0] || !subs[1])
 		exit(ft_rl_perror());
 	ft_popblk(input->line);
@@ -164,9 +164,9 @@ static inline void	_replace(rl_input_t *input, const char *completion)
 	if (!input->line)
 		exit(ft_rl_perror());
 	ft_popblks(2, subs[0], subs[1]);
-	g_mark_e = g_mark_s + ft_strlen(completion);
+	g_mark_e.pos = g_mark_s.pos + ft_strlen(completion);
 	input->len = ft_strlen(input->line);
-	input->i = g_mark_e;
+	input->i = g_mark_e.pos;
 	ft_rl_redisplay(input, INPUT);
 }
 
