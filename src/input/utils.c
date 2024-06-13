@@ -6,12 +6,14 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 23:51:53 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 00:27:31 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 #include "ft_stdio/ft_printf.h"
+
+static inline void	_mark(const rl_input_t *input);
 
 void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 {
@@ -53,6 +55,8 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 		ft_printf("%s%s", clr, input->line);
 	else
 		ft_printf("%s%s%s", clr, input->prompt, input->line);
+	if (g_mark_u.set && input == &g_input)
+		_mark(input);
 	ft_popblk(clr);
 	input->cursor->col = input->cursor->i_col + input->i;
 	ft_rl_cursor_setpos(input->cursor);
@@ -159,4 +163,14 @@ void	ft_rl_word_end(void)
 		return ;
 	while (g_input.i < g_input.len && !ft_isspace(g_input.line[g_input.i + 1]))
 		g_input.i++;
+}
+
+static inline void	_mark(const rl_input_t *input)
+{
+	input->cursor->col = input->cursor->i_col + ft_min(g_mark_u.pos, input->len);
+	ft_rl_cursor_setpos(input->cursor);
+	if (g_mark_u.pos < input->len)
+		ft_printf("%s%c%s", SGR_ULINEON, input->line[g_mark_u.pos], SGR_ULINEOFF);
+	else
+		ft_printf("%s %s", SGR_ULINEON, SGR_ULINEOFF);
 }
