@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 22:38:08 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/13 18:25:57 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ static inline uint64_t	_plen(const char *p)
 
 static inline uint8_t	_getinput(void)
 {
+	g_argument.set = 0;
 	g_input.key = ft_rl_getkey();
 	g_input.keystr = ft_rl_keystr(g_input.key);
 	return (ft_rl_execmap(&g_input));
