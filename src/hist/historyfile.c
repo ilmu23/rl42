@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 19:13:30 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 04:49:04 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/13 18:20:35 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	ft_rl_hist_load(const char *path)
 		if (!path)
 			exit(ft_rl_perror());
 	}
+	if (access(path, F_OK) == -1)
+		return ;
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 		goto _err;
