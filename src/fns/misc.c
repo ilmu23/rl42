@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 16:07:57 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:22:40 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,17 @@ uint8_t	ft_rl_dcl(rl_input_t *input)
 
 uint8_t ft_rl_smk(rl_input_t *input)
 {
-	ft_rl_setmark(_MARK_USR);
+	uint64_t	i;
+
+	if (g_argument.set)
+	{
+		i = input->i;
+		input->i = ft_min(ft_rl_getarg(), input->len);
+		ft_rl_setmark(_MARK_USR);
+		input->i = i;
+	}
+	else
+		ft_rl_setmark(_MARK_USR);
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
