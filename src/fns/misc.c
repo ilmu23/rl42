@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 00:27:17 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:07:57 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,4 +135,63 @@ uint8_t	ft_rl_hlm(rl_input_t *input)
 	}
 	return (1);
 	(void)input;
+}
+
+uint8_t	ft_rl_arg(rl_input_t *input)
+{
+	rl_fn_t		fn;
+
+	g_argument.set = 1;
+	if (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
+		g_argument.arg = input->key - KEY_NUM_0;
+	else
+	{
+		input->key >>= 8;
+		if (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
+			g_argument.arg = input->key - KEY_NUM_0;
+		else
+			g_argument.arg = 0;
+	}
+	input->sprompt = ft_push(ft_itoa(g_argument.arg));
+	ft_rl_redisplay(input, SPROMPT);
+	input->key = ft_rl_getkey();
+	while (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
+	{
+		g_argument.arg = ft_min(g_argument.arg * 10 + (input->key - KEY_NUM_0), _ARG_MAX);
+		input->sprompt = ft_push(ft_itoa(g_argument.arg));
+		ft_rl_redisplay(input, SPROMPT);
+		input->key = ft_rl_getkey();
+		if (g_argument.arg == _ARG_MAX)
+			break ;
+	}
+	fn = ft_rl_getmap(input->key);
+	if (fn != ft_rl_arg && fn != ft_rl_arg_n)
+		return (fn(input));
+	return (1);
+}
+
+uint8_t	ft_rl_arg_n(rl_input_t *input)
+{
+	rl_fn_t		fn;
+
+	g_argument.set = 1;
+	g_argument.arg = 0;
+	input->sprompt = ft_push(ft_strdup("-"));
+	ft_rl_redisplay(input, SPROMPT);
+	input->key = ft_rl_getkey();
+	while (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
+	{
+		g_argument.arg = ft_max(g_argument.arg * 10 - (input->key - KEY_NUM_0), _ARG_MIN);
+		input->sprompt = ft_push(ft_itoa(g_argument.arg));
+		ft_rl_redisplay(input, SPROMPT);
+		input->key = ft_rl_getkey();
+		if (g_argument.arg == _ARG_MIN)
+			break ;
+	}
+	if (g_argument.arg == 0)
+		g_argument.arg = -1;
+	fn = ft_rl_getmap(input->key);
+	if (fn != ft_rl_arg && fn != ft_rl_arg_n)
+		return (fn(input));
+	return (1);
 }

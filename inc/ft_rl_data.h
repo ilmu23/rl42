@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 23:50:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:04:16 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_rl_mark		rl_mark_t;
 typedef struct s_rl_map			rl_map_t;
 typedef struct s_rl_rgb			rl_rgb_t;
 typedef struct s_rl_hlc			rl_hlc_t;
+typedef struct s_rl_arg			rl_arg_t;
 
 typedef uint8_t	(*rl_fn_t)(rl_input_t *);
 
@@ -49,6 +50,7 @@ enum e_rl_rdmode
 	LINE,
 	INPUT,
 	PROMPT,
+	SPROMPT,
 	CLEAR
 };
 
@@ -87,6 +89,7 @@ struct s_rl_input
 	char			*line;
 	const char		*prompt;
 	const char		*keystr;
+	const char		*sprompt;
 	rl_etype_t		exittype;
 	rl_cursor_t		*cursor;
 	const uint64_t	plen;
@@ -127,6 +130,12 @@ struct s_rl_hlc
 	const char	*sgr;
 	rl_rgb_t	rgbval;
 	uint8_t		mode;
+};
+
+struct s_rl_arg
+{
+	uint8_t	set;
+	int32_t	arg;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 04:04:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/12 22:59:46 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@
 
 // Keyshift mask
 # define _KEYSHIFT_MASK 0x00000000000000FFULL
+
+// Argument limits
+# define _ARG_MAX 1000000
+# define _ARG_MIN -1000000
 
 // Mark types
 # define _MARK_START 0x1U

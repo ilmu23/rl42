@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 23:52:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:07:45 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ int16_t	g_cols;
 uint64_t	g_maxlen;
 
 rl_hlc_t	g_hlcolor;
+
+rl_arg_t	g_argument;
 
 rl_mark_t	g_mark_s;
 rl_mark_t	g_mark_e;
@@ -93,6 +95,7 @@ static inline uint64_t	_plen(const char *p)
 
 static inline uint8_t	_getinput(void)
 {
+	g_argument.set = 0;
 	g_input.key = ft_rl_getkey();
 	g_input.keystr = ft_rl_keystr(g_input.key);
 	return (ft_rl_execmap(&g_input));

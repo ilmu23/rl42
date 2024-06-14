@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 18:48:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 23:50:59 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:05:25 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ extern int16_t	g_cols;
 extern uint64_t	g_maxlen;
 
 extern rl_hlc_t	g_hlcolor;
+
+extern rl_arg_t	g_argument;
 
 extern rl_mark_t	g_mark_s;
 extern rl_mark_t	g_mark_e;

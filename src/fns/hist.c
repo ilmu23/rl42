@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 02:19:48 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/13 18:12:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,25 @@ uint8_t	ft_rl_acl(rl_input_t *input)
 
 uint8_t	ft_rl_pvh(rl_input_t *input)
 {
-	if (!ft_rl_hist_get_prev(input))
+	int32_t	count;
+
+	count = 1;
+	if (g_argument.set)
+		count = ft_rl_getarg();
+	if (count == 0)
 		return (1);
+	while (count > 0)
+	{
+		if (!ft_rl_hist_get_prev(input))
+			break ;
+		count--;
+	}
+	while (count < 0)
+	{
+		if (!ft_rl_hist_get_next(input))
+			break ;
+		count++;
+	}
 	ft_rl_redisplay(input, INPUT);
 	input->i = input->len;
 	input->cursor->row = input->cursor->i_row;
@@ -33,8 +50,25 @@ uint8_t	ft_rl_pvh(rl_input_t *input)
 
 uint8_t	ft_rl_nxh(rl_input_t *input)
 {
-	if (!ft_rl_hist_get_next(input))
+	int32_t	count;
+
+	count = 1;
+	if (g_argument.set)
+		count = ft_rl_getarg();
+	if (count == 0)
 		return (1);
+	while (count > 0)
+	{
+		if (!ft_rl_hist_get_next(input))
+			break ;
+		count--;
+	}
+	while (count < 0)
+	{
+		if (!ft_rl_hist_get_prev(input))
+			break ;
+		count++;
+	}
 	ft_rl_redisplay(input, INPUT);
 	input->i = input->len;
 	input->cursor->row = input->cursor->i_row;
