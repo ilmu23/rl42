@@ -6,12 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 07:36:36 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 18:41:51 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
+static inline void	_altctrl(char *keystr, const uint64_t key);
 static inline void	_ascii(char *keystr, const uint64_t key);
 static inline void	_ctrl(char *keystr, const uint64_t key);
 
@@ -48,8 +49,11 @@ char	*ft_rl_keystr(const uint64_t key)
 	ft_memset(keystr, 0, _KEYSTR_LEN);
 	if (key >= KEY_BANG && key <= KEY_TILDE)
 		_ascii(keystr, key);
-	else if (key >= KEY_CTRL_A && key <= KEY_CTRL_Z)
+	else if (key == KEY_CTRL_AT || (key >= KEY_CTRL_A && key <= KEY_CTRL_Z))
 		_ctrl(keystr, key);
+	else if ((key & _KEYSHIFT_MASK) == 0x1BULL
+			&& (key >> 8 == KEY_CTRL_AT || (key >> 8 >= KEY_CTRL_A && key >> 8 <= KEY_CTRL_Z)))
+		_altctrl(keystr, key);
 	else switch (key)
 	{
 		case KEY_SPACE:
@@ -345,27 +349,6 @@ char	*ft_rl_keystr(const uint64_t key)
 			break ;
 		case KEY_ALT_BACKSPACE:
 			ft_strlcpy(keystr, "<M-BCK>", 8);
-			break ;
-		case KEY_CTRL_1:
-			ft_strlcpy(keystr, "<C-1>", 6);
-			break ;
-		case KEY_CTRL_2:
-			ft_strlcpy(keystr, "<C-2>", 6);
-			break ;
-		case KEY_CTRL_4:
-			ft_strlcpy(keystr, "<C-4>", 6);
-			break ;
-		case KEY_CTRL_5:
-			ft_strlcpy(keystr, "<C-5>", 6);
-			break ;
-		case KEY_CTRL_6:
-			ft_strlcpy(keystr, "<C-6>", 6);
-			break ;
-		case KEY_CTRL_7:
-			ft_strlcpy(keystr, "<C-7>", 6);
-			break ;
-		case KEY_CTRL_9:
-			ft_strlcpy(keystr, "<C-9>", 6);
 			break ;
 		case KEY_F_1:
 			ft_strlcpy(keystr, "<F-1>", 6);
@@ -718,12 +701,6 @@ char	*ft_rl_keystr(const uint64_t key)
 		case KEY_ESC:
 			ft_strlcpy(keystr, "<ESC>", 6);
 			break ;
-		case KEY_ALT_TAB:
-			ft_strlcpy(keystr, "<M-TAB>", 9);
-			break ;
-		case KEY_ALT_RETURN:
-			ft_strlcpy(keystr, "<M-RET>", 9);
-			break ;
 		case KEY_INS:
 			ft_strlcpy(keystr, "<INS>", 6);
 			break ;
@@ -882,6 +859,109 @@ void	ft_rl_unmap_fn(const char *func)
 	}
 }
 
+static inline void	_altctrl(char *keystr, const uint64_t key)
+{
+	switch (key)
+	{
+		case KEY_ALT_TAB:
+			ft_strlcpy(keystr, "<M-TAB>", 6);
+			break ;
+		case KEY_ALT_RETURN:
+			ft_strlcpy(keystr, "<M-RET>", 6);
+			break ;
+		case KEY_ALT_CTRL_AT:
+			ft_strlcpy(keystr, "<M-C-@>", 8);
+			break ;
+		case KEY_ALT_CTRL_A:
+			ft_strlcpy(keystr, "<M-C-a>", 8);
+			break ;
+		case KEY_ALT_CTRL_B:
+			ft_strlcpy(keystr, "<M-C-b>", 8);
+			break ;
+		case KEY_ALT_CTRL_C:
+			ft_strlcpy(keystr, "<M-C-c>", 8);
+			break ;
+		case KEY_ALT_CTRL_D:
+			ft_strlcpy(keystr, "<M-C-d>", 8);
+			break ;
+		case KEY_ALT_CTRL_E:
+			ft_strlcpy(keystr, "<M-C-e>", 8);
+			break ;
+		case KEY_ALT_CTRL_F:
+			ft_strlcpy(keystr, "<M-C-f>", 8);
+			break ;
+		case KEY_ALT_CTRL_G:
+			ft_strlcpy(keystr, "<M-C-g>", 8);
+			break ;
+		case KEY_ALT_CTRL_H:
+			ft_strlcpy(keystr, "<M-C-h>", 8);
+			break ;
+		case KEY_ALT_CTRL_J:
+			ft_strlcpy(keystr, "<M-C-j>", 8);
+			break ;
+		case KEY_ALT_CTRL_K:
+			ft_strlcpy(keystr, "<M-C-k>", 8);
+			break ;
+		case KEY_ALT_CTRL_L:
+			ft_strlcpy(keystr, "<M-C-l>", 8);
+			break ;
+		case KEY_ALT_CTRL_N:
+			ft_strlcpy(keystr, "<M-C-n>", 8);
+			break ;
+		case KEY_ALT_CTRL_O:
+			ft_strlcpy(keystr, "<M-C-o>", 8);
+			break ;
+		case KEY_ALT_CTRL_P:
+			ft_strlcpy(keystr, "<M-C-p>", 8);
+			break ;
+		case KEY_ALT_CTRL_Q:
+			ft_strlcpy(keystr, "<M-C-q>", 8);
+			break ;
+		case KEY_ALT_CTRL_R:
+			ft_strlcpy(keystr, "<M-C-r>", 8);
+			break ;
+		case KEY_ALT_CTRL_S:
+			ft_strlcpy(keystr, "<M-C-s>", 8);
+			break ;
+		case KEY_ALT_CTRL_T:
+			ft_strlcpy(keystr, "<M-C-t>", 8);
+			break ;
+		case KEY_ALT_CTRL_U:
+			ft_strlcpy(keystr, "<M-C-u>", 8);
+			break ;
+		case KEY_ALT_CTRL_V:
+			ft_strlcpy(keystr, "<M-C-v>", 8);
+			break ;
+		case KEY_ALT_CTRL_W:
+			ft_strlcpy(keystr, "<M-C-w>", 8);
+			break ;
+		case KEY_ALT_CTRL_X:
+			ft_strlcpy(keystr, "<M-C-x>", 8);
+			break ;
+		case KEY_ALT_CTRL_Y:
+			ft_strlcpy(keystr, "<M-C-y>", 8);
+			break ;
+		case KEY_ALT_CTRL_Z:
+			ft_strlcpy(keystr, "<M-C-z>", 8);
+			break ;
+		case KEY_ALT_CTRL_OSBRACKET:
+			ft_strlcpy(keystr, "<M-C-[>", 8);
+			break ;
+		case KEY_ALT_CTRL_BACKSLASH:
+			ft_strlcpy(keystr, "<M-C-\\>", 8);
+			break ;
+		case KEY_ALT_CTRL_CSBRACKET:
+			ft_strlcpy(keystr, "<M-C-]>", 8);
+			break ;
+		case KEY_ALT_CTRL_TILDE:
+			ft_strlcpy(keystr, "<M-C-~>", 8);
+			break ;
+		case KEY_ALT_CTRL_UNDERSCORE:
+			ft_strlcpy(keystr, "<M-C-_>", 8);
+			break ;
+	}
+}
+
 static inline void	_ascii(char *keystr, const uint64_t key)
 {
 	uint64_t	val;
@@ -894,26 +974,103 @@ static inline void	_ascii(char *keystr, const uint64_t key)
 
 static inline void	_ctrl(char *keystr, const uint64_t key)
 {
-	uint64_t	val;
-
-	val = KEY_CTRL_A;
-	while (val < KEY_CTRL_Z && val != key)
-		val++;
-	if (val == KEY_TAB)
+	switch (key)
 	{
-		ft_strlcpy(keystr, "<TAB>", 6);
-		return ;
+		case KEY_TAB:
+			ft_strlcpy(keystr, "<TAB>", 6);
+			break ;
+		case KEY_ENTER:
+			ft_strlcpy(keystr, "<ENT>", 6);
+			break ;
+		case KEY_RETURN:
+			ft_strlcpy(keystr, "<RET>", 6);
+			break ;
+		case KEY_CTRL_AT:
+			ft_strlcpy(keystr, "<C-@>", 6);
+			break ;
+		case KEY_CTRL_A:
+			ft_strlcpy(keystr, "<C-a>", 6);
+			break ;
+		case KEY_CTRL_B:
+			ft_strlcpy(keystr, "<C-b>", 6);
+			break ;
+		case KEY_CTRL_C:
+			ft_strlcpy(keystr, "<C-c>", 6);
+			break ;
+		case KEY_CTRL_D:
+			ft_strlcpy(keystr, "<C-d>", 6);
+			break ;
+		case KEY_CTRL_E:
+			ft_strlcpy(keystr, "<C-e>", 6);
+			break ;
+		case KEY_CTRL_F:
+			ft_strlcpy(keystr, "<C-f>", 6);
+			break ;
+		case KEY_CTRL_G:
+			ft_strlcpy(keystr, "<C-g>", 6);
+			break ;
+		case KEY_CTRL_H:
+			ft_strlcpy(keystr, "<C-h>", 6);
+			break ;
+		case KEY_CTRL_K:
+			ft_strlcpy(keystr, "<C-k>", 6);
+			break ;
+		case KEY_CTRL_L:
+			ft_strlcpy(keystr, "<C-l>", 6);
+			break ;
+		case KEY_CTRL_N:
+			ft_strlcpy(keystr, "<C-n>", 6);
+			break ;
+		case KEY_CTRL_O:
+			ft_strlcpy(keystr, "<C-o>", 6);
+			break ;
+		case KEY_CTRL_P:
+			ft_strlcpy(keystr, "<C-o>", 6);
+			break ;
+		case KEY_CTRL_Q:
+			ft_strlcpy(keystr, "<C-q>", 6);
+			break ;
+		case KEY_CTRL_R:
+			ft_strlcpy(keystr, "<C-r>", 6);
+			break ;
+		case KEY_CTRL_S:
+			ft_strlcpy(keystr, "<C-s>", 6);
+			break ;
+		case KEY_CTRL_T:
+			ft_strlcpy(keystr, "<C-t>", 6);
+			break ;
+		case KEY_CTRL_U:
+			ft_strlcpy(keystr, "<C-u>", 6);
+			break ;
+		case KEY_CTRL_V:
+			ft_strlcpy(keystr, "<C-v>", 6);
+			break ;
+		case KEY_CTRL_W:
+			ft_strlcpy(keystr, "<C-w>", 6);
+			break ;
+		case KEY_CTRL_X:
+			ft_strlcpy(keystr, "<C-x>", 6);
+			break ;
+		case KEY_CTRL_Y:
+			ft_strlcpy(keystr, "<C-y>", 6);
+			break ;
+		case KEY_CTRL_Z:
+			ft_strlcpy(keystr, "<C-z>", 6);
+			break ;
+		case KEY_CTRL_OSBRACKET:
+			ft_strlcpy(keystr, "<C-[>", 6);
+			break ;
+		case KEY_CTRL_BACKSLASH:
+			ft_strlcpy(keystr, "<C-\\>", 6);
+			break ;
+		case KEY_CTRL_CSBRACKET:
+			ft_strlcpy(keystr, "<C-]>", 6);
+			break ;
+		case KEY_CTRL_TILDE:
+			ft_strlcpy(keystr, "<C-~>", 6);
+			break ;
+		case KEY_CTRL_UNDERSCORE:
+			ft_strlcpy(keystr, "<C-_>", 6);
+			break ;
 	}
-	if (val == KEY_ENTER)
-	{
-		ft_strlcpy(keystr, "<ENT>", 6);
-		return ;
-	}
-	if (val == KEY_RETURN)
-	{
-		ft_strlcpy(keystr, "<RET>", 6);
-		return ;
-	}
-	ft_strlcpy(keystr, "<C-a>", 6);
-	keystr[3] = val + 0x60U;
 }

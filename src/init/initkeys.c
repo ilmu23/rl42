@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:44:17 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/29 04:43:56 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 19:11:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_rl_initkeys(void)
 {
-	char		key[6];
+	char		key[8];
 	uint64_t	val;
 
 	ft_rl_addkey("<SPC>", KEY_SPACE);
@@ -26,6 +26,7 @@ void	ft_rl_initkeys(void)
 		*key = val;
 	}
 	ft_rl_addkey("<BCK>", KEY_BACKSPACE);
+	ft_rl_addkey("<C-@>", KEY_CTRL_AT);
 	ft_strlcpy(key, "<C-a>", 6);
 	val = KEY_CTRL_A;
 	while (val <= KEY_CTRL_Z)
@@ -33,25 +34,35 @@ void	ft_rl_initkeys(void)
 		ft_rl_addkey(key, val++);
 		key[3] = val + 0x60U;
 	}
-	ft_rl_addkey("<C-1>", KEY_CTRL_1);
-	ft_rl_addkey("<C-2>", KEY_CTRL_2);
-	ft_rl_addkey("<C-3>", KEY_CTRL_3);
-	ft_rl_addkey("<C-4>", KEY_CTRL_4);
-	ft_rl_addkey("<C-5>", KEY_CTRL_5);
-	ft_rl_addkey("<C-6>", KEY_CTRL_6);
-	ft_rl_addkey("<C-7>", KEY_CTRL_7);
-	ft_rl_addkey("<C-8>", KEY_CTRL_8);
-	ft_rl_addkey("<C-9>", KEY_CTRL_9);
+	ft_rl_addkey("<C-[>", KEY_CTRL_OSBRACKET);
+	ft_rl_addkey("<C-\\>", KEY_CTRL_BACKSLASH);
+	ft_rl_addkey("<C-]>", KEY_CTRL_CSBRACKET);
+	ft_rl_addkey("<C-~>", KEY_CTRL_TILDE);
+	ft_rl_addkey("<C-_>", KEY_CTRL_UNDERSCORE);
 	ft_rl_addkey("<M-SPC>", KEY_ALT_SPACE);
 	ft_strlcpy(key, "<M-!>", 6);
 	val = KEY_ALT_BANG;
-	while (val <= KEY_ALT_TILDE)
+	while (val <= (KEY_ALT_TILDE))
 	{
 		ft_rl_addkey(key, val);
 		val += 0x1U << 8;
 		key[3] = val >> 8;
 	}
 	ft_rl_addkey("<M-BCK>", KEY_ALT_BACKSPACE);
+	ft_rl_addkey("<M-C-@>", KEY_ALT_CTRL_AT);
+	ft_strlcpy(key, "<M-C-a>", 8);
+	val = KEY_ALT_CTRL_A;
+	while (val <= (KEY_ALT_CTRL_Z))
+	{
+		ft_rl_addkey(key, val);
+		val += 0x1U << 8;
+		key[5] = (val >> 8) + 0x60ULL;
+	}
+	ft_rl_addkey("<M-C-[>", KEY_ALT_CTRL_OSBRACKET);
+	ft_rl_addkey("<M-C-\\>", KEY_ALT_CTRL_BACKSLASH);
+	ft_rl_addkey("<M-C-]>", KEY_ALT_CTRL_CSBRACKET);
+	ft_rl_addkey("<M-C-~>", KEY_ALT_CTRL_TILDE);
+	ft_rl_addkey("<M-C-_>", KEY_ALT_CTRL_UNDERSCORE);
 	ft_rl_addkey("<F-1>", KEY_F_1);
 	ft_rl_addkey("<F-2>", KEY_F_2);
 	ft_rl_addkey("<F-3>", KEY_F_3);
