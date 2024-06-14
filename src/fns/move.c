@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:11:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 02:04:32 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:13:11 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ uint8_t	ft_rl_fwd(rl_input_t *input)
 	while (count < 0 && input->i > 0)
 	{
 		input->i--;
-		count--;
+		count++;
 	}
 	ft_rl_cursor_reset(input);
 	return (1);

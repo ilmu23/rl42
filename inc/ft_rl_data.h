@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 23:02:54 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:04:16 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_rl_cursor		rl_cursor_t;
 typedef struct s_rl_keybuf		rl_keybuf_t;
 typedef struct s_rl_input		rl_input_t;
 typedef struct s_rl_block		rl_block_t;
+typedef struct s_rl_mark		rl_mark_t;
 typedef struct s_rl_map			rl_map_t;
 typedef struct s_rl_rgb			rl_rgb_t;
 typedef struct s_rl_hlc			rl_hlc_t;
@@ -103,6 +104,12 @@ struct s_rl_block
 	const uint64_t	length;
 	const int16_t	pos[2];
 	uint8_t			highlighted;
+};
+
+struct s_rl_mark
+{
+	uint8_t		set;
+	uint64_t	pos;
 };
 
 struct s_rl_map

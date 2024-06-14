@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 15:44:51 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:06:35 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,8 @@ uint8_t	ft_rl_upw(rl_input_t *input)
 		ft_rl_setmark(_MARK_START);
 		ft_rl_word_end();
 		ft_rl_setmark(_MARK_END);
-		j = g_mark_s;
-		while (j <= g_mark_e)
+		j = g_mark_s.pos;
+		while (j <= g_mark_e.pos)
 		{
 			input->line[j] = ft_toupper(input->line[j]);
 			j++;
@@ -153,8 +153,8 @@ uint8_t	ft_rl_dnw(rl_input_t *input)
 		ft_rl_setmark(_MARK_START);
 		ft_rl_word_end();
 		ft_rl_setmark(_MARK_END);
-		j = g_mark_s;
-		while (j <= g_mark_e)
+		j = g_mark_s.pos;
+		while (j <= g_mark_e.pos)
 		{
 			input->line[j] = ft_tolower(input->line[j]);
 			j++;
@@ -203,9 +203,9 @@ uint8_t	ft_rl_caw(rl_input_t *input)
 		ft_rl_setmark(_MARK_START);
 		ft_rl_word_end();
 		ft_rl_setmark(_MARK_END);
-		j = g_mark_s;
+		j = g_mark_s.pos;
 		input->line[j] =  ft_toupper(input->line[j]);
-		while (++j <= g_mark_e)
+		while (++j <= g_mark_e.pos)
 			input->line[j] = ft_tolower(input->line[j]);
 		ft_rl_unsetmark(_MARK_START | _MARK_END);
 		if (count > 0)

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 23:12:52 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:06:59 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ void	ft_rl_init(void)
 	if (atexit(_rl_exit))
 		ft_exit(ft_rl_perror());
 	g_argument.set = 0;
+	g_mark_s.set = 0;
+	g_mark_e.set = 0;
+	g_mark_u.set = 0;
 	ft_putstr_fd(TERM_CUR_HIDE, 1);
 	ft_rl_updatetermsize();
 	ft_rl_hist_load(_FT_RL_HFILE);
@@ -124,6 +127,9 @@ static inline void	_ft_rl_defaultbinds(void)
 	ft_rl_map("<M-8>", "digit-argument", QREMAP);
 	ft_rl_map("<M-9>", "digit-argument", QREMAP);
 	ft_rl_map("<M-->", "negative-digit-argument", QREMAP);
+	ft_rl_map("<M-SPC>", "set-mark", QREMAP);
+	ft_rl_map("<M-'>", "unset-mark", QREMAP);
+	ft_rl_map("<M-INS>", "exchange-point-and-mark", QREMAP);
 	ft_rl_map("<M-h>", "set-highlight-color", QREMAP);
 	ft_rl_map("<M-H>", "toggle-highlight-mode", QREMAP);
 }

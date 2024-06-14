@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 02:01:18 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:07:57 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,33 @@ uint8_t	ft_rl_dcl(rl_input_t *input)
 	ft_rl_cursor_getpos(&input->cursor->row, &input->cursor->col);
 	input->cursor->i_row = input->cursor->row;
 	input->cursor->i_col = input->cursor->col;
+	return (1);
+}
+
+uint8_t ft_rl_smk(rl_input_t *input)
+{
+	ft_rl_setmark(_MARK_USR);
+	ft_rl_redisplay(input, INPUT);
+	return (1);
+}
+
+uint8_t	ft_rl_umk(rl_input_t *input)
+{
+	ft_rl_unsetmark(_MARK_USR);
+	ft_rl_redisplay(input, INPUT);
+	return (1);
+}
+
+uint8_t	ft_rl_xmk(rl_input_t *input)
+{
+	uint64_t	i;
+
+	if (!g_mark_u.set)
+		return (1);
+	i = ft_min(g_mark_u.pos, input->len);
+	ft_rl_setmark(_MARK_USR);
+	input->i = i;
+	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 04:07:16 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 22:14:16 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:07:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ static inline void	_kill(rl_input_t *input)
 {
 	const char	*subs[2];
 
-	subs[0] = ft_push(ft_substr(input->line, 0, g_mark_s));
-	subs[1] = ft_push(ft_substr(input->line, g_mark_e, input->len - g_mark_e));
+	subs[0] = ft_push(ft_substr(input->line, 0, g_mark_s.pos));
+	subs[1] = ft_push(ft_substr(input->line, g_mark_e.pos, input->len - g_mark_e.pos));
 	if (!subs[0] || !subs[1])
 		exit(ft_rl_perror());
 	ft_popblk(input->line);
