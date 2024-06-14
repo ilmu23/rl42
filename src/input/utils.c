@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 16:09:56 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:31:54 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,12 @@ void	ft_rl_word_end(void)
 
 static inline void	_mark(const rl_input_t *input)
 {
-	input->cursor->col = input->cursor->i_col + ft_min(g_mark_u.pos, input->len);
+	uint8_t	splen;
+
+	splen = 0;
+	if (input->sprompt)
+		splen = ft_strlen(input->sprompt) + 1;
+	input->cursor->col = input->cursor->i_col + ft_min(g_mark_u.pos + splen, input->len);
 	ft_rl_cursor_setpos(input->cursor);
 	if (g_mark_u.pos < input->len)
 		ft_printf("%s%c%s", SGR_ULINEON, input->line[g_mark_u.pos], SGR_ULINEOFF);
