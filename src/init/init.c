@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 20:23:59 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:02:50 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ static inline void	_ft_rl_defaultbinds(void)
 	ft_rl_map("<M-s>", "forward-search-history", QREMAP);
 	ft_rl_map("<C-r>", "inc-reverse-search-history", QREMAP);
 	ft_rl_map("<C-h>", "inc-forward-search-history", QREMAP);
+	ft_rl_map("<M-C-y>", "yank-nth-arg", QREMAP);
+	ft_rl_map("<M-.>", "yank-last-arg", QREMAP);
 	ft_rl_map("<M-u>", "upcase-word", QREMAP);
 	ft_rl_map("<M-l>", "downcase-word", QREMAP);
 	ft_rl_map("<M-c>", "capitalize-word", QREMAP);

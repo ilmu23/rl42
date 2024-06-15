@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 16:07:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:01:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int16_t	g_rows;
 int16_t	g_cols;
 
 uint64_t	g_maxlen;
+uint64_t	g_status;
 
 rl_hlc_t	g_hlcolor;
 
