@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 22:59:46 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 21:54:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@
 # define _KILL_FWD 0x1U
 # define _KILL_BCK 0x2U
 
+// History traversal direction
+# define _HIST_BCK 0x0FU
+# define _HIST_FWD 0xF0U
+
 // History search direction
 # define _SEARCH_BCK 0x0U
 # define _SEARCH_FWD 0x1U
@@ -56,6 +60,9 @@
 # define _SEARCH_FWD_PROMPT "fwd-search: "
 # define _I_SEARCH_BCK_PROMPT "failing-bck-i-search: "
 # define _I_SEARCH_FWD_PROMPT "failing-fwd-i-search: "
+
+// Statuses
+# define _YLA_RUNNING 0x1ULL
 
 // History modes
 # define FT_RL_HIST_ON 0x1U

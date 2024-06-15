@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 20:23:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 18:17:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:28:31 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,30 @@ char	*ft_rl_hist_get_line(const t_list *node)
 	if (histnode->edit)
 		return (ft_push(ft_strdup(histnode->edit)));
 	return (ft_push(ft_strdup(histnode->line)));
+}
+
+void	ft_rl_hist_yank_arg(rl_input_t *input, const rl_histnode_t *node, int32_t n)
+{
+	char		*subs[2];
+	char		**args;
+	uint64_t	len;
+
+	args = ft_push(ft_split(node->line, ' '));
+	if (!args)
+		exit(ft_rl_perror());
+	if (n >= 0)
+		n = ft_min(n, ft_getblksize(args) / sizeof(char *) - 2);
+	else
+		n = ft_max(0, ft_getblksize(args) / sizeof(char *) - 2 - -n);
+	len = ft_strlen(ft_push(args[n]));
+	subs[0] = ft_push(ft_substr(input->line, 0, input->i));
+	subs[1] = ft_push(ft_substr(input->line, input->i, input->len - input->i));
+	ft_popblk(input->line);
+	input->line = ft_push(ft_strnjoin(3, subs[0], args[n], subs[1]));
+	ft_popblks(4, subs[0], args[n], subs[1], args);
+	input->len += len;
+	input->i += len;
+	ft_rl_redisplay(input, INPUT);
 }
 
 void	ft_rl_hist_recycle(void)

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 18:12:32 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:38:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,4 +135,68 @@ uint8_t	ft_rl_fsh_i(rl_input_t *input)
 	ft_popblk(((rl_histnode_t *)g_hist_cur->blk)->edit);
 	((rl_histnode_t *)g_hist_cur->blk)->edit = ft_push(ft_strdup(input->line));
 	return (ft_rl_hist_isearch(input, _I_SEARCH_FWD));
+}
+
+uint8_t	ft_rl_yna(rl_input_t *input)
+{
+	int32_t		n;
+
+	if (!g_hist_cur || !g_hist_cur->next)
+		return (1);
+	n = 1;
+	if (g_argument.set)
+		n = ft_rl_getarg();
+	ft_rl_hist_yank_arg(input, g_hist_cur->next->blk, n);
+	return (1);
+}
+
+uint8_t	ft_rl_yla(rl_input_t *input)
+{
+	int32_t			n;
+	rl_fn_t			fn;
+	uint8_t			direction;
+	const t_list	*hist;
+
+	if (!g_hist_cur || !g_hist_cur->next)
+		return (1);
+	n = INT32_MAX;
+	direction = _HIST_BCK;
+	hist = g_hist_cur->next;
+	if (g_argument.set)
+		n = ft_rl_getarg();
+	ft_rl_setmark(_MARK_START);
+	ft_rl_hist_yank_arg(input, hist->blk, n);
+	ft_rl_setmark(_MARK_END);
+	input->key = ft_rl_getkey();
+	fn = ft_rl_getmap(input->key);
+	g_status |= _YLA_RUNNING;
+	while (fn == ft_rl_arg || fn == ft_rl_arg_n || fn == ft_rl_yla)
+	{
+		if (fn != ft_rl_yla)
+			fn(input);
+		if (g_argument.set && ft_rl_getarg() < 0)
+			direction ^= _HIST_FWD | _HIST_BCK;
+		switch (direction)
+		{
+			case _HIST_BCK:
+				if (hist->next)
+					hist = hist->next;
+				break ;
+			case _HIST_FWD:
+				if (hist->prev && hist->prev != g_hist_cur)
+					hist = hist->prev;
+				break ;
+		}
+		ft_rl_kill_region(input);
+		input->i = ft_min(input->i, input->len);
+		ft_rl_hist_yank_arg(input, hist->blk, n);
+		ft_rl_setmark(_MARK_END);
+		input->key = ft_rl_getkey();
+		fn = ft_rl_getmap(input->key);
+	}
+	ft_rl_unsetmark(_MARK_START | _MARK_END);
+	g_status &= ~_YLA_RUNNING;
+	if (fn)
+		return (fn(input));
+	return (1);
 }
