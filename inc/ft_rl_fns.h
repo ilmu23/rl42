@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 16:07:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 20:15:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ uint8_t	ft_rl_bkl(rl_input_t *input);
 uint8_t	ft_rl_kln(rl_input_t *input);
 uint8_t	ft_rl_fkw(rl_input_t *input);
 uint8_t	ft_rl_bkw(rl_input_t *input);
+uint8_t	ft_rl_krg(rl_input_t *input);
+uint8_t	ft_rl_kws(rl_input_t *input);
 uint8_t	ft_rl_tpc(rl_input_t *input);
 uint8_t	ft_rl_tpw(rl_input_t *input);
 

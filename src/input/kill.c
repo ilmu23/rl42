@@ -6,13 +6,11 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 04:07:16 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 16:07:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 18:54:40 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
-
-static inline void	_kill(rl_input_t *input);
 
 void	ft_rl_kill_line(rl_input_t *input, const uint8_t direction)
 {
@@ -27,7 +25,7 @@ void	ft_rl_kill_line(rl_input_t *input, const uint8_t direction)
 		input->i = input->len;
 		ft_rl_setmark(_MARK_END);
 	}
-	_kill(input);
+	ft_rl_kill_region(input);
 	if (direction & _KILL_BCK)
 		input->i = 0;
 	else
@@ -55,13 +53,13 @@ void	ft_rl_kill_word(rl_input_t *input, const uint8_t direction)
 			ft_rl_setmark(_MARK_END);
 			break ;
 	}
-	_kill(input);
+	ft_rl_kill_region(input);
 	if (direction == _KILL_FWD)
 		input->i = i;
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 }
 
-static inline void	_kill(rl_input_t *input)
+void ft_rl_kill_region(rl_input_t *input)
 {
 	const char	*subs[2];
 
