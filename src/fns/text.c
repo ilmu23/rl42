@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 16:06:35 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 20:33:13 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,6 +272,48 @@ uint8_t	ft_rl_bkw(rl_input_t *input)
 	if (input->i == 0)
 		return (1);
 	ft_rl_kill_word(input, _KILL_BCK);
+	ft_rl_redisplay(input, INPUT);
+	return (1);
+}
+
+uint8_t	ft_rl_krg(rl_input_t *input)
+{
+	uint64_t	i;
+
+	if (!g_mark_u.set)
+		return (1);
+	i = input->i;
+	input->i = ft_min(i + 1, g_mark_u.pos + 1);
+	ft_rl_setmark(_MARK_START);
+	input->i = ft_max(i, g_mark_u.pos);
+	ft_rl_setmark(_MARK_END);
+	ft_rl_kill_region(input);
+	ft_rl_unsetmark(_MARK_START | _MARK_END);
+	input->i = ft_min(input->i, input->len);
+	ft_rl_redisplay(input, INPUT);
+	return (1);
+}
+
+uint8_t	ft_rl_kws(rl_input_t *input)
+{
+	if (!ft_isspace(input->line[input->i])
+		&& (input->i == 0 || !ft_isspace(input->line[input->i - 1])))
+		return (1);
+	if (!ft_isspace(input->line[input->i]))
+		input->i--;
+	ft_rl_setmark(_MARK_START | _MARK_END);
+	while (input->i > 0 && ft_isspace(input->line[input->i]))
+		input->i--;
+	if (!ft_isspace(input->line[input->i]))
+		input->i++;
+	ft_rl_setmark(_MARK_START);
+	input->i = g_mark_e.pos;
+	while (input->i < input->len && ft_isspace(input->line[input->i]))
+		input->i++;
+	ft_rl_setmark(_MARK_END);
+	ft_rl_kill_region(input);
+	input->i = g_mark_s.pos;
+	ft_rl_unsetmark(_MARK_START | _MARK_END);
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
