@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 22:02:50 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:45:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ static inline void	_ft_rl_defaultbinds(void)
 	ft_rl_map("<M-8>", "digit-argument", QREMAP);
 	ft_rl_map("<M-9>", "digit-argument", QREMAP);
 	ft_rl_map("<M-->", "negative-digit-argument", QREMAP);
+	ft_rl_map("<C-g>", "abort", QREMAP);
 	ft_rl_map("<M-SPC>", "set-mark", QREMAP);
 	ft_rl_map("<C-@>", "set-mark", QREMAP);
 	ft_rl_map("<M-C-@>", "unset-mark", QREMAP);
