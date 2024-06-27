@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:07 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/03 14:35:19 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:09:01 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 uint8_t	ft_rl_cmp(rl_input_t *input)
 {
-	if (input->len == 0)
+	if (input->len == 0 || !ft_rl_get(_CMP_ENABLE_HASH))
 		return (1);
 	input->key = 0;
 	ft_rl_complete(input);
