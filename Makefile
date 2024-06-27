@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/06/12 04:07:13 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/06/27 11:35:00 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,7 @@ HISTDIR		=	hist
 INITDIR		=	init
 INPUTDIR	=	input
 KEYDIR		=	keys
+SETTINGSDIR	=	settings
 TERMDIR		=	term
 
 COMPFILES	=	completion.c \
@@ -65,6 +66,8 @@ INPUTFILES	=	add.c \
 KEYFILES	=	keymap.c \
 				utils.c
 
+SETTINGSFILES	=	utils.c
+
 TERMFILES	=	cursor.c \
 				utils.c
 
@@ -79,6 +82,7 @@ FILES	=	rl42.c \
 			$(addprefix $(INITDIR)/, $(INITFILES)) \
 			$(addprefix $(INPUTDIR)/, $(INPUTFILES)) \
 			$(addprefix $(KEYDIR)/, $(KEYFILES)) \
+			$(addprefix $(SETTINGSDIR)/, $(SETTINGSFILES)) \
 			$(addprefix $(TERMDIR)/, $(TERMFILES))
 
 SRCS	=	$(addprefix $(SRCDIR)/, $(FILES))
@@ -109,6 +113,7 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(INITDIR)
 	@mkdir -p $(OBJDIR)/$(INPUTDIR)
 	@mkdir -p $(OBJDIR)/$(KEYDIR)
+	@mkdir -p $(OBJDIR)/$(SETTINGSDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
