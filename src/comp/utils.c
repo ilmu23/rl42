@@ -6,12 +6,14 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 22:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 17:25:52 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 #include "ft_stdio/ft_printf.h"
+
+static inline uint16_t	_dwidth(void);
 
 uint64_t	ft_rl_comp_getlongest(const t_list *completions)
 {
@@ -41,7 +43,7 @@ void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void
 	uint16_t			i;
 
 	llen = ft_rl_comp_getlongest(completions);
-	cpr = g_cols / (llen + 1);
+	cpr = ft_max(_dwidth() / (llen + 1), 1);
 	rows = *completions->size / cpr + 1;
 	while (input->cursor->i_row + (int16_t)(input->len / g_cols) + rows > g_rows)
 	{
@@ -99,4 +101,14 @@ void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void
 		}
 	}
 	ft_rl_cursor_reset(input);
+}
+
+static inline uint16_t	_dwidth(void)
+{
+	int16_t	dwidth;
+
+	dwidth = ft_rl_get(_CMP_DWIDTH_HASH);
+	if (dwidth < 1)
+		return (g_cols);
+	return (ft_min(g_cols, dwidth));
 }
