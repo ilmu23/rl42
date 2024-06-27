@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 00:06:30 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:36:39 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ static inline void	_buildpath(const char *path, t_list *completions)
 			else
 				completions->blk = ft_push(ft_strsjoin(path, completions->blk, '/'));
 		}
-		if (ft_rl_isdir(completions->blk))
+		if (ft_rl_isdir(completions->blk) && ft_rl_get(_CMP_MDIRS_HASH))
 		{
 			ft_popblk(completions->blk);
 			completions->blk = ft_push(ft_strjoin(completions->blk, "/"));

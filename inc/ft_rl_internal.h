@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 13:16:00 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:44:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ char			*ft_rl_hlcolor(void);
 
 // utils.c
 rl_block_t		*ft_rl_newblock(const char *str, const int16_t pos[2]);
-uint64_t		ft_rl_isdir(const char *path);
 uint64_t		ft_rl_getkey(void);
 int32_t			ft_rl_getarg(void);
+uint8_t			ft_rl_isdir(const char *path);
 void			ft_rl_clearblocks(void);
 
 /**  comp  **/
