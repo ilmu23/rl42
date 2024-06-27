@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 10:27:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 13:21:52 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 13:41:40 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ uint64_t	ft_rl_get(const uint64_t var)
 {
 	uint8_t	setting;
 
+	setting = 0;
 	switch(var)
 	{
 		case _BSTYLE_HASH:

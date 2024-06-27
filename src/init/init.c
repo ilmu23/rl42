@@ -6,14 +6,15 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/24 17:45:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 13:40:56 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 static inline void	_ft_rl_defaultbinds(void);
-static inline void	_rl_exit(void);
+static inline void	_ft_rl_defaultsettings(void);
+static inline void	_ft_rl_exit(void);
 
 void	ft_rl_init(void)
 {
@@ -31,7 +32,7 @@ void	ft_rl_init(void)
 	tcsetattr(0, TCSANOW, &g_newsettings);
 	if (!g_keys || !g_funcs || !g_maps)
 		ft_exit(ft_rl_perror());
-	if (atexit(_rl_exit))
+	if (atexit(_ft_rl_exit))
 		ft_exit(ft_rl_perror());
 	g_argument.set = 0;
 	g_mark_s.set = 0;
@@ -43,6 +44,7 @@ void	ft_rl_init(void)
 	ft_rl_initkeys();
 	ft_rl_initfuncs();
 	_ft_rl_defaultbinds();
+	_ft_rl_defaultsettings();
 	g_hlcolor.mode = FT_RL_HL_FG;
 	ft_rl_sethlcolor_sgr(SGR_FG4);
 	ft_rl_sethlcolor_rgb(255, 23, 123);
@@ -140,7 +142,22 @@ static inline void	_ft_rl_defaultbinds(void)
 	ft_rl_map("<M-H>", "toggle-highlight-mode", QREMAP);
 }
 
-static inline void	_rl_exit(void)
+static inline void	_ft_rl_defaultsettings(void)
+{
+	ft_rl_set("bell-style", BELL_NONE);
+	ft_rl_set("completion-display-width", -1);
+	ft_rl_set("completion-ignore-case", SET_OFF);
+	ft_rl_set("completion-map-case", SET_OFF);
+	ft_rl_set("completion-query-items", 20);
+	ft_rl_set("enable-completion", SET_ON);
+	ft_rl_set("history-size", 500);
+	ft_rl_set("mark-directories", SET_ON);
+	ft_rl_set("mark-symlinked-directories", SET_OFF);
+	ft_rl_set("match-hidden-files", SET_ON);
+	ft_rl_set("highlight-current-completion", SET_ON);
+}
+
+static inline void	_ft_rl_exit(void)
 {
 	if (g_hist)
 		ft_rl_hist_save(_FT_RL_HFILE);

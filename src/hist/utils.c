@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 20:23:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 13:32:13 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 13:58:19 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	ft_rl_hist_yank_arg(rl_input_t *input, const rl_histnode_t *node, int32_t n
 
 void	ft_rl_hist_recycle(void)
 {
-	const t_list	*last;
+	t_list			*last;
 	rl_histnode_t	*node;
 
 	last = ft_lstlast(g_hist);
@@ -68,6 +68,7 @@ void	ft_rl_hist_recycle(void)
 	ft_popblk(node->line);
 	node->line = ft_push(ft_strdup(""));
 	ft_lstrmnode(&g_hist, last);
+	last->prev = NULL;
 	ft_lstadd_front(&g_hist, (t_list *)last);
 }
 
@@ -90,7 +91,7 @@ void	ft_rl_hist_newnode(void)
 	int64_t	hsize;
 
 	hsize = ft_rl_get(_HIST_SIZE_HASH);
-	if (!g_hist || hsize < 0 || ft_min(*g_hist->size, INT64_MAX) < hsize)
+	if (!g_hist || hsize < 0 || ft_min(*g_hist->size, INT64_MAX) <= hsize)
 		ft_lstadd_front(&g_hist, ft_lstnew(ft_rl_hist_mknode("")));
 	else
 		ft_rl_hist_recycle();
