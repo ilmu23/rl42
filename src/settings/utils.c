@@ -6,12 +6,51 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 10:27:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 12:34:39 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 13:21:52 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 #include "ft_stdio/ft_printf.h"
+
+uint64_t	ft_rl_get(const uint64_t var)
+{
+	uint8_t	setting;
+
+	switch(var)
+	{
+		case _BSTYLE_HASH:
+			return (g_settings.bstyle);
+		case _CMP_DWIDTH_HASH:
+			return (g_settings.cmp_dwidth);
+		case _CMP_QITEMS_HASH:
+			return (g_settings.cmp_qitems);
+		case _HIST_SIZE_HASH:
+			return (g_settings.hist_size);
+		case _CMP_CASE_HASH:
+			setting = _CMP_CASE;
+			break ;
+		case _CMP_MCASE_HASH:
+			setting = _CMP_MCASE;
+			break ;
+		case _CMP_ENABLE_HASH:
+			setting = _CMP_ON;
+			break ;
+		case _CMP_MDIRS_HASH:
+			setting = _CMP_MARK_DIRS;
+			break ;
+		case _CMP_MLDIRS_HASH:
+			setting = _CMP_MARK_LINKDIRS;
+			break ;
+		case _CMP_HFILES_HASH:
+			setting = _CMP_HIDDEN;
+			break ;
+		case _CMP_HLIGHT_HASH:
+			setting = _CMP_HIGHLIGHT;
+			break ;
+	}
+	return (g_settings.completion & setting);
+}
 
 void	ft_rl_set(const char *var, const uint64_t val)
 {

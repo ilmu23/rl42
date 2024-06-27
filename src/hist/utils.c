@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 20:23:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 11:35:28 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 13:32:13 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,10 @@ void	ft_rl_hist_restore(void)
 
 void	ft_rl_hist_newnode(void)
 {
-	if (!g_hist || *g_hist->size < 100)
+	int64_t	hsize;
+
+	hsize = ft_rl_get(_HIST_SIZE_HASH);
+	if (!g_hist || hsize < 0 || ft_min(*g_hist->size, INT64_MAX) < hsize)
 		ft_lstadd_front(&g_hist, ft_lstnew(ft_rl_hist_mknode("")));
 	else
 		ft_rl_hist_recycle();
