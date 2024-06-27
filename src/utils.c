@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 23:40:31 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:00:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,10 @@ uint8_t	ft_rl_isdir(const char *path)
 {
 	struct stat	file;
 
-	stat(path, &file);
-	return (file.st_mode & S_IFDIR);
+	lstat(path, &file);
+	if (S_ISLNK(file.st_mode) && ft_rl_get(_CMP_MLDIRS_HASH))
+		stat(path, &file);
+	return (S_ISDIR(file.st_mode));
 }
 
 void	ft_rl_clearblocks(void)
