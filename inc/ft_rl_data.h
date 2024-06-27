@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 16:04:16 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 10:59:45 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ typedef enum e_rl_rdmode		rl_rdmode_t;
 typedef enum e_rl_mapmode		rl_mapmode_t;
 
 
+typedef struct s_rl_settings	rl_settings_t;
 typedef struct s_rl_histnode	rl_histnode_t;
 typedef struct s_rl_cursor		rl_cursor_t;
 typedef struct s_rl_keybuf		rl_keybuf_t;
@@ -60,6 +61,15 @@ enum e_rl_mapmode
 	QUIET,
 	REMAP,
 	QREMAP
+};
+
+struct s_rl_settings
+{
+	uint8_t		bstyle;
+	uint8_t		completion;
+	int16_t		cmp_dwidth;
+	uint64_t	cmp_qitems;
+	int64_t		hist_size;
 };
 
 struct s_rl_histnode

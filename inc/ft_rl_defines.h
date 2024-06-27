@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 21:54:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 12:34:35 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,6 @@
 # ifndef _FT_RL_HFILE
 #  define _FT_RL_HFILE "~/.rl_history"
 # endif /* _FT_RL_HFILE */
-
-// History size
-# ifndef _FT_RL_HSIZE
-#  define _FT_RL_HSIZE 100
-# endif /* _FT_RL_HSIZE */
 
 // Keystr buffer length
 # define _KEYSTR_LEN 16
@@ -63,6 +58,40 @@
 
 // Statuses
 # define _YLA_RUNNING 0x1ULL
+
+// Settings
+
+/// name hashes
+# define _BSTYLE_HASH 0xC586B53AEF5ECCBBULL
+# define _CMP_DWIDTH_HASH 0xF5AEE7FFC47A60C2ULL
+# define _CMP_CASE_HASH 0x38D58D56383FE6DEULL
+# define _CMP_MCASE_HASH 0x7A203DAB82820392ULL
+# define _CMP_QITEMS_HASH 0xAADD4F348B5E2646ULL
+# define _CMP_ENABLE_HASH 0x1E6A5CB74E84D7EULL
+# define _HIST_SIZE_HASH 0xB855D24FC9911D4AULL
+# define _CMP_MDIRS_HASH 0xF4094B976F01307FULL
+# define _CMP_MLDIRS_HASH 0x4254D0CADBED6436ULL
+# define _CMP_HFILES_HASH 0x27615217B8D36228ULL
+# define _CMP_HLIGHT_HASH 0x4953FE167A6F1D05ULL
+
+/// completion
+# define _CMP_OFF 0x0U
+# define _CMP_ON 0x1U
+# define _CMP_CASE 0x2U
+# define _CMP_MCASE 0x4U
+# define _CMP_MARK_DIRS 0x8U
+# define _CMP_MARK_LINKDIRS 0x10U
+# define _CMP_HIDDEN 0x20U
+# define _CMP_HIGHLIGHT 0x40U
+
+/// bell-style
+# define BELL_NONE 0x0U
+# define BELL_VISIBLE 0x1U
+# define BELL_AUDIBLE 0x2U
+
+/// on/off
+# define SET_OFF 0x0U
+# define SET_ON 0x1U
 
 // History modes
 # define FT_RL_HIST_ON 0x1U

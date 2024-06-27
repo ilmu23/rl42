@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/30 08:32:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 10:26:10 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,12 @@ void		ft_rl_unmap(const char *key);
 void		ft_rl_unmap_fn(const char *func);
 
 /**  keys  **/
+
+/**  settings  **/
+
+/**   utils.c   **/
+void		ft_rl_set(const char *var, const uint64_t val);
+
+/**  settings  **/
 
 #endif
