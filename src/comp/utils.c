@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 17:25:52 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 17:50:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ static inline uint16_t	_dwidth(void)
 	int16_t	dwidth;
 
 	dwidth = ft_rl_get(_CMP_DWIDTH_HASH);
-	if (dwidth < 1)
+	if (dwidth < 0)
 		return (g_cols);
 	return (ft_min(g_cols, dwidth));
 }
