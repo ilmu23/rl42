@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 14:36:39 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/27 19:09:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static inline t_list	*_complete(const char *pattern);
 static inline t_list	*_increment(t_list *completions, const char *pattern);
+static inline char		*_uncase(char *fname);
 static inline void		_match(const char *pattern, DIR *dir, const t_list **completions);
 static inline void		_buildpath(const char *path, t_list *completions);
 static inline void		_replace(rl_input_t *input, const char *completion);
@@ -37,6 +38,8 @@ void	ft_rl_complete(rl_input_t *input)
 		ft_rl_setmark(_MARK_END);
 		pattern = ft_push(ft_substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos));
 	}
+	if (ft_rl_get(_CMP_CASE_HASH))
+		pattern = _uncase((char *)pattern);
 	completions = _complete(pattern);
 	if (!completions)
 		ft_rl_cursor_reset(input);
@@ -74,6 +77,7 @@ static inline t_list	*_increment(t_list *completions, const char *pattern)
 	char		*common;
 	t_list		*start;
 	uint64_t	maxlen;
+	uint8_t		nocase;
 	uint8_t		cur;
 	size_t		i;
 
@@ -84,7 +88,19 @@ static inline t_list	*_increment(t_list *completions, const char *pattern)
 	if (!common)
 		exit(ft_rl_perror());
 	i = 0;
+	nocase = (ft_rl_get(_CMP_CASE_HASH) != 0);
+	if (nocase)
+		nocase += (ft_rl_get(_CMP_MCASE_HASH) != 0);
 	cur = ((uint8_t *)completions->blk)[i];
+	switch (nocase)
+	{
+		case 2:
+			if (cur == '-')
+				cur = '_';
+			__attribute__ ((fallthrough));
+		case 1:
+			cur = ft_tolower(cur);
+	}
 	start = completions;
 	while (cur)
 	{
@@ -94,7 +110,26 @@ static inline t_list	*_increment(t_list *completions, const char *pattern)
 			common[i++] = cur;
 			completions = start;
 			cur = ((uint8_t *)completions->blk)[i];
+			switch (nocase)
+			{
+				case 2:
+					if (cur == '-')
+						cur = '_';
+					__attribute__ ((fallthrough));
+				case 1:
+					cur = ft_tolower(cur);
+			}
 			continue ;
+		}
+		switch (nocase)
+		{
+			case 2:
+				if (cur == '_' && ((uint8_t *)completions->blk)[i] == '-')
+					continue ;
+				__attribute__ ((fallthrough));
+			case 1:
+				if (ft_tolower(((uint8_t *)completions->blk)[i]) == cur)
+					continue ;
 		}
 		if (((uint8_t *)completions->blk)[i] == cur)
 			continue ;
@@ -109,19 +144,42 @@ static inline t_list	*_increment(t_list *completions, const char *pattern)
 	return (completions);
 }
 
+static inline char	*_uncase(char *fname)
+{
+	size_t	i;
+
+	fname = ft_strlower(fname);
+	if (ft_rl_get(_CMP_MCASE_HASH))
+	{
+		i = 0;
+		while (fname[i])
+		{
+			if (fname[i] == '-')
+				fname[i] = '_';
+			i++;
+		}
+	}
+	return (fname);
+}
+
 static inline void	_match(const char *pattern, DIR *dir, const t_list **completions)
 {
 	struct dirent	*data;
 	const uint64_t	plen = ft_strlen(pattern);
+	const char		*fname;
 
 	if (!dir)
 		return ;
 	data = readdir(dir);
 	while (data)
 	{
-		if (!ft_strequals(data->d_name, ".")
-			&& !ft_strequals(data->d_name, "..")
-			&& !ft_strncmp(data->d_name, pattern, plen))
+		if (ft_rl_get(_CMP_CASE_HASH))
+			fname = _uncase(ft_strdup(data->d_name));
+		else
+			fname = ft_strdup(data->d_name);
+		if (!ft_strequals(fname, ".")
+			&& !ft_strequals(fname, "..")
+			&& !ft_strncmp(fname, pattern, plen))
 			ft_lstadd_back(completions, ft_lstnew(ft_strdup(data->d_name)));
 		data = readdir(dir);
 	}
