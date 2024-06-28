@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/28 16:16:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/28 17:15:26 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ static inline t_list	*_complete(const char *pattern)
 {
 	t_list		*out;
 	const char	*path;
+	const char	*pat;
 
 	out = NULL;
 	path = ft_strrchr(pattern, '/');
@@ -62,8 +63,8 @@ static inline t_list	*_complete(const char *pattern)
 		path = ft_substr(pattern, 0, path - pattern);
 		if (ft_strequals(path, ""))
 			path = ft_strdup("/");
-		pattern = ft_strrchr(pattern, '/') + 1;
-		_match(pattern, opendir(ft_push(path)), (const t_list **)&out);
+		pat = ft_strrchr(pattern, '/') + 1;
+		_match(pat, opendir(ft_push(path)), (const t_list **)&out);
 	}
 	else
 		_match(pattern, opendir("."), (const t_list **)&out);
