@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 17:50:21 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/28 12:50:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void
 		input->cursor->i_row--;
 		rows--;
 	}
-	ft_rl_redisplay(input, PROMPT);
 	if (!cur)
 	{
 		i = 0;
+		ft_rl_redisplay(input, PROMPT);
 		ft_putstr_fd(TERM_CRNL, 1);
 		ft_rl_cursor_getpos(&pos[0], &pos[1]);
 		while (completions)
