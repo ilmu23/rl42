@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 13:40:56 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/28 18:30:43 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ static inline void	_ft_rl_defaultsettings(void)
 	ft_rl_set("completion-display-width", -1);
 	ft_rl_set("completion-ignore-case", SET_OFF);
 	ft_rl_set("completion-map-case", SET_OFF);
-	ft_rl_set("completion-query-items", 20);
+	ft_rl_set("completion-query-items", 100);
 	ft_rl_set("enable-completion", SET_ON);
 	ft_rl_set("history-size", 500);
 	ft_rl_set("mark-directories", SET_ON);

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 10:59:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/28 17:23:17 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,11 @@ enum e_rl_mapmode
 
 struct s_rl_settings
 {
-	uint8_t		bstyle;
-	uint8_t		completion;
-	int16_t		cmp_dwidth;
-	uint64_t	cmp_qitems;
-	int64_t		hist_size;
+	uint8_t	bstyle;
+	uint8_t	completion;
+	int16_t	cmp_dwidth;
+	int64_t	cmp_qitems;
+	int64_t	hist_size;
 };
 
 struct s_rl_histnode

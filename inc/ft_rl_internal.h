@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 14:44:55 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/28 18:16:03 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void			ft_rl_complete(rl_input_t *input);
 
 /**   utils.c   **/
 uint64_t		ft_rl_comp_getlongest(const t_list *completions);
-void			ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv);
+uint8_t			ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv);
 
 /**  comp  **/
 
