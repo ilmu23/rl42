@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/28 12:50:30 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/28 18:26:03 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "ft_stdio/ft_printf.h"
 
 static inline uint16_t	_dwidth(void);
+static inline uint8_t	_query(rl_input_t *input, const size_t completions);
 
 uint64_t	ft_rl_comp_getlongest(const t_list *completions)
 {
@@ -32,7 +33,7 @@ uint64_t	ft_rl_comp_getlongest(const t_list *completions)
 }
 
 // disgusting
-void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv)
+uint8_t	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv)
 {
 	const t_list		*blocks;
 	const rl_block_t	*block;
@@ -42,6 +43,11 @@ void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void
 	uint16_t			cpr;
 	uint16_t			i;
 
+	if (!cur && *completions->size >= ft_rl_get(_CMP_QITEMS_HASH))
+	{
+		if (!_query(input, *completions->size))
+			return (0);
+	}
 	llen = ft_rl_comp_getlongest(completions);
 	cpr = ft_max(_dwidth() / (llen + 1), 1);
 	rows = *completions->size / cpr + 1;
@@ -101,6 +107,7 @@ void	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void
 		}
 	}
 	ft_rl_cursor_reset(input);
+	return (1);
 }
 
 static inline uint16_t	_dwidth(void)
@@ -111,4 +118,15 @@ static inline uint16_t	_dwidth(void)
 	if (dwidth < 0)
 		return (g_cols);
 	return (ft_min(g_cols, dwidth));
+}
+
+static inline uint8_t	_query(rl_input_t *input, const size_t completions)
+{
+	input->cursor->row = input->cursor->i_row;
+	input->cursor->col = input->cursor->i_col + input->len;
+	ft_rl_cursor_setpos(input->cursor);
+	ft_printf("\nDisplay all %zu completions? [Y/n]", completions);
+	input->key = ft_rl_getkey();
+	ft_rl_redisplay(input, CLEAR);
+	return (input->key == KEY_DN_Y || input->key == KEY_UP_Y);
 }
