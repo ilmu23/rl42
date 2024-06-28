@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 19:09:04 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/28 16:16:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,8 @@ static inline void	_match(const char *pattern, DIR *dir, const t_list **completi
 			fname = ft_strdup(data->d_name);
 		if (!ft_strequals(fname, ".")
 			&& !ft_strequals(fname, "..")
-			&& !ft_strncmp(fname, pattern, plen))
+			&& !ft_strncmp(fname, pattern, plen)
+			&& (ft_rl_get(_CMP_HFILES_HASH) || *fname != '.'))
 			ft_lstadd_back(completions, ft_lstnew(ft_strdup(data->d_name)));
 		data = readdir(dir);
 	}
