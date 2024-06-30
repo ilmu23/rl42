@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 10:27:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 13:41:40 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/30 16:46:48 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,10 @@ void	ft_rl_set(const char *var, const uint64_t val)
 			setting = _CMP_HIGHLIGHT;
 			break ;
 		default:
-			ft_dprintf(2, "rl42: ft_rl_set: unrecognized variable '%s'\n", var);
+			if (g_status & _READ_INITFILE)
+				ft_dprintf(2, "rl42: init: set: unrecognized variable '%s'\n", var);
+			else
+				ft_dprintf(2, "rl42: ft_rl_set: unrecognized variable '%s'\n", var);
 			return ;
 	}
 	switch (val)

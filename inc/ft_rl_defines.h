@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 12:34:35 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/30 16:48:14 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 # ifndef _FT_RL_HFILE
 #  define _FT_RL_HFILE "~/.rl_history"
 # endif /* _FT_RL_HFILE */
+
+// default init files
+# define _USER_INITFILE "~/.rl42rc"
+# define _SYSTEM_INITFILE "/etc/rl42rc"
 
 // Keystr buffer length
 # define _KEYSTR_LEN 16
@@ -58,6 +62,7 @@
 
 // Statuses
 # define _YLA_RUNNING 0x1ULL
+# define _READ_INITFILE 0x2ULL
 
 // Settings
 
