@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 10:26:10 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/30 15:03:01 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ void		ft_rl_sethlcolor_rgb(const uint8_t r, const uint8_t g, const uint8_t b);
 
 /**   init.c   **/
 void		ft_rl_init(void);
+
+/**   initfile.c   **/
+void		ft_rl_read_initfile(void);
 
 /**  init  **/
 

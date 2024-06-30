@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/06/27 11:35:00 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/06/30 16:34:32 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,6 +55,7 @@ HISTFILES	=	history.c \
 				utils.c
 
 INITFILES	=	init.c \
+				initfile.c \
 				initfuncs.c \
 				initkeys.c
 

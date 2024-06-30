@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/28 18:30:43 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/30 16:54:50 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,9 @@ void	ft_rl_init(void)
 	ft_rl_hist_load(_FT_RL_HFILE);
 	ft_rl_initkeys();
 	ft_rl_initfuncs();
-	_ft_rl_defaultbinds();
 	_ft_rl_defaultsettings();
+	ft_rl_read_initfile();
+	_ft_rl_defaultbinds();
 	g_hlcolor.mode = FT_RL_HL_FG;
 	ft_rl_sethlcolor_sgr(SGR_FG4);
 	ft_rl_sethlcolor_rgb(255, 23, 123);
@@ -70,76 +71,76 @@ static inline void	_ft_rl_defaultbinds(void)
 	static char		key[2] = "!";
 	static uint8_t	val = KEY_BANG;
 
-	ft_rl_map("<SPC>", "self-insert", QREMAP);
+	ft_rl_map("<SPC>", "self-insert", QUIET);
 	while (val <= KEY_TILDE)
 	{
-		ft_rl_map(key, "self-insert", QREMAP);
+		ft_rl_map(key, "self-insert", QUIET);
 		*key = ++val;
 	}
-	ft_rl_map("<DEL>", "remove-char", QREMAP);
-	ft_rl_map("<BCK>", "backward-remove-char", QREMAP);
-	ft_rl_map("<C-a>", "beginning-of-line", QREMAP);
-	ft_rl_map("<C-e>", "end-of-line", QREMAP);
-	ft_rl_map("<HME>", "beginning-of-line", QREMAP);
-	ft_rl_map("<END>", "end-of-line", QREMAP);
-	ft_rl_map("<left>", "backward-char", QREMAP);
-	ft_rl_map("<right>", "forward-char", QREMAP);
-	ft_rl_map("<U-left>", "beginning-of-word", QREMAP);
-	ft_rl_map("<U-right>", "end-of-word", QREMAP);
-	ft_rl_map("<C-b>", "backward-char", QREMAP);
-	ft_rl_map("<C-f>", "forward-char", QREMAP);
-	ft_rl_map("<M-b>", "backward-word", QREMAP);
-	ft_rl_map("<M-f>", "forward-word", QREMAP);
-	ft_rl_map("<C-l>", "clear-screen", QREMAP);
-	ft_rl_map("<M-.>", "forward-find-character", QREMAP);
-	ft_rl_map("<M-,>", "backward-find-character", QREMAP);
-	ft_rl_map("<RET>", "accept-line", QREMAP);
-	ft_rl_map("<C-d>", "end-of-file", QREMAP);
-	ft_rl_map("<C-p>", "previous-history", QREMAP);
-	ft_rl_map("<C-n>", "next-history", QREMAP);
-	ft_rl_map("<up>", "previous-history", QREMAP);
-	ft_rl_map("<down>", "next-history", QREMAP);
-	ft_rl_map("<M-<>", "beginning-of-history", QREMAP);
-	ft_rl_map("<M->>", "end-of-history", QREMAP);
-	ft_rl_map("<M-r>", "reverse-search-history", QREMAP);
-	ft_rl_map("<M-s>", "forward-search-history", QREMAP);
-	ft_rl_map("<C-r>", "inc-reverse-search-history", QREMAP);
-	ft_rl_map("<C-h>", "inc-forward-search-history", QREMAP);
-	ft_rl_map("<M-C-y>", "yank-nth-arg", QREMAP);
-	ft_rl_map("<M-.>", "yank-last-arg", QREMAP);
-	ft_rl_map("<M-u>", "upcase-word", QREMAP);
-	ft_rl_map("<M-l>", "downcase-word", QREMAP);
-	ft_rl_map("<M-c>", "capitalize-word", QREMAP);
-	ft_rl_map("<C-k>", "forward-kill-line", QREMAP);
-	ft_rl_map("<M-k>", "backward-kill-line", QREMAP);
-	ft_rl_map("<M-K>", "kill-whole-line", QREMAP);
-	ft_rl_map("<M-DEL>", "forward-kill-word", QREMAP);
-	ft_rl_map("<M-BCK>", "backward-kill-word", QREMAP);
-	ft_rl_map("<M-U-DEL>", "kill-region", QREMAP);
-	ft_rl_map("<M-\\>", "delete-horizontal-space", QREMAP);
-	ft_rl_map("<C-t>", "transpose-characters", QREMAP);
-	ft_rl_map("<M-t>", "transpose-words", QREMAP);
-	ft_rl_map("<TAB>", "complete", QREMAP);
-	ft_rl_map("<ESC>", "prefix-meta", QREMAP);
-	ft_rl_map("<C-c>", "discard-line", QREMAP);
-	ft_rl_map("<M-0>", "digit-argument", QREMAP);
-	ft_rl_map("<M-1>", "digit-argument", QREMAP);
-	ft_rl_map("<M-2>", "digit-argument", QREMAP);
-	ft_rl_map("<M-3>", "digit-argument", QREMAP);
-	ft_rl_map("<M-4>", "digit-argument", QREMAP);
-	ft_rl_map("<M-5>", "digit-argument", QREMAP);
-	ft_rl_map("<M-6>", "digit-argument", QREMAP);
-	ft_rl_map("<M-7>", "digit-argument", QREMAP);
-	ft_rl_map("<M-8>", "digit-argument", QREMAP);
-	ft_rl_map("<M-9>", "digit-argument", QREMAP);
-	ft_rl_map("<M-->", "negative-digit-argument", QREMAP);
-	ft_rl_map("<C-g>", "abort", QREMAP);
-	ft_rl_map("<M-SPC>", "set-mark", QREMAP);
-	ft_rl_map("<C-@>", "set-mark", QREMAP);
-	ft_rl_map("<M-C-@>", "unset-mark", QREMAP);
-	ft_rl_map("<M-C-x>", "exchange-point-and-mark", QREMAP);
-	ft_rl_map("<M-h>", "set-highlight-color", QREMAP);
-	ft_rl_map("<M-H>", "toggle-highlight-mode", QREMAP);
+	ft_rl_map("<DEL>", "remove-char", QUIET);
+	ft_rl_map("<BCK>", "backward-remove-char", QUIET);
+	ft_rl_map("<C-a>", "beginning-of-line", QUIET);
+	ft_rl_map("<C-e>", "end-of-line", QUIET);
+	ft_rl_map("<HME>", "beginning-of-line", QUIET);
+	ft_rl_map("<END>", "end-of-line", QUIET);
+	ft_rl_map("<left>", "backward-char", QUIET);
+	ft_rl_map("<right>", "forward-char", QUIET);
+	ft_rl_map("<U-left>", "beginning-of-word", QUIET);
+	ft_rl_map("<U-right>", "end-of-word", QUIET);
+	ft_rl_map("<C-b>", "backward-char", QUIET);
+	ft_rl_map("<C-f>", "forward-char", QUIET);
+	ft_rl_map("<M-b>", "backward-word", QUIET);
+	ft_rl_map("<M-f>", "forward-word", QUIET);
+	ft_rl_map("<C-l>", "clear-screen", QUIET);
+	ft_rl_map("<M-.>", "forward-find-character", QUIET);
+	ft_rl_map("<M-,>", "backward-find-character", QUIET);
+	ft_rl_map("<RET>", "accept-line", QUIET);
+	ft_rl_map("<C-d>", "end-of-file", QUIET);
+	ft_rl_map("<C-p>", "previous-history", QUIET);
+	ft_rl_map("<C-n>", "next-history", QUIET);
+	ft_rl_map("<up>", "previous-history", QUIET);
+	ft_rl_map("<down>", "next-history", QUIET);
+	ft_rl_map("<M-<>", "beginning-of-history", QUIET);
+	ft_rl_map("<M->>", "end-of-history", QUIET);
+	ft_rl_map("<M-r>", "reverse-search-history", QUIET);
+	ft_rl_map("<M-s>", "forward-search-history", QUIET);
+	ft_rl_map("<C-r>", "inc-reverse-search-history", QUIET);
+	ft_rl_map("<C-h>", "inc-forward-search-history", QUIET);
+	ft_rl_map("<M-C-y>", "yank-nth-arg", QUIET);
+	ft_rl_map("<M-.>", "yank-last-arg", QUIET);
+	ft_rl_map("<M-u>", "upcase-word", QUIET);
+	ft_rl_map("<M-l>", "downcase-word", QUIET);
+	ft_rl_map("<M-c>", "capitalize-word", QUIET);
+	ft_rl_map("<C-k>", "forward-kill-line", QUIET);
+	ft_rl_map("<M-k>", "backward-kill-line", QUIET);
+	ft_rl_map("<M-K>", "kill-whole-line", QUIET);
+	ft_rl_map("<M-DEL>", "forward-kill-word", QUIET);
+	ft_rl_map("<M-BCK>", "backward-kill-word", QUIET);
+	ft_rl_map("<M-U-DEL>", "kill-region", QUIET);
+	ft_rl_map("<M-\\>", "delete-horizontal-space", QUIET);
+	ft_rl_map("<C-t>", "transpose-characters", QUIET);
+	ft_rl_map("<M-t>", "transpose-words", QUIET);
+	ft_rl_map("<TAB>", "complete", QUIET);
+	ft_rl_map("<ESC>", "prefix-meta", QUIET);
+	ft_rl_map("<C-c>", "discard-line", QUIET);
+	ft_rl_map("<M-0>", "digit-argument", QUIET);
+	ft_rl_map("<M-1>", "digit-argument", QUIET);
+	ft_rl_map("<M-2>", "digit-argument", QUIET);
+	ft_rl_map("<M-3>", "digit-argument", QUIET);
+	ft_rl_map("<M-4>", "digit-argument", QUIET);
+	ft_rl_map("<M-5>", "digit-argument", QUIET);
+	ft_rl_map("<M-6>", "digit-argument", QUIET);
+	ft_rl_map("<M-7>", "digit-argument", QUIET);
+	ft_rl_map("<M-8>", "digit-argument", QUIET);
+	ft_rl_map("<M-9>", "digit-argument", QUIET);
+	ft_rl_map("<M-->", "negative-digit-argument", QUIET);
+	ft_rl_map("<C-g>", "abort", QUIET);
+	ft_rl_map("<M-SPC>", "set-mark", QUIET);
+	ft_rl_map("<C-@>", "set-mark", QUIET);
+	ft_rl_map("<M-C-@>", "unset-mark", QUIET);
+	ft_rl_map("<M-C-x>", "exchange-point-and-mark", QUIET);
+	ft_rl_map("<M-h>", "set-highlight-color", QUIET);
+	ft_rl_map("<M-H>", "toggle-highlight-mode", QUIET);
 }
 
 static inline void	_ft_rl_defaultsettings(void)
