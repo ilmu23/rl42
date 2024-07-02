@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/28 18:16:03 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:48:01 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "ft_rl_fns.h"
 # include "ft_rl_term.h"
 # include "ft_rl_globals.h"
+# include <signal.h>
 
 // error.c
 int32_t			ft_rl_perror(void);

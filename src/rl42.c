@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 13:29:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:59:16 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ static inline uint64_t	_plen(const char *p);
 static inline uint8_t	_getinput(void);
 static inline char	*_getline(const char *p);
 static inline void	_histcommit(const char *line, const uint8_t opts);
+static inline void	_rl_signal(const uint8_t mode);
+static inline void	_rl_sigaction(const int signal);
 
 char	*ft_readline(const char *p, const uint8_t opts)
 {
@@ -64,7 +66,9 @@ char	*ft_readline(const char *p, const uint8_t opts)
 		ft_rl_hist_newnode();
 		g_hist_cur = g_hist;
 	}
+	_rl_signal(SET_ON);
 	out = _getline(p);
+	_rl_signal(SET_OFF);
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 		_histcommit(out, opts);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
@@ -137,4 +141,34 @@ static inline void	_histcommit(const char *line, const uint8_t opts)
 		}
 	}
 	ft_rl_hist_restore();
+}
+
+static inline void	_rl_signal(const uint8_t mode)
+{
+	static struct sigaction	act;
+	static struct sigaction	orig;
+	static uint8_t			init = 0;
+
+	if (!init)
+	{
+		act.sa_handler = _rl_sigaction;
+		act.sa_flags = 0;
+	}
+	switch (mode)
+	{
+		case SET_ON:
+			sigaction(SIGWINCH, &act, &orig);
+			break ;
+		case SET_OFF:
+			sigaction(SIGWINCH, &orig, NULL);
+	}
+}
+
+static inline void	_rl_sigaction(const int signal)
+{
+	switch (signal)
+	{
+		case SIGWINCH:
+			ft_rl_updatetermsize();
+	}
 }
