@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 16:31:54 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:32:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,10 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 			input->cursor->col = input->cursor->p_col;
 			break ;
 		case CLEAR:
-			input->cursor->row = input->cursor->i_row;
-			input->cursor->col = input->cursor->i_col + input->len;
+			input->cursor->row = input->cursor->p_row;
+			input->cursor->col = input->cursor->p_col;
 			ft_rl_cursor_setpos(input->cursor);
-			ft_putstr_fd(TERM_CLEAR_END, 1);
+			ft_printf("%s%s%s", TERM_CLEAR_END, input->prompt, input->line);
 			input->cursor->col = input->cursor->i_col + input->i;
 			ft_rl_cursor_setpos(input->cursor);
 			return ;
@@ -53,19 +53,22 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 		clr = ft_strnjoin(3, clr, TERM_CRNL, TERM_CLEAR_LINE_END);
 	ft_push(clr);
 	ft_rl_cursor_setpos(input->cursor);
+	ft_putstr_fd(clr, 1);
+	ft_rl_cursor_setpos(input->cursor);
 	switch (mode)
 	{
 		case LINE:
-			ft_printf("%s%s", clr, &input->line[input->i - (input->i != 0)]);
+			ft_putstr_fd(&input->line[input->i - (input->i != 0)], 1);
 			break ;
 		case INPUT:
-			ft_printf("%s%s", clr, input->line);
+			ft_putstr_fd(input->line, 1);
 			break;
 		case PROMPT:
-			ft_printf("%s%s%s", clr, input->prompt, input->line);
+			ft_putstr_fd(input->prompt, 1);
+			ft_putstr_fd(input->line, 1);
 			break ;
 		case SPROMPT:
-			ft_printf("%s%s %s%s", clr, input->sprompt, input->prompt, input->line);
+			ft_printf("%s %s%s", input->sprompt, input->prompt, input->line);
 			break ;
 		case CLEAR:
 			break ;

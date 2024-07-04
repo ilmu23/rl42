@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/28 18:26:03 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:38:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ uint64_t	ft_rl_comp_getlongest(const t_list *completions)
 // disgusting
 uint8_t	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv)
 {
+	static uint16_t		cols;
 	const t_list		*blocks;
 	const rl_block_t	*block;
 	int16_t				pos[2];
@@ -57,9 +58,11 @@ uint8_t	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const v
 		input->cursor->i_row--;
 		rows--;
 	}
-	if (!cur)
+	if (!cur || cols != g_cols)
 	{
 		i = 0;
+		cols = g_cols;
+		ft_rl_clearblocks();
 		ft_rl_redisplay(input, PROMPT);
 		ft_putstr_fd(TERM_CRNL, 1);
 		ft_rl_cursor_getpos(&pos[0], &pos[1]);
@@ -82,7 +85,7 @@ uint8_t	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const v
 			completions = completions->next;
 		}
 	}
-	else
+	if (cur)
 	{
 		i = 2;
 		blocks = g_blocks;
