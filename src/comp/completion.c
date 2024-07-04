@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/28 18:36:53 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:11:10 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,18 @@ void	ft_rl_complete(rl_input_t *input)
 	const char		*pattern;
 	const t_list	*completions;
 
-	if (ft_isspace(input->line[input->i]))
-	{
+	if (ft_isspace(input->line[input->i])
+		&& ft_isspace(input->line[ft_max(input->i - 1, 0)]))
 		ft_rl_setmark(_MARK_START | _MARK_END);
-		pattern = ft_push(ft_strdup(""));
-	}
 	else
 	{
 		ft_rl_word_start();
 		ft_rl_setmark(_MARK_START);
 		ft_rl_word_end();
+		input->i = ft_min(input->i + 1, input->len);
 		ft_rl_setmark(_MARK_END);
-		pattern = ft_push(ft_substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos));
 	}
+	pattern = ft_push(ft_substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos));
 	if (ft_rl_get(_CMP_CASE_HASH))
 		pattern = _uncase((char *)pattern);
 	completions = _complete(pattern);
