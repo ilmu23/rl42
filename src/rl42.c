@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/02 15:59:16 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/04 03:06:57 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,5 +170,7 @@ static inline void	_rl_sigaction(const int signal)
 	{
 		case SIGWINCH:
 			ft_rl_updatetermsize();
+			ft_rl_redisplay(&g_input, CLEAR);
+			ft_rl_redisplay(&g_input, PROMPT);
 	}
 }

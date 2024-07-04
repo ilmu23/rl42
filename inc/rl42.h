@@ -6,17 +6,12 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/30 15:03:01 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/04 02:19:20 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_READLINE_H
 # define FT_READLINE_H
-# include <fcntl.h>
-# include <dirent.h>
-# include <termios.h>
-# include <sys/stat.h>
-# include <sys/ioctl.h>
 # include "ft_rl_data.h"
 # include "ft_rl_keys.h"
 # include "ft_rl_defines.h"
