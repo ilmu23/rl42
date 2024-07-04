@@ -6,11 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/27 15:00:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/04 03:33:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
+
+static inline uint8_t	_interrupt(void);
 
 rl_block_t	*ft_rl_newblock(const char *str, const int16_t pos[2])
 {
@@ -35,7 +37,11 @@ uint64_t	ft_rl_getkey(void)
 		ft_putstr_fd(TERM_CUR_SHOW, 1);
 		g_keybuf.size = read(0, &g_keybuf.key, sizeof(g_keybuf.key));
 		if (g_keybuf.size == -1)
+		{
+			if (_interrupt())
+				return (ft_rl_getkey());
 			exit(ft_rl_perror());
+		}
 		ft_putstr_fd(TERM_CUR_HIDE, 1);
 	}
 	keymask = _KEYSHIFT_MASK;
@@ -82,4 +88,13 @@ void	ft_rl_clearblocks(void)
 {
 	while (g_blocks)
 		ft_lstrmnode(&g_blocks, g_blocks);
+}
+
+static inline uint8_t	_interrupt(void)
+{
+	if (errno != EINTR)
+		return (0);
+	g_keybuf.size = 0;
+	errno = 0;
+	return (1);
 }
