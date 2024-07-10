@@ -6,11 +6,12 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/12 02:36:24 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:21:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
+#include "ft_stdio/ft_printf.h"
 
 static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint8_t direction);
 static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8_t direction);
@@ -185,6 +186,16 @@ static inline void	_replace(rl_input_t *input, const t_list *node)
 
 static inline void	_display(rl_input_t *input, rl_input_t *search)
 {
+	const char	*match;
+
 	ft_rl_redisplay(input, INPUT);
+	if (search->plen == 14)
+	{
+		match = ft_strnstr(input->line, search->line, ft_strlen(input->line));
+		search->cursor->row = input->cursor->i_row;
+		search->cursor->col = input->cursor->i_col + (match - input->line);
+		ft_rl_cursor_setpos(search->cursor);
+		ft_printf("%s%s%s", ft_rl_hlcolor(), search->line, SGR_RESET);
+	}
 	ft_rl_redisplay(search, PROMPT);
 }

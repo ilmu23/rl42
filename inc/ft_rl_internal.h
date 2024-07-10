@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/04 02:19:38 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:01:51 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int32_t			ft_rl_getarg(void);
 uint8_t			ft_rl_isdir(const char *path);
 void			ft_rl_clearblocks(void);
 
+
 /**  comp  **/
 
 /**   completion.c   **/
@@ -50,6 +51,7 @@ uint64_t		ft_rl_comp_getlongest(const t_list *completions);
 uint8_t			ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv);
 
 /**  comp  **/
+
 
 /**  term  **/
 
@@ -64,6 +66,7 @@ void			ft_rl_cursor_move(const int16_t row, const int16_t col);
 void			ft_rl_updatetermsize(void);
 
 /**  term  **/
+
 
 /**  hist  **/
 
@@ -140,6 +143,7 @@ uint8_t			ft_rl_iskey(const uint64_t key);
 char			*ft_rl_keystr(const uint64_t key);
 
 /**  keys  **/
+
 
 /**  settings  **/
 
