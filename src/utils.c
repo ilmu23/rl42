@@ -6,13 +6,14 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/04 03:33:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/24 18:42:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 static inline uint8_t	_interrupt(void);
+static inline void		_vb(void);
 
 rl_block_t	*ft_rl_newblock(const char *str, const int16_t pos[2])
 {
@@ -90,6 +91,21 @@ void	ft_rl_clearblocks(void)
 		ft_lstrmnode(&g_blocks, g_blocks);
 }
 
+void	ft_rl_bell(void)
+{
+	uint64_t	type;
+
+	type = ft_rl_get(_BSTYLE_HASH);
+	switch (type)
+	{
+		case BELL_AUDIBLE:
+			ft_putchar_fd('\a', 1);
+			break ;
+		case BELL_VISIBLE:
+			_vb();
+	}
+}
+
 static inline uint8_t	_interrupt(void)
 {
 	if (errno != EINTR)
@@ -97,4 +113,11 @@ static inline uint8_t	_interrupt(void)
 	g_keybuf.size = 0;
 	errno = 0;
 	return (1);
+}
+
+static inline void	_vb(void)
+{
+	ft_putstr_fd("\e[?5h", 1);
+	usleep(100000);
+	ft_putstr_fd("\e[?5l", 1);
 }
