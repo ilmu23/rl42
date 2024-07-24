@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/10 17:01:51 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/24 18:11:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ uint64_t		ft_rl_getkey(void);
 int32_t			ft_rl_getarg(void);
 uint8_t			ft_rl_isdir(const char *path);
 void			ft_rl_clearblocks(void);
+void			ft_rl_bell(void);
 
 
 /**  comp  **/

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/24 17:47:39 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/07/24 18:11:34 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ uint8_t	ft_rl_xmk(rl_input_t *input)
 
 uint8_t	ft_rl_abt(rl_input_t *input)
 {
+	ft_rl_bell();
 	return (1);
 	(void)input;
 }
