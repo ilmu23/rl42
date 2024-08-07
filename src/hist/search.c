@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/10 17:21:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 21:01:28 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,12 @@ uint8_t	ft_rl_hist_search(rl_input_t *input, const uint8_t direction)
 	ft_rl_eol(input);
 	ft_putstr_fd(TERM_CRNL, 1);
 	_init(&search, direction);
+	if (ft_rl_geteditmode() == _MD_VI_CMD)
+		ft_rl_seteditmode(_MD_VI_INS);
 	fn = _search(input, &search, direction);
 	ft_rl_redisplay(input, CLEAR);
+	input->i = ft_max(input->i - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
+	ft_rl_cursor_reset(input);
 	ft_popblk(search.cursor);
 	if (direction == _SEARCH_BCK)
 	{
@@ -49,8 +53,12 @@ uint8_t	ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction)
 	ft_rl_eol(input);
 	ft_putstr_fd(TERM_CRNL, 1);
 	_init(&search, direction);
+	if (ft_rl_geteditmode() == _MD_VI_CMD)
+		ft_rl_seteditmode(_MD_VI_INS);
 	fn = _isearch(input, &search, direction);
 	ft_rl_redisplay(input, CLEAR);
+	input->i = ft_max(input->i - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
+	ft_rl_cursor_reset(input);
 	ft_popblk(search.cursor);
 	if (direction == _I_SEARCH_BCK)
 	{

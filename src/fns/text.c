@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 20:33:13 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 21:05:03 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ uint8_t	ft_rl_del(rl_input_t *input)
 			break ;
 		count++;
 	}
+	if (ft_rl_geteditmode() == _MD_VI_CMD && input->i == input->len && input->len)
+		input->i--;
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
@@ -66,6 +68,8 @@ uint8_t	ft_rl_bdl(rl_input_t *input)
 			break ;
 		count++;
 	}
+	if (ft_rl_geteditmode() == _MD_VI_CMD && input->i == input->len && input->len)
+		input->i--;
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
@@ -331,6 +335,8 @@ uint8_t	ft_rl_tpc(rl_input_t *input)
 	c = input->line[input->i - 1];
 	input->line[input->i - 1] = input->line[input->i];
 	input->line[input->i++] = c;
+	if (input->i == input->len && ft_rl_geteditmode() == _MD_VI_CMD)
+		input->i--;
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
@@ -341,6 +347,8 @@ uint8_t	ft_rl_tpw(rl_input_t *input)
 		|| input->i < ft_strclen(input->line, ' '))
 		return (1);
 	ft_rl_swap_words(input);
+	if (input->i == input->len && ft_rl_geteditmode() == _MD_VI_CMD)
+		input->i--;
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/30 16:48:14 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 18:10:35 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,12 @@
 // Statuses
 # define _YLA_RUNNING 0x1ULL
 # define _READ_INITFILE 0x2ULL
+
+/// modes
+# define _MD_EMACS 0x4ULL
+# define _MD_VI_INS 0x8ULL
+# define _MD_VI_CMD 0x10ULL
+# define _MD_MASK 0x1CULL
 
 // Settings
 

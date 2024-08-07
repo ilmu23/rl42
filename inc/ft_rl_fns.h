@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/24 17:44:12 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:13:37 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,12 @@ uint8_t	ft_rl_hlc(rl_input_t *input);
 uint8_t	ft_rl_hlm(rl_input_t *input);
 uint8_t	ft_rl_arg(rl_input_t *input);
 uint8_t	ft_rl_arg_n(rl_input_t *input);
+uint8_t	ft_rl_md_em(rl_input_t *input);
+uint8_t	ft_rl_md_vi(rl_input_t *input);
+uint8_t	ft_rl_md_va(rl_input_t *input);
+uint8_t	ft_rl_md_vI(rl_input_t *input);
+uint8_t	ft_rl_md_vA(rl_input_t *input);
+uint8_t	ft_rl_md_vc(rl_input_t *input);
 
 /**  fns  **/
 

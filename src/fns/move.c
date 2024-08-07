@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:11:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 16:13:11 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:49:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 uint8_t	ft_rl_sol(rl_input_t *input)
 {
+	if (!input->len)
+		return (1);
 	input->i = 0;
 	ft_rl_cursor_reset(input);
 	return (1);
@@ -22,13 +24,17 @@ uint8_t	ft_rl_sol(rl_input_t *input)
 
 uint8_t	ft_rl_eol(rl_input_t *input)
 {
-	input->i = input->len;
+	if (!input->len)
+		return (1);
+	input->i = input->len - (ft_rl_geteditmode() == _MD_VI_CMD);
 	ft_rl_cursor_reset(input);
 	return (1);
 }
 
 uint8_t	ft_rl_sow(rl_input_t *input)
 {
+	if (!input->len)
+		return (1);
 	ft_rl_word_start();
 	ft_rl_cursor_reset(input);
 	return (1);
@@ -36,7 +42,10 @@ uint8_t	ft_rl_sow(rl_input_t *input)
 
 uint8_t	ft_rl_eow(rl_input_t *input)
 {
+	if (!input->len)
+		return (1);
 	ft_rl_word_end();
+	input->i -= (ft_rl_geteditmode() == _MD_VI_CMD && input->i == input->len);
 	ft_rl_cursor_reset(input);
 	return (1);
 }
@@ -45,6 +54,8 @@ uint8_t	ft_rl_fwd(rl_input_t *input)
 {
 	int32_t	count;
 
+	if (!input->len)
+		return (1);
 	count = 1;
 	if (g_argument.set)
 		count = ft_rl_getarg();
@@ -60,6 +71,7 @@ uint8_t	ft_rl_fwd(rl_input_t *input)
 		input->i--;
 		count++;
 	}
+	input->i -= (ft_rl_geteditmode() == _MD_VI_CMD && input->i == input->len);
 	ft_rl_cursor_reset(input);
 	return (1);
 }
@@ -68,6 +80,8 @@ uint8_t	ft_rl_bck(rl_input_t *input)
 {
 	int32_t	count;
 
+	if (!input->len)
+		return (1);
 	count = 1;
 	if (g_argument.set)
 		count = ft_rl_getarg();
@@ -89,6 +103,8 @@ uint8_t	ft_rl_fwd_w(rl_input_t *input)
 {
 	int32_t	count;
 
+	if (!input->len)
+		return (1);
 	count = 1;
 	if (g_argument.set)
 		count = ft_rl_getarg();
@@ -97,7 +113,9 @@ uint8_t	ft_rl_fwd_w(rl_input_t *input)
 	while (count > 0)
 	{
 		ft_rl_word_end();
-		input->i += (input->i < input->len);
+		if (input->i == input->len)
+			break ;
+		input->i++;
 		while (input->i < input->len && ft_isspace(input->line[input->i]))
 			input->i++;
 		count--;
@@ -108,6 +126,7 @@ uint8_t	ft_rl_fwd_w(rl_input_t *input)
 			break ;
 		count++;
 	}
+	input->i -= (ft_rl_geteditmode() == _MD_VI_CMD && input->i == input->len);
 	ft_rl_cursor_reset(input);
 	return (1);
 }
@@ -117,6 +136,8 @@ uint8_t	ft_rl_bck_w(rl_input_t *input)
 	uint64_t	i;
 	int32_t		count;
 
+	if (!input->len)
+		return (1);
 	count = 1;
 	if (g_argument.set)
 		count = ft_rl_getarg();
@@ -126,6 +147,8 @@ uint8_t	ft_rl_bck_w(rl_input_t *input)
 	{
 		i = input->i;
 		ft_rl_word_start();
+		if (input->i == 0)
+			break ;
 		if (input->i == i)
 		{
 			input->i--;

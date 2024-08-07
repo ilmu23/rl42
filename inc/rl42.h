@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/10 17:01:42 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:38:01 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ void		ft_rl_read_initfile(void);
 
 /**   keymap.c   **/
 void		ft_rl_map(const char *key, const char *func, rl_mapmode_t mode);
+void		ft_rl_map_emacs(const char *key, const char *func, rl_mapmode_t mode);
+void		ft_rl_map_vi_ins(const char *key, const char *func, rl_mapmode_t mode);
+void		ft_rl_map_vi_cmd(const char *key, const char *func, rl_mapmode_t mode);
 void		ft_rl_addkey(const char *key, const uint64_t value);
 void		ft_rl_addfunc(const char *func, const rl_fn_t f);
 

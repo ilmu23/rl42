@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/24 18:42:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 18:22:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,16 @@ uint8_t	ft_rl_isdir(const char *path)
 	if (S_ISLNK(file.st_mode) && ft_rl_get(_CMP_MLDIRS_HASH))
 		stat(path, &file);
 	return (S_ISDIR(file.st_mode));
+}
+
+uint8_t	ft_rl_geteditmode(void)
+{
+	return (g_status & _MD_MASK);
+}
+
+void	ft_rl_seteditmode(const uint8_t mode)
+{
+	g_status ^= ft_rl_geteditmode() | mode;
 }
 
 void	ft_rl_clearblocks(void)

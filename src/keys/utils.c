@@ -6,21 +6,22 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 18:41:51 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:37:06 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline void	_altctrl(char *keystr, const uint64_t key);
-static inline void	_ascii(char *keystr, const uint64_t key);
-static inline void	_ctrl(char *keystr, const uint64_t key);
+static inline t_hmap	*_getcurmap(void);
+static inline void		_altctrl(char *keystr, const uint64_t key);
+static inline void		_ascii(char *keystr, const uint64_t key);
+static inline void		_ctrl(char *keystr, const uint64_t key);
 
 uint8_t	ft_rl_ismapped(const uint64_t key)
 {
 	rl_map_t	*mapping;
 
-	mapping = ft_mapget(g_maps, ft_rl_keystr(key));
+	mapping = ft_mapget(_getcurmap(), ft_rl_keystr(key));
 	return (mapping != NULL);
 }
 
@@ -36,7 +37,7 @@ rl_fn_t	ft_rl_getmap(const uint64_t key)
 {
 	rl_map_t	*mapping;
 
-	mapping = ft_mapget(g_maps, ft_rl_keystr(key));
+	mapping = ft_mapget(_getcurmap(), ft_rl_keystr(key));
 	if (mapping)
 		return (*mapping->f);
 	return (NULL);
@@ -46,8 +47,10 @@ char	*ft_rl_keystr(const uint64_t key)
 {
 	static char	keystr[_KEYSTR_LEN];
 
-	ft_memset(keystr, 0, _KEYSTR_LEN);
-	if (key >= KEY_BANG && key <= KEY_TILDE)
+	ft_memset(keystr, 0, 2);
+	if (key == KEY_ESC)
+		ft_strlcpy(keystr, "<ESC>", 6);
+	else if (key >= KEY_BANG && key <= KEY_TILDE)
 		_ascii(keystr, key);
 	else if (key == KEY_CTRL_AT || (key >= KEY_CTRL_A && key <= KEY_CTRL_Z))
 		_ctrl(keystr, key);
@@ -698,9 +701,6 @@ char	*ft_rl_keystr(const uint64_t key)
 		case KEY_ALT_CTRL_UP_LEFT:
 			ft_strlcpy(keystr, "<M-C-U-left>", 13);
 			break ;
-		case KEY_ESC:
-			ft_strlcpy(keystr, "<ESC>", 6);
-			break ;
 		case KEY_INS:
 			ft_strlcpy(keystr, "<INS>", 6);
 			break ;
@@ -836,7 +836,7 @@ char	*ft_rl_keystr(const uint64_t key)
 
 void	ft_rl_unmap(const char *key)
 {
-	ft_maprm(g_maps, key);
+	ft_maprm(_getcurmap(), key);
 }
 
 void	ft_rl_unmap_fn(const char *func)
@@ -844,19 +844,35 @@ void	ft_rl_unmap_fn(const char *func)
 	t_hmap_pair	**items;
 	rl_fn_t		*f;
 	size_t		i;
+	t_hmap		*map;
 
+	map = _getcurmap();
 	f = ft_mapget(g_funcs, func);
 	if (!f)
 		return ;
 	i = 0;
-	items = g_maps->items;
-	while (i < g_maps->size)
+	items = map->items;
+	while (i < map->size)
 	{
 		if (items[i] && items[i] != (void *)&g_hmap_sentinel
 			&& ((rl_map_t *)(items[i]->value))->f == *f)
-			ft_maprm(g_maps, items[i]->key);
+			ft_maprm(map, items[i]->key);
 		i++;
 	}
+}
+
+static inline t_hmap	*_getcurmap(void)
+{
+	switch(ft_rl_geteditmode())
+	{
+		case _MD_EMACS:
+			return (g_map_emacs);
+		case _MD_VI_INS:
+			return (g_map_vi_ins);
+		case _MD_VI_CMD:
+			return (g_map_vi_cmd);
+	}
+	return (NULL);
 }
 
 static inline void	_altctrl(char *keystr, const uint64_t key)
