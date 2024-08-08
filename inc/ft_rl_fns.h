@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 12:21:46 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 13:23:50 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ uint8_t	ft_rl_md_vc(rl_input_t *input);
 /**   vi.c   **/
 uint8_t	ft_rl_vi_del(rl_input_t *input);
 uint8_t	ft_rl_vi_sub(rl_input_t *input);
+uint8_t	ft_rl_vi_sbl(rl_input_t *input);
 uint8_t	ft_rl_vi_rep(rl_input_t *input);
 
 /**  fns  **/

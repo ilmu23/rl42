@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 12:21:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 12:55:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 13:44:57 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,19 @@ uint8_t	ft_rl_vi_del(rl_input_t *input)
 		count = ft_rl_getarg();
 	while (count--)
 		f(input);
+	return (1);
+}
+
+uint8_t	ft_rl_vi_sub(rl_input_t	*input)
+{
+	ft_rl_del(input);
+	ft_rl_md_vi(input);
+	return (1);
+}
+
+uint8_t	ft_rl_vi_sbl(rl_input_t *input)
+{
+	ft_rl_kln(input);
+	ft_rl_md_vi(input);
 	return (1);
 }

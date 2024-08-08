@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 13:55:31 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 20:37:24 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 13:39:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ft_rl_addchar(rl_input_t *input, const uint8_t c)
 	char	*newline;
 
 	newline = NULL;
-	if (!input->line || ft_getblksize(input->line) >= input->len + 1)
+	if (!input->line || ft_getblksize(input->line) <= input->len + 4)
 	{
 		newline = ft_push(ft_calloc(((input->len + 1) * 3) + 1, sizeof(*newline)));
 		if (!newline)
@@ -27,7 +27,7 @@ void	ft_rl_addchar(rl_input_t *input, const uint8_t c)
 	{
 		ft_strlcpy(newline, input->line, input->i + 1);
 		newline[input->i] = c;
-		ft_strlcpy(&newline[input->i + 1], &input->line[input->i], input->len);
+		ft_strlcpy(&newline[input->i + 1], &input->line[input->i], input->len + 1);
 		ft_popblk(input->line);
 		input->line = newline;
 	}

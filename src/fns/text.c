@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/07 21:05:03 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 13:45:13 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,7 +255,7 @@ uint8_t	ft_rl_bkl(rl_input_t *input)
 
 uint8_t	ft_rl_kln(rl_input_t *input)
 {
-	if (input->i == 0)
+	if (input->len == 0)
 		return (1);
 	ft_rl_kill_line(input, _KILL_FWD | _KILL_BCK);
 	ft_rl_redisplay(input, INPUT);

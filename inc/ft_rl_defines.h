@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 12:54:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 13:42:59 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define FT_RL_DEFINES_H
 
 // Version
-# define _FT_RL_VERSION "2.1.1"
+# define _FT_RL_VERSION "2.1.2"
 
 // Path to history file
 # ifndef _FT_RL_HFILE

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 12:59:42 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 13:42:11 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ uint8_t	ft_rl_dcl(rl_input_t *input)
 		ft_rl_hist_newnode();
 		g_hist_cur = g_hist;
 	}
-	ft_rl_eol(input);
+	input->i = input->len;
 	ft_rl_cursor_reset(input);
 	ft_popblks(2, input->cursor, input->line);
 	ft_printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
