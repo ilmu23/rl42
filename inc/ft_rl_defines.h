@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 08:37:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 14:01:15 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define FT_RL_DEFINES_H
 
 // Version
-# define _FT_RL_VERSION "2.1.0"
+# define _FT_RL_VERSION "2.1.3"
 
 // Path to history file
 # ifndef _FT_RL_HFILE
@@ -63,6 +63,7 @@
 // Statuses
 # define _YLA_RUNNING 0x1ULL
 # define _READ_INITFILE 0x2ULL
+# define _VI_ARG 0x20ULL
 
 /// modes
 # define _MD_EMACS 0x4ULL
