@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/07 20:58:42 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 09:14:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static inline void	_ft_rl_exit(void);
 void	ft_rl_init(void)
 {
 	static uint8_t	init = 0;
+	uint8_t			emode;
 
 	if (init)
 		return ;
@@ -34,9 +35,8 @@ void	ft_rl_init(void)
 	g_newsettings.c_iflag &= ~(ICRNL | IXON);
 	g_newsettings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	tcsetattr(0, TCSANOW, &g_newsettings);
-	if (!g_keys || !g_funcs || !g_map_emacs || !g_map_vi_ins || !g_map_vi_cmd)
-		ft_exit(ft_rl_perror());
-	if (atexit(_ft_rl_exit))
+	if (!g_keys || !g_funcs || !g_map_emacs || !g_map_vi_ins || !g_map_vi_cmd
+		|| atexit(_ft_rl_exit))
 		ft_exit(ft_rl_perror());
 	g_argument.set = 0;
 	g_mark_s.set = 0;
@@ -49,13 +49,14 @@ void	ft_rl_init(void)
 	ft_rl_initfuncs();
 	_defaultsettings();
 	ft_rl_read_initfile();
+	emode = ft_rl_geteditmode();
 	_emacs_default_binds();
 	_vi_ins_default_binds();
 	_vi_cmd_default_binds();
 	g_hlcolor.mode = FT_RL_HL_FG;
 	ft_rl_sethlcolor_sgr(SGR_FG4);
 	ft_rl_sethlcolor_rgb(255, 23, 123);
-	ft_rl_seteditmode(_MD_EMACS);
+	ft_rl_seteditmode(emode);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
 	init = 1;
 }
@@ -78,7 +79,8 @@ static inline void	_emacs_default_binds(void)
 	static char		key[2] = "!";
 	static uint8_t	val = KEY_BANG;
 
-	ft_rl_seteditmode(_MD_EMACS);
+	if (ft_rl_geteditmode() != _MD_EMACS)
+		ft_rl_seteditmode(_MD_EMACS);
 	ft_rl_map("<SPC>", "self-insert", QUIET);
 	while (val <= KEY_TILDE)
 	{
@@ -172,7 +174,7 @@ static inline void	_vi_ins_default_binds(void)
 	ft_rl_map("<C-t>", "transpose-characters", QUIET);
 	ft_rl_map("<DEL>", "remove-char", QUIET);
 	ft_rl_map("<BCK>", "backward-remove-char", QUIET);
-	ft_rl_map("<ESC>", "vi-command-mode", WARN);
+	ft_rl_map("<ESC>", "vi-command-mode", QUIET);
 	ft_rl_map("<RET>", "accept-line", QUIET);
 	ft_rl_map("<TAB>", "complete", QUIET);
 }
@@ -228,6 +230,7 @@ static inline void	_vi_cmd_default_binds(void)
 
 static inline void	_defaultsettings(void)
 {
+	ft_rl_seteditmode(_MD_EMACS);
 	ft_rl_set("bell-style", BELL_NONE);
 	ft_rl_set("completion-display-width", -1);
 	ft_rl_set("completion-ignore-case", SET_OFF);
