@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:40 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/27 00:45:30 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:13:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 uint8_t	ft_rl_execmap(rl_input_t *input)
 {
-	rl_map_t	*mapping;
+	rl_fn_t	f;
 
-	mapping = ft_mapget(g_maps, input->keystr);
-	if (!mapping)
+	f = ft_rl_getmap(input->key);
+	if (!f)
 		return (1);
-	return ((*mapping->f)(input));
+	return (f(input));
 }

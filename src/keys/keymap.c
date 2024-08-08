@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/05/27 01:30:54 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:34:10 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "ft_stdio/ft_printf.h"
 
 static inline rl_map_t	*_newmapping(const uint64_t *key, const rl_fn_t *func);
+static inline t_hmap	*_getcurmap(void);
 static inline void		_err(const uint64_t *key, const rl_fn_t *func);
 static inline void		_remap(const char *key, const rl_map_t *mapping, rl_mapmode_t mode);
 
@@ -33,7 +34,43 @@ void	ft_rl_map(const char *key, const char *func, rl_mapmode_t mode)
 	if (ft_rl_ismapped(*keyval))
 		_remap(key, _newmapping(keyval, funcval), mode);
 	else
-		ft_mapadd(g_maps, key, _newmapping(keyval, funcval));
+		ft_mapadd(_getcurmap(), key, _newmapping(keyval, funcval));
+}
+
+void	ft_rl_map_emacs(const char *key, const char *func, rl_mapmode_t mode)
+{
+	uint8_t	emode;
+
+	emode = ft_rl_geteditmode();
+	if (emode != _MD_EMACS)
+		ft_rl_seteditmode(_MD_EMACS);;
+	ft_rl_map(key, func, mode);
+	if (emode != _MD_EMACS)
+		ft_rl_seteditmode(emode);;
+}
+
+void	ft_rl_map_vi_ins(const char *key, const char *func, rl_mapmode_t mode)
+{
+	uint8_t	emode;
+
+	emode = ft_rl_geteditmode();
+	if (emode != _MD_VI_INS)
+		ft_rl_seteditmode(_MD_VI_INS);;
+	ft_rl_map(key, func, mode);
+	if (emode != _MD_VI_INS)
+		ft_rl_seteditmode(emode);;
+}
+
+void	ft_rl_map_vi_cmd(const char *key, const char *func, rl_mapmode_t mode)
+{
+	uint8_t	emode;
+
+	emode = ft_rl_geteditmode();
+	if (emode != _MD_VI_CMD)
+		ft_rl_seteditmode(_MD_VI_CMD);;
+	ft_rl_map(key, func, mode);
+	if (emode != _MD_VI_CMD)
+		ft_rl_seteditmode(emode);;
 }
 
 void	ft_rl_addkey(const char *key, const uint64_t value)
@@ -70,6 +107,20 @@ static inline rl_map_t	*_newmapping(const uint64_t *key, const rl_fn_t *func)
 	return (ft_memcpy(out, &(rl_map_t){.key = *key, .f = *func}, sizeof(*out)));
 }
 
+static inline t_hmap	*_getcurmap(void)
+{
+	switch (ft_rl_geteditmode())
+	{
+		case _MD_EMACS:
+			return (g_map_emacs);
+		case _MD_VI_INS:
+			return (g_map_vi_ins);
+		case _MD_VI_CMD:
+			return (g_map_vi_cmd);
+	}
+	return (NULL);
+}
+
 static inline void	_err(const uint64_t *key, const rl_fn_t *func)
 {
 	if (!key)
@@ -98,5 +149,5 @@ static inline void	_remap(const char *key, const rl_map_t *mapping, rl_mapmode_t
 		case QREMAP:
 			break ;
 	}
-	ft_mapadd(g_maps, key, mapping);
+	ft_mapadd(_getcurmap(), key, mapping);
 }

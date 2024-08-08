@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/24 18:11:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 18:22:14 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ rl_block_t		*ft_rl_newblock(const char *str, const int16_t pos[2]);
 uint64_t		ft_rl_getkey(void);
 int32_t			ft_rl_getarg(void);
 uint8_t			ft_rl_isdir(const char *path);
+uint8_t			ft_rl_geteditmode(void);
+void			ft_rl_seteditmode(const uint8_t node);
 void			ft_rl_clearblocks(void);
 void			ft_rl_bell(void);
 

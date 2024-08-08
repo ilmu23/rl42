@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/30 16:48:14 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 08:37:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define FT_RL_DEFINES_H
 
 // Version
-# define _FT_RL_VERSION "2.0.0"
+# define _FT_RL_VERSION "2.1.0"
 
 // Path to history file
 # ifndef _FT_RL_HFILE
@@ -64,9 +64,16 @@
 # define _YLA_RUNNING 0x1ULL
 # define _READ_INITFILE 0x2ULL
 
+/// modes
+# define _MD_EMACS 0x4ULL
+# define _MD_VI_INS 0x8ULL
+# define _MD_VI_CMD 0x10ULL
+# define _MD_MASK 0x1CULL
+
 // Settings
 
 /// name hashes
+# define _EMODE_HASH 0x486190232D1C68DCULL
 # define _BSTYLE_HASH 0xC586B53AEF5ECCBBULL
 # define _CMP_DWIDTH_HASH 0xF5AEE7FFC47A60C2ULL
 # define _CMP_CASE_HASH 0x38D58D56383FE6DEULL

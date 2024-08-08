@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/04 16:40:35 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:13:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 /** globals **/
 t_hmap	*g_keys;
 t_hmap	*g_funcs;
-t_hmap	*g_maps;
+t_hmap	*g_map_emacs;
+t_hmap	*g_map_vi_ins;
+t_hmap	*g_map_vi_cmd;
 
 int16_t	g_rows;
 int16_t	g_cols;
@@ -104,7 +106,6 @@ static inline uint8_t	_getinput(void)
 {
 	g_argument.set = 0;
 	g_input.key = ft_rl_getkey();
-	g_input.keystr = ft_rl_keystr(g_input.key);
 	return (ft_rl_execmap(&g_input));
 }
 

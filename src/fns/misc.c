@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/24 18:11:34 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:51:51 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,5 +212,50 @@ uint8_t	ft_rl_arg_n(rl_input_t *input)
 	if (fn != ft_rl_arg && fn != ft_rl_arg_n
 		&& (!(g_status & _YLA_RUNNING) || fn != ft_rl_yla))
 		return (fn(input));
+	return (1);
+}
+
+uint8_t	ft_rl_md_em(rl_input_t *input)
+{
+	ft_rl_seteditmode(_MD_EMACS);
+	return (1);
+	(void)input;
+}
+
+uint8_t	ft_rl_md_vi(rl_input_t *input)
+{
+	ft_rl_seteditmode(_MD_VI_INS);
+	return (1);
+	(void)input;
+}
+
+uint8_t	ft_rl_md_va(rl_input_t *input)
+{
+	ft_rl_seteditmode(_MD_VI_INS);
+	input->i++;
+	ft_rl_cursor_reset(input);
+	return (1);
+}
+
+uint8_t	ft_rl_md_vI(rl_input_t *input)
+{
+	ft_rl_seteditmode(_MD_VI_INS);
+	input->i = 0;
+	ft_rl_cursor_reset(input);
+	return (1);
+}
+uint8_t	ft_rl_md_vA(rl_input_t *input)
+{
+	ft_rl_seteditmode(_MD_VI_INS);
+	input->i = input->len;
+	ft_rl_cursor_reset(input);
+	return (1);
+}
+
+uint8_t	ft_rl_md_vc(rl_input_t *input)
+{
+	ft_rl_seteditmode(_MD_VI_CMD);
+	input->i = ft_max(input->i - 1, 0);
+	ft_rl_redisplay(input, INPUT);
 	return (1);
 }

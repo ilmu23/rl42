@@ -6,33 +6,37 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/24 18:39:10 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 09:14:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline void	_ft_rl_defaultbinds(void);
-static inline void	_ft_rl_defaultsettings(void);
+static inline void	_emacs_default_binds(void);
+static inline void	_vi_ins_default_binds(void);
+static inline void	_vi_cmd_default_binds(void);
+static inline void	_defaultsettings(void);
 static inline void	_ft_rl_exit(void);
 
 void	ft_rl_init(void)
 {
 	static uint8_t	init = 0;
+	uint8_t			emode;
 
 	if (init)
 		return ;
 	g_keys = ft_mapnew();
 	g_funcs = ft_mapnew();
-	g_maps = ft_mapnew();
+	g_map_emacs = ft_mapnew();
+	g_map_vi_ins = ft_mapnew();
+	g_map_vi_cmd = ft_mapnew();
 	tcgetattr(0, &g_oldsettings);
 	g_newsettings = g_oldsettings;
 	g_newsettings.c_iflag &= ~(ICRNL | IXON);
 	g_newsettings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	tcsetattr(0, TCSANOW, &g_newsettings);
-	if (!g_keys || !g_funcs || !g_maps)
-		ft_exit(ft_rl_perror());
-	if (atexit(_ft_rl_exit))
+	if (!g_keys || !g_funcs || !g_map_emacs || !g_map_vi_ins || !g_map_vi_cmd
+		|| atexit(_ft_rl_exit))
 		ft_exit(ft_rl_perror());
 	g_argument.set = 0;
 	g_mark_s.set = 0;
@@ -43,12 +47,16 @@ void	ft_rl_init(void)
 	ft_rl_hist_load(_FT_RL_HFILE);
 	ft_rl_initkeys();
 	ft_rl_initfuncs();
-	_ft_rl_defaultsettings();
+	_defaultsettings();
 	ft_rl_read_initfile();
-	_ft_rl_defaultbinds();
+	emode = ft_rl_geteditmode();
+	_emacs_default_binds();
+	_vi_ins_default_binds();
+	_vi_cmd_default_binds();
 	g_hlcolor.mode = FT_RL_HL_FG;
 	ft_rl_sethlcolor_sgr(SGR_FG4);
 	ft_rl_sethlcolor_rgb(255, 23, 123);
+	ft_rl_seteditmode(emode);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
 	init = 1;
 }
@@ -66,11 +74,13 @@ void	ft_rl_init_input(const char *p, const uint64_t plen)
 		exit(ft_rl_perror());
 }
 
-static inline void	_ft_rl_defaultbinds(void)
+static inline void	_emacs_default_binds(void)
 {
 	static char		key[2] = "!";
 	static uint8_t	val = KEY_BANG;
 
+	if (ft_rl_geteditmode() != _MD_EMACS)
+		ft_rl_seteditmode(_MD_EMACS);
 	ft_rl_map("<SPC>", "self-insert", QUIET);
 	while (val <= KEY_TILDE)
 	{
@@ -92,8 +102,8 @@ static inline void	_ft_rl_defaultbinds(void)
 	ft_rl_map("<M-b>", "backward-word", QUIET);
 	ft_rl_map("<M-f>", "forward-word", QUIET);
 	ft_rl_map("<C-l>", "clear-screen", QUIET);
-	ft_rl_map("<M-.>", "forward-find-character", QUIET);
-	ft_rl_map("<M-,>", "backward-find-character", QUIET);
+	ft_rl_map("<M-,>", "forward-find-character", QUIET);
+	ft_rl_map("<M-;>", "backward-find-character", QUIET);
 	ft_rl_map("<RET>", "accept-line", QUIET);
 	ft_rl_map("<C-d>", "end-of-file", QUIET);
 	ft_rl_map("<C-p>", "previous-history", QUIET);
@@ -139,12 +149,88 @@ static inline void	_ft_rl_defaultbinds(void)
 	ft_rl_map("<C-@>", "set-mark", QUIET);
 	ft_rl_map("<M-C-@>", "unset-mark", QUIET);
 	ft_rl_map("<M-C-x>", "exchange-point-and-mark", QUIET);
+	ft_rl_map("<M-C-e>", "vi-editing-mode", QUIET);
 	ft_rl_map("<M-h>", "set-highlight-color", QUIET);
 	ft_rl_map("<M-H>", "toggle-highlight-mode", QUIET);
 }
 
-static inline void	_ft_rl_defaultsettings(void)
+static inline void	_vi_ins_default_binds(void)
 {
+	static char		key[2] = "!";
+	static uint8_t	val = KEY_BANG;
+
+	ft_rl_seteditmode(_MD_VI_INS);
+	ft_rl_map("<SPC>", "self-insert", QUIET);
+	while (val <= KEY_TILDE)
+	{
+		ft_rl_map(key, "self-insert", QUIET);
+		*key = ++val;
+	}
+	ft_rl_map("<C-c>", "discard-line", QUIET);
+	ft_rl_map("<C-d>", "end-of-file", QUIET);
+	ft_rl_map("<C-l>", "clear-screen", QUIET);
+	ft_rl_map("<C-r>", "inc-reverse-search-history", QUIET);
+	ft_rl_map("<C-s>", "inc-forward-search-history", QUIET);
+	ft_rl_map("<C-t>", "transpose-characters", QUIET);
+	ft_rl_map("<DEL>", "remove-char", QUIET);
+	ft_rl_map("<BCK>", "backward-remove-char", QUIET);
+	ft_rl_map("<ESC>", "vi-command-mode", QUIET);
+	ft_rl_map("<RET>", "accept-line", QUIET);
+	ft_rl_map("<TAB>", "complete", QUIET);
+}
+
+static inline void	_vi_cmd_default_binds(void)
+{
+	ft_rl_seteditmode(_MD_VI_CMD);
+	ft_rl_map("<C-c>", "discard-line", QUIET);
+	ft_rl_map("<C-d>", "end-of-file", QUIET);
+	ft_rl_map("<C-e>", "emacs-editing-mode", QUIET);
+	ft_rl_map("<C-g>", "abort", QUIET);
+	ft_rl_map("<C-l>", "clear-screen", QUIET);
+	ft_rl_map("<C-r>", "inc-reverse-search-history", QUIET);
+	ft_rl_map("<C-s>", "inc-forward-search-history", QUIET);
+	ft_rl_map("<C-t>", "transpose-characters", QUIET);
+	ft_rl_map("<SPC>", "forward-char", QUIET);
+	ft_rl_map("$", "end-of-line", QUIET);
+	ft_rl_map(",", "exchange-point-and-mark", QUIET);
+	ft_rl_map("/", "inc-forward-search-history", QUIET);
+	ft_rl_map("0", "beginning-of-line", QUIET);
+	ft_rl_map("1", "digit-argument", QUIET);
+	ft_rl_map("2", "digit-argument", QUIET);
+	ft_rl_map("3", "digit-argument", QUIET);
+	ft_rl_map("4", "digit-argument", QUIET);
+	ft_rl_map("5", "digit-argument", QUIET);
+	ft_rl_map("6", "digit-argument", QUIET);
+	ft_rl_map("7", "digit-argument", QUIET);
+	ft_rl_map("8", "digit-argument", QUIET);
+	ft_rl_map("9", "digit-argument", QUIET);
+	ft_rl_map("?", "inc-reverse-search-history", QUIET);
+	ft_rl_map("A", "vi-insert-mode-A", QUIET);
+	ft_rl_map("F", "backward-find-character", QUIET);
+	ft_rl_map("I", "vi-insert-mode-I", QUIET);
+	ft_rl_map("M", "set-mark", QUIET);
+	ft_rl_map("X", "backward-remove-char", QUIET);
+	ft_rl_map("_", "yank-last-arg", QUIET);
+	ft_rl_map("a", "vi-insert-mode-a", QUIET);
+	ft_rl_map("b", "backward-word", QUIET);
+//	ft_rl_map("d", "vi-delete", QUIET);
+	ft_rl_map("f", "forward-find-character", QUIET);
+	ft_rl_map("h", "backward-char", QUIET);
+	ft_rl_map("i", "vi-insert-mode-i", QUIET);
+	ft_rl_map("j", "next-history", QUIET);
+	ft_rl_map("k", "previous-history", QUIET);
+	ft_rl_map("l", "forward-char", QUIET);
+	ft_rl_map("m", "set-mark", QUIET);
+	ft_rl_map("w", "forward-word", QUIET);
+	ft_rl_map("x", "remove-char", QUIET);
+	ft_rl_map("<RET>", "accept-line", QUIET);
+	ft_rl_map("<TAB>", "complete", QUIET);
+	ft_rl_map("<ESC>", "abort", QUIET);
+}
+
+static inline void	_defaultsettings(void)
+{
+	ft_rl_seteditmode(_MD_EMACS);
 	ft_rl_set("bell-style", BELL_NONE);
 	ft_rl_set("completion-display-width", -1);
 	ft_rl_set("completion-ignore-case", SET_OFF);
