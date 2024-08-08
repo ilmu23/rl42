@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/07 20:51:51 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 12:59:42 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,8 @@ uint8_t	ft_rl_arg(rl_input_t *input)
 	}
 	fn = ft_rl_getmap(input->key);
 	if (fn != ft_rl_arg && fn != ft_rl_arg_n
-		&& (!(g_status & _YLA_RUNNING) || fn != ft_rl_yla))
+		&& (!(g_status & _YLA_RUNNING) || fn != ft_rl_yla)
+		&& !(g_status & _VI_ARG))
 		return (fn(input));
 	return (1);
 }
@@ -232,7 +233,7 @@ uint8_t	ft_rl_md_vi(rl_input_t *input)
 uint8_t	ft_rl_md_va(rl_input_t *input)
 {
 	ft_rl_seteditmode(_MD_VI_INS);
-	input->i++;
+	input->i = ft_min(input->i + 1, input->len);
 	ft_rl_cursor_reset(input);
 	return (1);
 }

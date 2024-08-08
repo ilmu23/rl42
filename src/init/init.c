@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 09:14:53 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 12:37:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ static inline void	_vi_cmd_default_binds(void)
 	ft_rl_map("_", "yank-last-arg", QUIET);
 	ft_rl_map("a", "vi-insert-mode-a", QUIET);
 	ft_rl_map("b", "backward-word", QUIET);
-//	ft_rl_map("d", "vi-delete", QUIET);
+	ft_rl_map("d", "vi-delete", QUIET);
 	ft_rl_map("f", "forward-find-character", QUIET);
 	ft_rl_map("h", "backward-char", QUIET);
 	ft_rl_map("i", "vi-insert-mode-i", QUIET);

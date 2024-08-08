@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/06/30 16:34:32 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/08/08 12:36:12 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,8 @@ FNFILES		=	move.c \
 				hist.c \
 				text.c \
 				comp.c \
-				misc.c
+				misc.c \
+				vi.c
 
 HISTFILES	=	history.c \
 				historyfile.c \

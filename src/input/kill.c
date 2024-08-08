@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 04:07:16 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 18:54:40 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/08 12:58:17 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	ft_rl_kill_word(rl_input_t *input, const uint8_t direction)
 				input->i++;
 			ft_rl_word_end();
 			input->i++;
+			while (ft_isspace(input->line[input->i]))
+				input->i++;
 			ft_rl_setmark(_MARK_END);
 			break ;
 	}
