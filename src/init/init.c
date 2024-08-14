@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 14:00:00 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:51:25 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,10 +168,14 @@ static inline void	_vi_ins_default_binds(void)
 	}
 	ft_rl_map("<C-c>", "discard-line", QUIET);
 	ft_rl_map("<C-d>", "end-of-file", QUIET);
+	ft_rl_map("<C-g>", "abort", QUIET);
 	ft_rl_map("<C-l>", "clear-screen", QUIET);
 	ft_rl_map("<C-r>", "inc-reverse-search-history", QUIET);
 	ft_rl_map("<C-s>", "inc-forward-search-history", QUIET);
 	ft_rl_map("<C-t>", "transpose-characters", QUIET);
+	ft_rl_map("<C-y>", "yank-last-arg", QUIET);
+	ft_rl_map("<up>", "previous-history", QUIET);
+	ft_rl_map("<down>", "next-history", QUIET);
 	ft_rl_map("<DEL>", "remove-char", QUIET);
 	ft_rl_map("<BCK>", "backward-remove-char", QUIET);
 	ft_rl_map("<ESC>", "vi-command-mode", QUIET);
@@ -206,15 +210,17 @@ static inline void	_vi_cmd_default_binds(void)
 	ft_rl_map("9", "digit-argument", QUIET);
 	ft_rl_map("?", "inc-reverse-search-history", QUIET);
 	ft_rl_map("A", "vi-insert-mode-A", QUIET);
+	ft_rl_map("C", "toggle-highlight-mode", QUIET);
 	ft_rl_map("F", "backward-find-character", QUIET);
 	ft_rl_map("I", "vi-insert-mode-I", QUIET);
-	ft_rl_map("M", "set-mark", QUIET);
+	ft_rl_map("M", "unset-mark", QUIET);
 	ft_rl_map("S", "vi-subst-line", QUIET);
 	ft_rl_map("X", "backward-remove-char", QUIET);
 	ft_rl_map("Z", "discard-line", QUIET);
 	ft_rl_map("_", "yank-last-arg", QUIET);
 	ft_rl_map("a", "vi-insert-mode-a", QUIET);
 	ft_rl_map("b", "backward-word", QUIET);
+	ft_rl_map("c", "set-highlight-color", QUIET);
 	ft_rl_map("d", "vi-delete", QUIET);
 	ft_rl_map("f", "forward-find-character", QUIET);
 	ft_rl_map("h", "backward-char", QUIET);
