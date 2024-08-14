@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 21:58:32 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/06/28 17:23:17 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ typedef struct s_rl_hlc			rl_hlc_t;
 typedef struct s_rl_arg			rl_arg_t;
 
 typedef uint8_t	(*rl_fn_t)(rl_input_t *);
-typedef void	(*rl_cmp_fn_t)(rl_input_t *);
 
 enum e_rl_etype
 {

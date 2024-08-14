@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 22:05:22 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/07 18:22:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 
 static inline uint8_t	_interrupt(void);
 static inline void		_vb(void);
-
-rl_cmp_fn_t	ft_rl_get_completion_fn(void)
-{
-	return (g_cmp_fn);
-}
 
 rl_block_t	*ft_rl_newblock(const char *str, const int16_t pos[2])
 {
@@ -93,11 +88,6 @@ uint8_t	ft_rl_isdir(const char *path)
 uint8_t	ft_rl_geteditmode(void)
 {
 	return (g_status & _MD_MASK);
-}
-
-void	ft_rl_set_completion_fn(rl_cmp_fn_t f)
-{
-	g_cmp_fn = f;
 }
 
 void	ft_rl_seteditmode(const uint8_t mode)
