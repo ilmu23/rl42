@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 21:51:25 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/14 22:07:17 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	ft_rl_init(void)
 	ft_rl_sethlcolor_sgr(SGR_FG4);
 	ft_rl_sethlcolor_rgb(255, 23, 123);
 	ft_rl_seteditmode(emode);
+	ft_rl_set_completion_fn(ft_rl_complete);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
 	init = 1;
 }

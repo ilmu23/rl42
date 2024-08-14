@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/07 20:13:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/14 22:27:20 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ rl_mark_t	g_mark_u;
 rl_input_t	g_input;
 
 rl_keybuf_t	g_keybuf;
+
+rl_cmp_fn_t	g_cmp_fn;
 
 const t_list	*g_hist;
 const t_list	*g_hist_cur;
