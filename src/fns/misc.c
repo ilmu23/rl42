@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 13:42:11 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:52:51 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,11 +97,7 @@ uint8_t	ft_rl_hlc(rl_input_t *input)
 {
 	uint64_t	key;
 
-	key = 0;
-	ft_putstr_fd(TERM_CUR_SHOW, 1);
-	if (read(0, &key, sizeof(key)) == -1)
-		exit(ft_rl_perror());
-	ft_putstr_fd(TERM_CUR_HIDE, 1);
+	key = ft_rl_getkey();
 	switch (key)
 	{
 		case KEY_NUM_0:
