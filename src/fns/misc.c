@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:18:26 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/16 02:02:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ uint8_t	ft_rl_mta(rl_input_t *input)
 		exit(ft_rl_perror());
 	__putstr_fd(TERM_CUR_HIDE, 1);
 	key = key << 8 | '\e';
-	input->keystr = ft_rl_keystr(key);
+	input->key = key;
 	return (ft_rl_execmap(input));
 }
 
