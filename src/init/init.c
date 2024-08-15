@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 04:17:07 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/16 02:10:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,9 +146,8 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_map("<M-9>", "digit-argument", QUIET);
 	ft_rl_map("<M-->", "negative-digit-argument", QUIET);
 	ft_rl_map("<C-g>", "abort", QUIET);
-	ft_rl_map("<M-SPC>", "set-mark", QUIET);
-	ft_rl_map("<C-@>", "set-mark", QUIET);
-	ft_rl_map("<M-C-@>", "unset-mark", QUIET);
+	ft_rl_map("<M-x>", "set-mark", QUIET);
+	ft_rl_map("<M-X>", "unset-mark", QUIET);
 	ft_rl_map("<M-C-x>", "exchange-point-and-mark", QUIET);
 	ft_rl_map("<M-C-e>", "vi-editing-mode", QUIET);
 	ft_rl_map("<M-h>", "set-highlight-color", QUIET);
