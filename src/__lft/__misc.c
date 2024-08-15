@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 15:34:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 16:35:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:09:48 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,22 +39,35 @@ uint8_t	__isint(const char *n)
 	return (1);
 }
 
-size_t	__hexlen(uint64_t n)
+size_t	__uintlen_base(uint64_t n, const t_base base)
 {
 	size_t	digits;
+	uint8_t	div;
 
 	digits = 1;
-	while (n > 15)
+	switch (base)
 	{
-		n /= 16;
+		case BINARY:
+			div = 2;
+		case OCTAL:
+			div = 8;
+		case DECIMAL:
+			div = 10;
+		case HEX:
+			div = 16;
+	}
+	while (n > div - 1)
+	{
+		n /= div;
 		digits++;
 	}
 	return (digits);
 }
 
-size_t	__intlen(int64_t n)
+size_t	__intlen_base(int64_t n, const t_base base)
 {
 	size_t	digits;
+	int8_t	div;
 
 	digits = 1;
 	if (n == INT64_MIN)
@@ -64,9 +77,20 @@ size_t	__intlen(int64_t n)
 		n = -n;
 		digits++;
 	}
-	while (n > 9)
+	switch (base)
 	{
-		n /= 10;
+		case BINARY:
+			div = 2;
+		case OCTAL:
+			div = 8;
+		case DECIMAL:
+			div = 10;
+		case HEX:
+			div = 16;
+	}
+	while (n > div - 1)
+	{
+		n /= div;
 		digits++;
 	}
 	return (digits);

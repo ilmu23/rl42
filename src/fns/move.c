@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:11:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:29:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:18:26 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ uint8_t	ft_rl_clr(rl_input_t *input)
 {
 	input->cursor->p_row = 1;
 	input->cursor->p_col = 1;
-	printf("%s%s%s", TERM_CUR_RESET, TERM_CLEAR_END, input->prompt);
+	__printf("%s%s%s", TERM_CUR_RESET, TERM_CLEAR_END, input->prompt);
 	ft_rl_cursor_getpos(&input->cursor->i_row, &input->cursor->i_col);
 	__putstr_fd(input->line, 1);
 	ft_rl_cursor_reset(input);

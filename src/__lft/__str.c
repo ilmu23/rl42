@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 15:57:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 16:34:24 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:07:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static inline size_t	_splitcount(const char *s, const uint8_t c);
 static inline char		*_makesplit(const char *s, const uint8_t c);
+static inline char		*_basemin(const t_base base);
 
 uint64_t	__strclen(const char *s, const uint8_t c)
 {
@@ -177,27 +178,69 @@ char	*__strdup(const char *s)
 	return (out);
 }
 
-char	*__itoa(int64_t n)
+char	*__utoa_base(uint64_t n, const t_base base)
 {
 	char	*out;
+	uint8_t	div;
+	size_t	i;
+
+	i = __uintlen_base(n, base);
+	out = __calloc(i-- + 1, sizeof(*out));
+	if (!out)
+		return (NULL);
+	switch (base)
+	{
+		case BINARY:
+			div = 2;
+		case OCTAL:
+			div = 8;
+		case DECIMAL:
+			div = 10;
+		case HEX:
+			div = 16;
+	}
+	while (n > div - 1)
+	{
+		out[i--] = _HEXARR[n % div];
+		n /= div;
+	}
+	out[i] =  _HEXARR[n];
+	return (out);
+}
+
+char	*__itoa_base(int64_t n, const t_base base)
+{
+	char	*out;
+	int8_t	div;
 	uint8_t	neg;
 	size_t	i;
 
 	if (n == INT64_MIN)
-		return (__strdup("-9223372036854775808"));
-	i = __intlen(n);
+		return (_basemin(base));
+	i = __intlen_base(n, base);
 	out = __calloc(i-- + 1, sizeof(*out));
+	switch (base)
+	{
+		case BINARY:
+			div = 2;
+		case OCTAL:
+			div = 8;
+		case DECIMAL:
+			div = 10;
+		case HEX:
+			div = 16;
+	}
 	if (!out)
 		return (NULL);
 	neg = n < 0;
 	if (neg)
 		n = -n;
-	while (n > 9)
+	while (n > div - 1)
 	{
-		out[i--] = n % 10 + '0';
-		n /= 10;
+		out[i--] = _HEXARR[n % div];
+		n /= div;
 	}
-	out[i--] = n + '0';
+	out[i--] = _HEXARR[n];
 	if (neg)
 		out[i] = '-';
 	return (out);
@@ -282,4 +325,19 @@ static inline char	*_makesplit(const char *s, const uint8_t c)
 		return (NULL);
 	}
 	return (__push(__substr(s, j, i - j)));
+}
+
+static inline char	*_basemin(const t_base base)
+{
+	switch (base)
+	{
+		case BINARY:
+			return (__strjoin("-1", __cstr('0', 63)));
+		case OCTAL:
+			return (__strdup("-1000000000000000000000"));
+		case DECIMAL:
+			return (__strdup("-9223372036854775808"));
+		case HEX:
+			return (__strdup("-8000000000000000"));
+	}
 }

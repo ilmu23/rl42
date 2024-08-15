@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:28:42 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:18:26 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ uint8_t	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const v
 		while (completions)
 		{
 			__lstadd_back(&g_blocks, __lstnew(ft_rl_newblock(completions->blk, pos)));
-			printf("%-*s", (int)llen, (char *)completions->blk);
+			__printf("%-*s", (int)llen, (char *)completions->blk);
 			if (++i == cpr)
 			{
 				__putstr_fd(TERM_CRNL, 1);
@@ -127,7 +127,7 @@ static inline uint8_t	_query(rl_input_t *input, const size_t completions)
 	input->cursor->row = input->cursor->i_row;
 	input->cursor->col = input->cursor->i_col + input->len;
 	ft_rl_cursor_setpos(input->cursor);
-	printf("\nDisplay all %zu completions? [Y/n]", completions);
+	__printf("\nDisplay all %zu completions? [Y/n]", completions);
 	input->key = ft_rl_getkey();
 	ft_rl_redisplay(input, CLEAR);
 	return (input->key == KEY_DN_Y || input->key == KEY_UP_Y);

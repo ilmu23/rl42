@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 23:57:08 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:15:59 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:19:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*ft_rl_hlcolor(void)
 
 	if (g_hlcolor.sgr)
 		return (_getsgr());
-	snprintf(seq, 20, f[g_hlcolor.mode],
+	__snprintf(seq, 20, f[g_hlcolor.mode],
 		g_hlcolor.rgbval.r, g_hlcolor.rgbval.g, g_hlcolor.rgbval.b);
 	return (seq);
 }
@@ -31,7 +31,7 @@ void	ft_rl_sethlcolor_mode(const uint8_t mode)
 	if (mode == FT_RL_HL_FG || mode == FT_RL_HL_BG)
 		g_hlcolor.mode = mode;
 	else
-		dprintf(2, "rl42: sethlcolor_mode: unknown mode\n");
+		__dprintf(2, "rl42: sethlcolor_mode: unknown mode\n");
 }
 
 void	ft_rl_sethlcolor_sgr(const char *s)

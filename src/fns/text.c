@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:32:28 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:19:43 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ uint8_t	ft_rl_eof(rl_input_t *input)
 {
 	if (input->len != 0)
 		return (1);
-	printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
-	input->exittype = EOF;
+	__printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
+	input->exittype = E_EOF;
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 20:23:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:40:39 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 17:18:52 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	ft_rl_hist_yank_arg(rl_input_t *input, const rl_histnode_t *node, int32_t n
 	if (!args)
 		exit(ft_rl_perror());
 	if (n >= 0)
-		n = MIN(n, __getblksize(args) / sizeof(char *) - 2);
+		n = MIN(n, (int32_t)(__getblksize(args) / sizeof(char *) - 2));
 	else
 		n = MAX(0, __getblksize(args) / sizeof(char *) - 2 - -n);
 	len = strlen(__push(args[n]));

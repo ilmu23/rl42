@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 10:47:53 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 15:27:18 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:11:40 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ char	*__blkkey(const void *blk)
 	char		*out;
 
 	addr = (uintptr_t)blk;
-	i = __hexlen(addr);
+	i = __uintlen_base(addr, HEX);
 	out = malloc((i + 1) * sizeof(*out));
 	if (!out)
 	{

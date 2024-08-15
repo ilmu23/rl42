@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 04:16:54 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:18:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,7 @@ static inline void	_display(rl_input_t *input, rl_input_t *search)
 		search->cursor->row = input->cursor->i_row;
 		search->cursor->col = input->cursor->i_col + (match - input->line);
 		ft_rl_cursor_setpos(search->cursor);
-		printf("%s%s%s", ft_rl_hlcolor(), search->line, SGR_RESET);
+		__printf("%s%s%s", ft_rl_hlcolor(), search->line, SGR_RESET);
 	}
 	ft_rl_redisplay(search, PROMPT);
 }

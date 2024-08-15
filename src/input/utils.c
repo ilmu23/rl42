@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:48:19 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:19:18 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 			input->cursor->row = input->cursor->p_row;
 			input->cursor->col = input->cursor->p_col;
 			ft_rl_cursor_setpos(input->cursor);
-			printf("%s%s%s", TERM_CLEAR_END, input->prompt, input->line);
+			__printf("%s%s%s", TERM_CLEAR_END, input->prompt, input->line);
 			input->cursor->col = input->cursor->i_col + input->i;
 			ft_rl_cursor_setpos(input->cursor);
 			return ;
@@ -67,7 +67,7 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 			__putstr_fd(input->line, 1);
 			break ;
 		case SPROMPT:
-			printf("%s %s%s", input->sprompt, input->prompt, input->line);
+			__printf("%s %s%s", input->sprompt, input->prompt, input->line);
 			break ;
 		case CLEAR:
 			break ;
@@ -117,7 +117,7 @@ void	ft_rl_swap_words(rl_input_t *input)
 	subs[1] = __push(__substr(input->line, marks[0], marks[1] - marks[0]));
 	if (!subs[0] || !subs[1])
 		exit(ft_rl_perror());
-	snprintf(&input->line[marks[0]], marks[3] - marks[0], "%-*s%s",
+	__snprintf(&input->line[marks[0]], marks[3] - marks[0], "%-*s%s",
 			(int)(marks[3] - marks[0] - strlen(subs[1])), subs[0], subs[1]);
 	__popblks(2, subs[0], subs[1]);
 	input->i = marks[3];
@@ -194,7 +194,7 @@ static inline void	_mark(const rl_input_t *input)
 	input->cursor->col = input->cursor->i_col + MIN(g_mark_u.pos + splen, input->len);
 	ft_rl_cursor_setpos(input->cursor);
 	if (g_mark_u.pos < input->len)
-		printf("%s%c%s", SGR_ULINEON, input->line[g_mark_u.pos], SGR_ULINEOFF);
+		__printf("%s%c%s", SGR_ULINEON, input->line[g_mark_u.pos], SGR_ULINEOFF);
 	else
-		printf("%s %s", SGR_ULINEON, SGR_ULINEOFF);
+		__printf("%s %s", SGR_ULINEON, SGR_ULINEOFF);
 }

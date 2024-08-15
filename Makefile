@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/08/15 14:44:07 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/08/15 19:13:57 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,8 +74,11 @@ TERMFILES	=	cursor.c \
 
 LFTFILES	=	__alloc.c \
 				__calloc.c \
+				__cast.c \
 				__clean.c \
+				__dprintf.c \
 				__exit.c \
+				__expand.c \
 				__getblksize.c \
 				__lstadd_back.c \
 				__lstadd_front.c \
@@ -98,14 +101,23 @@ LFTFILES	=	__alloc.c \
 				__obj.c \
 				__objmap.c \
 				__objpair.c \
+				__parse.c \
 				__pop.c \
+				__printf.c \
 				__push.c \
 				__pushtrap.c \
 				__put.c \
 				__return.c \
+				__sprintf.c \
+				__snprintf.c \
 				__str.c \
 				__sweep.c \
-				__vm.c
+				__utils.c \
+				__vm.c \
+				__vprintf.c \
+				__vdprintf.c \
+				__vsprintf.c \
+				__vsnprintf.c
 
 FILES	=	rl42.c \
 			color.c \

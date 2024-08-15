@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:34:31 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:18:26 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ uint8_t	ft_rl_dcl(rl_input_t *input)
 	input->i = input->len;
 	ft_rl_cursor_reset(input);
 	__popblks(2, input->cursor, input->line);
-	printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
+	__printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
 	ft_rl_init_input(input->prompt, input->plen);
 	__putstr_fd(input->prompt, 1);
 	ft_rl_cursor_getpos(&input->cursor->row, &input->cursor->col);
@@ -55,7 +55,7 @@ uint8_t ft_rl_smk(rl_input_t *input)
 	if (g_argument.set)
 	{
 		i = input->i;
-		input->i = MIN(ft_rl_getarg(), input->len);
+		input->i = MIN((uint64_t)ft_rl_getarg(), input->len);
 		ft_rl_setmark(_MARK_USR);
 		input->i = i;
 	}
@@ -164,13 +164,13 @@ uint8_t	ft_rl_arg(rl_input_t *input)
 		else
 			g_argument.arg = 0;
 	}
-	input->sprompt = __push(__itoa(g_argument.arg));
+	input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
 	ft_rl_redisplay(input, SPROMPT);
 	input->key = ft_rl_getkey();
 	while (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
 	{
 		g_argument.arg = MIN(g_argument.arg * 10 + (input->key - KEY_NUM_0), _ARG_MAX);
-		input->sprompt = __push(__itoa(g_argument.arg));
+		input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
 		ft_rl_redisplay(input, SPROMPT);
 		input->key = ft_rl_getkey();
 		if (g_argument.arg == _ARG_MAX)
@@ -195,8 +195,8 @@ uint8_t	ft_rl_arg_n(rl_input_t *input)
 	input->key = ft_rl_getkey();
 	while (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
 	{
-		g_argument.arg = MAX(g_argument.arg * 10 - (input->key - KEY_NUM_0), _ARG_MIN);
-		input->sprompt = __push(__itoa(g_argument.arg));
+		g_argument.arg = MAX((int32_t)(g_argument.arg * 10 - (input->key - KEY_NUM_0)), _ARG_MIN);
+		input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
 		ft_rl_redisplay(input, SPROMPT);
 		input->key = ft_rl_getkey();
 		if (g_argument.arg == _ARG_MIN)

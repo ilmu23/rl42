@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 10:27:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:49:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:18:28 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ void	ft_rl_set(const char *var, const uint64_t val)
 			break ;
 		default:
 			if (g_status & _READ_INITFILE)
-				dprintf(2, "rl42: init: set: unrecognized variable '%s'\n", var);
+				__dprintf(2, "rl42: init: set: unrecognized variable '%s'\n", var);
 			else
-				dprintf(2, "rl42: ft_rl_set: unrecognized variable '%s'\n", var);
+				__dprintf(2, "rl42: ft_rl_set: unrecognized variable '%s'\n", var);
 			return ;
 	}
 	switch (val)

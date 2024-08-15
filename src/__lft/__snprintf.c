@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   __snprintf.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/26 01:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:18:24 by ivalimak         ###   ########.fr       */
+/*   Created: 2024/04/30 08:54:05 by ivalimak          #+#    #+#             */
+/*   Updated: 2024/08/15 18:14:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_rl_internal.h"
+#include "__lft.h"
 
-int32_t	ft_rl_perror(void)
+ssize_t	__snprintf(char *s, size_t size, const char *f, ...)
 {
-	const int32_t	err = errno;
-	const char		*msg;
+	va_list	args;
+	ssize_t	rval;
 
-	msg = __push(__strlower(__strdup(strerror(err))));
-	if (!msg || !*msg)
-		msg = strerror(err);
-	__dprintf(2, "rl42: %s\n", msg);
-	return (err);
+	va_start(args, f);
+	rval = __vsnprintf(s, size, f, args);
+	va_end(args);
+	return (rval);
 }

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:48:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:18:28 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_rl_map(const char *key, const char *func, rl_mapmode_t mode)
 	funcval = __mapget(g_funcs, func);
 	if (!keyval || !funcval)
 	{
-		dprintf(2, "ft_rl_map(%s, %s): ", key, func);
+		__dprintf(2, "ft_rl_map(%s, %s): ", key, func);
 		_err(keyval, funcval);
 		return ;
 	}
@@ -124,13 +124,13 @@ static inline void	_err(const uint64_t *key, const rl_fn_t *func)
 {
 	if (!key)
 	{
-		dprintf(2, "key not found");
+		__dprintf(2, "key not found");
 		if (!func)
-			dprintf(2, "; ");
+			__dprintf(2, "; ");
 	}
 	if (!func)
-		dprintf(2, "function not found");
-	dprintf(2, "\n");
+		__dprintf(2, "function not found");
+	__dprintf(2, "\n");
 }
 
 static inline void	_remap(const char *key, const rl_map_t *mapping, rl_mapmode_t mode)
@@ -138,12 +138,12 @@ static inline void	_remap(const char *key, const rl_map_t *mapping, rl_mapmode_t
 	switch (mode)
 	{
 		case WARN:
-			dprintf(2, "ft_rl_map: key %s already mapped\n", key);
+			__dprintf(2, "ft_rl_map: key %s already mapped\n", key);
 			return ;
 		case QUIET:
 			return ;
 		case REMAP:
-			dprintf(2, "ft_rl_map: remapping key %s\n", key);
+			__dprintf(2, "ft_rl_map: remapping key %s\n", key);
 			break ;
 		case QREMAP:
 			break ;

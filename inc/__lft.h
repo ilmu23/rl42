@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 00:37:03 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 16:16:31 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:05:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,65 @@
 
 # define HMAP_DEF_SIZE 23ULL
 
-typedef struct s_hmap_pair	t_hmap_pair;
-typedef struct s_hmap		t_hmap;
-typedef struct s_list		t_list;
+# define PF_FLAG_ALT 0x1U
+# define PF_FLAG_ZERO 0x2U
+# define PF_FLAG_LEFT 0x4U
+# define PF_FLAG_SPACE 0x8U
+# define PF_FLAG_SIGN 0x10U
+# define PF_FLAG_GROUP 0x20U
+# define PF_FLAG_WIDTH 0x40U
+# define PF_FLAG_PRECISION 0x80U
 
-typedef struct s_objpair	t_objpair;
-typedef struct s_objmap		t_objmap;
-typedef struct s_obj		t_obj;
-typedef struct s_vm			t_vm;
+# define PF_LENGTH_HHALF 0x1U
+# define PF_LENGTH_HALF 0x2U
+# define PF_LENGTH_LONG 0x4U
+# define PF_LENGTH_LLONG 0x8U
+# define PF_LENGTH_IMAX 0x10U
+# define PF_LENGTH_SIZE 0x20U
+# define PF_LENGTH_DIFF 0x40U
+
+# define PF_FLAG_CHARS "#0- +'"
+# define PF_FORMAT_SPEC "diouxXcspn%"
+# define PF_FORMAT_SPEC_EXP "diouxXcspn"
+# define PF_FORMAT_SPEC_INT "diouxX"
+
+typedef enum e_base				t_base;
+typedef enum e_format_type		t_format_type;
+
+typedef struct s_hmap_pair		t_hmap_pair;
+typedef struct s_hmap			t_hmap;
+typedef struct s_list			t_list;
+
+typedef struct s_pf_arg			t_pf_arg;
+typedef struct s_pf_conversion	t_pf_conversion;
+
+typedef struct s_objpair		t_objpair;
+typedef struct s_objmap			t_objmap;
+typedef struct s_obj			t_obj;
+typedef struct s_vm				t_vm;
+
+enum e_base
+{
+	BINARY,
+	OCTAL,
+	DECIMAL,
+	HEX
+};
+
+enum e_format_type
+{
+	d,
+	i,
+	o,
+	u,
+	x,
+	X,
+	c,
+	s,
+	p,
+	n,
+	percent
+};
 
 struct s_hmap_pair
 {
@@ -70,6 +121,27 @@ struct s_list
 	size_t		*size;
 	t_list		*next;
 	t_list		*prev;
+};
+
+struct s_pf_arg
+{
+	t_format_type	type;
+	union
+	{
+		int64_t		intval;
+		uint64_t	uintval;
+		uint8_t		charval;
+		uintptr_t	ptrval;
+	};
+};
+
+struct s_pf_conversion
+{
+	t_pf_arg	arg;
+	uint8_t		flags;
+	size_t		width;
+	size_t		precision;
+	uint8_t		length;
 };
 
 struct s_objpair
@@ -193,6 +265,40 @@ void		__lstadd_front(const t_list **list, t_list *node);
 void		__lstrmnode(const t_list **list, const t_list *node);
 /**   list   **/
 
+/**   printf   **/
+ssize_t		__printf(const char *f, ...);
+ssize_t		__dprintf(const int32_t fd, const char *f, ...);
+ssize_t		__sprintf(char *s, const char *f, ...);
+ssize_t		__snprintf(char *s, const size_t size, const char *f, ...);
+ssize_t		__vprintf(const char *f, va_list args);
+ssize_t		__vdprintf(const int32_t fd, const char *f, va_list args);
+ssize_t		__vsprintf(char *s, const char *f, va_list args);
+ssize_t		__vsnprintf(char *s, const size_t size, const char *f, va_list args);
+
+uintptr_t	__nextarg(t_list **args);
+uintptr_t	__getarg(const t_list *args, size_t argn);
+
+ssize_t		__getlen(t_list *strings);
+
+uint8_t		__getflags(const char **conversion);
+uint8_t		__getlength(const char **conversion);
+
+size_t		__getwidth(const char **conversion, t_list **args);
+size_t		__getprecision(const char **conversion, t_list **args);
+
+t_list		*__getconversions(const char *f, t_list *args);
+
+char		*__expandint(t_pf_conversion *cnv);
+char		*__expanduint(t_pf_conversion *cnv);
+char		*__expandchar(t_pf_conversion *cnv);
+char		*__expandstr(t_pf_conversion *cnv);
+char		*__getcnvstr(const char *f);
+char		*__cstr(const uint8_t c, const size_t len);
+
+void		__expandconversions(t_list *conversions, t_list **strings);
+void		__cast(t_pf_conversion *cnv);
+/**   printf   **/
+
 /**   put   **/
 ssize_t		__putchar_fd(const uint8_t c, const int32_t fd);
 ssize_t		__putendl_fd(const char *s, const int32_t fd);
@@ -214,7 +320,8 @@ char		*__strjoin(const char *s1, const char *s2);
 char		*__strtrim(const char *s, const char *set);
 char		*__strnjoin(size_t n, ...);
 char		*__strdup(const char *s);
-char		*__itoa(int64_t n);
+char		*__utoa_base(uint64_t n, const t_base base);
+char		*__itoa_base(int64_t n, const t_base base);
 
 char		*__strnstr(const char *s1, const char *s2, const size_t n);
 char		*__strlower(char *s);
@@ -223,8 +330,8 @@ char		*__strlower(char *s);
 /**   misc   **/
 uint8_t		__isint(const char *n);
 
-size_t		__hexlen(uint64_t n);
-size_t		__intlen(int64_t n);
+size_t		__uintlen_base(uint64_t n, const t_base base);
+size_t		__intlen_base(int64_t n, const t_base base);
 
 char		*__getline(const int32_t fd);
 /**   misc   **/

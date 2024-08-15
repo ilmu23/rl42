@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 14:41:51 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:19:26 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <ctype.h>
 # include <errno.h>
 # include <fcntl.h>
-# include <stdio.h>
 # include <dirent.h>
 # include <signal.h>
 # include <unistd.h>

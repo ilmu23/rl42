@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 00:49:44 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:50:39 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:18:26 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	ft_rl_cursor_getpos(int16_t *row, int16_t *col)
 		return ;
 	i = 0;
 	memset(buf, 0, 17);
-	printf("%s", TERM_STATUS);
+	__printf("%s", TERM_STATUS);
 	if (read(0, buf, 16) == -1)
 		exit(ft_rl_perror());
 	while (buf[i] && !isdigit(buf[i]))
@@ -87,5 +87,5 @@ void	ft_rl_cursor_reset(rl_input_t *input)
 
 void	ft_rl_cursor_move(const int16_t row, const int16_t col)
 {
-	printf("\e[%d;%dH", row, col);
+	__printf("\e[%d;%dH", row, col);
 }
