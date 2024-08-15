@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 22:05:22 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 02:18:23 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ rl_block_t	*ft_rl_newblock(const char *str, const int16_t pos[2])
 {
 	rl_block_t	*out;
 
-	out = ft_push(ft_alloc(sizeof(*out)));
+	out = __push(__alloc(sizeof(*out)));
 	if (!out)
 		exit(ft_rl_perror());
-	ft_memcpy(out, &(rl_block_t){.str = str, .length = ft_strlen(str),
+	memcpy(out, &(rl_block_t){.str = str, .length = strlen(str),
 			.pos[0] = pos[0], .pos[1] = pos[1], .highlighted = 0}, sizeof(*out));
 	return (out);
 }
@@ -40,7 +40,7 @@ uint64_t	ft_rl_getkey(void)
 
 	if (g_keybuf.size == 0)
 	{
-		ft_putstr_fd(TERM_CUR_SHOW, 1);
+		__putstr_fd(TERM_CUR_SHOW, 1);
 		g_keybuf.size = read(0, &g_keybuf.key, sizeof(g_keybuf.key));
 		if (g_keybuf.size == -1)
 		{
@@ -48,7 +48,7 @@ uint64_t	ft_rl_getkey(void)
 				return (ft_rl_getkey());
 			exit(ft_rl_perror());
 		}
-		ft_putstr_fd(TERM_CUR_HIDE, 1);
+		__putstr_fd(TERM_CUR_HIDE, 1);
 	}
 	keymask = _KEYSHIFT_MASK;
 	shift = g_keybuf.size;
@@ -67,7 +67,7 @@ uint64_t	ft_rl_getkey(void)
 	g_keybuf.size -= g_keybuf.size - shift;
 	if (g_input.sprompt)
 	{
-		ft_popblk(g_input.sprompt);
+		__popblk(g_input.sprompt);
 		g_input.sprompt = NULL;
 		ft_rl_redisplay(&g_input, PROMPT);
 	}
@@ -108,7 +108,7 @@ void	ft_rl_seteditmode(const uint8_t mode)
 void	ft_rl_clearblocks(void)
 {
 	while (g_blocks)
-		ft_lstrmnode(&g_blocks, g_blocks);
+		__lstrmnode(&g_blocks, g_blocks);
 }
 
 void	ft_rl_bell(void)
@@ -119,7 +119,7 @@ void	ft_rl_bell(void)
 	switch (type)
 	{
 		case BELL_AUDIBLE:
-			ft_putchar_fd('\a', 1);
+			__putchar_fd('\a', 1);
 			break ;
 		case BELL_VISIBLE:
 			_vb();
@@ -137,7 +137,7 @@ static inline uint8_t	_interrupt(void)
 
 static inline void	_vb(void)
 {
-	ft_putstr_fd("\e[?5h", 1);
+	__putstr_fd("\e[?5h", 1);
 	usleep(100000);
-	ft_putstr_fd("\e[?5l", 1);
+	__putstr_fd("\e[?5l", 1);
 }

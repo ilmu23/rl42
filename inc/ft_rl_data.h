@@ -6,13 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 21:58:32 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 04:16:00 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_RL_DATA_H
 # define FT_RL_DATA_H
-# include "libft.h"
+# include <stdint.h>
 
 typedef enum e_rl_etype			rl_etype_t;
 typedef enum e_rl_wtype			rl_wtype_t;
@@ -37,8 +37,8 @@ typedef void	(*rl_cmp_fn_t)(rl_input_t *);
 
 enum e_rl_etype
 {
-	ACL,
-	EOF
+	E_ACL,
+	E_EOF
 };
 
 enum e_rl_wtype

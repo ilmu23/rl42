@@ -6,19 +6,18 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 13:45:13 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:19:43 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
-#include "ft_stdio/ft_printf.h"
 
 uint8_t	ft_rl_eof(rl_input_t *input)
 {
 	if (input->len != 0)
 		return (1);
-	ft_printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
-	input->exittype = EOF;
+	__printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
+	input->exittype = E_EOF;
 	return (0);
 }
 
@@ -110,7 +109,7 @@ uint8_t	ft_rl_upw(rl_input_t *input)
 		j = g_mark_s.pos;
 		while (j <= g_mark_e.pos)
 		{
-			input->line[j] = ft_toupper(input->line[j]);
+			input->line[j] = toupper(input->line[j]);
 			j++;
 		}
 		ft_rl_unsetmark(_MARK_START | _MARK_END);
@@ -131,7 +130,7 @@ uint8_t	ft_rl_upw(rl_input_t *input)
 				input->i = i;
 		}
 	}
-	input->i = ft_min(input->i + 1, input->len);
+	input->i = MIN(input->i + 1, input->len);
 	ft_rl_word_end();
 	ft_rl_redisplay(input, INPUT);
 	return (1);
@@ -160,7 +159,7 @@ uint8_t	ft_rl_dnw(rl_input_t *input)
 		j = g_mark_s.pos;
 		while (j <= g_mark_e.pos)
 		{
-			input->line[j] = ft_tolower(input->line[j]);
+			input->line[j] = tolower(input->line[j]);
 			j++;
 		}
 		ft_rl_unsetmark(_MARK_START | _MARK_END);
@@ -181,7 +180,7 @@ uint8_t	ft_rl_dnw(rl_input_t *input)
 				input->i = i;
 		}
 	}
-	input->i = ft_min(input->i + 1, input->len);
+	input->i = MIN(input->i + 1, input->len);
 	ft_rl_word_end();
 	ft_rl_redisplay(input, INPUT);
 	return (1);
@@ -208,9 +207,9 @@ uint8_t	ft_rl_caw(rl_input_t *input)
 		ft_rl_word_end();
 		ft_rl_setmark(_MARK_END);
 		j = g_mark_s.pos;
-		input->line[j] =  ft_toupper(input->line[j]);
+		input->line[j] =  toupper(input->line[j]);
 		while (++j <= g_mark_e.pos)
-			input->line[j] = ft_tolower(input->line[j]);
+			input->line[j] = tolower(input->line[j]);
 		ft_rl_unsetmark(_MARK_START | _MARK_END);
 		if (count > 0)
 		{
@@ -229,7 +228,7 @@ uint8_t	ft_rl_caw(rl_input_t *input)
 				input->i = i;
 		}
 	}
-	input->i = ft_min(input->i + 1, input->len);
+	input->i = MIN(input->i + 1, input->len);
 	ft_rl_word_end();
 	ft_rl_redisplay(input, INPUT);
 	return (1);
@@ -287,32 +286,32 @@ uint8_t	ft_rl_krg(rl_input_t *input)
 	if (!g_mark_u.set)
 		return (1);
 	i = input->i;
-	input->i = ft_min(i + 1, g_mark_u.pos + 1);
+	input->i = MIN(i + 1, g_mark_u.pos + 1);
 	ft_rl_setmark(_MARK_START);
-	input->i = ft_max(i, g_mark_u.pos);
+	input->i = MAX(i, g_mark_u.pos);
 	ft_rl_setmark(_MARK_END);
 	ft_rl_kill_region(input);
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
-	input->i = ft_min(input->i, input->len);
+	input->i = MIN(input->i, input->len);
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
 
 uint8_t	ft_rl_kws(rl_input_t *input)
 {
-	if (!ft_isspace(input->line[input->i])
-		&& (input->i == 0 || !ft_isspace(input->line[input->i - 1])))
+	if (!isspace(input->line[input->i])
+		&& (input->i == 0 || !isspace(input->line[input->i - 1])))
 		return (1);
-	if (!ft_isspace(input->line[input->i]))
+	if (!isspace(input->line[input->i]))
 		input->i--;
 	ft_rl_setmark(_MARK_START | _MARK_END);
-	while (input->i > 0 && ft_isspace(input->line[input->i]))
+	while (input->i > 0 && isspace(input->line[input->i]))
 		input->i--;
-	if (!ft_isspace(input->line[input->i]))
+	if (!isspace(input->line[input->i]))
 		input->i++;
 	ft_rl_setmark(_MARK_START);
 	input->i = g_mark_e.pos;
-	while (input->i < input->len && ft_isspace(input->line[input->i]))
+	while (input->i < input->len && isspace(input->line[input->i]))
 		input->i++;
 	ft_rl_setmark(_MARK_END);
 	ft_rl_kill_region(input);
@@ -343,8 +342,8 @@ uint8_t	ft_rl_tpc(rl_input_t *input)
 
 uint8_t	ft_rl_tpw(rl_input_t *input)
 {
-	if (input->len < 3 || !ft_strchr(input->line, ' ')
-		|| input->i < ft_strclen(input->line, ' '))
+	if (input->len < 3 || !strchr(input->line, ' ')
+		|| input->i < __strclen(input->line, ' '))
 		return (1);
 	ft_rl_swap_words(input);
 	if (input->i == input->len && ft_rl_geteditmode() == _MD_VI_CMD)

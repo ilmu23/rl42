@@ -6,13 +6,12 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 19:48:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/05 22:19:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 01:37:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_RL_TERM_H
 # define FT_RL_TERM_H
-# include "libft.h"
 # include "ft_rl_data.h"
 
 // misc

@@ -6,13 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 18:48:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 21:59:12 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 15:28:13 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_RL_GLOBALS_H
 # define FT_RL_GLOBALS_H
-# include "libft.h"
+# include "__lft.h"
 # include "ft_rl_data.h"
 
 extern t_hmap	*g_keys;

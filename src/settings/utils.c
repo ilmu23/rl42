@@ -6,12 +6,11 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 10:27:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/30 16:46:48 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:18:28 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
-#include "ft_stdio/ft_printf.h"
 
 uint64_t	ft_rl_get(const uint64_t var)
 {
@@ -57,7 +56,7 @@ void	ft_rl_set(const char *var, const uint64_t val)
 {
 	uint8_t	setting;
 
-	switch(ft_strhash(var, 347, UINT64_MAX))
+	switch(__strhash(var, 347, UINT64_MAX))
 	{
 		case _BSTYLE_HASH:
 			if (val <= BELL_AUDIBLE)
@@ -95,9 +94,9 @@ void	ft_rl_set(const char *var, const uint64_t val)
 			break ;
 		default:
 			if (g_status & _READ_INITFILE)
-				ft_dprintf(2, "rl42: init: set: unrecognized variable '%s'\n", var);
+				__dprintf(2, "rl42: init: set: unrecognized variable '%s'\n", var);
 			else
-				ft_dprintf(2, "rl42: ft_rl_set: unrecognized variable '%s'\n", var);
+				__dprintf(2, "rl42: ft_rl_set: unrecognized variable '%s'\n", var);
 			return ;
 	}
 	switch (val)

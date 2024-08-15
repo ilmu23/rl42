@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 19:13:30 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 18:20:35 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 02:37:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_rl_hist_load(const char *path)
 	g_hist = NULL;
 	if (path && *path == '~')
 	{
-		path = ft_strsjoin(getenv("HOME"), ft_substr(path, 1, ft_strlen(path)), '/');
+		path = __strsjoin(getenv("HOME"), __substr(path, 1, strlen(path)), '/');
 		if (!path)
 			exit(ft_rl_perror());
 	}
@@ -29,12 +29,12 @@ void	ft_rl_hist_load(const char *path)
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 		goto _err;
-	line = ft_push(ft_strtrim(get_next_line(fd), "\t\n\v\f\r"));
+	line = __push(__strtrim(__getline(fd), "\t\n\v\f\r"));
 	while (line)
 	{
-		ft_lstadd_front(&g_hist, ft_lstnew(ft_rl_hist_mknode(line)));
-		ft_popblk(line);
-		line = ft_push(ft_strtrim(get_next_line(fd), "\t\n\v\f\r"));
+		__lstadd_front(&g_hist, __lstnew(ft_rl_hist_mknode(line)));
+		__popblk(line);
+		line = __push(__strtrim(__getline(fd), "\t\n\v\f\r"));
 	}
 	close(fd);
 	return ;
@@ -50,7 +50,7 @@ void	ft_rl_hist_save(const char *path)
 
 	if (path && *path == '~')
 	{
-		path = ft_strsjoin(getenv("HOME"), ft_substr(path, 1, ft_strlen(path)), '/');
+		path = __strsjoin(getenv("HOME"), __substr(path, 1, strlen(path)), '/');
 		if (!path)
 		{
 			ft_rl_perror();
@@ -60,11 +60,11 @@ void	ft_rl_hist_save(const char *path)
 	fd = open(path, O_WRONLY | O_CREAT, 0644);
 	if (fd == -1)
 		goto _err;
-	node = ft_lstlast(g_hist);
+	node = __lstlast(g_hist);
 	while (node)
 	{
 		hnode = node->blk;
-		ft_putendl_fd(hnode->line, fd);
+		__putendl_fd(hnode->line, fd);
 		node = node->prev;
 	}
 	close(fd);

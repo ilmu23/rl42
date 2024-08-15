@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/07 20:55:26 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 04:16:40 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 uint8_t	ft_rl_acl(rl_input_t *input)
 {
-	ft_putstr_fd(TERM_CRNL, 1);
-	input->exittype = ACL;
+	__putstr_fd(TERM_CRNL, 1);
+	input->exittype = E_ACL;
 	return (0);
 }
 
@@ -41,7 +41,7 @@ uint8_t	ft_rl_pvh(rl_input_t *input)
 		count++;
 	}
 	ft_rl_redisplay(input, INPUT);
-	input->i = ft_max(input->len - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
+	input->i = MAX(input->len - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
 	ft_rl_cursor_reset(input);
 	return (1);
 }
@@ -68,7 +68,7 @@ uint8_t	ft_rl_nxh(rl_input_t *input)
 		count++;
 	}
 	ft_rl_redisplay(input, INPUT);
-	input->i = ft_max(input->len - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
+	input->i = MAX(input->len - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
 	ft_rl_cursor_reset(input);
 	return (1);
 }
@@ -78,7 +78,7 @@ uint8_t	ft_rl_soh(rl_input_t *input)
 	if (!ft_rl_hist_get_last(input))
 		return (1);
 	ft_rl_redisplay(input, INPUT);
-	input->i = ft_max(input->len - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
+	input->i = MAX(input->len - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
 	ft_rl_cursor_reset(input);
 	return (1);
 }
@@ -88,7 +88,7 @@ uint8_t	ft_rl_eoh(rl_input_t *input)
 	if (!ft_rl_hist_get_first(input))
 		return (1);
 	ft_rl_redisplay(input, INPUT);
-	input->i = ft_max(input->len - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
+	input->i = MAX(input->len - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
 	ft_rl_cursor_reset(input);
 	return (1);
 }
@@ -97,8 +97,8 @@ uint8_t	ft_rl_rsh(rl_input_t *input)
 {
 	if (!g_hist_cur)
 		return (1);
-	ft_popblk(((rl_histnode_t *)g_hist_cur->blk)->edit);
-	((rl_histnode_t *)g_hist_cur->blk)->edit = ft_push(ft_strdup(input->line));
+	__popblk(((rl_histnode_t *)g_hist_cur->blk)->edit);
+	((rl_histnode_t *)g_hist_cur->blk)->edit = __push(__strdup(input->line));
 	return (ft_rl_hist_search(input, _SEARCH_BCK));
 }
 
@@ -106,8 +106,8 @@ uint8_t	ft_rl_fsh(rl_input_t *input)
 {
 	if (!g_hist_cur)
 		return (1);
-	ft_popblk(((rl_histnode_t *)g_hist_cur->blk)->edit);
-	((rl_histnode_t *)g_hist_cur->blk)->edit = ft_push(ft_strdup(input->line));
+	__popblk(((rl_histnode_t *)g_hist_cur->blk)->edit);
+	((rl_histnode_t *)g_hist_cur->blk)->edit = __push(__strdup(input->line));
 	return (ft_rl_hist_search(input, _SEARCH_FWD));
 }
 
@@ -115,8 +115,8 @@ uint8_t	ft_rl_rsh_i(rl_input_t *input)
 {
 	if (!g_hist_cur)
 		return (1);
-	ft_popblk(((rl_histnode_t *)g_hist_cur->blk)->edit);
-	((rl_histnode_t *)g_hist_cur->blk)->edit = ft_push(ft_strdup(input->line));
+	__popblk(((rl_histnode_t *)g_hist_cur->blk)->edit);
+	((rl_histnode_t *)g_hist_cur->blk)->edit = __push(__strdup(input->line));
 	return (ft_rl_hist_isearch(input, _I_SEARCH_BCK));
 }
 
@@ -124,8 +124,8 @@ uint8_t	ft_rl_fsh_i(rl_input_t *input)
 {
 	if (!g_hist_cur)
 		return (1);
-	ft_popblk(((rl_histnode_t *)g_hist_cur->blk)->edit);
-	((rl_histnode_t *)g_hist_cur->blk)->edit = ft_push(ft_strdup(input->line));
+	__popblk(((rl_histnode_t *)g_hist_cur->blk)->edit);
+	((rl_histnode_t *)g_hist_cur->blk)->edit = __push(__strdup(input->line));
 	return (ft_rl_hist_isearch(input, _I_SEARCH_FWD));
 }
 
@@ -180,7 +180,7 @@ uint8_t	ft_rl_yla(rl_input_t *input)
 				break ;
 		}
 		ft_rl_kill_region(input);
-		input->i = ft_min(input->i, input->len);
+		input->i = MIN(input->i, input->len);
 		ft_rl_hist_yank_arg(input, hist->blk, n);
 		ft_rl_setmark(_MARK_END);
 		input->key = ft_rl_getkey();
