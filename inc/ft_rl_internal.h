@@ -6,23 +6,28 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/07 18:22:14 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 14:41:51 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_RL_INTERNAL_H
 # define FT_RL_INTERNAL_H
 # include "rl42.h"
+# include "__lft.h"
 # include "ft_rl_fns.h"
 # include "ft_rl_term.h"
 # include "ft_rl_globals.h"
+# include <ctype.h>
 # include <errno.h>
 # include <fcntl.h>
+# include <stdio.h>
 # include <dirent.h>
 # include <signal.h>
+# include <unistd.h>
 # include <termios.h>
 # include <sys/stat.h>
 # include <sys/ioctl.h>
+# include <sys/param.h>
 
 // error.c
 int32_t			ft_rl_perror(void);

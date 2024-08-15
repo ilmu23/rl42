@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:44:17 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 19:11:47 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 02:28:52 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_rl_initkeys(void)
 	uint64_t	val;
 
 	ft_rl_addkey("<SPC>", KEY_SPACE);
-	ft_strlcpy(key, "!", 2);
+	__strlcpy(key, "!", 2);
 	val = KEY_BANG;
 	while (val <= KEY_TILDE)
 	{
@@ -27,7 +27,7 @@ void	ft_rl_initkeys(void)
 	}
 	ft_rl_addkey("<BCK>", KEY_BACKSPACE);
 	ft_rl_addkey("<C-@>", KEY_CTRL_AT);
-	ft_strlcpy(key, "<C-a>", 6);
+	__strlcpy(key, "<C-a>", 6);
 	val = KEY_CTRL_A;
 	while (val <= KEY_CTRL_Z)
 	{
@@ -40,7 +40,7 @@ void	ft_rl_initkeys(void)
 	ft_rl_addkey("<C-~>", KEY_CTRL_TILDE);
 	ft_rl_addkey("<C-_>", KEY_CTRL_UNDERSCORE);
 	ft_rl_addkey("<M-SPC>", KEY_ALT_SPACE);
-	ft_strlcpy(key, "<M-!>", 6);
+	__strlcpy(key, "<M-!>", 6);
 	val = KEY_ALT_BANG;
 	while (val <= (KEY_ALT_TILDE))
 	{
@@ -50,7 +50,7 @@ void	ft_rl_initkeys(void)
 	}
 	ft_rl_addkey("<M-BCK>", KEY_ALT_BACKSPACE);
 	ft_rl_addkey("<M-C-@>", KEY_ALT_CTRL_AT);
-	ft_strlcpy(key, "<M-C-a>", 8);
+	__strlcpy(key, "<M-C-a>", 8);
 	val = KEY_ALT_CTRL_A;
 	while (val <= (KEY_ALT_CTRL_Z))
 	{

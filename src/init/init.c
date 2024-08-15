@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 22:07:17 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 04:17:07 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ void	ft_rl_init(void)
 
 	if (init)
 		return ;
-	g_keys = ft_mapnew();
-	g_funcs = ft_mapnew();
-	g_map_emacs = ft_mapnew();
-	g_map_vi_ins = ft_mapnew();
-	g_map_vi_cmd = ft_mapnew();
+	g_keys = __mapnew();
+	g_funcs = __mapnew();
+	g_map_emacs = __mapnew();
+	g_map_vi_ins = __mapnew();
+	g_map_vi_cmd = __mapnew();
 	tcgetattr(0, &g_oldsettings);
 	g_newsettings = g_oldsettings;
 	g_newsettings.c_iflag &= ~(ICRNL | IXON);
@@ -37,12 +37,12 @@ void	ft_rl_init(void)
 	tcsetattr(0, TCSANOW, &g_newsettings);
 	if (!g_keys || !g_funcs || !g_map_emacs || !g_map_vi_ins || !g_map_vi_cmd
 		|| atexit(_ft_rl_exit))
-		ft_exit(ft_rl_perror());
+		__exit(ft_rl_perror());
 	g_argument.set = 0;
 	g_mark_s.set = 0;
 	g_mark_e.set = 0;
 	g_mark_u.set = 0;
-	ft_putstr_fd(TERM_CUR_HIDE, 1);
+	__putstr_fd(TERM_CUR_HIDE, 1);
 	ft_rl_updatetermsize();
 	ft_rl_hist_load(_FT_RL_HFILE);
 	ft_rl_initkeys();
@@ -64,13 +64,13 @@ void	ft_rl_init(void)
 
 void	ft_rl_init_input(const char *p, const uint64_t plen)
 {
-	ft_memcpy(&g_input, &(rl_input_t){.line = NULL, .prompt = p, .keystr = NULL,
-			.exittype = ACL, .cursor = ft_rl_cursor_init(), .plen = plen,
+	memcpy(&g_input, &(rl_input_t){.line = NULL, .prompt = p, .keystr = NULL,
+			.exittype = E_ACL, .cursor = ft_rl_cursor_init(), .plen = plen,
 			.len = 0, .key = 0, .i = 0}, sizeof(g_input));
 	if (g_hist_cur)
 		g_input.line = (char *)((rl_histnode_t *)g_hist_cur->blk)->line;
 	else
-		g_input.line = ft_push(ft_strdup(""));
+		g_input.line = __push(__strdup(""));
 	if (!g_input.cursor || !g_input.line)
 		exit(ft_rl_perror());
 }
@@ -260,6 +260,6 @@ static inline void	_ft_rl_exit(void)
 	if (g_hist)
 		ft_rl_hist_save(_FT_RL_HFILE);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
-	ft_putstr_fd(TERM_CUR_SHOW, 1);
-	ft_return(42);
+	__putstr_fd(TERM_CUR_SHOW, 1);
+	__return(42);
 }

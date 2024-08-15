@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/08/08 12:36:12 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/08/15 14:44:07 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,10 +26,8 @@ CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
 SRCDIR	=	src
 OBJDIR	=	obj
 INCDIR	=	inc
-LIBDIR	=	libft
 
-LFT		=	$(LIBDIR)/libft.a
-INC		=	-I$(INCDIR) -I$(LIBDIR)/$(INCDIR)
+INC		=	-I$(INCDIR)
 
 COMPDIR		=	comp
 FNDIR		=	fns
@@ -39,6 +37,7 @@ INPUTDIR	=	input
 KEYDIR		=	keys
 SETTINGSDIR	=	settings
 TERMDIR		=	term
+LFTDIR		=	__lft
 
 COMPFILES	=	completion.c \
 				utils.c
@@ -73,6 +72,41 @@ SETTINGSFILES	=	utils.c
 TERMFILES	=	cursor.c \
 				utils.c
 
+LFTFILES	=	__alloc.c \
+				__calloc.c \
+				__clean.c \
+				__exit.c \
+				__getblksize.c \
+				__lstadd_back.c \
+				__lstadd_front.c \
+				__lstfirst.c \
+				__lstlast.c \
+				__lstnew.c \
+				__lstpop.c \
+				__lstpopall.c \
+				__lstpush.c \
+				__lstpushall.c \
+				__lstrmnode.c \
+				__map_utils.c \
+				__mapadd.c \
+				__mapget.c \
+				__mapnew.c \
+				__mappop.c \
+				__maprm.c \
+				__mark.c \
+				__misc.c \
+				__obj.c \
+				__objmap.c \
+				__objpair.c \
+				__pop.c \
+				__push.c \
+				__pushtrap.c \
+				__put.c \
+				__return.c \
+				__str.c \
+				__sweep.c \
+				__vm.c
+
 FILES	=	rl42.c \
 			color.c \
 			error.c \
@@ -85,7 +119,8 @@ FILES	=	rl42.c \
 			$(addprefix $(INPUTDIR)/, $(INPUTFILES)) \
 			$(addprefix $(KEYDIR)/, $(KEYFILES)) \
 			$(addprefix $(SETTINGSDIR)/, $(SETTINGSFILES)) \
-			$(addprefix $(TERMDIR)/, $(TERMFILES))
+			$(addprefix $(TERMDIR)/, $(TERMFILES)) \
+			$(addprefix $(LFTDIR)/, $(LFTFILES))
 
 SRCS	=	$(addprefix $(SRCDIR)/, $(FILES))
 OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
@@ -96,10 +131,10 @@ test: a.out
 
 a.out: $(NAME)
 	@printf "\e[1;35mRL42 >\e[m Compiling test\n"
-	@$(CC) $(CFLAGS) $(INC) test.c -L. -Llibft -lrl42 -lft -o $@
+	@$(CC) $(CFLAGS) $(INC) test.c -L. -lrl42 -lm -o $@
 	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
 
-$(NAME): $(LFT) $(OBJDIR) $(OBJS)
+$(NAME): $(OBJDIR) $(OBJS)
 	@printf "\e[1;35mRL42 >\e[m Creating %s\n" $@
 	@ar -crs $(NAME) $(OBJS)
 	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
@@ -117,17 +152,18 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(KEYDIR)
 	@mkdir -p $(OBJDIR)/$(SETTINGSDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
+	@mkdir -p $(OBJDIR)/$(LFTDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-	@make --no-print-directory -C $(LIBDIR) clean
+#	@make --no-print-directory -C $(LIBDIR) clean
 	@rm -f $(OBJS)
 
 fclean: clean
-	@make --no-print-directory -C $(LIBDIR) fclean
+#	@make --no-print-directory -C $(LIBDIR) fclean
 	@rm -rf $(OBJDIR)
 	@rm -rf a.out.dSYM
 	@rm -f a.out

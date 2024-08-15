@@ -6,21 +6,20 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 21:52:51 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 02:34:31 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
-#include "ft_stdio/ft_printf.h"
 
 uint8_t	ft_rl_mta(rl_input_t *input)
 {
 	uint16_t	key;
 
-	ft_putstr_fd(TERM_CUR_SHOW, 1);
+	__putstr_fd(TERM_CUR_SHOW, 1);
 	if (read(0, &key, 1) == -1)
 		exit(ft_rl_perror());
-	ft_putstr_fd(TERM_CUR_HIDE, 1);
+	__putstr_fd(TERM_CUR_HIDE, 1);
 	key = key << 8 | '\e';
 	input->keystr = ft_rl_keystr(key);
 	return (ft_rl_execmap(input));
@@ -39,10 +38,10 @@ uint8_t	ft_rl_dcl(rl_input_t *input)
 	}
 	input->i = input->len;
 	ft_rl_cursor_reset(input);
-	ft_popblks(2, input->cursor, input->line);
-	ft_printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
+	__popblks(2, input->cursor, input->line);
+	printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
 	ft_rl_init_input(input->prompt, input->plen);
-	ft_putstr_fd(input->prompt, 1);
+	__putstr_fd(input->prompt, 1);
 	ft_rl_cursor_getpos(&input->cursor->row, &input->cursor->col);
 	input->cursor->i_row = input->cursor->row;
 	input->cursor->i_col = input->cursor->col;
@@ -56,7 +55,7 @@ uint8_t ft_rl_smk(rl_input_t *input)
 	if (g_argument.set)
 	{
 		i = input->i;
-		input->i = ft_min(ft_rl_getarg(), input->len);
+		input->i = MIN(ft_rl_getarg(), input->len);
 		ft_rl_setmark(_MARK_USR);
 		input->i = i;
 	}
@@ -79,7 +78,7 @@ uint8_t	ft_rl_xmk(rl_input_t *input)
 
 	if (!g_mark_u.set)
 		return (1);
-	i = ft_min(g_mark_u.pos, input->len);
+	i = MIN(g_mark_u.pos, input->len);
 	ft_rl_setmark(_MARK_USR);
 	input->i = i;
 	ft_rl_redisplay(input, INPUT);
@@ -165,13 +164,13 @@ uint8_t	ft_rl_arg(rl_input_t *input)
 		else
 			g_argument.arg = 0;
 	}
-	input->sprompt = ft_push(ft_itoa(g_argument.arg));
+	input->sprompt = __push(__itoa(g_argument.arg));
 	ft_rl_redisplay(input, SPROMPT);
 	input->key = ft_rl_getkey();
 	while (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
 	{
-		g_argument.arg = ft_min(g_argument.arg * 10 + (input->key - KEY_NUM_0), _ARG_MAX);
-		input->sprompt = ft_push(ft_itoa(g_argument.arg));
+		g_argument.arg = MIN(g_argument.arg * 10 + (input->key - KEY_NUM_0), _ARG_MAX);
+		input->sprompt = __push(__itoa(g_argument.arg));
 		ft_rl_redisplay(input, SPROMPT);
 		input->key = ft_rl_getkey();
 		if (g_argument.arg == _ARG_MAX)
@@ -191,13 +190,13 @@ uint8_t	ft_rl_arg_n(rl_input_t *input)
 
 	g_argument.set = 1;
 	g_argument.arg = 0;
-	input->sprompt = ft_push(ft_strdup("-"));
+	input->sprompt = __push(__strdup("-"));
 	ft_rl_redisplay(input, SPROMPT);
 	input->key = ft_rl_getkey();
 	while (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
 	{
-		g_argument.arg = ft_max(g_argument.arg * 10 - (input->key - KEY_NUM_0), _ARG_MIN);
-		input->sprompt = ft_push(ft_itoa(g_argument.arg));
+		g_argument.arg = MAX(g_argument.arg * 10 - (input->key - KEY_NUM_0), _ARG_MIN);
+		input->sprompt = __push(__itoa(g_argument.arg));
 		ft_rl_redisplay(input, SPROMPT);
 		input->key = ft_rl_getkey();
 		if (g_argument.arg == _ARG_MIN)
@@ -229,7 +228,7 @@ uint8_t	ft_rl_md_vi(rl_input_t *input)
 uint8_t	ft_rl_md_va(rl_input_t *input)
 {
 	ft_rl_seteditmode(_MD_VI_INS);
-	input->i = ft_min(input->i + 1, input->len);
+	input->i = MIN(input->i + 1, input->len);
 	ft_rl_cursor_reset(input);
 	return (1);
 }
@@ -252,7 +251,7 @@ uint8_t	ft_rl_md_vA(rl_input_t *input)
 uint8_t	ft_rl_md_vc(rl_input_t *input)
 {
 	ft_rl_seteditmode(_MD_VI_CMD);
-	input->i = ft_max(input->i - 1, 0);
+	input->i = MAX(input->i - 1, 0);
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }

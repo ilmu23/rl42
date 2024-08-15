@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 22:27:20 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 04:16:23 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ struct termios	g_newsettings;
 
 static inline uint64_t	_plen(const char *p);
 static inline uint8_t	_getinput(void);
+static inline char	*_strdup(const char *s);
 static inline char	*_getline(const char *p);
 static inline void	_histcommit(const char *line, const uint8_t opts);
 static inline void	_rl_signal(const uint8_t mode);
@@ -60,11 +61,11 @@ char	*ft_readline(const char *p, const uint8_t opts)
 {
 	char			*out;
 
-	ft_push(p);
+	__push(p);
 	ft_rl_init();
 	g_hist_cur = NULL;
 	tcsetattr(0, TCSANOW, &g_newsettings);
-	ft_putstr_fd(TERM_CUR_HIDE, 1);
+	__putstr_fd(TERM_CUR_HIDE, 1);
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 	{
 		ft_rl_hist_newnode();
@@ -76,9 +77,9 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 		_histcommit(out, opts);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
-	ft_putstr_fd(TERM_CUR_SHOW, 1);
-	ft_popblk(p);
-	return (out);
+	__putstr_fd(TERM_CUR_SHOW, 1);
+	__popblk(p);
+	return (_strdup(out));
 }
 
 static inline uint64_t	_plen(const char *p)
@@ -111,34 +112,47 @@ static inline uint8_t	_getinput(void)
 	return (ft_rl_execmap(&g_input));
 }
 
+static inline char	*_strdup(const char *s)
+{
+	char	*out;
+
+	if (!s)
+		return (NULL);
+	out = malloc(__getblksize(s));
+	if (!out)
+		return (NULL);
+	__strlcpy(out, s, __getblksize(s));
+	return (out);
+}
+
 static inline char	*_getline(const char *p)
 {
 	ft_rl_init_input(p, _plen(p));
-	ft_putstr_fd(p, 1);
+	__putstr_fd(p, 1);
 	ft_rl_cursor_getpos(&g_input.cursor->row, &g_input.cursor->col);
 	g_input.cursor->i_row = g_input.cursor->row;
 	g_input.cursor->i_col = g_input.cursor->col;
 	while (_getinput())
 		;
-	ft_popblk(g_input.line);
-	if (g_input.exittype == EOF)
+	__popblk(g_input.line);
+	if (g_input.exittype == E_EOF)
 		return (NULL);
-	return (ft_strdup(g_input.line));
+	return (__strdup(g_input.line));
 }
 
 static inline void	_histcommit(const char *line, const uint8_t opts)
 {
 	rl_histnode_t	*node;
 
-	if (opts & FT_RL_HIST_NOUP || g_input.exittype == EOF || !*line)
+	if (opts & FT_RL_HIST_NOUP || g_input.exittype == E_EOF || !*line)
 		ft_rl_hist_rmnode();
 	else
 	{
 		node = (rl_histnode_t *)g_hist->blk;
 		if (node)
 		{
-			ft_popblk(node->line);
-			node->line = ft_push(ft_strdup(line));
+			__popblk(node->line);
+			node->line = __push(__strdup(line));
 			if (!node->line)
 				exit(ft_rl_perror());
 		}

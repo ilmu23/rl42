@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/07/04 17:11:10 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 02:27:02 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,18 @@ void	ft_rl_complete(rl_input_t *input)
 	const char		*pattern;
 	const t_list	*completions;
 
-	if (ft_isspace(input->line[input->i])
-		&& ft_isspace(input->line[ft_max(input->i - 1, 0)]))
+	if (isspace(input->line[input->i])
+		&& isspace(input->line[MAX(input->i - 1, 0)]))
 		ft_rl_setmark(_MARK_START | _MARK_END);
 	else
 	{
 		ft_rl_word_start();
 		ft_rl_setmark(_MARK_START);
 		ft_rl_word_end();
-		input->i = ft_min(input->i + 1, input->len);
+		input->i = MIN(input->i + 1, input->len);
 		ft_rl_setmark(_MARK_END);
 	}
-	pattern = ft_push(ft_substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos));
+	pattern = __push(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos));
 	if (ft_rl_get(_CMP_CASE_HASH))
 		pattern = _uncase((char *)pattern);
 	completions = _complete(pattern);
@@ -56,19 +56,19 @@ static inline t_list	*_complete(const char *pattern)
 	const char	*pat;
 
 	out = NULL;
-	path = ft_strrchr(pattern, '/');
+	path = strrchr(pattern, '/');
 	if (path)
 	{
-		path = ft_substr(pattern, 0, path - pattern);
-		if (ft_strequals(path, ""))
-			path = ft_strdup("/");
-		pat = ft_strrchr(pattern, '/') + 1;
-		_match(pat, opendir(ft_push(path)), (const t_list **)&out);
+		path = __substr(pattern, 0, path - pattern);
+		if (__strequals(path, ""))
+			path = __strdup("/");
+		pat = strrchr(pattern, '/') + 1;
+		_match(pat, opendir(__push(path)), (const t_list **)&out);
 	}
 	else
 		_match(pattern, opendir("."), (const t_list **)&out);
 	_buildpath(path, out);
-	ft_popblk(path);
+	__popblk(path);
 	return (_increment(out, pattern));
 }
 
@@ -84,7 +84,7 @@ static inline t_list	*_increment(t_list *completions, const char *pattern)
 	if (!completions || !completions->next)
 		return (completions);
 	maxlen = ft_rl_comp_getlongest(completions);
-	common = ft_calloc(maxlen + 1, sizeof(*common));
+	common = __calloc(maxlen + 1, sizeof(*common));
 	if (!common)
 		exit(ft_rl_perror());
 	i = 0;
@@ -99,7 +99,7 @@ static inline t_list	*_increment(t_list *completions, const char *pattern)
 				cur = '_';
 			__attribute__ ((fallthrough));
 		case 1:
-			cur = ft_tolower(cur);
+			cur = tolower(cur);
 	}
 	start = completions;
 	while (cur)
@@ -117,7 +117,7 @@ static inline t_list	*_increment(t_list *completions, const char *pattern)
 						cur = '_';
 					__attribute__ ((fallthrough));
 				case 1:
-					cur = ft_tolower(cur);
+					cur = tolower(cur);
 			}
 			continue ;
 		}
@@ -128,18 +128,18 @@ static inline t_list	*_increment(t_list *completions, const char *pattern)
 					continue ;
 				__attribute__ ((fallthrough));
 			case 1:
-				if (ft_tolower(((uint8_t *)completions->blk)[i]) == cur)
+				if (tolower(((uint8_t *)completions->blk)[i]) == cur)
 					continue ;
 		}
 		if (((uint8_t *)completions->blk)[i] == cur)
 			continue ;
 		break ;
 	}
-	if (!*common || ft_strequals(common, pattern))
+	if (!*common || __strequals(common, pattern))
 		return (start);
-	ft_popblk(completions->blk);
-	completions->blk = ft_push(common);
-	ft_lstpopall(completions->next);
+	__popblk(completions->blk);
+	completions->blk = __push(common);
+	__lstpopall(completions->next);
 	completions->next = NULL;
 	return (completions);
 }
@@ -148,7 +148,7 @@ static inline char	*_uncase(char *fname)
 {
 	size_t	i;
 
-	fname = ft_strlower(fname);
+	fname = __strlower(fname);
 	if (ft_rl_get(_CMP_MCASE_HASH))
 	{
 		i = 0;
@@ -165,7 +165,7 @@ static inline char	*_uncase(char *fname)
 static inline void	_match(const char *pattern, DIR *dir, const t_list **completions)
 {
 	struct dirent	*data;
-	const uint64_t	plen = ft_strlen(pattern);
+	const uint64_t	plen = strlen(pattern);
 	const char		*fname;
 
 	if (!dir)
@@ -174,14 +174,14 @@ static inline void	_match(const char *pattern, DIR *dir, const t_list **completi
 	while (data)
 	{
 		if (ft_rl_get(_CMP_CASE_HASH))
-			fname = _uncase(ft_strdup(data->d_name));
+			fname = _uncase(__strdup(data->d_name));
 		else
-			fname = ft_strdup(data->d_name);
-		if (!ft_strequals(fname, ".")
-			&& !ft_strequals(fname, "..")
-			&& !ft_strncmp(fname, pattern, plen)
+			fname = __strdup(data->d_name);
+		if (!__strequals(fname, ".")
+			&& !__strequals(fname, "..")
+			&& !strncmp(fname, pattern, plen)
 			&& (ft_rl_get(_CMP_HFILES_HASH) || *fname != '.'))
-			ft_lstadd_back(completions, ft_lstnew(ft_strdup(data->d_name)));
+			__lstadd_back(completions, __lstnew(__strdup(data->d_name)));
 		data = readdir(dir);
 	}
 	closedir(dir);
@@ -189,22 +189,22 @@ static inline void	_match(const char *pattern, DIR *dir, const t_list **completi
 
 static inline void	_buildpath(const char *path, t_list *completions)
 {
-	const uint8_t	ptype = ft_strequals(path, "/");
+	const uint8_t	ptype = __strequals(path, "/");
 
 	while (completions)
 	{
 		if (path)
 		{
-			ft_popblk(completions->blk);
+			__popblk(completions->blk);
 			if (ptype)
-				completions->blk = ft_push(ft_strjoin(path, completions->blk));
+				completions->blk = __push(__strjoin(path, completions->blk));
 			else
-				completions->blk = ft_push(ft_strsjoin(path, completions->blk, '/'));
+				completions->blk = __push(__strsjoin(path, completions->blk, '/'));
 		}
 		if (ft_rl_isdir(completions->blk) && ft_rl_get(_CMP_MDIRS_HASH))
 		{
-			ft_popblk(completions->blk);
-			completions->blk = ft_push(ft_strjoin(completions->blk, "/"));
+			__popblk(completions->blk);
+			completions->blk = __push(__strjoin(completions->blk, "/"));
 		}
 		completions = completions->next;
 	}
@@ -214,17 +214,17 @@ static inline void	_replace(rl_input_t *input, const char *completion)
 {
 	const char	*subs[2];
 
-	subs[0] = ft_push(ft_substr(input->line, 0, g_mark_s.pos));
-	subs[1] = ft_push(ft_substr(input->line, g_mark_e.pos, input->len - g_mark_e.pos));
+	subs[0] = __push(__substr(input->line, 0, g_mark_s.pos));
+	subs[1] = __push(__substr(input->line, g_mark_e.pos, input->len - g_mark_e.pos));
 	if (!subs[0] || !subs[1])
 		exit(ft_rl_perror());
-	ft_popblk(input->line);
-	input->line = ft_push(ft_strnjoin(3, subs[0], completion, subs[1]));
+	__popblk(input->line);
+	input->line = __push(__strnjoin(3, subs[0], completion, subs[1]));
 	if (!input->line)
 		exit(ft_rl_perror());
-	ft_popblks(2, subs[0], subs[1]);
-	g_mark_e.pos = g_mark_s.pos + ft_strlen(completion);
-	input->len = ft_strlen(input->line);
+	__popblks(2, subs[0], subs[1]);
+	g_mark_e.pos = g_mark_s.pos + strlen(completion);
+	input->len = strlen(input->line);
 	input->i = g_mark_e.pos;
 	ft_rl_redisplay(input, INPUT);
 }
@@ -234,19 +234,19 @@ static inline void	_replace_mult(rl_input_t *input, const t_list *completions)
 	const void	*prv;
 
 	prv = NULL;
-	if (!ft_rl_comp_display(input, ft_lstfirst(completions), NULL, prv))
+	if (!ft_rl_comp_display(input, __lstfirst(completions), NULL, prv))
 		return ;
 	input->key = ft_rl_getkey();
 	while (ft_rl_getmap(input->key) == ft_rl_cmp)
 	{
 		_replace(input, completions->blk);
 		if (ft_rl_get(_CMP_HLIGHT_HASH))
-			ft_rl_comp_display(input, ft_lstfirst(completions), completions->blk, prv);
+			ft_rl_comp_display(input, __lstfirst(completions), completions->blk, prv);
 		prv = completions->blk;
 		if (completions->next)
 			completions = completions->next;
 		else
-			completions = ft_lstfirst(completions);
+			completions = __lstfirst(completions);
 		input->key = ft_rl_getkey();
 	}
 	ft_rl_redisplay(input, CLEAR);

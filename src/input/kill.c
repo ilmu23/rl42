@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 04:07:16 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 12:58:17 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/15 02:46:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ void	ft_rl_kill_word(rl_input_t *input, const uint8_t direction)
 			ft_rl_setmark(_MARK_START);
 			break ;
 		case _KILL_FWD:
-			while (input->i < input->len && ft_isspace(input->line[input->i]))
+			while (input->i < input->len && isspace(input->line[input->i]))
 				input->i++;
 			ft_rl_word_end();
 			input->i++;
-			while (ft_isspace(input->line[input->i]))
+			while (isspace(input->line[input->i]))
 				input->i++;
 			ft_rl_setmark(_MARK_END);
 			break ;
@@ -65,12 +65,12 @@ void ft_rl_kill_region(rl_input_t *input)
 {
 	const char	*subs[2];
 
-	subs[0] = ft_push(ft_substr(input->line, 0, g_mark_s.pos));
-	subs[1] = ft_push(ft_substr(input->line, g_mark_e.pos, input->len - g_mark_e.pos));
+	subs[0] = __push(__substr(input->line, 0, g_mark_s.pos));
+	subs[1] = __push(__substr(input->line, g_mark_e.pos, input->len - g_mark_e.pos));
 	if (!subs[0] || !subs[1])
 		exit(ft_rl_perror());
-	ft_popblk(input->line);
-	input->line = ft_push(ft_strjoin(subs[0], subs[1]));
-	ft_popblks(2, subs[0], subs[1]);
-	input->len = ft_strlen(input->line);
+	__popblk(input->line);
+	input->line = __push(__strjoin(subs[0], subs[1]));
+	__popblks(2, subs[0], subs[1]);
+	input->len = strlen(input->line);
 }
