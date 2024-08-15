@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 15:34:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:09:48 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/16 01:34:14 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,20 @@ size_t	__uintlen_base(uint64_t n, const t_base base)
 	{
 		case BINARY:
 			div = 2;
+			break ;
 		case OCTAL:
 			div = 8;
+			break ;
 		case DECIMAL:
 			div = 10;
+			break ;
 		case HEX:
 			div = 16;
+			break ;
+		default:
+			div = 10;
 	}
-	while (n > div - 1)
+	while (n > (uint8_t)(div - 1))
 	{
 		n /= div;
 		digits++;
@@ -81,12 +87,18 @@ size_t	__intlen_base(int64_t n, const t_base base)
 	{
 		case BINARY:
 			div = 2;
+			break ;
 		case OCTAL:
 			div = 8;
+			break ;
 		case DECIMAL:
 			div = 10;
+			break ;
 		case HEX:
 			div = 16;
+			break ;
+		default:
+			div = 10;
 	}
 	while (n > div - 1)
 	{
@@ -166,7 +178,7 @@ static inline char	*_bufsft(char *dst, const char *src, const size_t n)
 		dst[i] = src[i];
 		i++;
 	}
-	dst[n] = '\0';
+	memset(dst + n, '\0', strlen(dst + n));
 	if (*dst)
 		return (dst);
 	return (NULL);

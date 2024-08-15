@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 15:57:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:07:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/16 01:22:07 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,14 +192,20 @@ char	*__utoa_base(uint64_t n, const t_base base)
 	{
 		case BINARY:
 			div = 2;
+			break ;
 		case OCTAL:
 			div = 8;
+			break ;
 		case DECIMAL:
 			div = 10;
+			break ;
 		case HEX:
 			div = 16;
+			break ;
+		default:
+			div = 10;
 	}
-	while (n > div - 1)
+	while (n > (uint8_t)(div - 1))
 	{
 		out[i--] = _HEXARR[n % div];
 		n /= div;
@@ -223,12 +229,18 @@ char	*__itoa_base(int64_t n, const t_base base)
 	{
 		case BINARY:
 			div = 2;
+			break ;
 		case OCTAL:
 			div = 8;
+			break ;
 		case DECIMAL:
 			div = 10;
+			break ;
 		case HEX:
 			div = 16;
+			break ;
+		default:
+			div = 10;
 	}
 	if (!out)
 		return (NULL);
@@ -340,4 +352,5 @@ static inline char	*_basemin(const t_base base)
 		case HEX:
 			return (__strdup("-8000000000000000"));
 	}
+	return (NULL);
 }
