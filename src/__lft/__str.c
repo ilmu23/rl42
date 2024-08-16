@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 15:57:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/16 01:22:07 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/16 19:26:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ size_t	__strlcpy(char *dst, const char *src, const size_t size)
 	size_t	i;
 
 	if (size == 0)
-		return (strlen(src));
+		return ((src) ? strlen(src) : 0);
 	i = 0;
 	while (i < size - 1 && src[i])
 	{
@@ -51,7 +51,7 @@ size_t	__strlcpy(char *dst, const char *src, const size_t size)
 		i++;
 	}
 	dst[i] = '\0';
-	return (strlen(src));
+	return ((src) ? strlen(src) : 0);
 }
 
 char	**__split(const char *s, const uint8_t c)
