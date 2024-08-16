@@ -6,13 +6,14 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:19:18 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/16 19:10:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline void	_mark(const rl_input_t *input);
+static inline uint8_t	_islastword(const rl_input_t *input);
+static inline void		_mark(const rl_input_t *input);
 
 void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 {
@@ -87,13 +88,15 @@ void	ft_rl_swap_words(rl_input_t *input)
 	uint64_t	marks[4];
 	const char	*subs[2];
 
+	if (input->i == input->len)
+		input->i--;
 	while (input->i > 0 && isspace(input->line[input->i]))
 		input->i--;
 	ft_rl_word_start();
 	marks[0] = input->i;
 	ft_rl_word_end();
 	marks[1] = MIN(input->i + 1, input->len);
-	if (input->i < input->len)
+	if (!_islastword(input))
 		ft_rl_fwd_w(input);
 	else
 	{
@@ -182,6 +185,19 @@ void	ft_rl_word_end(void)
 		return ;
 	while (g_input.i < g_input.len && !isspace(g_input.line[g_input.i + 1]))
 		g_input.i++;
+}
+
+static inline uint8_t	_islastword(const rl_input_t *input)
+{
+	uint64_t	i;
+
+	i = input->i;
+	while (++i < input->len)
+	{
+		if (!isspace(input->line[i]))
+			return (0);
+	}
+	return (1);
 }
 
 static inline void	_mark(const rl_input_t *input)
