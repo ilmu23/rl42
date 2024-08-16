@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 03:12:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 18:50:40 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/16 16:57:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ static inline void	_addstr(t_list **out, t_pf_conversion *cnv, char *str)
 
 	if (cnv->arg.type == percent)
 		cnv->flags = 0;
-	slen = strlen(str);
+	slen = (str) ? strlen(str) : 0;
 	if (cnv->flags & PF_FLAG_WIDTH && cnv->width > slen)
 	{
 		if (!str)
