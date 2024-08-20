@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 18:48:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 15:28:13 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/20 19:13:56 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ extern t_hmap	*g_funcs;
 extern t_hmap	*g_map_emacs;
 extern t_hmap	*g_map_vi_ins;
 extern t_hmap	*g_map_vi_cmd;
+
 
 extern int16_t	g_rows;
 extern int16_t	g_cols;
@@ -43,6 +44,7 @@ extern rl_cmp_fn_t	g_cmp_fn;
 
 extern const t_list	*g_hist;
 extern const t_list	*g_hist_cur;
+extern const t_list	*g_kill_ring;
 extern const t_list	*g_blocks;
 
 extern rl_settings_t	g_settings;
