@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/08/15 19:13:57 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/08/30 16:14:48 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -123,6 +123,7 @@ FILES	=	rl42.c \
 			color.c \
 			error.c \
 			exec.c \
+			kring.c \
 			utils.c \
 			$(addprefix $(COMPDIR)/, $(COMPFILES)) \
 			$(addprefix $(FNDIR)/, $(FNFILES)) \

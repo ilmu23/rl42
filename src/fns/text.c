@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/30 15:45:40 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/30 17:01:24 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -437,6 +437,63 @@ uint8_t	ft_rl_tpw(rl_input_t *input)
 		input->i--;
 	ft_rl_redisplay(input, INPUT);
 	return (1);
+}
+
+uint8_t	ft_rl_ynk(rl_input_t *input)
+{
+	size_t		slen;
+	const char	*s;
+	rl_fn_t		f;
+
+	s = ft_rl_kring_yank();
+	if (!s)
+		return (1);
+	slen = strlen(s);
+	__popblk(input->line);
+	if (input->i == 0)
+		input->line = __push(__strjoin(s, input->line));
+	else if (input->i == input->len)
+		input->line = __push(__strjoin(input->line, s));
+	else
+		input->line = __push(__strnjoin(3, __substr(input->line, 0, input->i), s, __substr(input->line, input->i, input->len)));
+	input->len += slen;
+	input->i += slen;
+	ft_rl_redisplay(input, INPUT);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (f == ft_rl_ynp)
+	{
+		ft_rl_setmark(_MARK_END);
+		input->i -= slen;
+		ft_rl_setmark(_MARK_START);
+	}
+	return (f(input));
+}
+
+uint8_t	ft_rl_ynp(rl_input_t *input)
+{
+	const char	*subs[2];
+	const char	*s;
+	rl_fn_t		f;
+
+	ft_rl_kring_rotate();
+	s = ft_rl_kring_yank();
+	if (!s)
+		return (1);
+	subs[0] = __push(__substr(input->line, 0, g_mark_s.pos));
+	subs[1] = __push(__substr(input->line, g_mark_e.pos, input->len));
+	__popblk(input->line);
+	input->line = __push(__strnjoin(3, subs[0], s, subs[1]));
+	__popblks(2, subs[0], subs[1]);
+	g_mark_e.pos = g_mark_s.pos + strlen(s);
+	input->len = strlen(input->line);
+	input->i = g_mark_e.pos;
+	ft_rl_redisplay(input, INPUT);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (f != ft_rl_ynp)
+		ft_rl_unsetmark(_MARK_START | _MARK_END);
+	return (f(input));
 }
 
 static inline uint8_t	_iskill(rl_fn_t f)

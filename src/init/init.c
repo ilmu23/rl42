@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/30 15:48:14 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/30 17:13:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,8 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_map("<M-BCK>", "backward-kill-word", QUIET);
 	ft_rl_map("<M-U-DEL>", "kill-region", QUIET);
 	ft_rl_map("<M-\\>", "delete-horizontal-space", QUIET);
+	ft_rl_map("<C-y>", "yank", QUIET);
+	ft_rl_map("<M-y>", "yank-pop", QUIET);
 	ft_rl_map("<C-t>", "transpose-characters", QUIET);
 	ft_rl_map("<M-t>", "transpose-words", QUIET);
 	ft_rl_map("<TAB>", "complete", QUIET);
@@ -214,6 +216,7 @@ static inline void	_vi_cmd_default_binds(void)
 	ft_rl_map("F", "backward-find-character", QUIET);
 	ft_rl_map("I", "vi-insert-mode-I", QUIET);
 	ft_rl_map("M", "unset-mark", QUIET);
+	ft_rl_map("P", "yank-pop", QUIET);
 	ft_rl_map("S", "vi-subst-line", QUIET);
 	ft_rl_map("X", "backward-remove-char", QUIET);
 	ft_rl_map("Z", "discard-line", QUIET);
@@ -229,6 +232,7 @@ static inline void	_vi_cmd_default_binds(void)
 	ft_rl_map("k", "previous-history", QUIET);
 	ft_rl_map("l", "forward-char", QUIET);
 	ft_rl_map("m", "set-mark", QUIET);
+	ft_rl_map("p", "yank", QUIET);
 	ft_rl_map("r", "vi-replace", QUIET);
 	ft_rl_map("s", "vi-subst", QUIET);
 	ft_rl_map("w", "forward-word", QUIET);

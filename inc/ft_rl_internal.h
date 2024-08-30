@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/30 15:37:26 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/30 16:02:02 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ uint8_t			ft_rl_execmap(rl_input_t *input);
 
 // color.c
 char			*ft_rl_hlcolor(void);
+
+// kring.c
+char			*ft_rl_kring_yank(void);
+void			ft_rl_kring_rotate(void);
 
 // utils.c
 rl_block_t		*ft_rl_newblock(const char *str, const int16_t pos[2]);
