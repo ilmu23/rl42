@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 14:01:15 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:45:24 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 // Kill directions
 # define _KILL_FWD 0x1U
 # define _KILL_BCK 0x2U
+# define _KILL_REG 0x3U
 
 // History traversal direction
 # define _HIST_BCK 0x0FU
@@ -64,6 +65,7 @@
 # define _YLA_RUNNING 0x1ULL
 # define _READ_INITFILE 0x2ULL
 # define _VI_ARG 0x20ULL
+# define _KILL_APPEND 0x40ULL
 
 /// modes
 # define _MD_EMACS 0x4ULL

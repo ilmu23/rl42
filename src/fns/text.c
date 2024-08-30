@@ -6,11 +6,15 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:19:43 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:45:40 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
+
+#define __KILLFN_COUNT 6
+
+static inline uint8_t	_iskill(rl_fn_t f);
 
 uint8_t	ft_rl_eof(rl_input_t *input)
 {
@@ -236,52 +240,124 @@ uint8_t	ft_rl_caw(rl_input_t *input)
 
 uint8_t	ft_rl_fkl(rl_input_t *input)
 {
+	rl_fn_t	f;
+	uint8_t	rv;
+
 	if (input->i == input->len)
 		return (1);
 	ft_rl_kill_line(input, _KILL_FWD);
 	ft_rl_redisplay(input, INPUT);
-	return (1);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 uint8_t	ft_rl_bkl(rl_input_t *input)
 {
+	rl_fn_t	f;
+	uint8_t	rv;
+
 	if (input->i == 0)
 		return (1);
 	ft_rl_kill_line(input, _KILL_BCK);
 	ft_rl_redisplay(input, INPUT);
-	return (1);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 uint8_t	ft_rl_kln(rl_input_t *input)
 {
+	rl_fn_t	f;
+	uint8_t	rv;
+
 	if (input->len == 0)
 		return (1);
 	ft_rl_kill_line(input, _KILL_FWD | _KILL_BCK);
 	ft_rl_redisplay(input, INPUT);
-	return (1);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 uint8_t	ft_rl_fkw(rl_input_t *input)
 {
+	rl_fn_t	f;
+	uint8_t	rv;
+
 	if (input->i == input->len)
 		return (1);
 	ft_rl_kill_word(input, _KILL_FWD);
 	ft_rl_redisplay(input, INPUT);
-	return (1);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 uint8_t	ft_rl_bkw(rl_input_t *input)
 {
+	rl_fn_t	f;
+	uint8_t	rv;
+
 	if (input->i == 0)
 		return (1);
 	ft_rl_kill_word(input, _KILL_BCK);
 	ft_rl_redisplay(input, INPUT);
-	return (1);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 uint8_t	ft_rl_krg(rl_input_t *input)
 {
 	uint64_t	i;
+	rl_fn_t		f;
+	uint8_t		rv;
 
 	if (!g_mark_u.set)
 		return (1);
@@ -290,11 +366,22 @@ uint8_t	ft_rl_krg(rl_input_t *input)
 	ft_rl_setmark(_MARK_START);
 	input->i = MAX(i, g_mark_u.pos);
 	ft_rl_setmark(_MARK_END);
-	ft_rl_kill_region(input);
+	ft_rl_kill_region(input, _KILL_REG);
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 	input->i = MIN(input->i, input->len);
 	ft_rl_redisplay(input, INPUT);
-	return (1);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 uint8_t	ft_rl_kws(rl_input_t *input)
@@ -314,7 +401,7 @@ uint8_t	ft_rl_kws(rl_input_t *input)
 	while (input->i < input->len && isspace(input->line[input->i]))
 		input->i++;
 	ft_rl_setmark(_MARK_END);
-	ft_rl_kill_region(input);
+	ft_rl_kill_region(input, _KILL_REG);
 	input->i = g_mark_s.pos;
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 	ft_rl_redisplay(input, INPUT);
@@ -350,4 +437,16 @@ uint8_t	ft_rl_tpw(rl_input_t *input)
 		input->i--;
 	ft_rl_redisplay(input, INPUT);
 	return (1);
+}
+
+static inline uint8_t	_iskill(rl_fn_t f)
+{
+	size_t			i;
+	static rl_fn_t	fns[__KILLFN_COUNT] = {ft_rl_fkl, ft_rl_bkl,
+		ft_rl_kln, ft_rl_fkw, ft_rl_bkw, ft_rl_krg};
+
+	i = 0;
+	while (i < __KILLFN_COUNT && fns[i] != f)
+		i++;
+	return (i < __KILLFN_COUNT);
 }

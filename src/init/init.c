@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/16 02:10:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:48:14 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,5 +260,12 @@ static inline void	_ft_rl_exit(void)
 		ft_rl_hist_save(_FT_RL_HFILE);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
 	__putstr_fd(TERM_CUR_SHOW, 1);
+	if (g_kill_ring)
+		__putendl_fd("kill ring:", 2);
+	while (g_kill_ring)
+	{
+		__putendl_fd(g_kill_ring->blk, 2);
+		__lstrmnode(&g_kill_ring, g_kill_ring);
+	}
 	__return(42);
 }
