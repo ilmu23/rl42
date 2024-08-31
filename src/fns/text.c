@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 10:38:04 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:51:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 #define __KILLFN_COUNT 9
 
-static inline uint8_t	_iskill(rl_fn_t f);
+static inline uint8_t	_iskill(const rl_fn_t f);
+static inline void		_copy(const rl_input_t *input, const uint64_t start, const uint64_t end, const uint8_t direction);
 
 uint8_t	ft_rl_eof(rl_input_t *input)
 {
@@ -443,17 +444,32 @@ uint8_t	ft_rl_crg(rl_input_t *input)
 {
 	uint64_t	start;
 	uint64_t	end;
+	uint8_t		rv;
+	rl_fn_t		f;
 
 	if (!g_mark_u.set)
 		return (1);
 	start = (g_mark_u.pos > input->i) ? input->i : g_mark_u.pos;
 	end = (g_mark_u.pos > input->i) ? g_mark_u.pos : input->i;
-	__lstadd_back(&g_kill_ring, __lstnew(__substr(input->line, start, end - start)));
-	return (1);
+	_copy(input, start, end, _KILL_REG);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 uint8_t ft_rl_cbw(rl_input_t *input)
 {
+	uint8_t		rv;
+	rl_fn_t		f;
 	uint64_t	i;
 
 	if (input->len == 0)
@@ -466,15 +482,28 @@ uint8_t ft_rl_cbw(rl_input_t *input)
 	if (input->i < input->len)
 		input->i++;
 	ft_rl_setmark(_MARK_END);
-	__lstadd_back(&g_kill_ring, __lstnew(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos)));
+	_copy(input, g_mark_s.pos, g_mark_e.pos, _KILL_BCK);
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 	input->i = i;
 	ft_rl_redisplay(input, LINE);
-	return (1);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 uint8_t	ft_rl_cfw(rl_input_t *input)
 {
+	uint8_t		rv;
+	rl_fn_t		f;
 	uint64_t	i;
 
 	if (input->len == 0)
@@ -490,11 +519,22 @@ uint8_t	ft_rl_cfw(rl_input_t *input)
 	if (input->i < input->len)
 		input->i++;
 	ft_rl_setmark(_MARK_END);
-	__lstadd_back(&g_kill_ring, __lstnew(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos)));
+	_copy(input, g_mark_s.pos, g_mark_e.pos, _KILL_FWD);
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 	input->i = i;
 	ft_rl_redisplay(input, LINE);
-	return (1);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 uint8_t	ft_rl_ynk(rl_input_t *input)
@@ -559,7 +599,7 @@ uint8_t	ft_rl_ynp(rl_input_t *input)
 	return (f(input));
 }
 
-static inline uint8_t	_iskill(rl_fn_t f)
+static inline uint8_t	_iskill(const rl_fn_t f)
 {
 	size_t			i;
 	static rl_fn_t	fns[__KILLFN_COUNT] = {ft_rl_fkl, ft_rl_bkl, ft_rl_kln,
@@ -569,4 +609,23 @@ static inline uint8_t	_iskill(rl_fn_t f)
 	while (i < __KILLFN_COUNT && fns[i] != f)
 		i++;
 	return (i < __KILLFN_COUNT);
+}
+
+static inline void	_copy(const rl_input_t *input, const uint64_t start, const uint64_t end, const uint8_t direction)
+{
+	const char	*content;
+	const char	*s;
+
+	s = __substr(input->line, start, end - start);
+	if (g_status & _KILL_APPEND)
+	{
+		content = __strdup(g_kill_ring->blk);
+		__lstrmnode(&g_kill_ring, g_kill_ring);
+		if (direction == _KILL_FWD)
+			__lstadd_front(&g_kill_ring, __lstnew(__strjoin(content, s)));
+		else
+			__lstadd_front(&g_kill_ring, __lstnew(__strjoin(s, content)));
+	}
+	else
+		__lstadd_front(&g_kill_ring, __lstnew(s));
 }
