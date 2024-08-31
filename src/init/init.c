@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 09:58:58 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:16:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_map("<M-C-e>", "vi-editing-mode", QUIET);
 	ft_rl_map("<M-h>", "set-highlight-color", QUIET);
 	ft_rl_map("<M-H>", "toggle-highlight-mode", QUIET);
+	ft_rl_map("<M-B>", "copy-backward-word", WARN);
 }
 
 static inline void	_vi_ins_default_binds(void)
