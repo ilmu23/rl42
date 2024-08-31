@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 09:47:12 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:05:15 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -439,37 +439,6 @@ uint8_t	ft_rl_tpw(rl_input_t *input)
 	return (1);
 }
 
-uint8_t	ft_rl_ynk(rl_input_t *input)
-{
-	size_t		slen;
-	const char	*s;
-	rl_fn_t		f;
-
-	s = ft_rl_kring_yank();
-	if (!s)
-		return (1);
-	slen = strlen(s);
-	__popblk(input->line);
-	if (input->i == 0)
-		input->line = __push(__strjoin(s, input->line));
-	else if (input->i == input->len)
-		input->line = __push(__strjoin(input->line, s));
-	else
-		input->line = __push(__strnjoin(3, __substr(input->line, 0, input->i), s, __substr(input->line, input->i, input->len)));
-	input->len += slen;
-	input->i += slen;
-	ft_rl_redisplay(input, INPUT);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (f == ft_rl_ynp)
-	{
-		ft_rl_setmark(_MARK_END);
-		input->i -= slen;
-		ft_rl_setmark(_MARK_START);
-	}
-	return (f(input));
-}
-
 uint8_t	ft_rl_crg(rl_input_t *input)
 {
 	uint64_t	start;
@@ -481,6 +450,42 @@ uint8_t	ft_rl_crg(rl_input_t *input)
 	end = (g_mark_u.pos > input->i) ? g_mark_u.pos : input->i;
 	__lstadd_back(&g_kill_ring, __lstnew(__substr(input->line, start, end - start)));
 	return (1);
+}
+
+uint8_t	ft_rl_ynk(rl_input_t *input)
+{
+	int32_t		count;
+	size_t		slen;
+	const char	*s;
+	rl_fn_t		f;
+
+	s = ft_rl_kring_yank();
+	if (!s)
+		return (1);
+	count = (g_argument.set) ? ft_rl_getarg() : 1;
+	slen = strlen(s);
+	while (count-- > 0)
+	{
+		__popblk(input->line);
+		if (input->i == 0)
+			input->line = __push(__strjoin(s, input->line));
+		else if (input->i == input->len)
+			input->line = __push(__strjoin(input->line, s));
+		else
+			input->line = __push(__strnjoin(3, __substr(input->line, 0, input->i), s, __substr(input->line, input->i, input->len)));
+		input->len += slen;
+		input->i += slen;
+	}
+	ft_rl_redisplay(input, INPUT);
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (f == ft_rl_ynp)
+	{
+		ft_rl_setmark(_MARK_END);
+		input->i -= slen;
+		ft_rl_setmark(_MARK_START);
+	}
+	return (f(input));
 }
 
 uint8_t	ft_rl_ynp(rl_input_t *input)
