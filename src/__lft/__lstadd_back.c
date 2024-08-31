@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 21:29:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 15:24:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/30 17:09:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,5 @@ void	__lstadd_back(const t_list **list, t_list *node)
 		last->next = node;
 	}
 	(*node->size)++;
+	node->next = NULL;
 }

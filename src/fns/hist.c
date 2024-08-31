@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 04:16:40 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/30 17:04:01 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ uint8_t	ft_rl_yla(rl_input_t *input)
 					hist = hist->prev;
 				break ;
 		}
-		ft_rl_kill_region(input);
+		ft_rl_kill_region(input, _KILL_REG);
 		input->i = MIN(input->i, input->len);
 		ft_rl_hist_yank_arg(input, hist->blk, n);
 		ft_rl_setmark(_MARK_END);

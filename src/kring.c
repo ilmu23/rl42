@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   __lstrmnode.c                                      :+:      :+:    :+:   */
+/*   kring.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/01 21:47:17 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/30 17:10:02 by ivalimak         ###   ########.fr       */
+/*   Created: 2024/08/30 15:57:34 by ivalimak          #+#    #+#             */
+/*   Updated: 2024/08/30 16:02:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "__lft.h"
+#include "ft_rl_internal.h"
 
-void	__lstrmnode(const t_list **list, const t_list *node)
+char	*ft_rl_kring_yank(void)
 {
-	if (!list || !node)
+	return ((g_kill_ring) ? (char *)g_kill_ring->blk : NULL);
+}
+
+void	ft_rl_kring_rotate(void)
+{
+	const t_list	*fnode;
+
+	if (!g_kill_ring)
 		return ;
-	if (node->next)
-		node->next->prev = node->prev;
-	if (node->prev)
-		node->prev->next = node->next;
-	else
-		*list = node->next;
-	(*node->size)--;
-	__lstpop(node);
+	fnode = g_kill_ring;
+	__lstrmnode(&g_kill_ring, fnode);
+	__lstadd_back(&g_kill_ring, (t_list *)fnode);
 }

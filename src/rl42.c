@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 04:16:23 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/20 19:14:10 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ rl_cmp_fn_t	g_cmp_fn;
 
 const t_list	*g_hist;
 const t_list	*g_hist_cur;
+const t_list	*g_kill_ring;
 const t_list	*g_blocks;
 
 rl_settings_t	g_settings;
