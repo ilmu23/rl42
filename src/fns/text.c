@@ -6,13 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 10:26:53 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:38:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-#define __KILLFN_COUNT 8
+#define __KILLFN_COUNT 9
 
 static inline uint8_t	_iskill(rl_fn_t f);
 
@@ -473,6 +473,30 @@ uint8_t ft_rl_cbw(rl_input_t *input)
 	return (1);
 }
 
+uint8_t	ft_rl_cfw(rl_input_t *input)
+{
+	uint64_t	i;
+
+	if (input->len == 0)
+		return (1);
+	i = input->i;
+	g_argument.set = 0;
+	if (isspace(input->line[input->i]))
+		ft_rl_fwd_w(input);
+	else
+		ft_rl_word_start();
+	ft_rl_setmark(_MARK_START);
+	ft_rl_word_end();
+	if (input->i < input->len)
+		input->i++;
+	ft_rl_setmark(_MARK_END);
+	__lstadd_back(&g_kill_ring, __lstnew(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos)));
+	ft_rl_unsetmark(_MARK_START | _MARK_END);
+	input->i = i;
+	ft_rl_redisplay(input, LINE);
+	return (1);
+}
+
 uint8_t	ft_rl_ynk(rl_input_t *input)
 {
 	int32_t		count;
@@ -538,8 +562,8 @@ uint8_t	ft_rl_ynp(rl_input_t *input)
 static inline uint8_t	_iskill(rl_fn_t f)
 {
 	size_t			i;
-	static rl_fn_t	fns[__KILLFN_COUNT] = {ft_rl_fkl, ft_rl_bkl,
-		ft_rl_kln, ft_rl_fkw, ft_rl_bkw, ft_rl_krg, ft_rl_crg, ft_rl_cbw};
+	static rl_fn_t	fns[__KILLFN_COUNT] = {ft_rl_fkl, ft_rl_bkl, ft_rl_kln,
+		ft_rl_fkw, ft_rl_bkw, ft_rl_krg, ft_rl_crg, ft_rl_cbw, ft_rl_cfw};
 
 	i = 0;
 	while (i < __KILLFN_COUNT && fns[i] != f)

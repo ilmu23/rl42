@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 10:16:21 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:34:48 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,8 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_map("<M-U-DEL>", "kill-region", QUIET);
 	ft_rl_map("<M-\\>", "delete-horizontal-space", QUIET);
 	ft_rl_map("<M-C>", "copy-region-as-kill", QUIET);
+	ft_rl_map("<M-B>", "copy-backward-word", QUIET);
+	ft_rl_map("<M-F>", "copy-forward-word", QUIET);
 	ft_rl_map("<C-y>", "yank", QUIET);
 	ft_rl_map("<M-y>", "yank-pop", QUIET);
 	ft_rl_map("<C-t>", "transpose-characters", QUIET);
@@ -155,7 +157,6 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_map("<M-C-e>", "vi-editing-mode", QUIET);
 	ft_rl_map("<M-h>", "set-highlight-color", QUIET);
 	ft_rl_map("<M-H>", "toggle-highlight-mode", QUIET);
-	ft_rl_map("<M-B>", "copy-backward-word", WARN);
 }
 
 static inline void	_vi_ins_default_binds(void)
