@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 10:51:32 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:59:25 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #define __KILLFN_COUNT 9
 
 static inline uint8_t	_iskill(const rl_fn_t f);
+static inline uint8_t	_repeat(rl_input_t *input);
 static inline void		_copy(const rl_input_t *input, const uint64_t start, const uint64_t end, const uint8_t direction);
 
 uint8_t	ft_rl_eof(rl_input_t *input)
@@ -241,124 +242,52 @@ uint8_t	ft_rl_caw(rl_input_t *input)
 
 uint8_t	ft_rl_fkl(rl_input_t *input)
 {
-	rl_fn_t	f;
-	uint8_t	rv;
-
 	if (input->i == input->len)
 		return (1);
 	ft_rl_kill_line(input, _KILL_FWD);
 	ft_rl_redisplay(input, INPUT);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (_iskill(f))
-	{
-		if (!(g_status & _KILL_APPEND))
-			g_status ^= _KILL_APPEND;
-		rv = f(input);
-		if (g_status & _KILL_APPEND)
-			g_status ^= _KILL_APPEND;
-		return (rv);
-	}
-	return (f(input));
+	return (_repeat(input));
 }
 
 uint8_t	ft_rl_bkl(rl_input_t *input)
 {
-	rl_fn_t	f;
-	uint8_t	rv;
-
 	if (input->i == 0)
 		return (1);
 	ft_rl_kill_line(input, _KILL_BCK);
 	ft_rl_redisplay(input, INPUT);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (_iskill(f))
-	{
-		if (!(g_status & _KILL_APPEND))
-			g_status ^= _KILL_APPEND;
-		rv = f(input);
-		if (g_status & _KILL_APPEND)
-			g_status ^= _KILL_APPEND;
-		return (rv);
-	}
-	return (f(input));
+	return (_repeat(input));
 }
 
 uint8_t	ft_rl_kln(rl_input_t *input)
 {
-	rl_fn_t	f;
-	uint8_t	rv;
-
 	if (input->len == 0)
 		return (1);
 	ft_rl_kill_line(input, _KILL_FWD | _KILL_BCK);
 	ft_rl_redisplay(input, INPUT);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (_iskill(f))
-	{
-		if (!(g_status & _KILL_APPEND))
-			g_status ^= _KILL_APPEND;
-		rv = f(input);
-		if (g_status & _KILL_APPEND)
-			g_status ^= _KILL_APPEND;
-		return (rv);
-	}
-	return (f(input));
+	return (_repeat(input));
 }
 
 uint8_t	ft_rl_fkw(rl_input_t *input)
 {
-	rl_fn_t	f;
-	uint8_t	rv;
-
 	if (input->i == input->len)
 		return (1);
 	ft_rl_kill_word(input, _KILL_FWD);
 	ft_rl_redisplay(input, INPUT);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (_iskill(f))
-	{
-		if (!(g_status & _KILL_APPEND))
-			g_status ^= _KILL_APPEND;
-		rv = f(input);
-		if (g_status & _KILL_APPEND)
-			g_status ^= _KILL_APPEND;
-		return (rv);
-	}
-	return (f(input));
+	return (_repeat(input));
 }
 
 uint8_t	ft_rl_bkw(rl_input_t *input)
 {
-	rl_fn_t	f;
-	uint8_t	rv;
-
 	if (input->i == 0)
 		return (1);
 	ft_rl_kill_word(input, _KILL_BCK);
 	ft_rl_redisplay(input, INPUT);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (_iskill(f))
-	{
-		if (!(g_status & _KILL_APPEND))
-			g_status ^= _KILL_APPEND;
-		rv = f(input);
-		if (g_status & _KILL_APPEND)
-			g_status ^= _KILL_APPEND;
-		return (rv);
-	}
-	return (f(input));
+	return (_repeat(input));
 }
 
 uint8_t	ft_rl_krg(rl_input_t *input)
 {
 	uint64_t	i;
-	rl_fn_t		f;
-	uint8_t		rv;
 
 	if (!g_mark_u.set)
 		return (1);
@@ -371,18 +300,7 @@ uint8_t	ft_rl_krg(rl_input_t *input)
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 	input->i = MIN(input->i, input->len);
 	ft_rl_redisplay(input, INPUT);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (_iskill(f))
-	{
-		if (!(g_status & _KILL_APPEND))
-			g_status ^= _KILL_APPEND;
-		rv = f(input);
-		if (g_status & _KILL_APPEND)
-			g_status ^= _KILL_APPEND;
-		return (rv);
-	}
-	return (f(input));
+	return (_repeat(input));
 }
 
 uint8_t	ft_rl_kws(rl_input_t *input)
@@ -444,32 +362,17 @@ uint8_t	ft_rl_crg(rl_input_t *input)
 {
 	uint64_t	start;
 	uint64_t	end;
-	uint8_t		rv;
-	rl_fn_t		f;
 
 	if (!g_mark_u.set)
 		return (1);
 	start = (g_mark_u.pos > input->i) ? input->i : g_mark_u.pos;
 	end = (g_mark_u.pos > input->i) ? g_mark_u.pos : input->i;
 	_copy(input, start, end, _KILL_REG);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (_iskill(f))
-	{
-		if (!(g_status & _KILL_APPEND))
-			g_status ^= _KILL_APPEND;
-		rv = f(input);
-		if (g_status & _KILL_APPEND)
-			g_status ^= _KILL_APPEND;
-		return (rv);
-	}
-	return (f(input));
+	return (_repeat(input));
 }
 
 uint8_t ft_rl_cbw(rl_input_t *input)
 {
-	uint8_t		rv;
-	rl_fn_t		f;
 	uint64_t	i;
 
 	if (input->len == 0)
@@ -486,24 +389,11 @@ uint8_t ft_rl_cbw(rl_input_t *input)
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 	input->i = i;
 	ft_rl_redisplay(input, LINE);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (_iskill(f))
-	{
-		if (!(g_status & _KILL_APPEND))
-			g_status ^= _KILL_APPEND;
-		rv = f(input);
-		if (g_status & _KILL_APPEND)
-			g_status ^= _KILL_APPEND;
-		return (rv);
-	}
-	return (f(input));
+	return (_repeat(input));
 }
 
 uint8_t	ft_rl_cfw(rl_input_t *input)
 {
-	uint8_t		rv;
-	rl_fn_t		f;
 	uint64_t	i;
 
 	if (input->len == 0)
@@ -523,18 +413,7 @@ uint8_t	ft_rl_cfw(rl_input_t *input)
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 	input->i = i;
 	ft_rl_redisplay(input, LINE);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
-	if (_iskill(f))
-	{
-		if (!(g_status & _KILL_APPEND))
-			g_status ^= _KILL_APPEND;
-		rv = f(input);
-		if (g_status & _KILL_APPEND)
-			g_status ^= _KILL_APPEND;
-		return (rv);
-	}
-	return (f(input));
+	return (_repeat(input));
 }
 
 uint8_t	ft_rl_ynk(rl_input_t *input)
@@ -609,6 +488,25 @@ static inline uint8_t	_iskill(const rl_fn_t f)
 	while (i < __KILLFN_COUNT && fns[i] != f)
 		i++;
 	return (i < __KILLFN_COUNT);
+}
+
+static inline uint8_t	_repeat(rl_input_t *input)
+{
+	rl_fn_t	f;
+	uint8_t	rv;
+
+	input->key = ft_rl_getkey();
+	f = ft_rl_getmap(input->key);
+	if (_iskill(f))
+	{
+		if (!(g_status & _KILL_APPEND))
+			g_status ^= _KILL_APPEND;
+		rv = f(input);
+		if (g_status & _KILL_APPEND)
+			g_status ^= _KILL_APPEND;
+		return (rv);
+	}
+	return (f(input));
 }
 
 static inline void	_copy(const rl_input_t *input, const uint64_t start, const uint64_t end, const uint8_t direction)
