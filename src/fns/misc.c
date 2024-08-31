@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/16 02:02:55 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/31 11:52:23 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,7 +251,7 @@ uint8_t	ft_rl_md_vA(rl_input_t *input)
 uint8_t	ft_rl_md_vc(rl_input_t *input)
 {
 	ft_rl_seteditmode(_MD_VI_CMD);
-	input->i = MAX(input->i - 1, 0);
+	input->i = MAX((int64_t)input->i - 1, 0);
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
