@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 04:16:00 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/31 09:51:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # include <stdint.h>
 
 typedef enum e_rl_etype			rl_etype_t;
-typedef enum e_rl_wtype			rl_wtype_t;
 typedef enum e_rl_rdmode		rl_rdmode_t;
 typedef enum e_rl_mapmode		rl_mapmode_t;
 
@@ -39,12 +38,6 @@ enum e_rl_etype
 {
 	E_ACL,
 	E_EOF
-};
-
-enum e_rl_wtype
-{
-	SPACE,
-	NORMAL
 };
 
 enum e_rl_rdmode
