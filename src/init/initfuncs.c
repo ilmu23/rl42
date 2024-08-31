@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/30 16:16:35 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/08/31 09:48:36 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("backward-kill-word", ft_rl_bkw);
 	ft_rl_addfunc("kill-region", ft_rl_krg);
 	ft_rl_addfunc("delete-horizontal-space", ft_rl_kws);
+	ft_rl_addfunc("copy-region-as-kill", ft_rl_crg);
 	ft_rl_addfunc("yank", ft_rl_ynk);
 	ft_rl_addfunc("yank-pop", ft_rl_ynp);
 	ft_rl_addfunc("transpose-characters", ft_rl_tpc);
