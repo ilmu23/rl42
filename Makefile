@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/09/17 20:18:12 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/09/17 20:21:47 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -104,7 +104,6 @@ LFTFILES	=	__alloc.c \
 				__misc.c \
 				__obj.c \
 				__objmap.c \
-				__objpair.c \
 				__parse.c \
 				__pop.c \
 				__printf.c \
