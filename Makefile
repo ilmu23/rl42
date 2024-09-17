@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/08/30 16:14:48 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/09/17 20:18:12 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,9 +25,13 @@ CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
 
 SRCDIR	=	src
 OBJDIR	=	obj
+LIBDIR	=	lib
 INCDIR	=	inc
 
-INC		=	-I$(INCDIR)
+TI42	=	$(LIBDIR)/libti42.a
+TI42DIR	=	$(LIBDIR)/ti42
+
+INC		=	-I$(INCDIR) -I$(TI42DIR)/$(INCDIR)
 
 COMPDIR		=	comp
 FNDIR		=	fns
@@ -147,13 +151,13 @@ a.out: $(NAME)
 	@$(CC) $(CFLAGS) $(INC) test.c -L. -lrl42 -lm -o $@
 	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
 
-$(NAME): $(OBJDIR) $(OBJS)
+$(NAME): $(TI42) $(OBJDIR) $(OBJS)
 	@printf "\e[1;35mRL42 >\e[m Creating %s\n" $@
 	@ar -crs $(NAME) $(OBJS)
 	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
 
-$(LFT):
-	@make --no-print-directory -C $(LIBDIR) BUILD=$(BUILD)
+$(TI42):
+	@make --no-print-directory -C $(TI42DIR) BUILD=$(BUILD) NAME=../libti42.a
 
 $(OBJDIR):
 	@printf "\e[1;35mRL42 >\e[m Creating objdirs\n"
@@ -172,11 +176,11 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-#	@make --no-print-directory -C $(LIBDIR) clean
+	@make --no-print-directory -C $(TI42DIR) clean
 	@rm -f $(OBJS)
 
 fclean: clean
-#	@make --no-print-directory -C $(LIBDIR) fclean
+	@make --no-print-directory -C $(TI42DIR) fclean NAME=../libti42.a
 	@rm -rf $(OBJDIR)
 	@rm -rf a.out.dSYM
 	@rm -f a.out
