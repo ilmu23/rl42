@@ -6,13 +6,14 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/30 16:02:02 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 10:28:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_RL_INTERNAL_H
 # define FT_RL_INTERNAL_H
 # include "rl42.h"
+# include "ti42.h"
 # include "__lft.h"
 # include "ft_rl_fns.h"
 # include "ft_rl_term.h"
@@ -44,6 +45,7 @@ void			ft_rl_kring_rotate(void);
 // utils.c
 rl_block_t		*ft_rl_newblock(const char *str, const int16_t pos[2]);
 uint64_t		ft_rl_getkey(void);
+ssize_t			ft_rl_putc(const int8_t c);
 int32_t			ft_rl_getarg(void);
 uint8_t			ft_rl_isdir(const char *path);
 uint8_t			ft_rl_geteditmode(void);

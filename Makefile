@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/09/17 20:21:47 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/09/18 12:19:05 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -147,7 +147,7 @@ test: a.out
 
 a.out: $(NAME)
 	@printf "\e[1;35mRL42 >\e[m Compiling test\n"
-	@$(CC) $(CFLAGS) $(INC) test.c -L. -lrl42 -lm -o $@
+	@$(CC) $(CFLAGS) $(INC) test.c -L. -L$(LIBDIR) -lrl42 -lti42 -lm -o $@
 	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
 
 $(NAME): $(TI42) $(OBJDIR) $(OBJS)

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 00:49:44 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:18:26 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 13:50:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,11 @@ void	ft_rl_cursor_reset(rl_input_t *input)
 
 void	ft_rl_cursor_move(const int16_t row, const int16_t col)
 {
-	__printf("\e[%d;%dH", row, col);
+	const char	*cup;
+
+	cup = ft_ti_getstr("cup");
+	if (cup)
+		ft_ti_tputs(ft_ti_tgoto(cup, row - 1, col - 1), 1, ft_rl_putc);
+	else
+		__printf("\e[%d;%dH", row, col);
 }

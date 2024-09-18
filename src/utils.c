@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:18:23 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 10:30:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,11 @@ uint64_t	ft_rl_getkey(void)
 		ft_rl_redisplay(&g_input, PROMPT);
 	}
 	return (key);
+}
+
+ssize_t	ft_rl_putc(const int8_t c)
+{
+	return (write(1, &c, sizeof(c)));
 }
 
 int32_t	ft_rl_getarg(void)
