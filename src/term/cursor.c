@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 00:49:44 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 13:50:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 15:09:23 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,13 @@ void	ft_rl_cursor_getpos(int16_t *row, int16_t *col)
 
 void	ft_rl_cursor_setpos(rl_cursor_t *cursor)
 {
+	size_t	up;
+	size_t	down;
+
 	if (!cursor)
 		return ;
+	up = 0;
+	down = 0;
 	while (cursor->col > g_cols)
 	{
 		cursor->row++;
@@ -63,18 +68,22 @@ void	ft_rl_cursor_setpos(rl_cursor_t *cursor)
 	}
 	while (cursor->row > g_rows)
 	{
-		__putstr_fd(TERM_SCROLL_UP, 1);
+		up++;
 		cursor->p_row--;
 		cursor->i_row--;
 		cursor->row--;
 	}
 	while (cursor->row < 1)
 	{
-		__putstr_fd(TERM_SCROLL_DOWN, 1);
+		down++;
 		cursor->p_row++;
 		cursor->i_row++;
 		cursor->row++;
 	}
+	if (up)
+		ft_ti_tputs(ft_ti_tparm(g_escapes.indn, up), up, ft_rl_putc);
+	if (down)
+		ft_ti_tputs(ft_ti_tparm(g_escapes.rin, down), down, ft_rl_putc);
 	ft_rl_cursor_move(cursor->row, cursor->col);
 }
 
@@ -87,11 +96,8 @@ void	ft_rl_cursor_reset(rl_input_t *input)
 
 void	ft_rl_cursor_move(const int16_t row, const int16_t col)
 {
-	const char	*cup;
-
-	cup = ft_ti_getstr("cup");
-	if (cup)
-		ft_ti_tputs(ft_ti_tgoto(cup, row - 1, col - 1), 1, ft_rl_putc);
+	if (g_escapes.cup)
+		ft_ti_tputs(ft_ti_tgoto(g_escapes.cup, row - 1, col - 1), 1, ft_rl_putc);
 	else
 		__printf("\e[%d;%dH", row, col);
 }

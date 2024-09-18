@@ -6,14 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 10:30:30 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 16:11:16 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 static inline uint8_t	_interrupt(void);
-static inline void		_vb(void);
 
 rl_cmp_fn_t	ft_rl_get_completion_fn(void)
 {
@@ -40,7 +39,7 @@ uint64_t	ft_rl_getkey(void)
 
 	if (g_keybuf.size == 0)
 	{
-		__putstr_fd(TERM_CUR_SHOW, 1);
+		ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
 		g_keybuf.size = read(0, &g_keybuf.key, sizeof(g_keybuf.key));
 		if (g_keybuf.size == -1)
 		{
@@ -48,7 +47,7 @@ uint64_t	ft_rl_getkey(void)
 				return (ft_rl_getkey());
 			exit(ft_rl_perror());
 		}
-		__putstr_fd(TERM_CUR_HIDE, 1);
+		ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
 	}
 	keymask = _KEYSHIFT_MASK;
 	shift = g_keybuf.size;
@@ -124,10 +123,10 @@ void	ft_rl_bell(void)
 	switch (type)
 	{
 		case BELL_AUDIBLE:
-			__putchar_fd('\a', 1);
+			ft_ti_tputs(g_escapes.bel, 1, ft_rl_putc);
 			break ;
 		case BELL_VISIBLE:
-			_vb();
+			ft_ti_tputs(g_escapes.flash, 1, ft_rl_putc);
 	}
 }
 
@@ -138,11 +137,4 @@ static inline uint8_t	_interrupt(void)
 	g_keybuf.size = 0;
 	errno = 0;
 	return (1);
-}
-
-static inline void	_vb(void)
-{
-	__putstr_fd("\e[?5h", 1);
-	usleep(100000);
-	__putstr_fd("\e[?5l", 1);
 }

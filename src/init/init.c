@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 10:23:10 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 15:39:57 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static inline void	_emacs_default_binds(void);
 static inline void	_vi_ins_default_binds(void);
 static inline void	_vi_cmd_default_binds(void);
 static inline void	_defaultsettings(void);
+static inline void	_init_escapes(void);
 static inline void	_ft_rl_exit(void);
 
 void	ft_rl_init(void)
@@ -25,6 +26,7 @@ void	ft_rl_init(void)
 
 	if (init)
 		return ;
+	_init_escapes();
 	g_keys = __mapnew();
 	g_funcs = __mapnew();
 	g_map_emacs = __mapnew();
@@ -42,7 +44,7 @@ void	ft_rl_init(void)
 	g_mark_s.set = 0;
 	g_mark_e.set = 0;
 	g_mark_u.set = 0;
-	__putstr_fd(TERM_CUR_HIDE, 1);
+	ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
 	ft_rl_updatetermsize();
 	ft_rl_hist_load(_FT_RL_HFILE);
 	ft_rl_initkeys();
@@ -59,7 +61,6 @@ void	ft_rl_init(void)
 	ft_rl_seteditmode(emode);
 	ft_rl_set_completion_fn(ft_rl_complete);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
-	ft_ti_loadinfo(getenv("TERM"));
 	init = 1;
 }
 
@@ -262,11 +263,46 @@ static inline void	_defaultsettings(void)
 	ft_rl_set("highlight-current-completion", SET_ON);
 }
 
+static inline void	_init_escapes(void)
+{
+	ft_ti_loadinfo(getenv("TERM"));
+	g_escapes.cup = ft_ti_getstr("cup");
+	g_escapes.bel = ft_ti_getstr("bel");
+	g_escapes.flash = ft_ti_getstr("flash");
+	g_escapes.civis = ft_ti_getstr("civis");
+	g_escapes.cnorm = ft_ti_getstr("cnorm");
+	g_escapes.el1 = ft_ti_getstr("el1");
+	g_escapes.el = ft_ti_getstr("el");
+	g_escapes.ed1 = TERM_CLEAR_START;
+	g_escapes.ed = ft_ti_getstr("ed");
+	g_escapes.indn = ft_ti_getstr("indn");
+	g_escapes.rin = ft_ti_getstr("rin");
+	g_escapes.sgr0 = ft_ti_getstr("sgr0");
+	g_escapes.bold = ft_ti_getstr("bold");
+	g_escapes.smul = ft_ti_getstr("smul");
+	g_escapes.rmul = ft_ti_getstr("rmul");
+	g_escapes.setaf = ft_ti_getstr("setaf");
+	g_escapes.setab = ft_ti_getstr("setab");
+	g_escapes.bel = (!g_escapes.bel) ? TERM_RING_BELL : g_escapes.bel;
+	g_escapes.flash = (!g_escapes.flash) ? TERM_FLASH_SCREEN : g_escapes.flash;
+	g_escapes.civis = (!g_escapes.civis) ? TERM_CUR_HIDE : g_escapes.civis;
+	g_escapes.cnorm = (!g_escapes.cnorm) ? TERM_CUR_SHOW : g_escapes.cnorm;
+	g_escapes.el1 = (!g_escapes.el1) ? TERM_CLEAR_LINE_START : g_escapes.el1;
+	g_escapes.el = (!g_escapes.el) ? TERM_CLEAR_LINE_END : g_escapes.el;
+	g_escapes.ed = (!g_escapes.ed) ? TERM_CLEAR_END : g_escapes.ed;
+	g_escapes.indn = (!g_escapes.indn) ? TERM_SCROLL_UP_N : g_escapes.indn;
+	g_escapes.rin = (!g_escapes.rin) ? TERM_SCROLL_DOWN_N : g_escapes.rin;
+	g_escapes.sgr0 = (!g_escapes.sgr0) ? SGR_RESET : g_escapes.sgr0;
+	g_escapes.bold = (!g_escapes.bold) ? SGR_BOLDON : g_escapes.bold;
+	g_escapes.smul = (!g_escapes.smul) ? SGR_ULINEON : g_escapes.smul;
+	g_escapes.rmul = (!g_escapes.rmul) ? SGR_ULINEOFF : g_escapes.rmul;
+}
+
 static inline void	_ft_rl_exit(void)
 {
 	if (g_hist)
 		ft_rl_hist_save(_FT_RL_HFILE);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
-	__putstr_fd(TERM_CUR_SHOW, 1);
+	ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
 	__return(42);
 }

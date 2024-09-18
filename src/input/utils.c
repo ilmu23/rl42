@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 05:59:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/16 19:10:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 16:09:57 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,19 @@ void	ft_rl_redisplay(const rl_input_t *input, const rl_rdmode_t mode)
 		clr = __strnjoin(3, clr, TERM_CRNL, TERM_CLEAR_LINE_END);
 	__push(clr);
 	ft_rl_cursor_setpos(input->cursor);
-	__putstr_fd(clr, 1);
+	ft_ti_tputs(clr, 1, ft_rl_putc);
 	ft_rl_cursor_setpos(input->cursor);
 	switch (mode)
 	{
 		case LINE:
-			__putstr_fd(&input->line[input->i - (input->i != 0)], 1);
+			ft_ti_tputs(&input->line[input->i - (input->i != 0)], 1, ft_rl_putc);
 			break ;
 		case INPUT:
-			__putstr_fd(input->line, 1);
+			ft_ti_tputs(input->line, 1, ft_rl_putc);
 			break;
 		case PROMPT:
-			__putstr_fd(input->prompt, 1);
-			__putstr_fd(input->line, 1);
+			ft_ti_tputs(input->prompt, 1, ft_rl_putc);
+			ft_ti_tputs(input->line, 1, ft_rl_putc);
 			break ;
 		case SPROMPT:
 			__printf("%s %s%s", input->sprompt, input->prompt, input->line);
@@ -210,7 +210,7 @@ static inline void	_mark(const rl_input_t *input)
 	input->cursor->col = input->cursor->i_col + MIN(g_mark_u.pos + splen, input->len);
 	ft_rl_cursor_setpos(input->cursor);
 	if (g_mark_u.pos < input->len)
-		__printf("%s%c%s", SGR_ULINEON, input->line[g_mark_u.pos], SGR_ULINEOFF);
+		__printf("%s%c%s", g_escapes.smul, input->line[g_mark_u.pos], g_escapes.rmul);
 	else
-		__printf("%s %s", SGR_ULINEON, SGR_ULINEOFF);
+		__printf("%s %s", g_escapes.smul, g_escapes.rmul);
 }

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 11:52:23 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 15:53:49 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ uint8_t	ft_rl_mta(rl_input_t *input)
 {
 	uint16_t	key;
 
-	__putstr_fd(TERM_CUR_SHOW, 1);
+	ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
 	if (read(0, &key, 1) == -1)
 		exit(ft_rl_perror());
-	__putstr_fd(TERM_CUR_HIDE, 1);
+	ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
 	key = key << 8 | '\e';
 	input->key = key;
 	return (ft_rl_execmap(input));
@@ -41,7 +41,7 @@ uint8_t	ft_rl_dcl(rl_input_t *input)
 	__popblks(2, input->cursor, input->line);
 	__printf("%s%s", TERM_CLEAR_END, TERM_CRNL);
 	ft_rl_init_input(input->prompt, input->plen);
-	__putstr_fd(input->prompt, 1);
+	ft_ti_tputs(input->prompt, 1, ft_rl_putc);
 	ft_rl_cursor_getpos(&input->cursor->row, &input->cursor->col);
 	input->cursor->i_row = input->cursor->row;
 	input->cursor->i_col = input->cursor->col;
@@ -85,14 +85,13 @@ uint8_t	ft_rl_xmk(rl_input_t *input)
 	return (1);
 }
 
-uint8_t	ft_rl_abt(rl_input_t *input)
+uint8_t	ft_rl_abt(__UNUSED rl_input_t *input)
 {
 	ft_rl_bell();
 	return (1);
-	(void)input;
 }
 
-uint8_t	ft_rl_hlc(rl_input_t *input)
+uint8_t	ft_rl_hlc(__UNUSED rl_input_t *input)
 {
 	uint64_t	key;
 
@@ -100,28 +99,28 @@ uint8_t	ft_rl_hlc(rl_input_t *input)
 	switch (key)
 	{
 		case KEY_NUM_0:
-			g_hlcolor.sgr = SGR_FG0;
+			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 0) : SGR_FG0;
 			break ;
 		case KEY_NUM_1:
-			g_hlcolor.sgr = SGR_FG1;
+			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 1) : SGR_FG1;
 			break ;
 		case KEY_NUM_2:
-			g_hlcolor.sgr = SGR_FG2;
+			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 2) : SGR_FG2;
 			break ;
 		case KEY_NUM_3:
-			g_hlcolor.sgr = SGR_FG3;
+			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 3) : SGR_FG3;
 			break ;
 		case KEY_NUM_4:
-			g_hlcolor.sgr = SGR_FG4;
+			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 4) : SGR_FG4;
 			break ;
 		case KEY_NUM_5:
-			g_hlcolor.sgr = SGR_FG5;
+			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 5) : SGR_FG5;
 			break ;
 		case KEY_NUM_6:
-			g_hlcolor.sgr = SGR_FG6;
+			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 6) : SGR_FG6;
 			break ;
 		case KEY_NUM_7:
-			g_hlcolor.sgr = SGR_FG7;
+			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 7) : SGR_FG7;
 			break ;
 		case KEY_DN_R:
 			g_hlcolor.sgr = NULL;
@@ -131,10 +130,9 @@ uint8_t	ft_rl_hlc(rl_input_t *input)
 			break ;
 	}
 	return (1);
-	(void)input;
 }
 
-uint8_t	ft_rl_hlm(rl_input_t *input)
+uint8_t	ft_rl_hlm(__UNUSED rl_input_t *input)
 {
 	switch (g_hlcolor.mode)
 	{
@@ -146,7 +144,6 @@ uint8_t	ft_rl_hlm(rl_input_t *input)
 			break ;
 	}
 	return (1);
-	(void)input;
 }
 
 uint8_t	ft_rl_arg(rl_input_t *input)
@@ -211,18 +208,16 @@ uint8_t	ft_rl_arg_n(rl_input_t *input)
 	return (1);
 }
 
-uint8_t	ft_rl_md_em(rl_input_t *input)
+uint8_t	ft_rl_md_em(__UNUSED rl_input_t *input)
 {
 	ft_rl_seteditmode(_MD_EMACS);
 	return (1);
-	(void)input;
 }
 
-uint8_t	ft_rl_md_vi(rl_input_t *input)
+uint8_t	ft_rl_md_vi(__UNUSED rl_input_t *input)
 {
 	ft_rl_seteditmode(_MD_VI_INS);
 	return (1);
-	(void)input;
 }
 
 uint8_t	ft_rl_md_va(rl_input_t *input)
