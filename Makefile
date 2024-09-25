@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/09/18 12:19:05 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/09/25 15:03:31 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -156,6 +156,8 @@ $(NAME): $(TI42) $(OBJDIR) $(OBJS)
 	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
 
 $(TI42):
+	@git submodule init lib/ti42
+	@git submodule update lib/ti42
 	@make --no-print-directory -C $(TI42DIR) BUILD=$(BUILD) NAME=../libti42.a
 
 $(OBJDIR):
