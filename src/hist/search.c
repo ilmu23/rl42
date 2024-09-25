@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:18:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 15:28:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ uint8_t	ft_rl_hist_search(rl_input_t *input, const uint8_t direction)
 	rl_fn_t		fn;
 
 	ft_rl_eol(input);
-	__putstr_fd(TERM_CRNL, 1);
+	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
 	_init(&search, direction);
 	if (ft_rl_geteditmode() == _MD_VI_CMD)
 		ft_rl_seteditmode(_MD_VI_INS);
@@ -50,7 +50,7 @@ uint8_t	ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction)
 	rl_fn_t		fn;
 
 	ft_rl_eol(input);
-	__putstr_fd(TERM_CRNL, 1);
+	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
 	_init(&search, direction);
 	if (ft_rl_geteditmode() == _MD_VI_CMD)
 		ft_rl_seteditmode(_MD_VI_INS);
@@ -177,7 +177,7 @@ static inline void	_init(rl_input_t *search, const uint8_t direction)
 		exit(ft_rl_perror());
 	if (search->plen == 14)
 		search->prompt += 8;
-	__putstr_fd(search->prompt, 1);
+	ft_ti_tputs(search->prompt, 1, ft_rl_putc);
 	ft_rl_cursor_getpos(&search->cursor->row, &search->cursor->col);
 	search->cursor->i_row = search->cursor->row;
 	search->cursor->i_col = search->cursor->col;

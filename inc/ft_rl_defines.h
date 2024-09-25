@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 09:28:24 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 15:50:22 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 // Version
 # define _FT_RL_VERSION "2.1.4"
+
+// Unused identifier
+# define __UNUSED __attribute__((unused))
 
 // Path to history file
 # ifndef _FT_RL_HFILE

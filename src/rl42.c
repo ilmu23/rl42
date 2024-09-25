@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/20 19:14:10 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 15:41:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ rl_keybuf_t	g_keybuf;
 
 rl_cmp_fn_t	g_cmp_fn;
 
+rl_escapes_t	g_escapes;
+
 const t_list	*g_hist;
 const t_list	*g_hist_cur;
 const t_list	*g_kill_ring;
@@ -66,7 +68,7 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	ft_rl_init();
 	g_hist_cur = NULL;
 	tcsetattr(0, TCSANOW, &g_newsettings);
-	__putstr_fd(TERM_CUR_HIDE, 1);
+	ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 	{
 		ft_rl_hist_newnode();
@@ -78,7 +80,7 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 		_histcommit(out, opts);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
-	__putstr_fd(TERM_CUR_SHOW, 1);
+	ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
 	__popblk(p);
 	return (_strdup(out));
 }
@@ -129,7 +131,7 @@ static inline char	*_strdup(const char *s)
 static inline char	*_getline(const char *p)
 {
 	ft_rl_init_input(p, _plen(p));
-	__putstr_fd(p, 1);
+	ft_ti_tputs(p, 1, ft_rl_putc);
 	ft_rl_cursor_getpos(&g_input.cursor->row, &g_input.cursor->col);
 	g_input.cursor->i_row = g_input.cursor->row;
 	g_input.cursor->i_col = g_input.cursor->col;

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 09:51:21 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 15:34:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ typedef enum e_rl_mapmode		rl_mapmode_t;
 
 typedef struct s_rl_settings	rl_settings_t;
 typedef struct s_rl_histnode	rl_histnode_t;
+typedef struct s_rl_escapes		rl_escapes_t;
 typedef struct s_rl_cursor		rl_cursor_t;
 typedef struct s_rl_keybuf		rl_keybuf_t;
 typedef struct s_rl_input		rl_input_t;
@@ -70,6 +71,27 @@ struct s_rl_histnode
 {
 	const char	*line;
 	const char	*edit;
+};
+
+struct s_rl_escapes
+{
+	const char	*cup;	/* move cursor to row #1 and col #2 */
+	const char	*bel;	/* ring the bell */
+	const char	*flash;	/* flash the screen / visual bell */
+	const char	*civis;	/* hide cursor */
+	const char	*cnorm; /* show cursor */
+	const char	*el1;	/* clear to start of line */
+	const char	*el;	/* clear to end of line */
+	const char	*ed1;	/* clear to start of screen */
+	const char	*ed;	/* clear to end of screen */
+	const char	*indn;	/* scroll up #1 lines */
+	const char	*rin;	/* scroll down #1 lines */
+	const char	*sgr0;	/* turn off all attributes */
+	const char	*bold;	/* turn on bold mode */
+	const char	*smul;	/* turn on underline mode */
+	const char	*rmul;	/* tun off undersline mode */
+	const char	*setaf;	/* set foreground color to #1 */
+	const char	*setab;	/* set background color to #1 */
 };
 
 struct s_rl_cursor

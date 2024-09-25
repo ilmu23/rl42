@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:18:26 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/18 15:25:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ uint8_t	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const v
 		cols = g_cols;
 		ft_rl_clearblocks();
 		ft_rl_redisplay(input, PROMPT);
-		__putstr_fd(TERM_CRNL, 1);
+		ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
 		ft_rl_cursor_getpos(&pos[0], &pos[1]);
 		while (completions)
 		{
@@ -71,7 +71,7 @@ uint8_t	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const v
 			__printf("%-*s", (int)llen, (char *)completions->blk);
 			if (++i == cpr)
 			{
-				__putstr_fd(TERM_CRNL, 1);
+				ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
 				pos[0]++;
 				pos[1] = 1;
 				i = 0;
@@ -94,15 +94,15 @@ uint8_t	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const v
 			if (block->str == cur)
 			{
 				ft_rl_cursor_move(block->pos[0], block->pos[1]);
-				__putstr_fd(ft_rl_hlcolor(), 1);
-				__putstr_fd(block->str, 1);
-				__putstr_fd(SGR_RESET, 1);
+				ft_ti_tputs(ft_rl_hlcolor(), 1, ft_rl_putc);
+				ft_ti_tputs(block->str, 1, ft_rl_putc);
+				ft_ti_tputs(g_escapes.sgr0, 1, ft_rl_putc);
 				i--;
 			}
 			else if (block->str == prv)
 			{
 				ft_rl_cursor_move(block->pos[0], block->pos[1]);
-				__putstr_fd(block->str, 1);
+				ft_ti_tputs(block->str, 1, ft_rl_putc);
 				i--;
 			}
 			blocks = blocks->next;
