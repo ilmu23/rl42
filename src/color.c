@@ -6,60 +6,78 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 23:57:08 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:19:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 00:17:54 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline char	*_getsgr(void);
+#define _UHALF 0xF0U
+#define _LHALF 0x0FU
 
-char	*ft_rl_hlcolor(void)
+#define _bold	((g_hlcolor.mode & FT_RL_HL_BOLD) ? g_escapes.bold : "")
+#define _uline	((g_hlcolor.mode & FT_RL_HL_ULINE) ? g_escapes.smul : "")
+
+#define set_seq(x)		(__popblk(g_hlcolor.seq), g_hlcolor.seq = __push(__strnjoin(3, _bold, _uline, x)))
+#define set_mode(x, y)	(g_hlcolor.mode = (g_hlcolor.mode & y) | (x))
+
+static inline void	_refresh_seq(void);
+
+const char	*ft_rl_hlcolor(void)
 {
-	static const char	f[2][17] = {"\e[38;2;%u;%u;%um", "\e[48;2;%u;%u;%um"};
-	static char			seq[23];
-
-	if (g_hlcolor.sgr)
-		return (_getsgr());
-	__snprintf(seq, 20, f[g_hlcolor.mode],
-		g_hlcolor.rgbval.r, g_hlcolor.rgbval.g, g_hlcolor.rgbval.b);
-	return (seq);
+	return ((g_hlcolor.seq) ? g_hlcolor.seq : "");
 }
 
 void	ft_rl_sethlcolor_mode(const uint8_t mode)
 {
-	if (mode == FT_RL_HL_FG || mode == FT_RL_HL_BG)
-		g_hlcolor.mode = mode;
+	if (mode & FT_RL_HL_FG && mode & FT_RL_HL_BG)
+		set_mode(mode & ~FT_RL_HL_BG, ~_LHALF);
 	else
-		__dprintf(2, "rl42: sethlcolor_mode: unknown mode\n");
+		set_mode(mode, ~_LHALF);
+	_refresh_seq();
 }
 
 void	ft_rl_sethlcolor_sgr(const char *s)
 {
-	g_hlcolor.sgr = s;
+	set_mode(_HL_SGR, ~_UHALF);
+	set_seq(s);
+	g_hlcolor._sgr = s;
+}
+
+void	ft_rl_sethlcolor_clr(const uint8_t color)
+{
+	const char	*seq;
+
+	set_mode(_HL_CLR, ~_UHALF);
+	seq = (g_hlcolor.mode & FT_RL_HL_BG) ? g_escapes.setab : g_escapes.setaf;
+	set_seq(ft_ti_tparm(seq, color));
+	g_hlcolor._clr = color;
 }
 
 void	ft_rl_sethlcolor_rgb(const uint8_t r, const uint8_t g, const uint8_t b)
 {
-	memcpy(&g_hlcolor.rgbval, &(rl_rgb_t){.r = r, .g = g, .b = b},
-		sizeof(g_hlcolor.rgbval));
+	char		fmt[23] = "\e[38;2;%hhu;%hhu;%hhum";
+	char		buf[23];
+
+	set_mode(_HL_RGB, ~_UHALF);
+	if (g_hlcolor.mode & FT_RL_HL_BG)
+		fmt[2] = '4';
+	__snprintf(buf, 23, fmt, r, g, b);
+	set_seq(__push(__strdup(buf)));
+	memcpy(&g_hlcolor._rgb, &(rl_rgb_t){.r = r, .g = g, .b = b}, sizeof(g_hlcolor._rgb));
 }
 
-static inline char	*_getsgr(void)
+static inline void	_refresh_seq(void)
 {
-	static char	out[64];
-
-	if (g_hlcolor.mode == FT_RL_HL_FG)
+	switch (g_hlcolor.mode & _UHALF)
 	{
-		if (__strnstr(g_hlcolor.sgr, "\e[3", 3))
-			return ((char *)g_hlcolor.sgr);
-		__strlcpy(out, g_hlcolor.sgr, 64);
-		out[2] = '3';
-		return (out);
+		case _HL_SGR:
+			ft_rl_sethlcolor_sgr(g_hlcolor._sgr);
+			break ;
+		case _HL_CLR:
+			ft_rl_sethlcolor_clr(g_hlcolor._clr);
+			break ;
+		case _HL_RGB:
+			ft_rl_sethlcolor_rgb(g_hlcolor._rgb.r, g_hlcolor._rgb.g, g_hlcolor._rgb.b);
 	}
-	if (__strnstr(g_hlcolor.sgr, "\e[4", 3))
-		return ((char *)g_hlcolor.sgr);
-	__strlcpy(out, g_hlcolor.sgr, 64);
-	out[2] = '4';
-	return (out);
 }

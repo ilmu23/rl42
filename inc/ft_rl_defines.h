@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:50:22 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/01 23:45:23 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,15 @@
 # define FT_RL_HIST_OFF 0x2U
 # define FT_RL_HIST_NOUP 0x4U
 
-// Highlight fg/bg
-# define FT_RL_HL_FG 0x0U
-# define FT_RL_HL_BG 0x1U
+// Highlight settings
+# define FT_RL_HL_FG 0x1U
+# define FT_RL_HL_BG 0x2U
+# define FT_RL_HL_BOLD 0x4U
+# define FT_RL_HL_ULINE 0x8U
+
+/// Currently used highlight type
+# define _HL_SGR 0x10U
+# define _HL_CLR 0x20U
+# define _HL_RGB 0x40U
 
 #endif

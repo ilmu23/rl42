@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:34:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/01 23:42:28 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,9 +153,14 @@ struct s_rl_rgb
 
 struct s_rl_hlc
 {
-	const char	*sgr;
-	rl_rgb_t	rgbval;
-	uint8_t		mode;
+	const char		*seq;
+	union
+	{
+		const char	*_sgr;
+		rl_rgb_t	_rgb;
+		uint8_t		_clr;
+	};
+	uint8_t			mode;
 };
 
 struct s_rl_arg

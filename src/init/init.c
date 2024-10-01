@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:39:57 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 00:26:25 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,8 @@ void	ft_rl_init(void)
 	_emacs_default_binds();
 	_vi_ins_default_binds();
 	_vi_cmd_default_binds();
-	g_hlcolor.mode = FT_RL_HL_FG;
-	ft_rl_sethlcolor_sgr(SGR_FG4);
-	ft_rl_sethlcolor_rgb(255, 23, 123);
+	ft_rl_sethlcolor_mode(FT_RL_HL_FG);
+	ft_rl_sethlcolor_clr(2);
 	ft_rl_seteditmode(emode);
 	ft_rl_set_completion_fn(ft_rl_complete);
 	tcsetattr(0, TCSANOW, &g_oldsettings);

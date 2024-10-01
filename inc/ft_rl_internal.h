@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 10:28:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/01 22:43:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int32_t			ft_rl_perror(void);
 uint8_t			ft_rl_execmap(rl_input_t *input);
 
 // color.c
-char			*ft_rl_hlcolor(void);
+const char		*ft_rl_hlcolor(void);
 
 // kring.c
 char			*ft_rl_kring_yank(void);

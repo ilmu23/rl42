@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/14 22:03:58 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/01 22:34:28 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ char		*ft_readline(const char *prompt, const uint8_t opts);
 // color.c
 void		ft_rl_sethlcolor_mode(const uint8_t mode);
 void		ft_rl_sethlcolor_sgr(const char *s);
+void		ft_rl_sethlcolor_clr(const uint8_t color);
 void		ft_rl_sethlcolor_rgb(const uint8_t r, const uint8_t g, const uint8_t b);
 
 // utils.c
