@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:18:28 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 14:28:22 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ void	ft_rl_map_emacs(const char *key, const char *func, rl_mapmode_t mode)
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_EMACS)
-		ft_rl_seteditmode(_MD_EMACS);;
+		ft_rl_seteditmode(_MD_EMACS);
 	ft_rl_map(key, func, mode);
 	if (emode != _MD_EMACS)
-		ft_rl_seteditmode(emode);;
+		ft_rl_seteditmode(emode);
 }
 
 void	ft_rl_map_vi_ins(const char *key, const char *func, rl_mapmode_t mode)
@@ -54,10 +54,10 @@ void	ft_rl_map_vi_ins(const char *key, const char *func, rl_mapmode_t mode)
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_VI_INS)
-		ft_rl_seteditmode(_MD_VI_INS);;
+		ft_rl_seteditmode(_MD_VI_INS);
 	ft_rl_map(key, func, mode);
 	if (emode != _MD_VI_INS)
-		ft_rl_seteditmode(emode);;
+		ft_rl_seteditmode(emode);
 }
 
 void	ft_rl_map_vi_cmd(const char *key, const char *func, rl_mapmode_t mode)
@@ -66,10 +66,22 @@ void	ft_rl_map_vi_cmd(const char *key, const char *func, rl_mapmode_t mode)
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_VI_CMD)
-		ft_rl_seteditmode(_MD_VI_CMD);;
+		ft_rl_seteditmode(_MD_VI_CMD);
 	ft_rl_map(key, func, mode);
 	if (emode != _MD_VI_CMD)
-		ft_rl_seteditmode(emode);;
+		ft_rl_seteditmode(emode);
+}
+
+void	ft_rl_map_hlcolor(const char *key, const char *func, rl_mapmode_t mode)
+{
+	uint8_t	emode;
+
+	emode = ft_rl_geteditmode();
+	if (emode != _MD_HLCOLOR)
+		ft_rl_seteditmode(_MD_HLCOLOR);
+	ft_rl_map(key, func, mode);
+	if (emode != _MD_HLCOLOR)
+		ft_rl_seteditmode(emode);
 }
 
 void	ft_rl_addkey(const char *key, const uint64_t value)
@@ -116,6 +128,8 @@ static inline t_hmap	*_getcurmap(void)
 			return (g_map_vi_ins);
 		case _MD_VI_CMD:
 			return (g_map_vi_cmd);
+		case _MD_HLCOLOR:
+			return (g_map_hlcolor);
 	}
 	return (NULL);
 }

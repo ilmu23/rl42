@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:49:25 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 13:33:17 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -871,6 +871,8 @@ static inline t_hmap	*_getcurmap(void)
 			return (g_map_vi_ins);
 		case _MD_VI_CMD:
 			return (g_map_vi_cmd);
+		case _MD_HLCOLOR:
+			return (g_map_hlcolor);
 	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:39:57 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 14:24:36 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static inline void	_emacs_default_binds(void);
 static inline void	_vi_ins_default_binds(void);
 static inline void	_vi_cmd_default_binds(void);
+static inline void	_hlcolor_default_binds(void);
 static inline void	_defaultsettings(void);
 static inline void	_init_escapes(void);
 static inline void	_ft_rl_exit(void);
@@ -32,13 +33,14 @@ void	ft_rl_init(void)
 	g_map_emacs = __mapnew();
 	g_map_vi_ins = __mapnew();
 	g_map_vi_cmd = __mapnew();
+	g_map_hlcolor = __mapnew();
 	tcgetattr(0, &g_oldsettings);
 	g_newsettings = g_oldsettings;
 	g_newsettings.c_iflag &= ~(ICRNL | IXON);
 	g_newsettings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	tcsetattr(0, TCSANOW, &g_newsettings);
 	if (!g_keys || !g_funcs || !g_map_emacs || !g_map_vi_ins || !g_map_vi_cmd
-		|| atexit(_ft_rl_exit))
+		|| !g_map_hlcolor || atexit(_ft_rl_exit))
 		__exit(ft_rl_perror());
 	g_argument.set = 0;
 	g_mark_s.set = 0;
@@ -55,9 +57,9 @@ void	ft_rl_init(void)
 	_emacs_default_binds();
 	_vi_ins_default_binds();
 	_vi_cmd_default_binds();
-	g_hlcolor.mode = FT_RL_HL_FG;
-	ft_rl_sethlcolor_sgr(SGR_FG4);
-	ft_rl_sethlcolor_rgb(255, 23, 123);
+	_hlcolor_default_binds();
+	ft_rl_sethlcolor_mode(FT_RL_HL_FG);
+	ft_rl_sethlcolor_clr(2);
 	ft_rl_seteditmode(emode);
 	ft_rl_set_completion_fn(ft_rl_complete);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
@@ -158,7 +160,6 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_map("<M-C-x>", "exchange-point-and-mark", QUIET);
 	ft_rl_map("<M-C-e>", "vi-editing-mode", QUIET);
 	ft_rl_map("<M-h>", "set-highlight-color", QUIET);
-	ft_rl_map("<M-H>", "toggle-highlight-mode", QUIET);
 }
 
 static inline void	_vi_ins_default_binds(void)
@@ -217,7 +218,6 @@ static inline void	_vi_cmd_default_binds(void)
 	ft_rl_map("9", "digit-argument", QUIET);
 	ft_rl_map("?", "inc-reverse-search-history", QUIET);
 	ft_rl_map("A", "vi-insert-mode-A", QUIET);
-	ft_rl_map("C", "toggle-highlight-mode", QUIET);
 	ft_rl_map("F", "backward-find-character", QUIET);
 	ft_rl_map("I", "vi-insert-mode-I", QUIET);
 	ft_rl_map("M", "unset-mark", QUIET);
@@ -245,6 +245,29 @@ static inline void	_vi_cmd_default_binds(void)
 	ft_rl_map("<RET>", "accept-line", QUIET);
 	ft_rl_map("<TAB>", "complete", QUIET);
 	ft_rl_map("<ESC>", "abort", QUIET);
+}
+
+static inline void	_hlcolor_default_binds(void)
+{
+	ft_rl_seteditmode(_MD_HLCOLOR);
+	ft_rl_map("b", "hlcolor-toggle-bold", QUIET);
+	ft_rl_map("u", "hlcolor-toggle-underline", QUIET);
+	ft_rl_map("f", "hlcolor-toggle-fg/bg", QUIET);
+	ft_rl_map("s", "hlcolor-set-sgr", QUIET);
+	ft_rl_map("c", "hlcolor-set-color", QUIET);
+	ft_rl_map("r", "hlcolor-set-rgb", QUIET);
+	ft_rl_map("<RET>", "hlcolor-accept", QUIET);
+	ft_rl_map("<BCK>", "backward-remove-char", QUIET);
+	ft_rl_map("0", "self-insert", QUIET);
+	ft_rl_map("1", "self-insert", QUIET);
+	ft_rl_map("2", "self-insert", QUIET);
+	ft_rl_map("3", "self-insert", QUIET);
+	ft_rl_map("4", "self-insert", QUIET);
+	ft_rl_map("5", "self-insert", QUIET);
+	ft_rl_map("6", "self-insert", QUIET);
+	ft_rl_map("7", "self-insert", QUIET);
+	ft_rl_map("8", "self-insert", QUIET);
+	ft_rl_map("9", "self-insert", QUIET);
 }
 
 static inline void	_defaultsettings(void)

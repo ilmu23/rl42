@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:50:22 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 14:33:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,14 @@
 # define _READ_INITFILE 0x2ULL
 # define _VI_ARG 0x20ULL
 # define _KILL_APPEND 0x40ULL
+# define _HIDE_CURSOR 0x100ULL
 
 /// modes
 # define _MD_EMACS 0x4ULL
 # define _MD_VI_INS 0x8ULL
 # define _MD_VI_CMD 0x10ULL
-# define _MD_MASK 0x1CULL
+# define _MD_HLCOLOR 0x80ULL
+# define _MD_MASK 0x9CULL
 
 // Settings
 
@@ -116,8 +118,15 @@
 # define FT_RL_HIST_OFF 0x2U
 # define FT_RL_HIST_NOUP 0x4U
 
-// Highlight fg/bg
-# define FT_RL_HL_FG 0x0U
-# define FT_RL_HL_BG 0x1U
+// Highlight settings
+# define FT_RL_HL_FG 0x1U
+# define FT_RL_HL_BG 0x2U
+# define FT_RL_HL_BOLD 0x4U
+# define FT_RL_HL_ULINE 0x8U
+
+/// Currently used highlight type
+# define _HL_SGR 0x10U
+# define _HL_CLR 0x20U
+# define _HL_RGB 0x40U
 
 #endif

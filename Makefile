@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/09/25 15:03:31 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/10/02 14:19:43 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,7 @@ COMPFILES	=	completion.c \
 
 FNFILES		=	move.c \
 				hist.c \
+				hlcolor.c \
 				text.c \
 				comp.c \
 				misc.c \

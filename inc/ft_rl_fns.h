@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 09:42:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 13:30:39 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,16 @@ uint8_t	ft_rl_fsh_i(rl_input_t *input);
 uint8_t	ft_rl_yna(rl_input_t *input);
 uint8_t	ft_rl_yla(rl_input_t *input);
 
+/**   hlcolor.c   **/
+uint8_t	ft_rl_hlc(rl_input_t *input);
+uint8_t	ft_rl_hl_bld(rl_input_t *input);
+uint8_t	ft_rl_hl_uln(rl_input_t *input);
+uint8_t	ft_rl_hl_fbg(rl_input_t *input);
+uint8_t	ft_rl_hl_sgr(rl_input_t *input);
+uint8_t	ft_rl_hl_clr(rl_input_t *input);
+uint8_t	ft_rl_hl_rgb(rl_input_t *input);
+uint8_t	ft_rl_hl_acc(rl_input_t *input);
+
 /**   text.c   **/
 uint8_t	ft_rl_eof(rl_input_t *input);
 uint8_t	ft_rl_del(rl_input_t *input);
@@ -75,8 +85,6 @@ uint8_t	ft_rl_smk(rl_input_t *input);
 uint8_t	ft_rl_umk(rl_input_t *input);
 uint8_t	ft_rl_xmk(rl_input_t *input);
 uint8_t	ft_rl_abt(rl_input_t *input);
-uint8_t	ft_rl_hlc(rl_input_t *input);
-uint8_t	ft_rl_hlm(rl_input_t *input);
 uint8_t	ft_rl_arg(rl_input_t *input);
 uint8_t	ft_rl_arg_n(rl_input_t *input);
 uint8_t	ft_rl_md_em(rl_input_t *input);
