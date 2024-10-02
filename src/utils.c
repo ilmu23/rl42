@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 17:03:11 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 14:33:31 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ uint64_t	ft_rl_getkey(void)
 
 	if (g_keybuf.size == 0)
 	{
-		ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
+		if (!(g_status & _HIDE_CURSOR))
+			ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
 		g_keybuf.size = read(0, &g_keybuf.key, sizeof(g_keybuf.key));
 		if (g_keybuf.size == -1)
 		{
@@ -47,7 +48,8 @@ uint64_t	ft_rl_getkey(void)
 				return (ft_rl_getkey());
 			exit(ft_rl_perror());
 		}
-		ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
+		if (!(g_status & _HIDE_CURSOR))
+			ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
 	}
 	keymask = _KEYSHIFT_MASK;
 	shift = g_keybuf.size;

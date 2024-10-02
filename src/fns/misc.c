@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 17:02:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 13:30:54 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,61 +88,6 @@ uint8_t	ft_rl_xmk(rl_input_t *input)
 uint8_t	ft_rl_abt(__UNUSED rl_input_t *input)
 {
 	ft_rl_bell();
-	return (1);
-}
-
-uint8_t	ft_rl_hlc(__UNUSED rl_input_t *input)
-{
-	uint64_t	key;
-
-	key = ft_rl_getkey();
-	switch (key)
-	{
-		case KEY_NUM_0:
-			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 0) : SGR_FG0;
-			break ;
-		case KEY_NUM_1:
-			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 1) : SGR_FG1;
-			break ;
-		case KEY_NUM_2:
-			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 2) : SGR_FG2;
-			break ;
-		case KEY_NUM_3:
-			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 3) : SGR_FG3;
-			break ;
-		case KEY_NUM_4:
-			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 4) : SGR_FG4;
-			break ;
-		case KEY_NUM_5:
-			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 5) : SGR_FG5;
-			break ;
-		case KEY_NUM_6:
-			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 6) : SGR_FG6;
-			break ;
-		case KEY_NUM_7:
-			g_hlcolor.sgr = (g_escapes.setaf) ? ft_ti_tparm(g_escapes.setaf, 7) : SGR_FG7;
-			break ;
-		case KEY_DN_R:
-			g_hlcolor.sgr = NULL;
-			break ;
-		case KEY_UP_R:
-			g_hlcolor.sgr = NULL;
-			break ;
-	}
-	return (1);
-}
-
-uint8_t	ft_rl_hlm(__UNUSED rl_input_t *input)
-{
-	switch (g_hlcolor.mode)
-	{
-		case FT_RL_HL_FG:
-			ft_rl_sethlcolor_mode(FT_RL_HL_BG);
-			break ;
-		case FT_RL_HL_BG:
-			ft_rl_sethlcolor_mode(FT_RL_HL_FG);
-			break ;
-	}
 	return (1);
 }
 

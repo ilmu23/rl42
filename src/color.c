@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 23:57:08 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 00:17:54 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 14:01:16 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_rl_sethlcolor_sgr(const char *s)
 {
 	set_mode(_HL_SGR, ~_UHALF);
 	set_seq(s);
-	g_hlcolor._sgr = s;
+	g_hlcolor.sgr = s;
 }
 
 void	ft_rl_sethlcolor_clr(const uint8_t color)
@@ -51,7 +51,7 @@ void	ft_rl_sethlcolor_clr(const uint8_t color)
 	set_mode(_HL_CLR, ~_UHALF);
 	seq = (g_hlcolor.mode & FT_RL_HL_BG) ? g_escapes.setab : g_escapes.setaf;
 	set_seq(ft_ti_tparm(seq, color));
-	g_hlcolor._clr = color;
+	g_hlcolor.clr = color;
 }
 
 void	ft_rl_sethlcolor_rgb(const uint8_t r, const uint8_t g, const uint8_t b)
@@ -64,7 +64,7 @@ void	ft_rl_sethlcolor_rgb(const uint8_t r, const uint8_t g, const uint8_t b)
 		fmt[2] = '4';
 	__snprintf(buf, 23, fmt, r, g, b);
 	set_seq(__push(__strdup(buf)));
-	memcpy(&g_hlcolor._rgb, &(rl_rgb_t){.r = r, .g = g, .b = b}, sizeof(g_hlcolor._rgb));
+	memcpy(&g_hlcolor.rgb, &(rl_rgb_t){.r = r, .g = g, .b = b}, sizeof(g_hlcolor.rgb));
 }
 
 static inline void	_refresh_seq(void)
@@ -72,12 +72,12 @@ static inline void	_refresh_seq(void)
 	switch (g_hlcolor.mode & _UHALF)
 	{
 		case _HL_SGR:
-			ft_rl_sethlcolor_sgr(g_hlcolor._sgr);
+			ft_rl_sethlcolor_sgr(g_hlcolor.sgr);
 			break ;
 		case _HL_CLR:
-			ft_rl_sethlcolor_clr(g_hlcolor._clr);
+			ft_rl_sethlcolor_clr(g_hlcolor.clr);
 			break ;
 		case _HL_RGB:
-			ft_rl_sethlcolor_rgb(g_hlcolor._rgb.r, g_hlcolor._rgb.g, g_hlcolor._rgb.b);
+			ft_rl_sethlcolor_rgb(g_hlcolor.rgb.r, g_hlcolor.rgb.g, g_hlcolor.rgb.b);
 	}
 }

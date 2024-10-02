@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 10:34:20 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/02 13:30:10 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,5 +78,11 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("vi-subst-line", ft_rl_vi_sbl);
 	ft_rl_addfunc("vi-replace", ft_rl_vi_rep);
 	ft_rl_addfunc("set-highlight-color", ft_rl_hlc);
-	ft_rl_addfunc("toggle-highlight-mode", ft_rl_hlm);
+	ft_rl_addfunc("hlcolor-toggle-bold", ft_rl_hl_bld);
+	ft_rl_addfunc("hlcolor-toggle-underline", ft_rl_hl_uln);
+	ft_rl_addfunc("hlcolor-toggle-fg/bg", ft_rl_hl_fbg);
+	ft_rl_addfunc("hlcolor-set-sgr", ft_rl_hl_sgr);
+	ft_rl_addfunc("hlcolor-set-color", ft_rl_hl_clr);
+	ft_rl_addfunc("hlcolor-set-rgb", ft_rl_hl_rgb);
+	ft_rl_addfunc("hlcolor-accept", ft_rl_hl_acc);
 }
