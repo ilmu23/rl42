@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:03:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:18:28 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/09/25 16:33:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,17 +60,23 @@ static inline uint64_t	_getval(const char *var, const char *val)
 				return (BELL_VISIBLE);
 			if (__strequals(val, "audible"))
 				return (BELL_AUDIBLE);
+#ifndef RL42NOCOMPLAIN
 			__dprintf(2, "%s unrecognized value: '%s'\n", __E_SET, val);
+#endif
 			return (BELL_NONE);
 		case _CMP_DWIDTH_HASH:
 			if (__isint(val))
 				return (atol(val));
+#ifndef RL42NOCOMPLAIN
 			__dprintf(2, "%s unrecognized value: '%s'\n", __E_SET, val);
+#endif
 			return (-1);
 		case _CMP_QITEMS_HASH:
 			if (__isint(val))
 				return (atol(val));
+#ifndef RL42NOCOMPLAIN
 			__dprintf(2, "%s unrecognized value: '%s'\n", __E_SET, val);
+#endif
 			return (100);
 		case _HIST_SIZE_HASH:
 			if (__isint(val))
@@ -133,8 +139,10 @@ static inline void	_parse(char *line)
 		_bind(args);
 	else if (__strequals(args[0], "set"))
 		_set(args);
+#ifndef RL42NOCOMPLAIN
 	else
 		__dprintf(2, "%s unrecognized keyword: '%s'\n", __E_INIT, args[0]);
+#endif
 	i = 0;
 	while (args[i])
 		__popblk(args[i++]);
@@ -145,12 +153,16 @@ static inline void	_bind(const char **args)
 {
 	if (!args[1])
 	{
+#ifndef RL42NOCOMPLAIN
 		__dprintf(2, "%s missing keycode\n", __E_BIND);
+#endif
 		return ;
 	}
 	if (!args[2])
 	{
+#ifndef RL42NOCOMPLAIN
 		__dprintf(2, "%s missing function\n", __E_BIND);
+#endif
 		return ;
 	}
 	if (args[3])
@@ -161,8 +173,10 @@ static inline void	_bind(const char **args)
 			ft_rl_map_vi_cmd(args[1], args[2], REMAP);
 		else if (__strequals(args[3], "emacs"))
 			ft_rl_map_emacs(args[1], args[2], REMAP);
+#ifndef RL42NOCOMPLAIN
 		else
 			__dprintf(2, "%s unrecognized mode: '%s'\n", __E_BIND, args[3]);
+#endif
 		return ;
 	}
 	ft_rl_map(args[1], args[2], REMAP);
@@ -172,12 +186,16 @@ static inline void	_set(const char **args)
 {
 	if (!args[1])
 	{
+#ifndef RL42NOCOMPLAIN
 		__dprintf(2, "%s missing variable name\n", __E_SET);
+#endif
 		return ;
 	}
 	if (!args[2])
 	{
+#ifndef RL42NOCOMPLAIN
 		__dprintf(2, "%s missing value\n", __E_SET);
+#endif
 		return ;
 	}
 	if (__strhash(args[1], 347, UINT64_MAX) == _EMODE_HASH)
@@ -192,6 +210,8 @@ static inline void	_set_emode(const char *emode)
 		ft_rl_seteditmode(_MD_VI_INS);
 	else if (__strequals(emode, "emacs"))
 		ft_rl_seteditmode(_MD_EMACS);
+#ifndef RL42NOCOMPLAIN
 	else
 		__dprintf(2, "%s editing-mode: unrecognized mode: '%s'\n", __E_SET, emode);
+#endif
 }

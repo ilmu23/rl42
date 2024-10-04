@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 14:28:22 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/04 18:43:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ void	ft_rl_map(const char *key, const char *func, rl_mapmode_t mode)
 	funcval = __mapget(g_funcs, func);
 	if (!keyval || !funcval)
 	{
+#ifndef RL42NOCOMPLAIN
 		__dprintf(2, "ft_rl_map(%s, %s): ", key, func);
 		_err(keyval, funcval);
+#endif
 		return ;
 	}
 	if (ft_rl_ismapped(*keyval))
@@ -138,13 +140,13 @@ static inline void	_err(const uint64_t *key, const rl_fn_t *func)
 {
 	if (!key)
 	{
-		__dprintf(2, "key not found");
+		__putstr_fd("key not found", 2);
 		if (!func)
-			__dprintf(2, "; ");
+			__putstr_fd("; ", 2);
 	}
 	if (!func)
-		__dprintf(2, "function not found");
-	__dprintf(2, "\n");
+		__putstr_fd("function not found", 2);
+	__putchar_fd('\n', 2);
 }
 
 static inline void	_remap(const char *key, const rl_map_t *mapping, rl_mapmode_t mode)
