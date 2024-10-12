@@ -6,11 +6,12 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/10/02 14:19:43 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/10/12 04:00:47 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	=	librl42.a
+OUTDIR	=	$(dir $(NAME))
 
 BUILD	=	normal
 
@@ -28,7 +29,11 @@ OBJDIR	=	obj
 LIBDIR	=	lib
 INCDIR	=	inc
 
-TI42	=	$(LIBDIR)/libti42.a
+ifeq ($(strip $(OUTDIR)), "./")
+	TI42	=	$(LIBDIR)/libti42.a
+else
+	TI42	=	$(OUTDIR)/libti42.a
+endif
 TI42DIR	=	$(LIBDIR)/ti42
 
 INC		=	-I$(INCDIR) -I$(TI42DIR)/$(INCDIR)
@@ -157,9 +162,10 @@ $(NAME): $(TI42) $(OBJDIR) $(OBJS)
 	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
 
 $(TI42):
-	@git submodule init lib/ti42
-	@git submodule update lib/ti42
-	@make --no-print-directory -C $(TI42DIR) BUILD=$(BUILD) NAME=../libti42.a
+	@git submodule init $(TI42DIR)
+	@git submodule update $(TI42DIR)
+	@make --no-print-directory -C $(TI42DIR) BUILD=$(BUILD) NAME=libti42.a
+	@mv $(TI42DIR)/libti42.a $(TI42)
 
 $(OBJDIR):
 	@printf "\e[1;35mRL42 >\e[m Creating objdirs\n"
@@ -178,16 +184,17 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-	@make --no-print-directory -C $(TI42DIR) clean
+	@make --no-print-directory -C $(TI42DIR) clean NAME=libti42.a
 	@rm -f $(OBJS)
 
 fclean: clean
-	@make --no-print-directory -C $(TI42DIR) fclean NAME=../libti42.a
+	@make --no-print-directory -C $(TI42DIR) fclean NAME=libti42.a
 	@rm -rf $(OBJDIR)
 	@rm -rf a.out.dSYM
 	@rm -f a.out
 	@rm -f $(NAME)
+	@rm -f $(TI42)
 
 re: fclean all
 
-.PHONY: all test clean fclean re
+.PHONY: all test clean fclean re 
