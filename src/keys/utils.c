@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 13:33:17 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 11:51:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ uint8_t	ft_rl_ismapped(const uint64_t key)
 {
 	rl_map_t	*mapping;
 
+	ft_rl_init();
 	mapping = __mapget(_getcurmap(), ft_rl_keystr(key));
 	return (mapping != NULL);
 }
@@ -37,6 +38,7 @@ rl_fn_t	ft_rl_getmap(const uint64_t key)
 {
 	rl_map_t	*mapping;
 
+	ft_rl_init();
 	mapping = __mapget(_getcurmap(), ft_rl_keystr(key));
 	if (mapping)
 		return (*mapping->f);
@@ -836,6 +838,7 @@ char	*ft_rl_keystr(const uint64_t key)
 
 void	ft_rl_unmap(const char *key)
 {
+	ft_rl_init();
 	__maprm(_getcurmap(), key);
 }
 
@@ -846,6 +849,7 @@ void	ft_rl_unmap_fn(const char *func)
 	size_t		i;
 	t_hmap		*map;
 
+	ft_rl_init();
 	map = _getcurmap();
 	f = __mapget(g_funcs, func);
 	if (!f)
@@ -859,6 +863,17 @@ void	ft_rl_unmap_fn(const char *func)
 			__maprm(map, items[i]->key);
 		i++;
 	}
+}
+
+void	ft_rl_unmap_all(void)
+{
+	t_hmap_pair	**items;
+	t_hmap		*map;
+	size_t		i;
+
+	ft_rl_init();
+	for (i = 0, map = _getcurmap(), items = map->items; i < map->size; i++)
+		__maprm(map, items[i]->key);
 }
 
 static inline t_hmap	*_getcurmap(void)

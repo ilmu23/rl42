@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 14:33:31 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:13:43 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static inline uint8_t	_interrupt(void);
 
 rl_cmp_fn_t	ft_rl_get_completion_fn(void)
 {
+	ft_rl_init();
 	return (g_cmp_fn);
 }
 
@@ -103,6 +104,7 @@ uint8_t	ft_rl_geteditmode(void)
 
 void	ft_rl_set_completion_fn(rl_cmp_fn_t f)
 {
+	ft_rl_init();
 	g_cmp_fn = f;
 }
 

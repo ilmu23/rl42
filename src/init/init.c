@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:05:34 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:28:11 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	ft_rl_init(void)
 
 	if (init)
 		return ;
+	init = 1;
 	_init_escapes();
 	g_keys = __mapnew();
 	g_funcs = __mapnew();
@@ -63,7 +64,6 @@ void	ft_rl_init(void)
 	ft_rl_seteditmode(emode);
 	ft_rl_set_completion_fn(ft_rl_complete_path);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
-	init = 1;
 }
 
 void	ft_rl_init_input(const char *p, const uint64_t plen)

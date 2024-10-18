@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 10:27:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/25 16:45:26 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 11:48:17 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ uint64_t	ft_rl_get(const uint64_t var)
 {
 	uint8_t	setting;
 
+	ft_rl_init();
 	setting = 0;
 	switch(var)
 	{

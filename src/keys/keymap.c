@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/04 18:43:32 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 11:46:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	ft_rl_map(const char *key, const char *func, rl_mapmode_t mode)
 	const uint64_t	*keyval;
 	const rl_fn_t	*funcval;
 
+	ft_rl_init();
 	keyval = __mapget(g_keys, key);
 	funcval = __mapget(g_funcs, func);
 	if (!keyval || !funcval)
@@ -90,6 +91,7 @@ void	ft_rl_addkey(const char *key, const uint64_t value)
 {
 	uint64_t	*val;
 
+	ft_rl_init();
 	val = __push(__alloc(sizeof(*val)));
 	if (!val)
 		exit(ft_rl_perror());
@@ -102,6 +104,7 @@ void	ft_rl_addfunc(const char *func, const rl_fn_t f)
 {
 	rl_fn_t	*fn;
 
+	ft_rl_init();
 	fn = __push(__alloc(sizeof(*fn)));
 	if (!fn)
 		exit(ft_rl_perror());

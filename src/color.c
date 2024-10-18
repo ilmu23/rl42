@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 23:57:08 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 14:01:16 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 11:43:18 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ const char	*ft_rl_hlcolor(void)
 
 void	ft_rl_sethlcolor_mode(const uint8_t mode)
 {
+	ft_rl_init();
 	if (mode & FT_RL_HL_FG && mode & FT_RL_HL_BG)
 		set_mode(mode & ~FT_RL_HL_BG, ~_LHALF);
 	else
@@ -39,6 +40,7 @@ void	ft_rl_sethlcolor_mode(const uint8_t mode)
 
 void	ft_rl_sethlcolor_sgr(const char *s)
 {
+	ft_rl_init();
 	set_mode(_HL_SGR, ~_UHALF);
 	set_seq(s);
 	g_hlcolor.sgr = s;
@@ -48,6 +50,7 @@ void	ft_rl_sethlcolor_clr(const uint8_t color)
 {
 	const char	*seq;
 
+	ft_rl_init();
 	set_mode(_HL_CLR, ~_UHALF);
 	seq = (g_hlcolor.mode & FT_RL_HL_BG) ? g_escapes.setab : g_escapes.setaf;
 	set_seq(ft_ti_tparm(seq, color));
@@ -59,6 +62,7 @@ void	ft_rl_sethlcolor_rgb(const uint8_t r, const uint8_t g, const uint8_t b)
 	char		fmt[23] = "\e[38;2;%hhu;%hhu;%hhum";
 	char		buf[23];
 
+	ft_rl_init();
 	set_mode(_HL_RGB, ~_UHALF);
 	if (g_hlcolor.mode & FT_RL_HL_BG)
 		fmt[2] = '4';
