@@ -6,13 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 11:51:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline t_hmap	*_getcurmap(void);
+static inline __t_hmap	*_getcurmap(void);
 static inline void		_altctrl(char *keystr, const uint64_t key);
 static inline void		_ascii(char *keystr, const uint64_t key);
 static inline void		_ctrl(char *keystr, const uint64_t key);
@@ -844,10 +844,10 @@ void	ft_rl_unmap(const char *key)
 
 void	ft_rl_unmap_fn(const char *func)
 {
-	t_hmap_pair	**items;
+	__t_hmap_pair	**items;
 	rl_fn_t		*f;
 	size_t		i;
-	t_hmap		*map;
+	__t_hmap		*map;
 
 	ft_rl_init();
 	map = _getcurmap();
@@ -867,8 +867,8 @@ void	ft_rl_unmap_fn(const char *func)
 
 void	ft_rl_unmap_all(void)
 {
-	t_hmap_pair	**items;
-	t_hmap		*map;
+	__t_hmap_pair	**items;
+	__t_hmap		*map;
 	size_t		i;
 
 	ft_rl_init();
@@ -876,7 +876,7 @@ void	ft_rl_unmap_all(void)
 		__maprm(map, items[i]->key);
 }
 
-static inline t_hmap	*_getcurmap(void)
+static inline __t_hmap	*_getcurmap(void)
 {
 	switch(ft_rl_geteditmode())
 	{

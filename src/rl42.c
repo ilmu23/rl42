@@ -6,19 +6,19 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 14:20:10 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 /** globals **/
-t_hmap	*g_keys;
-t_hmap	*g_funcs;
-t_hmap	*g_map_emacs;
-t_hmap	*g_map_vi_ins;
-t_hmap	*g_map_vi_cmd;
-t_hmap	*g_map_hlcolor;
+__t_hmap	*g_keys;
+__t_hmap	*g_funcs;
+__t_hmap	*g_map_emacs;
+__t_hmap	*g_map_vi_ins;
+__t_hmap	*g_map_vi_cmd;
+__t_hmap	*g_map_hlcolor;
 
 int16_t	g_rows;
 int16_t	g_cols;
@@ -42,10 +42,10 @@ rl_cmp_fn_t	g_cmp_fn;
 
 rl_escapes_t	g_escapes;
 
-const t_list	*g_hist;
-const t_list	*g_hist_cur;
-const t_list	*g_kill_ring;
-const t_list	*g_blocks;
+const __t_list	*g_hist;
+const __t_list	*g_hist_cur;
+const __t_list	*g_kill_ring;
+const __t_list	*g_blocks;
 
 rl_settings_t	g_settings;
 

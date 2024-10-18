@@ -6,15 +6,15 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 21:15:32 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 15:22:16 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-t_list	*__lstpush(const t_list *node)
+__t_list	*__lstpush(const __t_list *node)
 {
 	__push(node);
 	__push(node->blk);
-	return ((t_list *)node);
+	return ((__t_list *)node);
 }

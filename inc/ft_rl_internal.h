@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:06:27 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,12 @@ void			ft_rl_bell(void);
 /**  comp  **/
 
 /**   completion.c   **/
-t_list			*ft_rl_complete_path(const char *pattern, const rl_input_t *context);
+__t_list			*ft_rl_complete_path(const char *pattern, const rl_input_t *context);
 void			ft_rl_complete(rl_input_t *input);
 
 /**   utils.c   **/
-uint64_t		ft_rl_comp_getlongest(const t_list *completions);
-uint8_t			ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv);
+uint64_t		ft_rl_comp_getlongest(const __t_list *completions);
+uint8_t			ft_rl_comp_display(rl_input_t *input, const __t_list *completions, const void *cur, const void *prv);
 
 /**  comp  **/
 
@@ -100,7 +100,7 @@ uint8_t			ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction);
 
 /**   utils.c   **/
 rl_histnode_t	*ft_rl_hist_mknode(const char *line);
-char			*ft_rl_hist_get_line(const t_list *node);
+char			*ft_rl_hist_get_line(const __t_list *node);
 void			ft_rl_hist_yank_arg(rl_input_t *input, const rl_histnode_t *node, int32_t n);
 void			ft_rl_hist_recycle(void);
 void			ft_rl_hist_restore(void);

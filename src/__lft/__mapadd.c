@@ -6,20 +6,20 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 03:18:50 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 15:15:17 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-static inline t_hmap_pair	*_newpair(const char *key, const void *val);
-static inline uint8_t		_replace(t_hmap *hmap, t_hmap_pair *pair, size_t i);
+static inline __t_hmap_pair	*_newpair(const char *key, const void *val);
+static inline uint8_t		_replace(__t_hmap *hmap, __t_hmap_pair *pair, size_t i);
 static inline void		*_dupval(const void *val);
 
-uint8_t	__mapadd(t_hmap *hmap, const char *key, const void *val)
+uint8_t	__mapadd(__t_hmap *hmap, const char *key, const void *val)
 {
-	t_hmap_pair	*pair;
-	t_hmap_pair	*cur;
+	__t_hmap_pair	*pair;
+	__t_hmap_pair	*cur;
 	size_t		i;
 	size_t		j;
 
@@ -45,9 +45,9 @@ uint8_t	__mapadd(t_hmap *hmap, const char *key, const void *val)
 	return (1);
 }
 
-static inline t_hmap_pair	*_newpair(const char *key, const void *val)
+static inline __t_hmap_pair	*_newpair(const char *key, const void *val)
 {
-	t_hmap_pair	*pair;
+	__t_hmap_pair	*pair;
 	uint8_t		ptstatus;
 
 	if (!key)
@@ -70,7 +70,7 @@ static inline t_hmap_pair	*_newpair(const char *key, const void *val)
 	return (pair);
 }
 
-static inline uint8_t	_replace(t_hmap *hmap, t_hmap_pair *pair, size_t i)
+static inline uint8_t	_replace(__t_hmap *hmap, __t_hmap_pair *pair, size_t i)
 {
 	if (__strequals(hmap->items[i]->key, pair->key))
 	{

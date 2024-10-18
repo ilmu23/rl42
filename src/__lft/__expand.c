@@ -6,27 +6,27 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 03:12:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/16 16:57:47 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-static inline t_base	_getbase(t_format_type type);
-static inline char		*_padstr(t_pf_conversion *cnv, char *str, size_t slen);
+static inline __t_base	_getbase(__t_format_type type);
+static inline char		*_padstr(__t_pf_conversion *cnv, char *str, size_t slen);
 static inline void		_mvsign(char *s, uint8_t pc);
-static inline void		_addstr(t_list **out, t_pf_conversion *cnv, char *str);
-static inline void		_storelen(t_pf_conversion *cnv, t_list *out);
+static inline void		_addstr(__t_list **out, __t_pf_conversion *cnv, char *str);
+static inline void		_storelen(__t_pf_conversion *cnv, __t_list *out);
 
-void	__expandconversions(t_list *conversions, t_list **strings)
+void	__expandconversions(__t_list *conversions, __t_list **strings)
 {
-	t_pf_conversion	*cnv;
+	__t_pf_conversion	*cnv;
 	char			*str;
 
 	str = NULL;
 	while (conversions)
 	{
-		cnv = (t_pf_conversion *)conversions->blk;
+		cnv = (__t_pf_conversion *)conversions->blk;
 		if (cnv->arg.type == d || cnv->arg.type == i)
 			str = __expandint(cnv);
 		else if (cnv->arg.type == o || cnv->arg.type == u
@@ -46,7 +46,7 @@ void	__expandconversions(t_list *conversions, t_list **strings)
 	}
 }
 
-char	*__expandint(t_pf_conversion *cnv)
+char	*__expandint(__t_pf_conversion *cnv)
 {
 	size_t	slen;
 	char	*out;
@@ -74,7 +74,7 @@ char	*__expandint(t_pf_conversion *cnv)
 	return (out);
 }
 
-char	*__expanduint(t_pf_conversion *cnv)
+char	*__expanduint(__t_pf_conversion *cnv)
 {
 	size_t	slen;
 	char	*out;
@@ -101,7 +101,7 @@ char	*__expanduint(t_pf_conversion *cnv)
 	return (out);
 }
 
-char	*__expandchar(t_pf_conversion *cnv)
+char	*__expandchar(__t_pf_conversion *cnv)
 {
 	char	*out;
 
@@ -112,7 +112,7 @@ char	*__expandchar(t_pf_conversion *cnv)
 	return (out);
 }
 
-char	*__expandstr(t_pf_conversion *cnv)
+char	*__expandstr(__t_pf_conversion *cnv)
 {
 	size_t	slen;
 	char	*out;
@@ -132,7 +132,7 @@ char	*__expandstr(t_pf_conversion *cnv)
 	return (out);
 }
 
-static inline t_base	_getbase(t_format_type type)
+static inline __t_base	_getbase(__t_format_type type)
 {
 	if (type == o)
 		return (OCTAL);
@@ -141,7 +141,7 @@ static inline t_base	_getbase(t_format_type type)
 	return (DECIMAL);
 }
 
-static inline char	*_padstr(t_pf_conversion *cnv, char *str, size_t slen)
+static inline char	*_padstr(__t_pf_conversion *cnv, char *str, size_t slen)
 {
 	char	*out;
 	uint8_t	pc;
@@ -179,7 +179,7 @@ static inline void	_mvsign(char *s, uint8_t pc)
 	}
 }
 
-static inline void	_addstr(t_list **out, t_pf_conversion *cnv, char *str)
+static inline void	_addstr(__t_list **out, __t_pf_conversion *cnv, char *str)
 {
 	size_t	slen;
 
@@ -193,10 +193,10 @@ static inline void	_addstr(t_list **out, t_pf_conversion *cnv, char *str)
 		else
 			str = _padstr(cnv, str, slen);
 	}
-	__lstadd_back((const t_list **)out, __lstnew(str));
+	__lstadd_back((const __t_list **)out, __lstnew(str));
 }
 
-static inline void	_storelen(t_pf_conversion *cnv, t_list *out)
+static inline void	_storelen(__t_pf_conversion *cnv, __t_list *out)
 {
 	*(ssize_t *)cnv->arg.ptrval = __getlen(out);
 }

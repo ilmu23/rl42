@@ -6,15 +6,15 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 21:19:16 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/30 17:09:36 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-void	__lstadd_front(const t_list **list, t_list *node)
+void	__lstadd_front(const __t_list **list, __t_list *node)
 {
-	t_list	*first;
+	__t_list	*first;
 	uint8_t	ptstatus;
 
 	if (!list || !node)

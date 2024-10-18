@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 19:13:30 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:37:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	ft_rl_hist_load(const char *path)
 void	ft_rl_hist_save(const char *path)
 {
 	int32_t				fd;
-	const t_list		*node;
+	const __t_list		*node;
 	const rl_histnode_t	*hnode;
 
 	if (path && *path == '~')

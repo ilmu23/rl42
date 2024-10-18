@@ -6,15 +6,15 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 10:47:53 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:11:40 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-t_objpair	*__newpair(const char *key, const t_obj *obj)
+__t_objpair	*__newpair(const char *key, const __t_obj *obj)
 {
-	t_objpair	*out;
+	__t_objpair	*out;
 
 	out = __gc_calloc(1, sizeof(*out));
 	if (!out)
@@ -22,14 +22,14 @@ t_objpair	*__newpair(const char *key, const t_obj *obj)
 		__putendl_fd(E_ALLOC, 2);
 		__exit(69);
 	}
-	*out = (t_objpair){.key = key, .obj = obj};
+	*out = (__t_objpair){.key = key, .obj = obj};
 	return (out);
 }
 
-t_obj	*__newobj(const size_t n)
+__t_obj	*__newobj(const size_t n)
 {
-	static t_vm	*vm = NULL;
-	t_obj		*obj;
+	static __t_vm	*vm = NULL;
+	__t_obj		*obj;
 
 	if (!vm)
 		vm = __getvm();
@@ -38,7 +38,7 @@ t_obj	*__newobj(const size_t n)
 	obj = malloc(sizeof(*obj));
 	if (!obj)
 		return (NULL);
-	*obj = (t_obj){.marks = 0, .traps = 0, .next = vm->head, .blksize = n,};
+	*obj = (__t_obj){.marks = 0, .traps = 0, .next = vm->head, .blksize = n,};
 	obj->blk = malloc(n);
 	if (!obj->blk)
 		return (NULL);
@@ -51,10 +51,10 @@ t_obj	*__newobj(const size_t n)
 	return (obj);
 }
 
-t_obj	*__getobj(const void *blk)
+__t_obj	*__getobj(const void *blk)
 {
 	const char	*key;
-	t_obj		*out;
+	__t_obj		*out;
 
 	if (!blk)
 		return (NULL);

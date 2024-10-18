@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 20:23:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 17:18:52 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ rl_histnode_t	*ft_rl_hist_mknode(const char *line)
 	return (out);
 }
 
-char	*ft_rl_hist_get_line(const t_list *node)
+char	*ft_rl_hist_get_line(const __t_list *node)
 {
 	const rl_histnode_t	*histnode;
 
@@ -60,7 +60,7 @@ void	ft_rl_hist_yank_arg(rl_input_t *input, const rl_histnode_t *node, int32_t n
 
 void	ft_rl_hist_recycle(void)
 {
-	t_list			*last;
+	__t_list			*last;
 	rl_histnode_t	*node;
 
 	last = __lstlast(g_hist);
@@ -69,7 +69,7 @@ void	ft_rl_hist_recycle(void)
 	node->line = __push(__strdup(""));
 	__lstrmnode(&g_hist, last);
 	last->prev = NULL;
-	__lstadd_front(&g_hist, (t_list *)last);
+	__lstadd_front(&g_hist, (__t_list *)last);
 }
 
 void	ft_rl_hist_restore(void)

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 04:01:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 15:29:25 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static inline uint64_t	_upow(const uint64_t n, int64_t p);
 static inline uint8_t	_isprime(const uint64_t n);
 static inline double	_estimate(const double n);
 static inline double	_sqrt(const double n);
-static inline void	_swap(t_hmap *hmap, t_hmap *tmp);
+static inline void	_swap(__t_hmap *hmap, __t_hmap *tmp);
 
 uint64_t	__nextprime(uint64_t n)
 {
@@ -49,19 +49,19 @@ uint64_t	__strhash(const char *s, const uint64_t salt, const size_t size)
 	return (hash);
 }
 
-uint8_t	__shrinkmap(t_hmap *hmap)
+uint8_t	__shrinkmap(__t_hmap *hmap)
 {
 	return (__resizemap(hmap, hmap->bsize / 2));
 }
 
-uint8_t	__growmap(t_hmap *hmap)
+uint8_t	__growmap(__t_hmap *hmap)
 {
 	return (__resizemap(hmap, hmap->bsize * 2));
 }
 
-uint8_t	__resizemap(t_hmap *hmap, size_t bsize)
+uint8_t	__resizemap(__t_hmap *hmap, size_t bsize)
 {
-	t_hmap	*tmp;
+	__t_hmap	*tmp;
 	size_t	i;
 
 	if (bsize < HMAP_DEF_SIZE)
@@ -167,9 +167,9 @@ static inline double	_sqrt(const double n)
 	return (e);
 }
 
-static inline void	_swap(t_hmap *hmap, t_hmap *tmp)
+static inline void	_swap(__t_hmap *hmap, __t_hmap *tmp)
 {
-	t_hmap_pair	**tmpitems;
+	__t_hmap_pair	**tmpitems;
 	size_t		tmpsize;
 
 	tmpsize = hmap->size;

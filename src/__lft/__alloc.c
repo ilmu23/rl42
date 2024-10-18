@@ -6,17 +6,17 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 11:47:38 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 15:18:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-static inline t_obj	*_findblk(const size_t n);
+static inline __t_obj	*_findblk(const size_t n);
 
 void	*__alloc(const size_t n)
 {
-	t_obj			*obj;
+	__t_obj			*obj;
 
 	if (!n)
 		return (NULL);
@@ -29,11 +29,11 @@ void	*__alloc(const size_t n)
 	return ((void *)obj->blk);
 }
 
-static inline t_obj	*_findblk(const size_t n)
+static inline __t_obj	*_findblk(const size_t n)
 {
-	static t_vm	*vm = NULL;
-	t_obj		*obj;
-	t_obj		*out;
+	static __t_vm	*vm = NULL;
+	__t_obj		*obj;
+	__t_obj		*out;
 
 	if (!vm)
 		vm = __getvm();

@@ -6,22 +6,22 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 23:20:25 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:21:18 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-static inline t_pf_conversion	*_newstring(const char *s);
-static inline t_pf_conversion	*_newconversion(const char *cnv, t_list **args);
-static inline t_pf_arg			_gettype(const char *cnv, t_list **args, size_t n);
-static inline t_format_type		_argtype(const uint8_t c);
+static inline __t_pf_conversion	*_newstring(const char *s);
+static inline __t_pf_conversion	*_newconversion(const char *cnv, __t_list **args);
+static inline __t_pf_arg			_gettype(const char *cnv, __t_list **args, size_t n);
+static inline __t_format_type		_argtype(const uint8_t c);
 static inline uint8_t			_getflags(const char **cnv);
 
-t_list	*__getconversions(const char *f, t_list *args)
+__t_list	*__getconversions(const char *f, __t_list *args)
 {
-	const t_list	*out;
-	t_pf_conversion	*conversion;
+	const __t_list	*out;
+	__t_pf_conversion	*conversion;
 
 	out = NULL;
 	while (*f)
@@ -40,7 +40,7 @@ t_list	*__getconversions(const char *f, t_list *args)
 		}
 		__lstadd_back(&out, __lstnew(conversion));
 	}
-	return ((t_list *)out);
+	return ((__t_list *)out);
 }
 
 uint8_t	__getlength(const char **cnv)
@@ -70,7 +70,7 @@ uint8_t	__getlength(const char **cnv)
 	return (PF_LENGTH_DIFF);
 }
 
-size_t	__getwidth(const char **cnv, t_list **args)
+size_t	__getwidth(const char **cnv, __t_list **args)
 {
 	size_t	n;
 
@@ -94,7 +94,7 @@ size_t	__getwidth(const char **cnv, t_list **args)
 	return ((size_t)__nextarg(args));
 }
 
-size_t	__getprecision(const char **cnv, t_list **args)
+size_t	__getprecision(const char **cnv, __t_list **args)
 {
 	size_t	n;
 
@@ -144,22 +144,22 @@ uint8_t	__getflags(const char **cnv)
 	return (flags);
 }
 
-static inline t_pf_conversion	*_newstring(const char *str)
+static inline __t_pf_conversion	*_newstring(const char *str)
 {
-	t_pf_conversion	*out;
+	__t_pf_conversion	*out;
 
 	__push(str);
 	out = __calloc(1, sizeof(*out));
 	if (!out)
 		return (NULL);
-	*out = (t_pf_conversion){.arg.type = s, .arg.ptrval = (uintptr_t)str,
+	*out = (__t_pf_conversion){.arg.type = s, .arg.ptrval = (uintptr_t)str,
 		.flags = 0, .width = 0, .precision = 0, .length = 0};
 	return (out);
 }
 
-static inline t_pf_conversion	*_newconversion(const char *cnv, t_list **args)
+static inline __t_pf_conversion	*_newconversion(const char *cnv, __t_list **args)
 {
-	t_pf_conversion	*out;
+	__t_pf_conversion	*out;
 	size_t			argn;
 
 	__push(cnv);
@@ -185,9 +185,9 @@ static inline t_pf_conversion	*_newconversion(const char *cnv, t_list **args)
 	return (out);
 }
 
-static inline t_pf_arg	_gettype(const char *cnv, t_list **args, size_t n)
+static inline __t_pf_arg	_gettype(const char *cnv, __t_list **args, size_t n)
 {
-	t_pf_arg	arg;
+	__t_pf_arg	arg;
 
 	arg.type = _argtype(*cnv);
 	if (arg.type != percent && !n)
@@ -197,7 +197,7 @@ static inline t_pf_arg	_gettype(const char *cnv, t_list **args, size_t n)
 	return (arg);
 }
 
-static inline t_format_type	_argtype(const uint8_t chr)
+static inline __t_format_type	_argtype(const uint8_t chr)
 {
 	if (chr == 'd' || chr == 'i')
 		return ((chr == 'd') ? d : i);

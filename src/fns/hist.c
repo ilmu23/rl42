@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:28:08 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ uint8_t	ft_rl_yla(rl_input_t *input)
 	int32_t			n;
 	rl_fn_t			fn;
 	uint8_t			direction;
-	const t_list	*hist;
+	const __t_list	*hist;
 
 	if (!g_hist_cur || !g_hist_cur->next)
 		return (1);

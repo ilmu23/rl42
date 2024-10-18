@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 19:39:17 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 15:11:24 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	__popall(void)
 {
-	static t_vm	*vm = NULL;
+	static __t_vm	*vm = NULL;
 
 	if (!vm)
 		vm = __getvm();
@@ -23,8 +23,8 @@ void	__popall(void)
 
 void	__popn(size_t blks)
 {
-	static t_vm	*vm = NULL;
-	t_obj		*obj;
+	static __t_vm	*vm = NULL;
+	__t_obj		*obj;
 
 	if (!vm)
 		vm = __getvm();
@@ -39,7 +39,7 @@ void	__popn(size_t blks)
 
 void	__popblk(const void *blk)
 {
-	static t_vm	*vm = NULL;
+	static __t_vm	*vm = NULL;
 
 	if (!blk)
 		return ;

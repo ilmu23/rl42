@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 00:37:03 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:05:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:26:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,22 +63,22 @@
 # define PF_FORMAT_SPEC_EXP "diouxXcspn"
 # define PF_FORMAT_SPEC_INT "diouxX"
 
-typedef enum e_base				t_base;
-typedef enum e_format_type		t_format_type;
+typedef enum __e_base				__t_base;
+typedef enum __e_format_type		__t_format_type;
 
-typedef struct s_hmap_pair		t_hmap_pair;
-typedef struct s_hmap			t_hmap;
-typedef struct s_list			t_list;
+typedef struct __s_hmap_pair		__t_hmap_pair;
+typedef struct __s_hmap				__t_hmap;
+typedef struct __s_list				__t_list;
 
-typedef struct s_pf_arg			t_pf_arg;
-typedef struct s_pf_conversion	t_pf_conversion;
+typedef struct __s_pf_arg			__t_pf_arg;
+typedef struct __s_pf_conversion	__t_pf_conversion;
 
-typedef struct s_objpair		t_objpair;
-typedef struct s_objmap			t_objmap;
-typedef struct s_obj			t_obj;
-typedef struct s_vm				t_vm;
+typedef struct __s_objpair			__t_objpair;
+typedef struct __s_objmap			__t_objmap;
+typedef struct __s_obj				__t_obj;
+typedef struct __s_vm				__t_vm;
 
-enum e_base
+enum __e_base
 {
 	BINARY,
 	OCTAL,
@@ -86,7 +86,7 @@ enum e_base
 	HEX
 };
 
-enum e_format_type
+enum __e_format_type
 {
 	d,
 	i,
@@ -101,31 +101,31 @@ enum e_format_type
 	percent
 };
 
-struct s_hmap_pair
+struct __s_hmap_pair
 {
 	const char	*key;
 	void		*value;
 };
 
-struct s_hmap
+struct __s_hmap
 {
-	size_t		size;
-	size_t		bsize;
-	size_t		count;
-	t_hmap_pair	**items;
+	size_t			size;
+	size_t			bsize;
+	size_t			count;
+	__t_hmap_pair	**items;
 };
 
-struct s_list
+struct __s_list
 {
-	const void	*blk;
-	size_t		*size;
-	t_list		*next;
-	t_list		*prev;
+	const void		*blk;
+	size_t			*size;
+	__t_list		*next;
+	__t_list		*prev;
 };
 
-struct s_pf_arg
+struct __s_pf_arg
 {
-	t_format_type	type;
+	__t_format_type	type;
 	union
 	{
 		int64_t		intval;
@@ -135,47 +135,47 @@ struct s_pf_arg
 	};
 };
 
-struct s_pf_conversion
+struct __s_pf_conversion
 {
-	t_pf_arg	arg;
+	__t_pf_arg	arg;
 	uint8_t		flags;
 	size_t		width;
 	size_t		precision;
 	uint8_t		length;
 };
 
-struct s_objpair
+struct __s_objpair
 {
-	const char	*key;
-	const t_obj	*obj;
+	const char		*key;
+	const __t_obj	*obj;
 };
 
-struct s_objmap
+struct __s_objmap
 {
-	size_t		size;
-	size_t		bsize;
-	uint64_t	count;
-	t_list		**objs;
+	size_t			size;
+	size_t			bsize;
+	uint64_t		count;
+	__t_list		**objs;
 };
 
-struct s_obj
+struct __s_obj
 {
 	size_t		marks;
 	size_t		traps;
 	size_t		blksize;
 	size_t		asize;
 	const void	*blk;
-	t_obj		*next;
-	t_obj		*nfree;
-	t_obj		*pfree;
+	__t_obj		*next;
+	__t_obj		*nfree;
+	__t_obj		*pfree;
 };
 
-struct s_vm
+struct __s_vm
 {
-	t_obj		*head;
-	t_obj		*free;
+	__t_obj		*head;
+	__t_obj		*free;
 	uint8_t		ptrap;
-	t_objmap	objmap;
+	__t_objmap	objmap;
 	uint64_t	maxobjs;
 	uint64_t	objcount;
 };
@@ -184,7 +184,7 @@ struct s_vm
 extern const uint8_t	__hmap_sentinel;
 
 /**   gc   **/
-t_objpair	*__newpair(const char *key, const t_obj *obj);
+__t_objpair	*__newpair(const char *key, const __t_obj *obj);
 
 size_t		__getblksize(const void *blk);
 
@@ -192,12 +192,12 @@ uint8_t		__pushtrap_status(void);
 
 int32_t		__return(int32_t rval);
 
-t_obj		*__newobj(const size_t n);
+__t_obj		*__newobj(const size_t n);
 
-t_obj		*__objmap_get(const char *key);
-t_obj		*__getobj(const void *blk);
+__t_obj		*__objmap_get(const char *key);
+__t_obj		*__getobj(const void *blk);
 
-t_vm		*__getvm(void);
+__t_vm		*__getvm(void);
 
 char		*__blkkey(const void *blk);
 
@@ -220,8 +220,8 @@ void		__unmark(const void *blk);
 void		__mark(const void *blk);
 
 void		__objmap_rm(const char *key);
-void		__objmap_add(const char *key, const t_obj *obj);
-void		__objmap_addpair(t_list **lst, t_objpair *pair);
+void		__objmap_add(const char *key, const __t_obj *obj);
+void		__objmap_addpair(__t_list **lst, __t_objpair *pair);
 
 void		__clean(void);
 void		__sweep(void);
@@ -234,35 +234,35 @@ uint64_t	__nextprime(uint64_t n);
 uint64_t	__gethash(const char *s, const size_t size, const size_t attempt);
 uint64_t	__strhash(const char *s, const uint64_t salt, const size_t size);
 
-uint8_t		__mapadd(t_hmap *hmap, const char *key, const void *val);
-uint8_t		__maprm(t_hmap *hmap, const char *key);
+uint8_t		__mapadd(__t_hmap *hmap, const char *key, const void *val);
+uint8_t		__maprm(__t_hmap *hmap, const char *key);
 
-uint8_t		__resizemap(t_hmap *hmap, const size_t bsize);
-uint8_t		__shrinkmap(t_hmap *hmap);
-uint8_t		__growmap(t_hmap *hmap);
+uint8_t		__resizemap(__t_hmap *hmap, const size_t bsize);
+uint8_t		__shrinkmap(__t_hmap *hmap);
+uint8_t		__growmap(__t_hmap *hmap);
 
-t_hmap		*__mapnew(void);
-t_hmap		*__mapnew_size(const size_t size);
+__t_hmap	*__mapnew(void);
+__t_hmap	*__mapnew_size(const size_t size);
 
-void		*__mapget(t_hmap *hmap, const char *key);
+void		*__mapget(__t_hmap *hmap, const char *key);
 
-void		__mappop(t_hmap_pair *pair);
-void		__mappop_all(t_hmap *hmap);
+void		__mappop(__t_hmap_pair *pair);
+void		__mappop_all(__t_hmap *hmap);
 /**   hmap   **/
 
 /**   list   **/
-t_list		*__lstnew(const void *blk);
+__t_list	*__lstnew(const void *blk);
 
-t_list		*__lstpop(const t_list *node);
-t_list		*__lstpush(const t_list *node);
-t_list		*__lstlast(const t_list *list);
-t_list		*__lstfirst(const t_list *list);
+__t_list	*__lstpop(const __t_list *node);
+__t_list	*__lstpush(const __t_list *node);
+__t_list	*__lstlast(const __t_list *list);
+__t_list	*__lstfirst(const __t_list *list);
 
-void		__lstpopall(const t_list *list);
-void		__lstpushall(const t_list *list);
-void		__lstadd_back(const t_list **list, t_list *node);
-void		__lstadd_front(const t_list **list, t_list *node);
-void		__lstrmnode(const t_list **list, const t_list *node);
+void		__lstpopall(const __t_list *list);
+void		__lstpushall(const __t_list *list);
+void		__lstadd_back(const __t_list **list, __t_list *node);
+void		__lstadd_front(const __t_list **list, __t_list *node);
+void		__lstrmnode(const __t_list **list, const __t_list *node);
 /**   list   **/
 
 /**   printf   **/
@@ -275,28 +275,28 @@ ssize_t		__vdprintf(const int32_t fd, const char *f, va_list args);
 ssize_t		__vsprintf(char *s, const char *f, va_list args);
 ssize_t		__vsnprintf(char *s, const size_t size, const char *f, va_list args);
 
-uintptr_t	__nextarg(t_list **args);
-uintptr_t	__getarg(const t_list *args, size_t argn);
+uintptr_t	__nextarg(__t_list **args);
+uintptr_t	__getarg(const __t_list *args, size_t argn);
 
-ssize_t		__getlen(t_list *strings);
+ssize_t		__getlen(__t_list *strings);
 
 uint8_t		__getflags(const char **conversion);
 uint8_t		__getlength(const char **conversion);
 
-size_t		__getwidth(const char **conversion, t_list **args);
-size_t		__getprecision(const char **conversion, t_list **args);
+size_t		__getwidth(const char **conversion, __t_list **args);
+size_t		__getprecision(const char **conversion, __t_list **args);
 
-t_list		*__getconversions(const char *f, t_list *args);
+__t_list	*__getconversions(const char *f, __t_list *args);
 
-char		*__expandint(t_pf_conversion *cnv);
-char		*__expanduint(t_pf_conversion *cnv);
-char		*__expandchar(t_pf_conversion *cnv);
-char		*__expandstr(t_pf_conversion *cnv);
+char		*__expandint(__t_pf_conversion *cnv);
+char		*__expanduint(__t_pf_conversion *cnv);
+char		*__expandchar(__t_pf_conversion *cnv);
+char		*__expandstr(__t_pf_conversion *cnv);
 char		*__getcnvstr(const char *f);
 char		*__cstr(const uint8_t c, const size_t len);
 
-void		__expandconversions(t_list *conversions, t_list **strings);
-void		__cast(t_pf_conversion *cnv);
+void		__expandconversions(__t_list *conversions, __t_list **strings);
+void		__cast(__t_pf_conversion *cnv);
 /**   printf   **/
 
 /**   put   **/
@@ -320,8 +320,8 @@ char		*__strjoin(const char *s1, const char *s2);
 char		*__strtrim(const char *s, const char *set);
 char		*__strnjoin(size_t n, ...);
 char		*__strdup(const char *s);
-char		*__utoa_base(uint64_t n, const t_base base);
-char		*__itoa_base(int64_t n, const t_base base);
+char		*__utoa_base(uint64_t n, const __t_base base);
+char		*__itoa_base(int64_t n, const __t_base base);
 
 char		*__strnstr(const char *s1, const char *s2, const size_t n);
 char		*__strlower(char *s);
@@ -330,8 +330,8 @@ char		*__strlower(char *s);
 /**   misc   **/
 uint8_t		__isint(const char *n);
 
-size_t		__uintlen_base(uint64_t n, const t_base base);
-size_t		__intlen_base(int64_t n, const t_base base);
+size_t		__uintlen_base(uint64_t n, const __t_base base);
+size_t		__intlen_base(int64_t n, const __t_base base);
 
 char		*__getline(const int32_t fd);
 /**   misc   **/

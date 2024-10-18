@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 22:34:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:12:39 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 static inline size_t	_argcount(const char *f);
 static inline size_t	_getdmax(const char *f);
-static inline t_list	*_getargs(va_list args, size_t argc);
-static inline void		_join(char *str, size_t size, t_list *conversions);
+static inline __t_list	*_getargs(va_list args, size_t argc);
+static inline void		_join(char *str, size_t size, __t_list *conversions);
 
 ssize_t	__vsnprintf(char *s, size_t size, const char *f, va_list args)
 {
-	t_list	*arglist;
-	t_list	*conversions;
-	t_list	*strings;
+	__t_list	*arglist;
+	__t_list	*conversions;
+	__t_list	*strings;
 	uint8_t	ptrap_st;
 
 	ptrap_st = __pushtrap_status();
@@ -95,9 +95,9 @@ static inline size_t	_getdmax(const char *f)
 	return (dmax);
 }
 
-static inline t_list	*_getargs(va_list args, size_t argc)
+static inline __t_list	*_getargs(va_list args, size_t argc)
 {
-	const t_list	*out;
+	const __t_list	*out;
 	uintptr_t		*val;
 
 	out = NULL;
@@ -109,10 +109,10 @@ static inline t_list	*_getargs(va_list args, size_t argc)
 		*val = va_arg(args, uintptr_t);
 		__lstadd_back(&out, __lstnew(val));
 	}
-	return ((t_list *)out);
+	return ((__t_list *)out);
 }
 
-static inline void	_join(char *str, size_t size, t_list *strings)
+static inline void	_join(char *str, size_t size, __t_list *strings)
 {
 	memset(str, 0, size);
 	while (strings && size)

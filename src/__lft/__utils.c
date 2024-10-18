@@ -6,13 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 00:04:11 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:20:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-uintptr_t	__nextarg(t_list **args)
+uintptr_t	__nextarg(__t_list **args)
 {
 	uintptr_t	*val;
 
@@ -21,14 +21,14 @@ uintptr_t	__nextarg(t_list **args)
 	return (*val);
 }
 
-uintptr_t	__getarg(const t_list *args, size_t argn)
+uintptr_t	__getarg(const __t_list *args, size_t argn)
 {
 	while (--argn)
 		args = args->next;
 	return (*(uintptr_t *)args->blk);
 }
 
-ssize_t	__getlen(t_list *strings)
+ssize_t	__getlen(__t_list *strings)
 {
 	ssize_t	len;
 

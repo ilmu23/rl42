@@ -6,15 +6,15 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 04:15:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 15:19:42 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-uint8_t	__maprm(t_hmap *hmap, const char *key)
+uint8_t	__maprm(__t_hmap *hmap, const char *key)
 {
-	t_hmap_pair	*pair;
+	__t_hmap_pair	*pair;
 	size_t		i;
 	size_t		j;
 

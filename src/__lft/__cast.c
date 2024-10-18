@@ -6,16 +6,16 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 06:23:55 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 19:20:55 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-static inline void	_scast(t_pf_conversion *cnv);
-static inline void	_ucast(t_pf_conversion *cnv);
+static inline void	_scast(__t_pf_conversion *cnv);
+static inline void	_ucast(__t_pf_conversion *cnv);
 
-void	__cast(t_pf_conversion *cnv)
+void	__cast(__t_pf_conversion *cnv)
 {
 	if (cnv->arg.type == p)
 		cnv->length = PF_LENGTH_IMAX;
@@ -25,7 +25,7 @@ void	__cast(t_pf_conversion *cnv)
 		_ucast(cnv);
 }
 
-static inline void	_scast(t_pf_conversion *cnv)
+static inline void	_scast(__t_pf_conversion *cnv)
 {
 	switch (cnv->length)
 	{
@@ -55,7 +55,7 @@ static inline void	_scast(t_pf_conversion *cnv)
 	}
 }
 
-static inline void	_ucast(t_pf_conversion *cnv)
+static inline void	_ucast(__t_pf_conversion *cnv)
 {
 	switch (cnv->length)
 	{

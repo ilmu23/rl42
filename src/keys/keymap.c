@@ -6,14 +6,14 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 11:46:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 static inline rl_map_t	*_newmapping(const uint64_t *key, const rl_fn_t *func);
-static inline t_hmap	*_getcurmap(void);
+static inline __t_hmap	*_getcurmap(void);
 static inline void		_err(const uint64_t *key, const rl_fn_t *func);
 static inline void		_remap(const char *key, const rl_map_t *mapping, rl_mapmode_t mode);
 
@@ -123,7 +123,7 @@ static inline rl_map_t	*_newmapping(const uint64_t *key, const rl_fn_t *func)
 	return (memcpy(out, &(rl_map_t){.key = *key, .f = *func}, sizeof(*out)));
 }
 
-static inline t_hmap	*_getcurmap(void)
+static inline __t_hmap	*_getcurmap(void)
 {
 	switch (ft_rl_geteditmode())
 	{

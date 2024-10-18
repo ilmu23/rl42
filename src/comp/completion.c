@@ -6,22 +6,22 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:07:19 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline t_list	*_increment(t_list *completions, const char *pattern);
+static inline __t_list	*_increment(__t_list *completions, const char *pattern);
 static inline char		*_uncase(char *fname);
-static inline void		_match(const char *pattern, DIR *dir, const t_list **completions);
-static inline void		_buildpath(const char *path, t_list *completions);
+static inline void		_match(const char *pattern, DIR *dir, const __t_list **completions);
+static inline void		_buildpath(const char *path, __t_list *completions);
 static inline void		_replace(rl_input_t *input, const char *completion);
-static inline void		_replace_mult(rl_input_t *input, const t_list *completions);
+static inline void		_replace_mult(rl_input_t *input, const __t_list *completions);
 
-t_list	*ft_rl_complete_path(const char *pattern, __UNUSED const rl_input_t *context)
+__t_list	*ft_rl_complete_path(const char *pattern, __UNUSED const rl_input_t *context)
 {
-	t_list		*out;
+	__t_list		*out;
 	const char	*path;
 	const char	*pat;
 
@@ -33,10 +33,10 @@ t_list	*ft_rl_complete_path(const char *pattern, __UNUSED const rl_input_t *cont
 		if (__strequals(path, ""))
 			path = __strdup("/");
 		pat = strrchr(pattern, '/') + 1;
-		_match(pat, opendir(__push(path)), (const t_list **)&out);
+		_match(pat, opendir(__push(path)), (const __t_list **)&out);
 	}
 	else
-		_match(pattern, opendir("."), (const t_list **)&out);
+		_match(pattern, opendir("."), (const __t_list **)&out);
 	_buildpath(path, out);
 	__popblk(path);
 	return (_increment(out, pattern));
@@ -45,7 +45,7 @@ t_list	*ft_rl_complete_path(const char *pattern, __UNUSED const rl_input_t *cont
 void	ft_rl_complete(rl_input_t *input)
 {
 	const char		*pattern;
-	const t_list	*completions;
+	const __t_list	*completions;
 
 	if (isspace(input->line[input->i])
 		&& isspace(input->line[MAX(input->i - 1, 0)]))
@@ -71,10 +71,10 @@ void	ft_rl_complete(rl_input_t *input)
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 }
 
-static inline t_list	*_increment(t_list *completions, const char *pattern)
+static inline __t_list	*_increment(__t_list *completions, const char *pattern)
 {
 	char		*common;
-	t_list		*start;
+	__t_list		*start;
 	uint64_t	maxlen;
 	uint8_t		nocase;
 	uint8_t		cur;
@@ -161,7 +161,7 @@ static inline char	*_uncase(char *fname)
 	return (fname);
 }
 
-static inline void	_match(const char *pattern, DIR *dir, const t_list **completions)
+static inline void	_match(const char *pattern, DIR *dir, const __t_list **completions)
 {
 	struct dirent	*data;
 	const uint64_t	plen = strlen(pattern);
@@ -186,7 +186,7 @@ static inline void	_match(const char *pattern, DIR *dir, const t_list **completi
 	closedir(dir);
 }
 
-static inline void	_buildpath(const char *path, t_list *completions)
+static inline void	_buildpath(const char *path, __t_list *completions)
 {
 	const uint8_t	ptype = __strequals(path, "/");
 
@@ -228,7 +228,7 @@ static inline void	_replace(rl_input_t *input, const char *completion)
 	ft_rl_redisplay(input, INPUT);
 }
 
-static inline void	_replace_mult(rl_input_t *input, const t_list *completions)
+static inline void	_replace_mult(rl_input_t *input, const __t_list *completions)
 {
 	const void	*prv;
 

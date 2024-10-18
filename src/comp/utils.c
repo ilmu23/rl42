@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:25:47 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static inline uint16_t	_dwidth(void);
 static inline uint8_t	_query(rl_input_t *input, const size_t completions);
 
-uint64_t	ft_rl_comp_getlongest(const t_list *completions)
+uint64_t	ft_rl_comp_getlongest(const __t_list *completions)
 {
 	uint64_t	longest;
 	uint64_t	len;
@@ -32,10 +32,10 @@ uint64_t	ft_rl_comp_getlongest(const t_list *completions)
 }
 
 // disgusting
-uint8_t	ft_rl_comp_display(rl_input_t *input, const t_list *completions, const void *cur, const void *prv)
+uint8_t	ft_rl_comp_display(rl_input_t *input, const __t_list *completions, const void *cur, const void *prv)
 {
 	static uint16_t		cols;
-	const t_list		*blocks;
+	const __t_list		*blocks;
 	const rl_block_t	*block;
 	int16_t				pos[2];
 	uint64_t			llen;

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:28:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint8_t direction);
 static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8_t direction);
-static inline t_list	*_match(const char *pattern, const uint8_t direction);
+static inline __t_list	*_match(const char *pattern, const uint8_t direction);
 static inline void		_init(rl_input_t *search, const uint8_t direction);
-static inline void		_replace(rl_input_t *input, const t_list *node);
+static inline void		_replace(rl_input_t *input, const __t_list *node);
 static inline void		_display(rl_input_t *input, rl_input_t *search);
 
 uint8_t	ft_rl_hist_search(rl_input_t *input, const uint8_t direction)
@@ -71,7 +71,7 @@ uint8_t	ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction)
 
 static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint8_t direction)
 {
-	const t_list	*match;
+	const __t_list	*match;
 	rl_fn_t			fn;
 
 	match = NULL;
@@ -110,7 +110,7 @@ static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint
 
 static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8_t direction)
 {
-	const t_list	*match;
+	const __t_list	*match;
 	rl_fn_t			fn;
 
 	match = NULL;
@@ -133,9 +133,9 @@ static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8
 	return (fn);
 }
 
-static inline t_list	*_match(const char *pattern, const uint8_t direction)
+static inline __t_list	*_match(const char *pattern, const uint8_t direction)
 {
-	const t_list	*node;
+	const __t_list	*node;
 	const char		*line;
 
 	node = g_hist_cur;
@@ -149,7 +149,7 @@ static inline t_list	*_match(const char *pattern, const uint8_t direction)
 		else
 			node = node->prev;
 	}
-	return ((t_list *)node);
+	return ((__t_list *)node);
 }
 
 static inline void	_init(rl_input_t *search, const uint8_t direction)
@@ -183,7 +183,7 @@ static inline void	_init(rl_input_t *search, const uint8_t direction)
 	search->cursor->i_col = search->cursor->col;
 }
 
-static inline void	_replace(rl_input_t *input, const t_list *node)
+static inline void	_replace(rl_input_t *input, const __t_list *node)
 {
 	__popblk(input->line);
 	input->line = ft_rl_hist_get_line(node);

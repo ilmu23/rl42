@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 15:34:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/16 01:34:14 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ uint8_t	__isint(const char *n)
 	return (1);
 }
 
-size_t	__uintlen_base(uint64_t n, const t_base base)
+size_t	__uintlen_base(uint64_t n, const __t_base base)
 {
 	size_t	digits;
 	uint8_t	div;
@@ -70,7 +70,7 @@ size_t	__uintlen_base(uint64_t n, const t_base base)
 	return (digits);
 }
 
-size_t	__intlen_base(int64_t n, const t_base base)
+size_t	__intlen_base(int64_t n, const __t_base base)
 {
 	size_t	digits;
 	int8_t	div;

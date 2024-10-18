@@ -6,18 +6,18 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 15:34:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 14:49:42 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
-static inline t_objpair	*_getpair(t_list *lst, const char *key);
+static inline __t_objpair	*_getpair(__t_list *lst, const char *key);
 
-t_obj	*__objmap_get(const char *key)
+__t_obj	*__objmap_get(const char *key)
 {
-	static t_vm	*vm = NULL;
-	t_objpair	*pair;
+	static __t_vm	*vm = NULL;
+	__t_objpair	*pair;
 	size_t		i;
 
 	if (!vm)
@@ -25,15 +25,15 @@ t_obj	*__objmap_get(const char *key)
 	i = __gethash(key, _GC_MAPSIZE, 5);
 	pair = _getpair(vm->objmap.objs[i], key);
 	if (pair)
-		return ((t_obj *)pair->obj);
+		return ((__t_obj *)pair->obj);
 	return (NULL);
 }
 
 void	__objmap_rm(const char *key)
 {
-	static t_vm	*vm = NULL;
-	t_objpair	*pair;
-	t_list		*tmp;
+	static __t_vm	*vm = NULL;
+	__t_objpair	*pair;
+	__t_list		*tmp;
 	size_t		i;
 
 	if (!vm)
@@ -57,10 +57,10 @@ void	__objmap_rm(const char *key)
 	free(tmp);
 }
 
-void	__objmap_add(const char *key, const t_obj *obj)
+void	__objmap_add(const char *key, const __t_obj *obj)
 {
-	static t_vm	*vm = NULL;
-	t_objpair	*pair;
+	static __t_vm	*vm = NULL;
+	__t_objpair	*pair;
 	size_t		i;
 
 	if (!vm)
@@ -70,10 +70,10 @@ void	__objmap_add(const char *key, const t_obj *obj)
 	__objmap_addpair(&vm->objmap.objs[i], pair);
 }
 
-void	__objmap_addpair(t_list **lst, t_objpair *pair)
+void	__objmap_addpair(__t_list **lst, __t_objpair *pair)
 {
-	t_list	*node;
-	t_list	*last;
+	__t_list	*node;
+	__t_list	*last;
 
 	node = malloc(sizeof(*node));
 	if (!node)
@@ -82,20 +82,20 @@ void	__objmap_addpair(t_list **lst, t_objpair *pair)
 		__exit(69);
 	}
 	last = __lstlast(*lst);
-	*node = (t_list){.blk = pair, .next = NULL, .prev = last, .size = NULL};
+	*node = (__t_list){.blk = pair, .next = NULL, .prev = last, .size = NULL};
 	if (node->prev)
 		node->prev->next = node;
 	else
 		*lst = node;
 }
 
-static inline t_objpair	*_getpair(t_list *lst, const char *key)
+static inline __t_objpair	*_getpair(__t_list *lst, const char *key)
 {
-	t_objpair	*out;
+	__t_objpair	*out;
 
 	while (lst)
 	{
-		out = (t_objpair *)lst->blk;
+		out = (__t_objpair *)lst->blk;
 		if (__strequals(out->key, key))
 			return (out);
 		lst = lst->next;

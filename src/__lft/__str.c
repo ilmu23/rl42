@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 15:57:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/16 19:26:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static inline size_t	_splitcount(const char *s, const uint8_t c);
 static inline char		*_makesplit(const char *s, const uint8_t c);
-static inline char		*_basemin(const t_base base);
+static inline char		*_basemin(const __t_base base);
 
 uint64_t	__strclen(const char *s, const uint8_t c)
 {
@@ -178,7 +178,7 @@ char	*__strdup(const char *s)
 	return (out);
 }
 
-char	*__utoa_base(uint64_t n, const t_base base)
+char	*__utoa_base(uint64_t n, const __t_base base)
 {
 	char	*out;
 	uint8_t	div;
@@ -214,7 +214,7 @@ char	*__utoa_base(uint64_t n, const t_base base)
 	return (out);
 }
 
-char	*__itoa_base(int64_t n, const t_base base)
+char	*__itoa_base(int64_t n, const __t_base base)
 {
 	char	*out;
 	int8_t	div;
@@ -339,7 +339,7 @@ static inline char	*_makesplit(const char *s, const uint8_t c)
 	return (__push(__substr(s, j, i - j)));
 }
 
-static inline char	*_basemin(const t_base base)
+static inline char	*_basemin(const __t_base base)
 {
 	switch (base)
 	{
