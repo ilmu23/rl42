@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/01 22:34:28 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:04:19 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void		ft_rl_map(const char *key, const char *func, rl_mapmode_t mode);
 void		ft_rl_map_emacs(const char *key, const char *func, rl_mapmode_t mode);
 void		ft_rl_map_vi_ins(const char *key, const char *func, rl_mapmode_t mode);
 void		ft_rl_map_vi_cmd(const char *key, const char *func, rl_mapmode_t mode);
+void		ft_rl_map_hlcolor(const char *key, const char *func, rl_mapmode_t mode);
 void		ft_rl_addkey(const char *key, const uint64_t value);
 void		ft_rl_addfunc(const char *func, const rl_fn_t f);
 
@@ -56,6 +57,7 @@ uint8_t		ft_rl_ismapped(const uint64_t key);
 rl_fn_t		ft_rl_getmap(const uint64_t key);
 void		ft_rl_unmap(const char *key);
 void		ft_rl_unmap_fn(const char *func);
+void		ft_rl_unmap_all(void);
 
 /**  keys  **/
 

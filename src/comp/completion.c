@@ -6,13 +6,12 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/15 02:27:02 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:07:19 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline t_list	*_complete(const char *pattern);
 static inline t_list	*_increment(t_list *completions, const char *pattern);
 static inline char		*_uncase(char *fname);
 static inline void		_match(const char *pattern, DIR *dir, const t_list **completions);
@@ -20,36 +19,7 @@ static inline void		_buildpath(const char *path, t_list *completions);
 static inline void		_replace(rl_input_t *input, const char *completion);
 static inline void		_replace_mult(rl_input_t *input, const t_list *completions);
 
-void	ft_rl_complete(rl_input_t *input)
-{
-	const char		*pattern;
-	const t_list	*completions;
-
-	if (isspace(input->line[input->i])
-		&& isspace(input->line[MAX(input->i - 1, 0)]))
-		ft_rl_setmark(_MARK_START | _MARK_END);
-	else
-	{
-		ft_rl_word_start();
-		ft_rl_setmark(_MARK_START);
-		ft_rl_word_end();
-		input->i = MIN(input->i + 1, input->len);
-		ft_rl_setmark(_MARK_END);
-	}
-	pattern = __push(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos));
-	if (ft_rl_get(_CMP_CASE_HASH))
-		pattern = _uncase((char *)pattern);
-	completions = _complete(pattern);
-	if (!completions)
-		ft_rl_cursor_reset(input);
-	else if (!completions->next)
-		_replace(input, completions->blk);
-	else
-		_replace_mult(input, completions);
-	ft_rl_unsetmark(_MARK_START | _MARK_END);
-}
-
-static inline t_list	*_complete(const char *pattern)
+t_list	*ft_rl_complete_path(const char *pattern, __UNUSED const rl_input_t *context)
 {
 	t_list		*out;
 	const char	*path;
@@ -70,6 +40,35 @@ static inline t_list	*_complete(const char *pattern)
 	_buildpath(path, out);
 	__popblk(path);
 	return (_increment(out, pattern));
+}
+
+void	ft_rl_complete(rl_input_t *input)
+{
+	const char		*pattern;
+	const t_list	*completions;
+
+	if (isspace(input->line[input->i])
+		&& isspace(input->line[MAX(input->i - 1, 0)]))
+		ft_rl_setmark(_MARK_START | _MARK_END);
+	else
+	{
+		ft_rl_word_start();
+		ft_rl_setmark(_MARK_START);
+		ft_rl_word_end();
+		input->i = MIN(input->i + 1, input->len);
+		ft_rl_setmark(_MARK_END);
+	}
+	pattern = __push(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos));
+	if (ft_rl_get(_CMP_CASE_HASH))
+		pattern = _uncase((char *)pattern);
+	completions = ft_rl_get_completion_fn()(pattern, input);
+	if (!completions)
+		ft_rl_cursor_reset(input);
+	else if (!completions->next)
+		_replace(input, completions->blk);
+	else
+		_replace_mult(input, completions);
+	ft_rl_unsetmark(_MARK_START | _MARK_END);
 }
 
 static inline t_list	*_increment(t_list *completions, const char *pattern)

@@ -6,12 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 14:52:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:02:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_RL_DATA_H
 # define FT_RL_DATA_H
+# include "__lft.h"
 # include <stdint.h>
 
 typedef enum e_rl_etype			rl_etype_t;
@@ -33,7 +34,7 @@ typedef struct s_rl_hlc			rl_hlc_t;
 typedef struct s_rl_arg			rl_arg_t;
 
 typedef uint8_t	(*rl_fn_t)(rl_input_t *);
-typedef void	(*rl_cmp_fn_t)(rl_input_t *);
+typedef t_list	*(*rl_cmp_fn_t)(const char *, const rl_input_t *);
 
 enum e_rl_etype
 {

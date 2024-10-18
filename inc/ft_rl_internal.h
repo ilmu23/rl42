@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/01 22:43:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 12:06:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void			ft_rl_bell(void);
 /**  comp  **/
 
 /**   completion.c   **/
+t_list			*ft_rl_complete_path(const char *pattern, const rl_input_t *context);
 void			ft_rl_complete(rl_input_t *input);
 
 /**   utils.c   **/
