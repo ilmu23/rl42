@@ -6,11 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/29 23:56:59 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 00:18:31 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
+
+#define isvalidfn(x)	((fn != x && fn != ft_rl_acl && fn != ft_rl_eof && fn != ft_rl_mta))
 
 static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint8_t direction);
 static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8_t direction);
@@ -34,12 +36,7 @@ uint8_t	ft_rl_hist_search(rl_input_t *input, const uint8_t direction)
 	input->i = MAX(input->i - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
 	ft_rl_cursor_reset(input);
 	__popblk(search.cursor);
-	if (direction == _SEARCH_BCK)
-	{
-		if (fn != ft_rl_rsh)
-			return (fn(input));
-	}
-	else if (fn != ft_rl_fsh)
+	if (isvalidfn(((direction == _SEARCH_BCK) ? ft_rl_fsh : ft_rl_rsh)))
 		return (fn(input));
 	return (1);
 }
