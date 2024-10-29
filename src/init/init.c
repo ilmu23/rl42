@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:28:11 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 00:58:57 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,32 +95,32 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_map("<DEL>", "remove-char", QUIET);
 	ft_rl_map("<BCK>", "backward-remove-char", QUIET);
 	ft_rl_map("<C-a>", "beginning-of-line", QUIET);
-	ft_rl_map("<C-e>", "end-of-line", QUIET);
 	ft_rl_map("<HME>", "beginning-of-line", QUIET);
+	ft_rl_map("<C-e>", "end-of-line", QUIET);
 	ft_rl_map("<END>", "end-of-line", QUIET);
-	ft_rl_map("<left>", "backward-char", QUIET);
 	ft_rl_map("<right>", "forward-char", QUIET);
-	ft_rl_map("<U-left>", "beginning-of-word", QUIET);
-	ft_rl_map("<U-right>", "end-of-word", QUIET);
-	ft_rl_map("<C-b>", "backward-char", QUIET);
 	ft_rl_map("<C-f>", "forward-char", QUIET);
-	ft_rl_map("<M-b>", "backward-word", QUIET);
+	ft_rl_map("<left>", "backward-char", QUIET);
+	ft_rl_map("<C-b>", "backward-char", QUIET);
+	ft_rl_map("<U-right>", "end-of-word", QUIET);
+	ft_rl_map("<U-left>", "beginning-of-word", QUIET);
 	ft_rl_map("<M-f>", "forward-word", QUIET);
+	ft_rl_map("<M-b>", "backward-word", QUIET);
 	ft_rl_map("<C-l>", "clear-screen", QUIET);
 	ft_rl_map("<M-,>", "forward-find-character", QUIET);
 	ft_rl_map("<M-;>", "backward-find-character", QUIET);
 	ft_rl_map("<RET>", "accept-line", QUIET);
 	ft_rl_map("<C-d>", "end-of-file", QUIET);
-	ft_rl_map("<C-p>", "previous-history", QUIET);
+	ft_rl_map("<down>", "next-history", QUIET);
 	ft_rl_map("<C-n>", "next-history", QUIET);
 	ft_rl_map("<up>", "previous-history", QUIET);
-	ft_rl_map("<down>", "next-history", QUIET);
-	ft_rl_map("<M-<>", "beginning-of-history", QUIET);
+	ft_rl_map("<C-p>", "previous-history", QUIET);
 	ft_rl_map("<M->>", "end-of-history", QUIET);
-	ft_rl_map("<M-r>", "reverse-search-history", QUIET);
+	ft_rl_map("<M-<>", "beginning-of-history", QUIET);
 	ft_rl_map("<M-s>", "forward-search-history", QUIET);
-	ft_rl_map("<C-r>", "inc-reverse-search-history", QUIET);
+	ft_rl_map("<M-r>", "reverse-search-history", QUIET);
 	ft_rl_map("<C-h>", "inc-forward-search-history", QUIET);
+	ft_rl_map("<C-r>", "inc-reverse-search-history", QUIET);
 	ft_rl_map("<M-C-y>", "yank-nth-arg", QUIET);
 	ft_rl_map("<M-.>", "yank-last-arg", QUIET);
 	ft_rl_map("<M-u>", "upcase-word", QUIET);
