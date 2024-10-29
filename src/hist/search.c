@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/29 23:56:59 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,8 @@ static inline __t_list	*_match(const char *pattern, const uint8_t direction)
 	const __t_list	*node;
 	const char		*line;
 
+	if (!pattern)
+		return NULL;
 	node = g_hist_cur;
 	while (node)
 	{
