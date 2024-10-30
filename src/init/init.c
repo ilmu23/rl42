@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 00:58:57 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 23:04:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,7 @@ static inline void	_emacs_default_binds(void)
 	static char		key[2] = "!";
 	static uint8_t	val = KEY_BANG;
 
-	if (ft_rl_geteditmode() != _MD_EMACS)
-		ft_rl_seteditmode(_MD_EMACS);
+	ft_rl_seteditmode(_MD_EMACS);
 	ft_rl_map("<SPC>", "self-insert", QUIET);
 	while (val <= KEY_TILDE)
 	{

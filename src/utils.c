@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:13:43 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/18 15:33:49 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,11 @@ void	ft_rl_set_completion_fn(rl_cmp_fn_t f)
 
 void	ft_rl_seteditmode(const uint8_t mode)
 {
-	g_status ^= ft_rl_geteditmode() | mode;
+	uint8_t	emode;
+	
+	emode = ft_rl_geteditmode();
+	if (mode != emode)
+		g_status ^= emode | mode;
 }
 
 void	ft_rl_clearblocks(void)
