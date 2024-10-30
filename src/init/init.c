@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 23:55:55 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/31 00:12:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_seteditmode(_MD_EMACS);
 	ft_rl_bind("<SPC>", "self-insert", QUIET);
 	ft_rl_bind("\\<", "self-insert", QUIET);
-	for (c = *seq; c++ <= '~'; *seq = (*seq == ';') ? ++c : c)
+	ft_rl_bind("\\\\", "self-insert", QUIET);
+	for (c = *seq; c++ <= '~'; *seq = (*seq == ';' || *seq == '[') ? ++c : c)
 		ft_rl_bind(seq, "self-insert", QUIET);
 	ft_rl_bind("<DEL>", "remove-char", QUIET);
 	ft_rl_bind("<BCK>", "backward-remove-char", QUIET);
@@ -164,7 +165,8 @@ static inline void	_vi_ins_default_binds(void)
 	ft_rl_seteditmode(_MD_VI_INS);
 	ft_rl_bind("<SPC>", "self-insert", QUIET);
 	ft_rl_bind("\\<", "self-insert", QUIET);
-	for (c = *seq; c++ <= '~'; *seq = (*seq == ';') ? ++c : c)
+	ft_rl_bind("\\\\", "self-insert", QUIET);
+	for (c = *seq; c++ <= '~'; *seq = (*seq == ';' || *seq == '[') ? ++c : c)
 		ft_rl_bind(seq, "self-insert", QUIET);
 	ft_rl_bind("<C-c>", "discard-line", QUIET);
 	ft_rl_bind("<C-d>", "end-of-file", QUIET);
