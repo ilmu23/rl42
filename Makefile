@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/10/12 04:00:47 by ivalimak         ###   ########.fr        #
+#    Updated: 2024/10/30 20:48:18 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,15 +66,15 @@ HISTFILES	=	history.c \
 
 INITFILES	=	init.c \
 				initfile.c \
-				initfuncs.c \
-				initkeys.c
+				initfuncs.c
 
 INPUTFILES	=	add.c \
 				kill.c \
 				rm.c \
 				utils.c
 
-KEYFILES	=	keymap.c \
+KEYFILES	=	bind.c \
+				fn.c \
 				utils.c
 
 SETTINGSFILES	=	utils.c
@@ -131,7 +131,6 @@ LFTFILES	=	__alloc.c \
 FILES	=	rl42.c \
 			color.c \
 			error.c \
-			exec.c \
 			kring.c \
 			utils.c \
 			$(addprefix $(COMPDIR)/, $(COMPFILES)) \

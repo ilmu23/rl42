@@ -6,24 +6,11 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 13:30:54 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 20:41:20 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
-
-uint8_t	ft_rl_mta(rl_input_t *input)
-{
-	uint16_t	key;
-
-	ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
-	if (read(0, &key, 1) == -1)
-		exit(ft_rl_perror());
-	ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
-	key = key << 8 | '\e';
-	input->key = key;
-	return (ft_rl_execmap(input));
-}
 
 uint8_t	ft_rl_dcl(rl_input_t *input)
 {
@@ -91,65 +78,13 @@ uint8_t	ft_rl_abt(__UNUSED rl_input_t *input)
 	return (1);
 }
 
-uint8_t	ft_rl_arg(rl_input_t *input)
+uint8_t	ft_rl_arg(__UNUSED rl_input_t *input) // not actually unused
 {
-	rl_fn_t		fn;
-
-	g_argument.set = 1;
-	if (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
-		g_argument.arg = input->key - KEY_NUM_0;
-	else
-	{
-		input->key >>= 8;
-		if (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
-			g_argument.arg = input->key - KEY_NUM_0;
-		else
-			g_argument.arg = 0;
-	}
-	input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
-	ft_rl_redisplay(input, SPROMPT);
-	input->key = ft_rl_getkey();
-	while (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
-	{
-		g_argument.arg = MIN(g_argument.arg * 10 + (input->key - KEY_NUM_0), _ARG_MAX);
-		input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
-		ft_rl_redisplay(input, SPROMPT);
-		input->key = ft_rl_getkey();
-		if (g_argument.arg == _ARG_MAX)
-			break ;
-	}
-	fn = ft_rl_getmap(input->key);
-	if (fn != ft_rl_arg && fn != ft_rl_arg_n
-		&& (!(g_status & _YLA_RUNNING) || fn != ft_rl_yla)
-		&& !(g_status & _VI_ARG))
-		return (fn(input));
 	return (1);
 }
 
-uint8_t	ft_rl_arg_n(rl_input_t *input)
+uint8_t	ft_rl_arg_n(__UNUSED rl_input_t *input) // not actually unused
 {
-	rl_fn_t		fn;
-
-	g_argument.set = 1;
-	g_argument.arg = 0;
-	input->sprompt = __push(__strdup("-"));
-	ft_rl_redisplay(input, SPROMPT);
-	input->key = ft_rl_getkey();
-	while (input->key >= KEY_NUM_0 && input->key <= KEY_NUM_9)
-	{
-		g_argument.arg = MAX((int32_t)(g_argument.arg * 10 - (input->key - KEY_NUM_0)), _ARG_MIN);
-		input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
-		ft_rl_redisplay(input, SPROMPT);
-		input->key = ft_rl_getkey();
-		if (g_argument.arg == _ARG_MIN)
-			break ;
-	}
-	if (g_argument.arg == 0)
-		g_argument.arg = -1;
-	fn = ft_rl_getmap(input->key);
-	if (fn != ft_rl_arg && fn != ft_rl_arg_n
-		&& (!(g_status & _YLA_RUNNING) || fn != ft_rl_yla))
-		return (fn(input));
 	return (1);
 }
 

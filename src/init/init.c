@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 23:04:53 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 23:09:00 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,17 @@ void	ft_rl_init(void)
 		return ;
 	init = 1;
 	_init_escapes();
-	g_keys = __mapnew();
 	g_funcs = __mapnew();
-	g_map_emacs = __mapnew();
-	g_map_vi_ins = __mapnew();
-	g_map_vi_cmd = __mapnew();
-	g_map_hlcolor = __mapnew();
+	g_map_emacs = __push(__calloc(1, sizeof(rl_keytree_t)));
+	g_map_vi_ins = __push(__calloc(1, sizeof(rl_keytree_t)));
+	g_map_vi_cmd = __push(__calloc(1, sizeof(rl_keytree_t)));
+	g_map_hlcolor = __push(__calloc(1, sizeof(rl_keytree_t)));
 	tcgetattr(0, &g_oldsettings);
 	g_newsettings = g_oldsettings;
 	g_newsettings.c_iflag &= ~(ICRNL | IXON);
 	g_newsettings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	tcsetattr(0, TCSANOW, &g_newsettings);
-	if (!g_keys || !g_funcs || !g_map_emacs || !g_map_vi_ins || !g_map_vi_cmd
+	if (!g_funcs || !g_map_emacs || !g_map_vi_ins || !g_map_vi_cmd
 		|| !g_map_hlcolor || atexit(_ft_rl_exit))
 		__exit(ft_rl_perror());
 	g_argument.set = 0;
@@ -50,7 +49,6 @@ void	ft_rl_init(void)
 	ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
 	ft_rl_updatetermsize();
 	ft_rl_hist_load(_FT_RL_HFILE);
-	ft_rl_initkeys();
 	ft_rl_initfuncs();
 	_defaultsettings();
 	ft_rl_read_initfile();
@@ -68,9 +66,9 @@ void	ft_rl_init(void)
 
 void	ft_rl_init_input(const char *p, const uint64_t plen)
 {
-	memcpy(&g_input, &(rl_input_t){.line = NULL, .prompt = p, .keystr = NULL,
+	memcpy(&g_input, &(rl_input_t){.line = NULL, .prompt = p, .keyseq = NULL,
 			.exittype = E_ACL, .cursor = ft_rl_cursor_init(), .plen = plen,
-			.len = 0, .key = 0, .i = 0}, sizeof(g_input));
+			.len = 0, .i = 0}, sizeof(g_input));
 	if (g_hist_cur)
 		g_input.line = (char *)((rl_histnode_t *)g_hist_cur->blk)->line;
 	else
@@ -81,192 +79,186 @@ void	ft_rl_init_input(const char *p, const uint64_t plen)
 
 static inline void	_emacs_default_binds(void)
 {
-	static char		key[2] = "!";
-	static uint8_t	val = KEY_BANG;
+	char	seq[2] = "!";
+	uint8_t	c;
 
 	ft_rl_seteditmode(_MD_EMACS);
-	ft_rl_map("<SPC>", "self-insert", QUIET);
-	while (val <= KEY_TILDE)
-	{
-		ft_rl_map(key, "self-insert", QUIET);
-		*key = ++val;
-	}
-	ft_rl_map("<DEL>", "remove-char", QUIET);
-	ft_rl_map("<BCK>", "backward-remove-char", QUIET);
-	ft_rl_map("<C-a>", "beginning-of-line", QUIET);
-	ft_rl_map("<HME>", "beginning-of-line", QUIET);
-	ft_rl_map("<C-e>", "end-of-line", QUIET);
-	ft_rl_map("<END>", "end-of-line", QUIET);
-	ft_rl_map("<right>", "forward-char", QUIET);
-	ft_rl_map("<C-f>", "forward-char", QUIET);
-	ft_rl_map("<left>", "backward-char", QUIET);
-	ft_rl_map("<C-b>", "backward-char", QUIET);
-	ft_rl_map("<U-right>", "end-of-word", QUIET);
-	ft_rl_map("<U-left>", "beginning-of-word", QUIET);
-	ft_rl_map("<M-f>", "forward-word", QUIET);
-	ft_rl_map("<M-b>", "backward-word", QUIET);
-	ft_rl_map("<C-l>", "clear-screen", QUIET);
-	ft_rl_map("<M-,>", "forward-find-character", QUIET);
-	ft_rl_map("<M-;>", "backward-find-character", QUIET);
-	ft_rl_map("<RET>", "accept-line", QUIET);
-	ft_rl_map("<C-d>", "end-of-file", QUIET);
-	ft_rl_map("<down>", "next-history", QUIET);
-	ft_rl_map("<C-n>", "next-history", QUIET);
-	ft_rl_map("<up>", "previous-history", QUIET);
-	ft_rl_map("<C-p>", "previous-history", QUIET);
-	ft_rl_map("<M->>", "end-of-history", QUIET);
-	ft_rl_map("<M-<>", "beginning-of-history", QUIET);
-	ft_rl_map("<M-s>", "forward-search-history", QUIET);
-	ft_rl_map("<M-r>", "reverse-search-history", QUIET);
-	ft_rl_map("<C-h>", "inc-forward-search-history", QUIET);
-	ft_rl_map("<C-r>", "inc-reverse-search-history", QUIET);
-	ft_rl_map("<M-C-y>", "yank-nth-arg", QUIET);
-	ft_rl_map("<M-.>", "yank-last-arg", QUIET);
-	ft_rl_map("<M-u>", "upcase-word", QUIET);
-	ft_rl_map("<M-l>", "downcase-word", QUIET);
-	ft_rl_map("<M-c>", "capitalize-word", QUIET);
-	ft_rl_map("<C-k>", "forward-kill-line", QUIET);
-	ft_rl_map("<M-k>", "backward-kill-line", QUIET);
-	ft_rl_map("<M-K>", "kill-whole-line", QUIET);
-	ft_rl_map("<M-DEL>", "forward-kill-word", QUIET);
-	ft_rl_map("<M-BCK>", "backward-kill-word", QUIET);
-	ft_rl_map("<M-U-DEL>", "kill-region", QUIET);
-	ft_rl_map("<M-\\>", "delete-horizontal-space", QUIET);
-	ft_rl_map("<M-C>", "copy-region-as-kill", QUIET);
-	ft_rl_map("<M-B>", "copy-backward-word", QUIET);
-	ft_rl_map("<M-F>", "copy-forward-word", QUIET);
-	ft_rl_map("<C-y>", "yank", QUIET);
-	ft_rl_map("<M-y>", "yank-pop", QUIET);
-	ft_rl_map("<C-t>", "transpose-characters", QUIET);
-	ft_rl_map("<M-t>", "transpose-words", QUIET);
-	ft_rl_map("<TAB>", "complete", QUIET);
-	ft_rl_map("<ESC>", "prefix-meta", QUIET);
-	ft_rl_map("<C-c>", "discard-line", QUIET);
-	ft_rl_map("<M-0>", "digit-argument", QUIET);
-	ft_rl_map("<M-1>", "digit-argument", QUIET);
-	ft_rl_map("<M-2>", "digit-argument", QUIET);
-	ft_rl_map("<M-3>", "digit-argument", QUIET);
-	ft_rl_map("<M-4>", "digit-argument", QUIET);
-	ft_rl_map("<M-5>", "digit-argument", QUIET);
-	ft_rl_map("<M-6>", "digit-argument", QUIET);
-	ft_rl_map("<M-7>", "digit-argument", QUIET);
-	ft_rl_map("<M-8>", "digit-argument", QUIET);
-	ft_rl_map("<M-9>", "digit-argument", QUIET);
-	ft_rl_map("<M-->", "negative-digit-argument", QUIET);
-	ft_rl_map("<C-g>", "abort", QUIET);
-	ft_rl_map("<M-x>", "set-mark", QUIET);
-	ft_rl_map("<M-X>", "unset-mark", QUIET);
-	ft_rl_map("<M-C-x>", "exchange-point-and-mark", QUIET);
-	ft_rl_map("<M-C-e>", "vi-editing-mode", QUIET);
-	ft_rl_map("<M-h>", "set-highlight-color", QUIET);
+	ft_rl_bind("<SPC>", "self-insert", QUIET);
+	for (c = *seq; c <= '~'; *seq = ++c)
+		ft_rl_bind(seq, "self-insert", QUIET);
+	ft_rl_bind("<DEL>", "remove-char", QUIET);
+	ft_rl_bind("<BCK>", "backward-remove-char", QUIET);
+	ft_rl_bind("<C-a>", "beginning-of-line", QUIET);
+	ft_rl_bind("<HME>", "beginning-of-line", QUIET);
+	ft_rl_bind("<C-e>", "end-of-line", QUIET);
+	ft_rl_bind("<END>", "end-of-line", QUIET);
+	ft_rl_bind("<right>", "forward-char", QUIET);
+	ft_rl_bind("<C-f>", "forward-char", QUIET);
+	ft_rl_bind("<left>", "backward-char", QUIET);
+	ft_rl_bind("<C-b>", "backward-char", QUIET);
+	ft_rl_bind("<U-right>", "end-of-word", QUIET);
+	ft_rl_bind("<U-left>", "beginning-of-word", QUIET);
+	ft_rl_bind("<M-f>", "forward-word", QUIET);
+	ft_rl_bind("<M-b>", "backward-word", QUIET);
+	ft_rl_bind("<C-l>", "clear-screen", QUIET);
+	ft_rl_bind("<M-,>", "forward-find-character", QUIET);
+	ft_rl_bind("<M-;>", "backward-find-character", QUIET);
+	ft_rl_bind("<RET>", "accept-line", QUIET);
+	ft_rl_bind("<C-d>", "end-of-file", QUIET);
+	ft_rl_bind("<down>", "next-history", QUIET);
+	ft_rl_bind("<C-n>", "next-history", QUIET);
+	ft_rl_bind("<up>", "previous-history", QUIET);
+	ft_rl_bind("<C-p>", "previous-history", QUIET);
+	ft_rl_bind("<M->>", "end-of-history", QUIET);
+	ft_rl_bind("<M-<>", "beginning-of-history", QUIET);
+	ft_rl_bind("<M-s>", "forward-search-history", QUIET);
+	ft_rl_bind("<M-r>", "reverse-search-history", QUIET);
+	ft_rl_bind("<C-h>", "inc-forward-search-history", QUIET);
+	ft_rl_bind("<C-r>", "inc-reverse-search-history", QUIET);
+	ft_rl_bind("<M-C-y>", "yank-nth-arg", QUIET);
+	ft_rl_bind("<M-.>", "yank-last-arg", QUIET);
+	ft_rl_bind("<M-u>", "upcase-word", QUIET);
+	ft_rl_bind("<M-l>", "downcase-word", QUIET);
+	ft_rl_bind("<M-c>", "capitalize-word", QUIET);
+	ft_rl_bind("<C-k>", "forward-kill-line", QUIET);
+	ft_rl_bind("<M-k>", "backward-kill-line", QUIET);
+	ft_rl_bind("<M-K>", "kill-whole-line", QUIET);
+	ft_rl_bind("<M-DEL>", "forward-kill-word", QUIET);
+	ft_rl_bind("<M-BCK>", "backward-kill-word", QUIET);
+	ft_rl_bind("<M-U-DEL>", "kill-region", QUIET);
+	ft_rl_bind("<M-\\>", "delete-horizontal-space", QUIET);
+	ft_rl_bind("<M-C>", "copy-region-as-kill", QUIET);
+	ft_rl_bind("<M-B>", "copy-backward-word", QUIET);
+	ft_rl_bind("<M-F>", "copy-forward-word", QUIET);
+	ft_rl_bind("<C-y>", "yank", QUIET);
+	ft_rl_bind("<M-y>", "yank-pop", QUIET);
+	ft_rl_bind("<C-t>", "transpose-characters", QUIET);
+	ft_rl_bind("<M-t>", "transpose-words", QUIET);
+	ft_rl_bind("<TAB>", "complete", QUIET);
+	ft_rl_bind("<ESC>", "prefix-meta", QUIET);
+	ft_rl_bind("<C-c>", "discard-line", QUIET);
+	ft_rl_bind("<M-0>", "digit-argument", QUIET);
+	ft_rl_bind("<M-1>", "digit-argument", QUIET);
+	ft_rl_bind("<M-2>", "digit-argument", QUIET);
+	ft_rl_bind("<M-3>", "digit-argument", QUIET);
+	ft_rl_bind("<M-4>", "digit-argument", QUIET);
+	ft_rl_bind("<M-5>", "digit-argument", QUIET);
+	ft_rl_bind("<M-6>", "digit-argument", QUIET);
+	ft_rl_bind("<M-7>", "digit-argument", QUIET);
+	ft_rl_bind("<M-8>", "digit-argument", QUIET);
+	ft_rl_bind("<M-9>", "digit-argument", QUIET);
+	ft_rl_bind("<M-->", "negative-digit-argument", QUIET);
+	ft_rl_bind("<C-g>", "abort", QUIET);
+	ft_rl_bind("<M-x>", "set-mark", QUIET);
+	ft_rl_bind("<M-X>", "unset-mark", QUIET);
+	ft_rl_bind("<M-C-x>", "exchange-point-and-mark", QUIET);
+	ft_rl_bind("<M-C-e>", "vi-editing-mode", QUIET);
+	ft_rl_bind("<M-h>", "set-highlight-color", QUIET);
 }
 
 static inline void	_vi_ins_default_binds(void)
 {
-	static char		key[2] = "!";
-	static uint8_t	val = KEY_BANG;
+	char	seq[2] = "!";
+	uint8_t	c;
 
 	ft_rl_seteditmode(_MD_VI_INS);
-	ft_rl_map("<SPC>", "self-insert", QUIET);
-	while (val <= KEY_TILDE)
-	{
-		ft_rl_map(key, "self-insert", QUIET);
-		*key = ++val;
-	}
-	ft_rl_map("<C-c>", "discard-line", QUIET);
-	ft_rl_map("<C-d>", "end-of-file", QUIET);
-	ft_rl_map("<C-g>", "abort", QUIET);
-	ft_rl_map("<C-l>", "clear-screen", QUIET);
-	ft_rl_map("<C-r>", "inc-reverse-search-history", QUIET);
-	ft_rl_map("<C-s>", "inc-forward-search-history", QUIET);
-	ft_rl_map("<C-t>", "transpose-characters", QUIET);
-	ft_rl_map("<C-y>", "yank-last-arg", QUIET);
-	ft_rl_map("<up>", "previous-history", QUIET);
-	ft_rl_map("<down>", "next-history", QUIET);
-	ft_rl_map("<DEL>", "remove-char", QUIET);
-	ft_rl_map("<BCK>", "backward-remove-char", QUIET);
-	ft_rl_map("<ESC>", "vi-command-mode", QUIET);
-	ft_rl_map("<RET>", "accept-line", QUIET);
-	ft_rl_map("<TAB>", "complete", QUIET);
+	ft_rl_bind("<SPC>", "self-insert", QUIET);
+	for (c = *seq; c <= '~'; *seq = ++c)
+		ft_rl_bind(seq, "self-insert", QUIET);
+	ft_rl_bind("<C-c>", "discard-line", QUIET);
+	ft_rl_bind("<C-d>", "end-of-file", QUIET);
+	ft_rl_bind("<C-g>", "abort", QUIET);
+	ft_rl_bind("<C-l>", "clear-screen", QUIET);
+	ft_rl_bind("<C-r>", "inc-reverse-search-history", QUIET);
+	ft_rl_bind("<C-s>", "inc-forward-search-history", QUIET);
+	ft_rl_bind("<C-t>", "transpose-characters", QUIET);
+	ft_rl_bind("<C-y>", "yank-last-arg", QUIET);
+	ft_rl_bind("<up>", "previous-history", QUIET);
+	ft_rl_bind("<down>", "next-history", QUIET);
+	ft_rl_bind("<DEL>", "remove-char", QUIET);
+	ft_rl_bind("<BCK>", "backward-remove-char", QUIET);
+	ft_rl_bind("<ESC>", "vi-command-mode", QUIET);
+	ft_rl_bind("<RET>", "accept-line", QUIET);
+	ft_rl_bind("<TAB>", "complete", QUIET);
 }
 
 static inline void	_vi_cmd_default_binds(void)
 {
 	ft_rl_seteditmode(_MD_VI_CMD);
-	ft_rl_map("<C-c>", "discard-line", QUIET);
-	ft_rl_map("<C-d>", "end-of-file", QUIET);
-	ft_rl_map("<C-e>", "emacs-editing-mode", QUIET);
-	ft_rl_map("<C-g>", "abort", QUIET);
-	ft_rl_map("<C-l>", "clear-screen", QUIET);
-	ft_rl_map("<C-r>", "inc-reverse-search-history", QUIET);
-	ft_rl_map("<C-s>", "inc-forward-search-history", QUIET);
-	ft_rl_map("<C-t>", "transpose-characters", QUIET);
-	ft_rl_map("<SPC>", "forward-char", QUIET);
-	ft_rl_map("$", "end-of-line", QUIET);
-	ft_rl_map(",", "exchange-point-and-mark", QUIET);
-	ft_rl_map("/", "inc-forward-search-history", QUIET);
-	ft_rl_map("0", "beginning-of-line", QUIET);
-	ft_rl_map("1", "digit-argument", QUIET);
-	ft_rl_map("2", "digit-argument", QUIET);
-	ft_rl_map("3", "digit-argument", QUIET);
-	ft_rl_map("4", "digit-argument", QUIET);
-	ft_rl_map("5", "digit-argument", QUIET);
-	ft_rl_map("6", "digit-argument", QUIET);
-	ft_rl_map("7", "digit-argument", QUIET);
-	ft_rl_map("8", "digit-argument", QUIET);
-	ft_rl_map("9", "digit-argument", QUIET);
-	ft_rl_map("?", "inc-reverse-search-history", QUIET);
-	ft_rl_map("A", "vi-insert-mode-A", QUIET);
-	ft_rl_map("F", "backward-find-character", QUIET);
-	ft_rl_map("I", "vi-insert-mode-I", QUIET);
-	ft_rl_map("M", "unset-mark", QUIET);
-	ft_rl_map("P", "yank-pop", QUIET);
-	ft_rl_map("S", "vi-subst-line", QUIET);
-	ft_rl_map("X", "backward-remove-char", QUIET);
-	ft_rl_map("Z", "discard-line", QUIET);
-	ft_rl_map("_", "yank-last-arg", QUIET);
-	ft_rl_map("a", "vi-insert-mode-a", QUIET);
-	ft_rl_map("b", "backward-word", QUIET);
-	ft_rl_map("c", "set-highlight-color", QUIET);
-	ft_rl_map("d", "vi-delete", QUIET);
-	ft_rl_map("f", "forward-find-character", QUIET);
-	ft_rl_map("h", "backward-char", QUIET);
-	ft_rl_map("i", "vi-insert-mode-i", QUIET);
-	ft_rl_map("j", "next-history", QUIET);
-	ft_rl_map("k", "previous-history", QUIET);
-	ft_rl_map("l", "forward-char", QUIET);
-	ft_rl_map("m", "set-mark", QUIET);
-	ft_rl_map("p", "yank", QUIET);
-	ft_rl_map("r", "vi-replace", QUIET);
-	ft_rl_map("s", "vi-subst", QUIET);
-	ft_rl_map("w", "forward-word", QUIET);
-	ft_rl_map("x", "remove-char", QUIET);
-	ft_rl_map("<RET>", "accept-line", QUIET);
-	ft_rl_map("<TAB>", "complete", QUIET);
-	ft_rl_map("<ESC>", "abort", QUIET);
+	ft_rl_bind("<C-c>", "discard-line", QUIET);
+	ft_rl_bind("<C-d>", "end-of-file", QUIET);
+	ft_rl_bind("<C-e>", "emacs-editing-mode", QUIET);
+	ft_rl_bind("<C-g>", "abort", QUIET);
+	ft_rl_bind("<C-l>", "clear-screen", QUIET);
+	ft_rl_bind("<C-r>", "inc-reverse-search-history", QUIET);
+	ft_rl_bind("<C-s>", "inc-forward-search-history", QUIET);
+	ft_rl_bind("<C-t>", "transpose-characters", QUIET);
+	ft_rl_bind("<SPC>", "forward-char", QUIET);
+	ft_rl_bind("$", "end-of-line", QUIET);
+	ft_rl_bind(",", "exchange-point-and-mark", QUIET);
+	ft_rl_bind("/", "inc-forward-search-history", QUIET);
+	ft_rl_bind("0", "beginning-of-line", QUIET);
+	ft_rl_bind("1", "digit-argument", QUIET);
+	ft_rl_bind("2", "digit-argument", QUIET);
+	ft_rl_bind("3", "digit-argument", QUIET);
+	ft_rl_bind("4", "digit-argument", QUIET);
+	ft_rl_bind("5", "digit-argument", QUIET);
+	ft_rl_bind("6", "digit-argument", QUIET);
+	ft_rl_bind("7", "digit-argument", QUIET);
+	ft_rl_bind("8", "digit-argument", QUIET);
+	ft_rl_bind("9", "digit-argument", QUIET);
+	ft_rl_bind("?", "inc-reverse-search-history", QUIET);
+	ft_rl_bind("A", "vi-insert-mode-A", QUIET);
+	ft_rl_bind("F", "backward-find-character", QUIET);
+	ft_rl_bind("I", "vi-insert-mode-I", QUIET);
+	ft_rl_bind("M", "unset-mark", QUIET);
+	ft_rl_bind("P", "yank-pop", QUIET);
+	ft_rl_bind("S", "vi-subst-line", QUIET);
+	ft_rl_bind("X", "backward-remove-char", QUIET);
+	ft_rl_bind("Z", "discard-line", QUIET);
+	ft_rl_bind("_", "yank-last-arg", QUIET);
+	ft_rl_bind("a", "vi-insert-mode-a", QUIET);
+	ft_rl_bind("b", "backward-word", QUIET);
+	ft_rl_bind("c", "set-highlight-color", QUIET);
+	ft_rl_bind("d", "vi-delete", QUIET);
+	ft_rl_bind("f", "forward-find-character", QUIET);
+	ft_rl_bind("h", "backward-char", QUIET);
+	ft_rl_bind("i", "vi-insert-mode-i", QUIET);
+	ft_rl_bind("j", "next-history", QUIET);
+	ft_rl_bind("k", "previous-history", QUIET);
+	ft_rl_bind("l", "forward-char", QUIET);
+	ft_rl_bind("m", "set-mark", QUIET);
+	ft_rl_bind("p", "yank", QUIET);
+	ft_rl_bind("r", "vi-replace", QUIET);
+	ft_rl_bind("s", "vi-subst", QUIET);
+	ft_rl_bind("w", "forward-word", QUIET);
+	ft_rl_bind("x", "remove-char", QUIET);
+	ft_rl_bind("<RET>", "accept-line", QUIET);
+	ft_rl_bind("<TAB>", "complete", QUIET);
+	ft_rl_bind("<ESC>", "abort", QUIET);
 }
 
 static inline void	_hlcolor_default_binds(void)
 {
 	ft_rl_seteditmode(_MD_HLCOLOR);
-	ft_rl_map("b", "hlcolor-toggle-bold", QUIET);
-	ft_rl_map("u", "hlcolor-toggle-underline", QUIET);
-	ft_rl_map("f", "hlcolor-toggle-fg/bg", QUIET);
-	ft_rl_map("s", "hlcolor-set-sgr", QUIET);
-	ft_rl_map("c", "hlcolor-set-color", QUIET);
-	ft_rl_map("r", "hlcolor-set-rgb", QUIET);
-	ft_rl_map("<RET>", "hlcolor-accept", QUIET);
-	ft_rl_map("<BCK>", "backward-remove-char", QUIET);
-	ft_rl_map("0", "self-insert", QUIET);
-	ft_rl_map("1", "self-insert", QUIET);
-	ft_rl_map("2", "self-insert", QUIET);
-	ft_rl_map("3", "self-insert", QUIET);
-	ft_rl_map("4", "self-insert", QUIET);
-	ft_rl_map("5", "self-insert", QUIET);
-	ft_rl_map("6", "self-insert", QUIET);
-	ft_rl_map("7", "self-insert", QUIET);
-	ft_rl_map("8", "self-insert", QUIET);
-	ft_rl_map("9", "self-insert", QUIET);
+	ft_rl_bind("b", "hlcolor-toggle-bold", QUIET);
+	ft_rl_bind("u", "hlcolor-toggle-underline", QUIET);
+	ft_rl_bind("f", "hlcolor-toggle-fg/bg", QUIET);
+	ft_rl_bind("s", "hlcolor-set-sgr", QUIET);
+	ft_rl_bind("c", "hlcolor-set-color", QUIET);
+	ft_rl_bind("r", "hlcolor-set-rgb", QUIET);
+	ft_rl_bind("<RET>", "hlcolor-accept", QUIET);
+	ft_rl_bind("<BCK>", "backward-remove-char", QUIET);
+	ft_rl_bind("0", "self-insert", QUIET);
+	ft_rl_bind("1", "self-insert", QUIET);
+	ft_rl_bind("2", "self-insert", QUIET);
+	ft_rl_bind("3", "self-insert", QUIET);
+	ft_rl_bind("4", "self-insert", QUIET);
+	ft_rl_bind("5", "self-insert", QUIET);
+	ft_rl_bind("6", "self-insert", QUIET);
+	ft_rl_bind("7", "self-insert", QUIET);
+	ft_rl_bind("8", "self-insert", QUIET);
+	ft_rl_bind("9", "self-insert", QUIET);
 }
 
 static inline void	_defaultsettings(void)
@@ -283,6 +275,7 @@ static inline void	_defaultsettings(void)
 	ft_rl_set("mark-symlinked-directories", SET_OFF);
 	ft_rl_set("match-hidden-files", SET_ON);
 	ft_rl_set("highlight-current-completion", SET_ON);
+	ft_rl_set("keyseq-timeout", 500);
 }
 
 static inline void	_init_escapes(void)
@@ -305,6 +298,36 @@ static inline void	_init_escapes(void)
 	g_escapes.rmul = ft_ti_getstr("rmul");
 	g_escapes.setaf = ft_ti_getstr("setaf");
 	g_escapes.setab = ft_ti_getstr("setab");
+	g_escapes.kf1 = ft_ti_getstr("kf1");
+	g_escapes.kf2 = ft_ti_getstr("kf2");
+	g_escapes.kf3 = ft_ti_getstr("kf3");
+	g_escapes.kf4 = ft_ti_getstr("kf4");
+	g_escapes.kf5 = ft_ti_getstr("kf5");
+	g_escapes.kf6 = ft_ti_getstr("kf6");
+	g_escapes.kf7 = ft_ti_getstr("kf7");
+	g_escapes.kf8 = ft_ti_getstr("kf8");
+	g_escapes.kf9 = ft_ti_getstr("kf9");
+	g_escapes.kf10 = ft_ti_getstr("kf10");
+	g_escapes.kf11 = ft_ti_getstr("kf11");
+	g_escapes.kf12 = ft_ti_getstr("kf12");
+	g_escapes.kcuu1 = ft_ti_getstr("kcuu1");
+	g_escapes.kcud1 = ft_ti_getstr("kcud1");
+	g_escapes.kcub1 = ft_ti_getstr("kcub1");
+	g_escapes.kcuf1 = ft_ti_getstr("kcuf1");
+	g_escapes.kLFT = ft_ti_getstr("kLFT");
+	g_escapes.kRIT = ft_ti_getstr("kRIT");
+	g_escapes.ht = ft_ti_getstr("ht");
+	g_escapes.kent = ft_ti_getstr("kent");
+	g_escapes.cr = ft_ti_getstr("cr");
+	g_escapes.kich1 = ft_ti_getstr("kich1");
+	g_escapes.khome = ft_ti_getstr("khome");
+	g_escapes.knp = ft_ti_getstr("knp");
+	g_escapes.kdch1 = ft_ti_getstr("kdch1");
+	g_escapes.kend = ft_ti_getstr("kend");
+	g_escapes.kpp = ft_ti_getstr("kpp");
+	g_escapes.kHOM = ft_ti_getstr("kHOM");
+	g_escapes.kDC = ft_ti_getstr("kDC");
+	g_escapes.kEND = ft_ti_getstr("kEND");
 	g_escapes.bel = (!g_escapes.bel) ? TERM_RING_BELL : g_escapes.bel;
 	g_escapes.flash = (!g_escapes.flash) ? TERM_FLASH_SCREEN : g_escapes.flash;
 	g_escapes.civis = (!g_escapes.civis) ? TERM_CUR_HIDE : g_escapes.civis;

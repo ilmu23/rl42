@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 14:33:30 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 19:53:24 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@
 # define _CMP_MLDIRS_HASH 0x4254D0CADBED6436ULL
 # define _CMP_HFILES_HASH 0x27615217B8D36228ULL
 # define _CMP_HLIGHT_HASH 0x4953FE167A6F1D05ULL
+# define _KEY_TMEOUT_HASH 0x1F6B9E0F52408628ULL
 
 /// completion
 # define _CMP_OFF 0x0U

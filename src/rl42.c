@@ -6,20 +6,14 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 20:26:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 /** globals **/
-__t_hmap	*g_keys;
 __t_hmap	*g_funcs;
-__t_hmap	*g_map_emacs;
-__t_hmap	*g_map_vi_ins;
-__t_hmap	*g_map_vi_cmd;
-__t_hmap	*g_map_hlcolor;
-
 int16_t	g_rows;
 int16_t	g_cols;
 
@@ -48,6 +42,11 @@ const __t_list	*g_kill_ring;
 const __t_list	*g_blocks;
 
 rl_settings_t	g_settings;
+
+rl_keytree_t	*g_map_emacs;
+rl_keytree_t	*g_map_vi_ins;
+rl_keytree_t	*g_map_vi_cmd;
+rl_keytree_t	*g_map_hlcolor;
 
 struct termios	g_oldsettings;
 struct termios	g_newsettings;
@@ -111,9 +110,11 @@ static inline uint64_t	_plen(const char *p)
 
 static inline uint8_t	_getinput(void)
 {
+	rl_fn_t	f;
+
 	g_argument.set = 0;
-	g_input.key = ft_rl_getkey();
-	return (ft_rl_execmap(&g_input));
+	f = ft_rl_getinput(&g_input.keyseq);
+	return (f) ? f(&g_input) : 1;
 }
 
 static inline char	*_strdup(const char *s)

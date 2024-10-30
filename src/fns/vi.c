@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 12:21:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/08 13:57:18 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 20:43:56 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,13 @@ uint8_t	ft_rl_vi_del(rl_input_t *input)
 	int32_t	count;
 	rl_fn_t	f;
 
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
+	f = ft_rl_getinput(NULL);
 	if (f == ft_rl_arg)
 	{
 		g_status ^= _VI_ARG;
 		f(input);
 		g_status ^= _VI_ARG;
-		f = ft_rl_getmap(input->key);
+		f = ft_rl_getinput(NULL);
 	}
 	if (f == ft_rl_sol)
 		return (ft_rl_bkl(input));
@@ -72,8 +71,7 @@ uint8_t	ft_rl_vi_rep(rl_input_t *input)
 	if (input->len == 0)
 		return (1);
 	i = input->i;
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
+	f = ft_rl_getinput(&input->keyseq);
 	if (f == ft_rl_arg)
 	{
 		g_status ^= _VI_ARG;
@@ -83,10 +81,10 @@ uint8_t	ft_rl_vi_rep(rl_input_t *input)
 	count = 1;
 	if (g_argument.set)
 		count = ft_rl_getarg();
-	if (input->key < KEY_SPACE || input->key > KEY_TILDE)
+	if (strlen(input->keyseq) > 1 || *input->keyseq < ' ' || *input->keyseq > '~')
 		return (1);
 	while (count-- && i < input->len)
-		input->line[i++] = (uint8_t)input->key;
+		input->line[i++] = *input->keyseq;
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }

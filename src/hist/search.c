@@ -6,13 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 00:18:31 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 23:07:36 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-#define isvalidfn(x)	((fn != x && fn != ft_rl_acl && fn != ft_rl_eof && fn != ft_rl_mta))
+#define isvalidfn(x)	((fn != x && fn != ft_rl_acl && fn != ft_rl_eof))
 
 static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint8_t direction);
 static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8_t direction);
@@ -69,14 +69,13 @@ uint8_t	ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction)
 static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint8_t direction)
 {
 	const __t_list	*match;
-	rl_fn_t			fn;
+	rl_fn_t			f;
 
 	match = NULL;
-	search->key = ft_rl_getkey();
-	fn = ft_rl_getmap(search->key);
-	while (fn == ft_rl_ins || fn == ft_rl_del || fn == ft_rl_bdl)
+	f = ft_rl_getinput(NULL);
+	while (f == ft_rl_ins || f == ft_rl_del || f == ft_rl_bdl)
 	{
-		fn(search);
+		f(search);
 		match = _match(search->line, direction);
 		if (!match)
 		{
@@ -97,27 +96,24 @@ static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint
 		if (search->plen == 14)
 			_replace(input, match);
 		_display(input, search);
-		search->key = ft_rl_getkey();
-		fn = ft_rl_getmap(search->key);
+		f = ft_rl_getinput(NULL);
 	}
 	if (match && g_hist_cur)
 		g_hist_cur = match;
-	return (fn);
+	return (f);
 }
 
 static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8_t direction)
 {
 	const __t_list	*match;
-	rl_fn_t			fn;
+	rl_fn_t			f;
 
 	match = NULL;
-	search->key = ft_rl_getkey();
-	fn = ft_rl_getmap(search->key);
-	while (fn == ft_rl_ins || fn == ft_rl_del || fn == ft_rl_bdl)
+	f = ft_rl_getinput(NULL);
+	while (f == ft_rl_ins || f == ft_rl_del || f == ft_rl_bdl)
 	{
-		fn(search);
-		search->key = ft_rl_getkey();
-		fn = ft_rl_getmap(search->key);
+		f(search);
+		f = ft_rl_getinput(NULL);
 	}
 	match = _match(search->line, direction);
 	if (match)
@@ -127,7 +123,7 @@ static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8
 			g_hist_cur = match;
 		_display(input, search);
 	}
-	return (fn);
+	return (f);
 }
 
 static inline __t_list	*_match(const char *pattern, const uint8_t direction)
@@ -154,9 +150,9 @@ static inline __t_list	*_match(const char *pattern, const uint8_t direction)
 static inline void	_init(rl_input_t *search, const uint8_t direction)
 {
 	memcpy(search, &(rl_input_t){.line = NULL,
-			.keystr = NULL, .exittype = E_ACL, .cursor = ft_rl_cursor_init(),
+			.keyseq = NULL, .exittype = E_ACL, .cursor = ft_rl_cursor_init(),
 			.plen = 14 - ((direction < _I_SEARCH_BCK) * 2),
-			.len = 0, .key = 0, .i = 0}, sizeof(*search));
+			.len = 0, .i = 0}, sizeof(*search));
 	switch (direction)
 	{
 		case _SEARCH_BCK:

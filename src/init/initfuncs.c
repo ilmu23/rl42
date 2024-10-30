@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/02 13:30:10 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 20:38:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("transpose-characters", ft_rl_tpc);
 	ft_rl_addfunc("transpose-words", ft_rl_tpw);
 	ft_rl_addfunc("complete", ft_rl_cmp);
-	ft_rl_addfunc("prefix-meta", ft_rl_mta);
 	ft_rl_addfunc("discard-line", ft_rl_dcl);
 	ft_rl_addfunc("digit-argument", ft_rl_arg);
 	ft_rl_addfunc("negative-digit-argument", ft_rl_arg_n);

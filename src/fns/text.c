@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/31 10:59:25 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 20:27:46 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ uint8_t	ft_rl_ins(rl_input_t *input)
 	if (g_argument.set)
 		count = ft_rl_getarg();
 	while (count-- > 0)
-		ft_rl_addchar(input, input->key);
+		ft_rl_addchar(input, *input->keyseq);
 	ft_rl_redisplay(input, INPUT);
 	return (1);
 }
@@ -441,8 +441,7 @@ uint8_t	ft_rl_ynk(rl_input_t *input)
 		input->i += slen;
 	}
 	ft_rl_redisplay(input, INPUT);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
+	f = ft_rl_getinput(NULL);
 	if (f == ft_rl_ynp)
 	{
 		ft_rl_setmark(_MARK_END);
@@ -471,8 +470,7 @@ uint8_t	ft_rl_ynp(rl_input_t *input)
 	input->len = strlen(input->line);
 	input->i = g_mark_e.pos;
 	ft_rl_redisplay(input, INPUT);
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
+	f = ft_rl_getinput(NULL);
 	if (f != ft_rl_ynp)
 		ft_rl_unsetmark(_MARK_START | _MARK_END);
 	return (f(input));
@@ -495,8 +493,7 @@ static inline uint8_t	_repeat(rl_input_t *input)
 	rl_fn_t	f;
 	uint8_t	rv;
 
-	input->key = ft_rl_getkey();
-	f = ft_rl_getmap(input->key);
+	f = ft_rl_getinput(NULL);
 	if (_iskill(f))
 	{
 		if (!(g_status & _KILL_APPEND))

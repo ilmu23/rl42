@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 18:48:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 18:03:16 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,7 @@
 # include "__lft.h"
 # include "ft_rl_data.h"
 
-extern __t_hmap	*g_keys;
 extern __t_hmap	*g_funcs;
-extern __t_hmap	*g_map_emacs;
-extern __t_hmap	*g_map_vi_ins;
-extern __t_hmap	*g_map_vi_cmd;
-extern __t_hmap	*g_map_hlcolor;
-
 extern int16_t	g_rows;
 extern int16_t	g_cols;
 
@@ -43,6 +37,11 @@ extern rl_keybuf_t	g_keybuf;
 extern rl_cmp_fn_t	g_cmp_fn;
 
 extern rl_escapes_t	g_escapes;
+
+extern rl_keytree_t	*g_map_emacs;
+extern rl_keytree_t	*g_map_vi_ins;
+extern rl_keytree_t	*g_map_vi_cmd;
+extern rl_keytree_t	*g_map_hlcolor;
 
 extern const __t_list	*g_hist;
 extern const __t_list	*g_hist_cur;

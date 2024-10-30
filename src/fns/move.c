@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:11:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:28:21 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 20:08:08 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,8 @@ uint8_t	ft_rl_ffc(rl_input_t *input)
 	if (g_argument.set && ft_rl_getarg() < 0)
 		return (ft_rl_bfc(input));
 	i = input->i + 1;
-	c = ft_rl_getkey();
+	if (read(0, &c, 1) != 1)
+		exit(ft_rl_perror());
 	while (i < input->len && input->line[i] != c)
 		i++;
 	if (input->line[i] == c)
@@ -205,7 +206,8 @@ uint8_t	ft_rl_bfc(rl_input_t *input)
 	if (g_argument.set && ft_rl_getarg() < 0)
 		return (ft_rl_ffc(input));
 	i = input->i - 1;
-	c = ft_rl_getkey();
+	if (read(0, &c, 1) != 1)
+		exit(ft_rl_perror());
 	while (i > 0 && input->line[i] != c)
 		i--;
 	if (input->line[i] == c)
