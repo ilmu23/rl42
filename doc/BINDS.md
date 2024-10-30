@@ -66,9 +66,10 @@ KEY             |   FUNCTION
 \<M-c>          |   capitalize-word
 \<C-k>          |   forward-kill-line
 \<M-k>          |   backward-kill-line
-\<M-DEL>        |   forward-kill-word
-\<M-BCK>        |   backward-kill-word
-\<M-S-DEL>      |   kill-region
+\<M-K>          |   kill-whole-line
+\<C-k>w         |   forward-kill-word
+\<M-k>w         |   backward-kill-word
+\<C-k>r         |   kill-region
 \<M-\\>         |   delete-horizontal-space
 \<M-C>          |   copy-region-as-kill
 \<M-F>          |   copy-forward-word

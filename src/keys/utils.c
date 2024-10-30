@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 22:50:00 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 23:47:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 #define E_UNTERMINATED_ESCAPE 0
 #define E_UNRECOGNIZED_ESCAPE 1
+
+#define incr(x)	(esc = (x == '\\') ? ((esc) ? 0 : 1) : 0, i++)
 
 static const char	soh[3] = {'\e', 1, 0};
 static const char	stx[3] = {'\e', 2, 0};
@@ -39,6 +41,8 @@ static const char	gs[3] = {'\e', 29, 0};
 static const char	rs[3] = {'\e', 30, 0};
 static const char	us[3] = {'\e', 31, 0};
 static const char	bck[3] = {'\e', 127, 0};
+
+static inline const char	*_esc(char *s);
 
 rl_keytree_t	*ft_rl_getcurtree(void)
 {
@@ -456,25 +460,26 @@ const char	*ft_rl_parse_sequence(const char *seq)
 {
 	size_t		i;
 	size_t		j;
+	uint8_t		esc;
 	const char	*tmp;
 	char		*out;
 
-	for (i = 0, j = i, out = NULL, tmp = NULL; seq[i]; j = i, tmp = NULL)
+	for (i = 0, j = i, esc = 0, out = NULL, tmp = NULL; seq[i]; j = i, tmp = NULL)
 	{
-		if (seq[i] == '<')
+		if (seq[i] == '<' && (i == 0 || seq[i - 1] != '\\'))
 		{
-			while (seq[i] && seq[i] != '>')
-				i++;
+			while (seq[i] && (seq[i] != '>' || esc))
+				incr(seq[i]);
 			if (!seq[i])
 				ft_rl_bind_error(E_UNTERMINATED_ESCAPE, seq);
 			else
-				tmp = ft_rl_parse_escape(__substr(seq, j, ++i - j));
+				tmp = ft_rl_parse_escape(_esc(__substr(seq, j, ++i - j)));
 		}
 		else
 		{
-			while (seq[i] && seq[i] != '<')
-				i++;
-			tmp = __substr(seq, j, i - j);
+			while (seq[i] && (seq[i] != '<' || esc))
+				incr(seq[i]);
+			tmp = _esc(__substr(seq, j, i - j));
 		}
 		if (!tmp)
 			return NULL;
@@ -543,4 +548,17 @@ void	ft_rl_bind_error(const uint8_t err, const char *context)
 			else
 				__dprintf(2, "rl42: undefined error\n");
 	}
+}
+
+static inline const char	*_esc(char *s)
+{
+	size_t	len;
+	size_t	i;
+
+	if (!s)
+		return NULL;
+	for (i = 0, len = strlen(s); i < len; i++)
+		if (s[i] == '\\')
+			__strlcpy(&s[i], &s[i + 1], len-- - i);
+	return s;
 }

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 18:20:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 22:49:18 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 23:00:37 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ uint8_t	ft_rl_bind(const char *seq, const char *fn, const rl_mapmode_t mode)
 	rl_keytree_t	*tmp;
 	const char		*eseq;
 
+	errno = 0;
 	f = __mapget(g_funcs, fn);
 	if (!f)
 		goto err;
@@ -41,7 +42,7 @@ uint8_t	ft_rl_bind(const char *seq, const char *fn, const rl_mapmode_t mode)
 #ifndef RL42NOCOMPLAIN
 	if (!f)
 		__dprintf(2, "ft_rl_map(%s, %s): function not found\n", seq, fn);
-	else
+	else if (errno)
 		ft_rl_perror();
 #endif
 	__popblk(eseq);

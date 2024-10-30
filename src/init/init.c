@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 23:09:00 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 23:55:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,8 @@ static inline void	_emacs_default_binds(void)
 
 	ft_rl_seteditmode(_MD_EMACS);
 	ft_rl_bind("<SPC>", "self-insert", QUIET);
-	for (c = *seq; c <= '~'; *seq = ++c)
+	ft_rl_bind("\\<", "self-insert", QUIET);
+	for (c = *seq; c++ <= '~'; *seq = (*seq == ';') ? ++c : c)
 		ft_rl_bind(seq, "self-insert", QUIET);
 	ft_rl_bind("<DEL>", "remove-char", QUIET);
 	ft_rl_bind("<BCK>", "backward-remove-char", QUIET);
@@ -92,12 +93,12 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_bind("<HME>", "beginning-of-line", QUIET);
 	ft_rl_bind("<C-e>", "end-of-line", QUIET);
 	ft_rl_bind("<END>", "end-of-line", QUIET);
-	ft_rl_bind("<right>", "forward-char", QUIET);
+	ft_rl_bind("<RIGHT>", "forward-char", QUIET);
 	ft_rl_bind("<C-f>", "forward-char", QUIET);
-	ft_rl_bind("<left>", "backward-char", QUIET);
+	ft_rl_bind("<LEFT>", "backward-char", QUIET);
 	ft_rl_bind("<C-b>", "backward-char", QUIET);
-	ft_rl_bind("<U-right>", "end-of-word", QUIET);
-	ft_rl_bind("<U-left>", "beginning-of-word", QUIET);
+	ft_rl_bind("<S-RIGHT>", "end-of-word", QUIET);
+	ft_rl_bind("<S-LEFT>", "beginning-of-word", QUIET);
 	ft_rl_bind("<M-f>", "forward-word", QUIET);
 	ft_rl_bind("<M-b>", "backward-word", QUIET);
 	ft_rl_bind("<C-l>", "clear-screen", QUIET);
@@ -105,11 +106,11 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_bind("<M-;>", "backward-find-character", QUIET);
 	ft_rl_bind("<RET>", "accept-line", QUIET);
 	ft_rl_bind("<C-d>", "end-of-file", QUIET);
-	ft_rl_bind("<down>", "next-history", QUIET);
+	ft_rl_bind("<DOWN>", "next-history", QUIET);
 	ft_rl_bind("<C-n>", "next-history", QUIET);
-	ft_rl_bind("<up>", "previous-history", QUIET);
+	ft_rl_bind("<UP>", "previous-history", QUIET);
 	ft_rl_bind("<C-p>", "previous-history", QUIET);
-	ft_rl_bind("<M->>", "end-of-history", QUIET);
+	ft_rl_bind("<M-\\>>", "end-of-history", QUIET);
 	ft_rl_bind("<M-<>", "beginning-of-history", QUIET);
 	ft_rl_bind("<M-s>", "forward-search-history", QUIET);
 	ft_rl_bind("<M-r>", "reverse-search-history", QUIET);
@@ -123,10 +124,10 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_bind("<C-k>", "forward-kill-line", QUIET);
 	ft_rl_bind("<M-k>", "backward-kill-line", QUIET);
 	ft_rl_bind("<M-K>", "kill-whole-line", QUIET);
-	ft_rl_bind("<M-DEL>", "forward-kill-word", QUIET);
-	ft_rl_bind("<M-BCK>", "backward-kill-word", QUIET);
-	ft_rl_bind("<M-U-DEL>", "kill-region", QUIET);
-	ft_rl_bind("<M-\\>", "delete-horizontal-space", QUIET);
+	ft_rl_bind("<C-k>w", "forward-kill-word", QUIET);
+	ft_rl_bind("<M-k>w", "backward-kill-word", QUIET);
+	ft_rl_bind("<C-k>r", "kill-region", QUIET);
+	ft_rl_bind("<M-\\\\>", "delete-horizontal-space", QUIET);
 	ft_rl_bind("<M-C>", "copy-region-as-kill", QUIET);
 	ft_rl_bind("<M-B>", "copy-backward-word", QUIET);
 	ft_rl_bind("<M-F>", "copy-forward-word", QUIET);
@@ -135,7 +136,6 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_bind("<C-t>", "transpose-characters", QUIET);
 	ft_rl_bind("<M-t>", "transpose-words", QUIET);
 	ft_rl_bind("<TAB>", "complete", QUIET);
-	ft_rl_bind("<ESC>", "prefix-meta", QUIET);
 	ft_rl_bind("<C-c>", "discard-line", QUIET);
 	ft_rl_bind("<M-0>", "digit-argument", QUIET);
 	ft_rl_bind("<M-1>", "digit-argument", QUIET);
@@ -163,7 +163,8 @@ static inline void	_vi_ins_default_binds(void)
 
 	ft_rl_seteditmode(_MD_VI_INS);
 	ft_rl_bind("<SPC>", "self-insert", QUIET);
-	for (c = *seq; c <= '~'; *seq = ++c)
+	ft_rl_bind("\\<", "self-insert", QUIET);
+	for (c = *seq; c++ <= '~'; *seq = (*seq == ';') ? ++c : c)
 		ft_rl_bind(seq, "self-insert", QUIET);
 	ft_rl_bind("<C-c>", "discard-line", QUIET);
 	ft_rl_bind("<C-d>", "end-of-file", QUIET);
@@ -173,8 +174,8 @@ static inline void	_vi_ins_default_binds(void)
 	ft_rl_bind("<C-s>", "inc-forward-search-history", QUIET);
 	ft_rl_bind("<C-t>", "transpose-characters", QUIET);
 	ft_rl_bind("<C-y>", "yank-last-arg", QUIET);
-	ft_rl_bind("<up>", "previous-history", QUIET);
-	ft_rl_bind("<down>", "next-history", QUIET);
+	ft_rl_bind("<UP>", "previous-history", QUIET);
+	ft_rl_bind("<DOWN>", "next-history", QUIET);
 	ft_rl_bind("<DEL>", "remove-char", QUIET);
 	ft_rl_bind("<BCK>", "backward-remove-char", QUIET);
 	ft_rl_bind("<ESC>", "vi-command-mode", QUIET);
