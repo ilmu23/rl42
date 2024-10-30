@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 18:20:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 18:49:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 22:49:18 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,10 +116,12 @@ static inline uint8_t	_rebind(const char *seq, rl_keytree_t *node, const rl_fn_t
 	{
 		case WARN:
 			__dprintf(2, "ft_rl_map: keysequence %s already mapped\n", seq);
+			__attribute__((fallthrough));
 		case QUIET:
 			return 0;
 		case REMAP:
 			__dprintf(2, "ft_rl_map: remapping keysequence %s\n", seq);
+			__attribute__((fallthrough));
 		case QREMAP:
 			break ;
 	}

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 18:15:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 22:50:00 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -530,11 +530,13 @@ void	ft_rl_bind_error(const uint8_t err, const char *context)
 				__dprintf(2, "rl42: unterminated escape in keysequence: '%s'\n", context);
 			else
 				__dprintf(2, "rl42: unterminated escape in keysequence\n");
+			break ;
 		case E_UNRECOGNIZED_ESCAPE:
 			if (context)
 				__dprintf(2, "rl42: unrecognized escape in keysequence: '%s'\n", context);
 			else
 				__dprintf(2, "rl42: unrecognized escape in keysequence\n");
+			break ;
 		default:
 			if (context)
 				__dprintf(2, "rl42: undefined error: '%s'\n", context);
