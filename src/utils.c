@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:21:57 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/31 00:21:16 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,11 @@ rl_fn_t	ft_rl_getinput(const char **seqstore)
 				continue ;
 			exit(ft_rl_perror());
 		}
-		if (memcmp(tree->next, emptynode.next, 256 * sizeof(void *)) == 0)
-		{
-			CUR_HIDE;
-			if (seqstore)
-				*seqstore = seq;
-			return tree->fn;
-		}
+		tree = tree->next[(uint8_t)*c];
+		__popblk(seq);
+		seq = __push(__strjoin(seq, c));
+		if (!tree || memcmp(tree->next, emptynode.next, 256 * sizeof(void *)) == 0)
+			break ;
 		if (tree->fn)
 		{
 			slct:
@@ -82,9 +80,6 @@ rl_fn_t	ft_rl_getinput(const char **seqstore)
 				return tree->fn;
 			}
 		}
-		tree = tree->next[(uint8_t)*c];
-		__popblk(seq);
-		seq = __push(__strjoin(seq, c));
 	}
 	CUR_HIDE;
 	if (tree && seqstore)
