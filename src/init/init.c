@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 07:18:13 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 07:19:06 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,6 +299,8 @@ static inline void	_init_escapes(void)
 	g_escapes.flash = ft_ti_getstr("flash");
 	g_escapes.civis = ft_ti_getstr("civis");
 	g_escapes.cnorm = ft_ti_getstr("cnorm");
+	g_escapes.smkx = ft_ti_getstr("smkx");
+	g_escapes.rmkx = ft_ti_getstr("rmkx");
 	g_escapes.el1 = ft_ti_getstr("el1");
 	g_escapes.el = ft_ti_getstr("el");
 	g_escapes.ed1 = TERM_CLEAR_START;

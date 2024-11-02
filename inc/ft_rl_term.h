@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 19:48:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:39:38 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 07:14:20 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,10 @@
 // scroll
 # define TERM_SCROLL_UP_N "\e[%p1%dS"
 # define TERM_SCROLL_DOWN_N "\e[%p1%dT"
+
+// bracketed paste mode
+# define TERM_BPM_ON "\e[?2004h"
+# define TERM_BPM_OFF "\e[?2004l"
 
 // sgr
 

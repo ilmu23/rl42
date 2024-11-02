@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 04:59:02 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 07:14:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	g_hist_cur = NULL;
 	tcsetattr(0, TCSANOW, &g_newsettings);
 	ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
-	ft_ti_tputs(ft_ti_getstr("smkx"), 1, ft_rl_putc);
+	ft_ti_tputs(g_escapes.smkx, 1, ft_rl_putc);
+	ft_ti_tputs(TERM_BPM_ON, 1, ft_rl_putc);
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 	{
 		ft_rl_hist_newnode();
@@ -82,7 +83,8 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 		_histcommit(out, opts);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
-	ft_ti_tputs(ft_ti_getstr("rmkx"), 1, ft_rl_putc);
+	ft_ti_tputs(TERM_BPM_OFF, 1, ft_rl_putc);
+	ft_ti_tputs(g_escapes.rmkx, 1, ft_rl_putc);
 	ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
 	__popblk(p);
 	return (_strdup(out));

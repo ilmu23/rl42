@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 05:49:28 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 07:10:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ struct s_rl_escapes
 	const char	*flash;	/* flash the screen / visual bell */
 	const char	*civis;	/* hide cursor */
 	const char	*cnorm; /* show cursor */
+	const char	*smkx;	/* enter keyboard transmit mode */
+	const char	*rmkx;	/* exit keyboard transmit mode */
 	const char	*el1;	/* clear to start of line */
 	const char	*el;	/* clear to end of line */
 	const char	*ed1;	/* clear to start of screen */

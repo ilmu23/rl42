@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 13:31:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:26:06 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 07:03:02 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ uint8_t	ft_rl_hl_clr(__UNUSED rl_input_t *input)
 		}
 		else if (f == ft_rl_bdl)
 			color[(i > 0) ? --i : i] = '\0';
-		else if (istoggle(f))
+		else if (istoggle(f) || f == ft_rl_pst)
 			f(input);
 		ft_rl_sethlcolor_clr(atoi(color));
 		_preview();
@@ -119,7 +119,7 @@ uint8_t	ft_rl_hl_rgb(__UNUSED rl_input_t *input)
 		}
 		else if (f == ft_rl_bdl)
 			red[(i > 0) ? --i : i] = '\0';
-		else if (istoggle(f))
+		else if (istoggle(f) || f == ft_rl_pst)
 			f(input);
 		ft_rl_sethlcolor_rgb(color.r, color.g, color.b);
 		_preview();
@@ -140,7 +140,7 @@ uint8_t	ft_rl_hl_rgb(__UNUSED rl_input_t *input)
 		}
 		else if (f == ft_rl_bdl)
 			green[(i > 0) ? --i : i] = '\0';
-		else if (istoggle(f))
+		else if (istoggle(f) || f == ft_rl_pst)
 			f(input);
 		ft_rl_sethlcolor_rgb(color.r, color.g, color.b);
 		_preview();
@@ -161,7 +161,7 @@ uint8_t	ft_rl_hl_rgb(__UNUSED rl_input_t *input)
 		}
 		else if (f == ft_rl_bdl)
 			blue[(i > 0) ? --i : i] = '\0';
-		else if (istoggle(f))
+		else if (istoggle(f) || f == ft_rl_pst)
 			f(input);
 		ft_rl_sethlcolor_rgb(color.r, color.g, color.b);
 		_preview();
