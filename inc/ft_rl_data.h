@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:11:52 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 05:49:28 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ struct s_rl_keytree
 {
 	void	*next[256];
 	rl_fn_t	fn;
+	uint8_t	c;
 };
 
 struct s_rl_escapes

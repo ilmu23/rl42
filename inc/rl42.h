@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 18:15:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 05:46:45 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,12 @@ uint8_t		ft_rl_bind_emacs(const char *seq, const char *fn, const rl_mapmode_t mo
 uint8_t		ft_rl_bind_vi_ins(const char *seq, const char *fn, const rl_mapmode_t mode);
 uint8_t		ft_rl_bind_vi_cmd(const char *seq, const char *fn, const rl_mapmode_t mode);
 uint8_t		ft_rl_bind_hlcolor(const char *seq, const char *fn, const rl_mapmode_t mode);
+
+uint8_t		ft_rl_const_bind(const char *seq, const char *fn);
+uint8_t		ft_rl_const_bind_emacs(const char *seq, const char *fn);
+uint8_t		ft_rl_const_bind_vi_ins(const char *seq, const char *fn);
+uint8_t		ft_rl_const_bind_vi_cmd(const char *seq, const char *fn);
+uint8_t		ft_rl_const_bind_hlcolor(const char *seq, const char *fn);
 
 /**   fn.c   **/
 uint8_t		ft_rl_addfunc(const char *fn, const rl_fn_t f);

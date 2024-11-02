@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 05:43:58 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 05:48:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_bind("<M-C-x>", "exchange-point-and-mark", QUIET);
 	ft_rl_bind("<M-C-e>", "vi-editing-mode", QUIET);
 	ft_rl_bind("<M-h>", "set-highlight-color", QUIET);
-	ft_rl_bind("\e[200~", "__paste", QUIET);
+	ft_rl_const_bind("\e[200~", "__paste");
 }
 
 static inline void	_vi_ins_default_binds(void)
@@ -184,7 +184,7 @@ static inline void	_vi_ins_default_binds(void)
 	ft_rl_bind("<ESC>", "vi-command-mode", QUIET);
 	ft_rl_bind("<RET>", "accept-line", QUIET);
 	ft_rl_bind("<TAB>", "complete", QUIET);
-	ft_rl_bind("\e[200~", "__paste", QUIET);
+	ft_rl_const_bind("\e[200~", "__paste");
 }
 
 static inline void	_vi_cmd_default_binds(void)
@@ -241,7 +241,7 @@ static inline void	_vi_cmd_default_binds(void)
 	ft_rl_bind("<RET>", "accept-line", QUIET);
 	ft_rl_bind("<TAB>", "complete", QUIET);
 	ft_rl_bind("<ESC>", "abort", QUIET);
-	ft_rl_bind("\e[200~", "__paste", QUIET);
+	ft_rl_const_bind("\e[200~", "__paste");
 }
 
 static inline void	_hlcolor_default_binds(void)
@@ -265,7 +265,7 @@ static inline void	_hlcolor_default_binds(void)
 	ft_rl_bind("7", "self-insert", QUIET);
 	ft_rl_bind("8", "self-insert", QUIET);
 	ft_rl_bind("9", "self-insert", QUIET);
-	ft_rl_bind("\e[200~", "__paste", QUIET);
+	ft_rl_const_bind("\e[200~", "__paste");
 }
 
 static inline void	_defaultsettings(void)
