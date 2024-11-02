@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:27:46 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 05:41:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,41 @@ uint8_t	ft_rl_ins(rl_input_t *input)
 		ft_rl_addchar(input, *input->keyseq);
 	ft_rl_redisplay(input, INPUT);
 	return (1);
+}
+
+uint8_t	ft_rl_pst(rl_input_t *input)
+{
+	size_t				i;
+	ssize_t				rv;
+	uint64_t			plen;
+	char				*paste;
+	char				buf[7] = "\0\0\0\0\0\0\0";
+	const char			*subs[2];
+	static const char	*end = "\e[201~";
+
+	for (i = 0, paste = NULL, rv = read(0, &buf[i], 1); rv == 1; rv = read(0, &buf[i], 1)) {
+		if (buf[i] == end[i]) {
+			if (++i == 6)
+				break ;
+		} else {
+			__popblk(paste);
+			paste = __push(__strjoin(paste, buf));
+			memset(buf, 0, i + 1);
+			i = 0;
+		}
+	}
+	subs[0] = (input->i > 0) ? __push(__substr(input->line, 0, input->i)) : "";
+	subs[1] = (input->i < input->len) ? __push(__substr(input->line, input->i, input->len - input->i)) : "";
+	__popblk(input->line);
+	input->line = __push(__strnjoin(3, subs[0], paste, subs[1]));
+	if (!input->line)
+		exit(ft_rl_perror());
+	__popblks(2, subs[0], subs[1]);
+	plen = strlen(paste);
+	input->len += plen;
+	input->i += plen;
+	ft_rl_redisplay(input, INPUT);
+	return 1;
 }
 
 uint8_t	ft_rl_upw(rl_input_t *input)

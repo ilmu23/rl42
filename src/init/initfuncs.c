@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:38:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 05:42:35 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("backward-remove-char", ft_rl_bdl);
 	ft_rl_addfunc("remove-char", ft_rl_del);
 	ft_rl_addfunc("self-insert", ft_rl_ins);
+	ft_rl_addfunc("__paste", ft_rl_pst);
 	ft_rl_addfunc("upcase-word", ft_rl_upw);
 	ft_rl_addfunc("downcase-word", ft_rl_dnw);
 	ft_rl_addfunc("capitalize-word", ft_rl_caw);
