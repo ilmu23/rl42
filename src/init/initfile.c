@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:03:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:47:52 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 08:44:11 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	ft_rl_read_initfile(void)
 	{
 		path = _expand(_USER_INITFILE);
 		if (access(path, F_OK) != 0)
-			path = _expand(_USER_INITFILE);
+			path = _SYSTEM_INITFILE;
 		if (access(path, F_OK) != 0)
 			path = NULL;
 	}
