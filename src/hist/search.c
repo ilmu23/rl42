@@ -6,13 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 23:07:36 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 09:02:48 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-#define isvalidfn(x)	((fn != x && fn != ft_rl_acl && fn != ft_rl_eof))
+#define isvalidfn(x)	((fn && fn != x && fn != ft_rl_acl && fn != ft_rl_eof))
 
 static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint8_t direction);
 static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8_t direction);
