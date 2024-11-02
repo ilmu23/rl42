@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 05:41:32 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 09:13:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -476,7 +476,7 @@ uint8_t	ft_rl_ynk(rl_input_t *input)
 		input->i += slen;
 	}
 	ft_rl_redisplay(input, INPUT);
-	f = ft_rl_getinput(NULL);
+	f = ft_rl_getinput(&input->keyseq);
 	if (f == ft_rl_ynp)
 	{
 		ft_rl_setmark(_MARK_END);
@@ -505,7 +505,7 @@ uint8_t	ft_rl_ynp(rl_input_t *input)
 	input->len = strlen(input->line);
 	input->i = g_mark_e.pos;
 	ft_rl_redisplay(input, INPUT);
-	f = ft_rl_getinput(NULL);
+	f = ft_rl_getinput(&input->keyseq);
 	if (f != ft_rl_ynp)
 		ft_rl_unsetmark(_MARK_START | _MARK_END);
 	return (f(input));
@@ -528,7 +528,7 @@ static inline uint8_t	_repeat(rl_input_t *input)
 	rl_fn_t	f;
 	uint8_t	rv;
 
-	f = ft_rl_getinput(NULL);
+	f = ft_rl_getinput(&input->keyseq);
 	if (_iskill(f))
 	{
 		if (!(g_status & _KILL_APPEND))

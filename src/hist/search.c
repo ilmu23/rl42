@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 09:02:48 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 09:12:43 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint
 	rl_fn_t			f;
 
 	match = NULL;
-	f = ft_rl_getinput(NULL);
+	f = ft_rl_getinput(&search->keyseq);
 	while (f == ft_rl_ins || f == ft_rl_del || f == ft_rl_bdl)
 	{
 		f(search);
@@ -96,7 +96,7 @@ static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint
 		if (search->plen == 14)
 			_replace(input, match);
 		_display(input, search);
-		f = ft_rl_getinput(NULL);
+		f = ft_rl_getinput(&search->keyseq);
 	}
 	if (match && g_hist_cur)
 		g_hist_cur = match;
@@ -109,11 +109,11 @@ static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8
 	rl_fn_t			f;
 
 	match = NULL;
-	f = ft_rl_getinput(NULL);
+	f = ft_rl_getinput(&search->keyseq);
 	while (f == ft_rl_ins || f == ft_rl_del || f == ft_rl_bdl)
 	{
 		f(search);
-		f = ft_rl_getinput(NULL);
+		f = ft_rl_getinput(&search->keyseq);
 	}
 	match = _match(search->line, direction);
 	if (match)

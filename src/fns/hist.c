@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:26:57 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 09:11:54 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ uint8_t	ft_rl_yla(rl_input_t *input)
 	ft_rl_setmark(_MARK_START);
 	ft_rl_hist_yank_arg(input, hist->blk, n);
 	ft_rl_setmark(_MARK_END);
-	fn = ft_rl_getinput(NULL);
+	fn = ft_rl_getinput(&input->keyseq);
 	g_status |= _YLA_RUNNING;
 	while (fn == ft_rl_arg || fn == ft_rl_arg_n || fn == ft_rl_yla)
 	{
@@ -182,7 +182,7 @@ uint8_t	ft_rl_yla(rl_input_t *input)
 		input->i = MIN(input->i, input->len);
 		ft_rl_hist_yank_arg(input, hist->blk, n);
 		ft_rl_setmark(_MARK_END);
-		fn = ft_rl_getinput(NULL);
+		fn = ft_rl_getinput(&input->keyseq);
 	}
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
 	g_status &= ~_YLA_RUNNING;

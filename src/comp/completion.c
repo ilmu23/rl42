@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:31:38 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 09:11:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ static inline rl_fn_t	_replace_mult(rl_input_t *input, const __t_list *completio
 	prv = NULL;
 	if (!ft_rl_comp_display(input, __lstfirst(completions), NULL, prv))
 		return NULL;
-	for (f = ft_rl_getinput(NULL); f == ft_rl_cmp; f = ft_rl_getinput(NULL))
+	for (f = ft_rl_getinput(&input->keyseq); f == ft_rl_cmp; f = ft_rl_getinput(&input->keyseq))
 	{
 		_replace(input, completions->blk);
 		if (ft_rl_get(_CMP_HLIGHT_HASH))
