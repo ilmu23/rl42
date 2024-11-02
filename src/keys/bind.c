@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 18:20:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 06:30:49 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 08:56:33 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ uint8_t	ft_rl_bind(const char *seq, const char *fn, const rl_mapmode_t mode)
 	err:
 #ifndef RL42NOCOMPLAIN
 	if (!f)
-		__dprintf(2, "ft_rl_map(%s, %s): function not found\n", seq, fn);
+		__dprintf(2, "ft_rl_bind(%s, %s): function not found\n", seq, fn);
 	else if (tmp->c)
-		__dprintf(2, "ft_rl_map(%s, %s): sequence already const bound\n", seq, fn);
+		__dprintf(2, "ft_rl_bind(%s, %s): sequence already const bound\n", seq, fn);
 	else if (errno)
 		ft_rl_perror();
 #endif
@@ -140,9 +140,9 @@ uint8_t	ft_rl_const_bind(const char *seq, const char *fn)
 	err:
 #ifndef RL42NOCOMPLAIN
 	if (!f)
-		__dprintf(2, "ft_rl_const_map(%s, %s): function not found\n", seq, fn);
+		__dprintf(2, "ft_rl_const_bind(%s, %s): function not found\n", seq, fn);
 	else if (tmp->c)
-		__dprintf(2, "ft_rl_const_map(%s, %s): sequence already const bound\n", seq, fn);
+		__dprintf(2, "ft_rl_const_bind(%s, %s): sequence already const bound\n", seq, fn);
 	else if (errno)
 		ft_rl_perror();
 #endif
@@ -217,12 +217,12 @@ static inline uint8_t	_rebind(const char *seq, rl_keytree_t *node, const rl_fn_t
 	switch (mode)
 	{
 		case WARN:
-			__dprintf(2, "ft_rl_map: keysequence %s already mapped\n", seq);
+			__dprintf(2, "ft_rl_bind: keysequence %s already mapped\n", seq);
 			__attribute__((fallthrough));
 		case QUIET:
 			return 0;
 		case REMAP:
-			__dprintf(2, "ft_rl_map: remapping keysequence %s\n", seq);
+			__dprintf(2, "ft_rl_bind: remapping keysequence %s\n", seq);
 			__attribute__((fallthrough));
 		case QREMAP:
 			break ;
