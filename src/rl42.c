@@ -6,16 +6,17 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:26:32 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 04:59:02 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 /** globals **/
-__t_hmap	*g_funcs;
 int16_t	g_rows;
 int16_t	g_cols;
+
+__t_hmap	*g_funcs;
 
 uint64_t	g_maxlen;
 uint64_t	g_status;
@@ -69,6 +70,7 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	g_hist_cur = NULL;
 	tcsetattr(0, TCSANOW, &g_newsettings);
 	ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
+	ft_ti_tputs(ft_ti_getstr("smkx"), 1, ft_rl_putc);
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 	{
 		ft_rl_hist_newnode();
@@ -80,6 +82,7 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 		_histcommit(out, opts);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
+	ft_ti_tputs(ft_ti_getstr("rmkx"), 1, ft_rl_putc);
 	ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
 	__popblk(p);
 	return (_strdup(out));
