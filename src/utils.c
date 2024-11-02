@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/31 00:21:16 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 06:24:14 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,7 @@ rl_fn_t	ft_rl_getinput(const char **seqstore)
 			if (slctrv == -1 && _interrupt())
 				goto slct;
 			if (slctrv == 0)
-			{
-				CUR_HIDE;
-				if (seqstore)
-					*seqstore = seq;
-				return tree->fn;
-			}
+				break ;
 		}
 	}
 	CUR_HIDE;
