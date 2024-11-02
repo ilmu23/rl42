@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 11:08:26 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 06:17:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,10 @@ void	__unmark(const void *blk)
 			obj->traps--;
 		if (!obj->marks && obj->blksize)
 		{
-			if (vm->free)
+			if (vm->free && vm->free != obj)
 				vm->free->pfree = obj;
-			obj->nfree = vm->free;
+			if (vm->free != obj)
+				obj->nfree = vm->free;
 			vm->free = obj;
 		}
 	}
