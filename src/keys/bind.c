@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 18:20:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 23:00:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 05:01:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ uint8_t	ft_rl_bind(const char *seq, const char *fn, const rl_mapmode_t mode)
 	const char		*eseq;
 
 	errno = 0;
+	eseq = NULL;
 	f = __mapget(g_funcs, fn);
 	if (!f)
 		goto err;
