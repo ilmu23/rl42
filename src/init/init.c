@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 07:19:06 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 09:32:03 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,6 +363,8 @@ static inline void	_ft_rl_exit(void)
 	if (g_hist)
 		ft_rl_hist_save(_FT_RL_HFILE);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
+	ft_ti_tputs(TERM_BPM_OFF, 1, ft_rl_putc);
+	ft_ti_tputs(g_escapes.rmkx, 1, ft_rl_putc);
 	ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
 	__return(42);
 }
