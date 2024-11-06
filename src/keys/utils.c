@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 13:59:54 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:34:05 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ rl_keytree_t	*ft_rl_getcurtree(void)
 			return __mapget(g_binds, "vi-cmd");
 		case _MD_HLCOLOR:
 			return __mapget(g_binds, "hlcolor");
+		case _MD_SSI:
+			return __mapget(g_binds, "__ssi");
 	}
 	return NULL;
 }

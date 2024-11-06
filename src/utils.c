@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 06:24:14 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:19:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,11 @@ rl_block_t	*ft_rl_newblock(const char *str, const int16_t pos[2])
 	memcpy(out, &(rl_block_t){.str = str, .length = strlen(str),
 			.pos[0] = pos[0], .pos[1] = pos[1], .highlighted = 0}, sizeof(*out));
 	return (out);
+}
+
+uint16_t	ft_rl_geteditmode(void)
+{
+	return (g_status & _MD_MASK);
 }
 
 rl_fn_t	ft_rl_getinput(const char **seqstore)
@@ -103,20 +108,15 @@ uint8_t	ft_rl_isdir(const char *path)
 	return (S_ISDIR(file.st_mode));
 }
 
-uint8_t	ft_rl_geteditmode(void)
-{
-	return (g_status & _MD_MASK);
-}
-
 void	ft_rl_set_completion_fn(rl_cmp_fn_t f)
 {
 	ft_rl_init();
 	g_cmp_fn = f;
 }
 
-void	ft_rl_seteditmode(const uint8_t mode)
+void	ft_rl_seteditmode(const uint16_t mode)
 {
-	uint8_t	emode;
+	uint16_t	emode;
 	
 	emode = ft_rl_geteditmode();
 	if (mode != emode)

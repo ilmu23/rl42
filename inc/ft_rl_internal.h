@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:29:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:31:08 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ void			ft_rl_kring_rotate(void);
 
 // utils.c
 rl_block_t		*ft_rl_newblock(const char *str, const int16_t pos[2]);
+uint16_t		ft_rl_geteditmode(void);
 rl_fn_t			ft_rl_getinput(const char **seqstore);
 ssize_t			ft_rl_putc(const int8_t c);
 int32_t			ft_rl_getarg(void);
 uint8_t			ft_rl_isdir(const char *path);
-uint8_t			ft_rl_geteditmode(void);
-void			ft_rl_seteditmode(const uint8_t node);
+void			ft_rl_seteditmode(const uint16_t node);
 void			ft_rl_clearblocks(void);
 void			ft_rl_bell(void);
 

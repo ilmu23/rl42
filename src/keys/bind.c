@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 18:20:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 08:56:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:32:00 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ uint8_t	ft_rl_bind(const char *seq, const char *fn, const rl_mapmode_t mode)
 
 uint8_t	ft_rl_bind_emacs(const char *seq, const char *fn, const rl_mapmode_t mode)
 {
-	uint8_t	emode;
-	uint8_t	rv;
+	uint16_t	emode;
+	uint8_t		rv;
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_EMACS)
@@ -70,8 +70,8 @@ uint8_t	ft_rl_bind_emacs(const char *seq, const char *fn, const rl_mapmode_t mod
 
 uint8_t	ft_rl_bind_vi_ins(const char *seq, const char *fn, const rl_mapmode_t mode)
 {
-	uint8_t	emode;
-	uint8_t	rv;
+	uint16_t	emode;
+	uint8_t		rv;
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_VI_INS)
@@ -84,8 +84,8 @@ uint8_t	ft_rl_bind_vi_ins(const char *seq, const char *fn, const rl_mapmode_t mo
 
 uint8_t	ft_rl_bind_vi_cmd(const char *seq, const char *fn, const rl_mapmode_t mode)
 {
-	uint8_t	emode;
-	uint8_t	rv;
+	uint16_t	emode;
+	uint8_t		rv;
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_VI_CMD)
@@ -98,8 +98,8 @@ uint8_t	ft_rl_bind_vi_cmd(const char *seq, const char *fn, const rl_mapmode_t mo
 
 uint8_t	ft_rl_bind_hlcolor(const char *seq, const char *fn, const rl_mapmode_t mode)
 {
-	uint8_t	emode;
-	uint8_t	rv;
+	uint16_t	emode;
+	uint8_t		rv;
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_HLCOLOR)
@@ -152,8 +152,8 @@ uint8_t	ft_rl_const_bind(const char *seq, const char *fn)
 
 uint8_t	ft_rl_const_bind_emacs(const char *seq, const char *fn)
 {
-	uint8_t	emode;
-	uint8_t	rv;
+	uint16_t	emode;
+	uint8_t		rv;
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_EMACS)
@@ -166,8 +166,8 @@ uint8_t	ft_rl_const_bind_emacs(const char *seq, const char *fn)
 
 uint8_t	ft_rl_const_bind_vi_ins(const char *seq, const char *fn)
 {
-	uint8_t	emode;
-	uint8_t	rv;
+	uint16_t	emode;
+	uint8_t		rv;
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_VI_INS)
@@ -180,8 +180,8 @@ uint8_t	ft_rl_const_bind_vi_ins(const char *seq, const char *fn)
 
 uint8_t	ft_rl_const_bind_vi_cmd(const char *seq, const char *fn)
 {
-	uint8_t	emode;
-	uint8_t	rv;
+	uint16_t	emode;
+	uint8_t		rv;
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_VI_CMD)
@@ -194,8 +194,8 @@ uint8_t	ft_rl_const_bind_vi_cmd(const char *seq, const char *fn)
 
 uint8_t	ft_rl_const_bind_hlcolor(const char *seq, const char *fn)
 {
-	uint8_t	emode;
-	uint8_t	rv;
+	uint16_t	emode;
+	uint8_t		rv;
 
 	emode = ft_rl_geteditmode();
 	if (emode != _MD_HLCOLOR)

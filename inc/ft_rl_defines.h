@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 19:53:24 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:30:06 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@
 # define _MD_VI_INS 0x8ULL
 # define _MD_VI_CMD 0x10ULL
 # define _MD_HLCOLOR 0x80ULL
-# define _MD_MASK 0x9CULL
+# define _MD_SSI 0x100ULL
+# define _MD_MASK 0x19CULL
 
 // Settings
 

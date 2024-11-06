@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 14:00:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:35:56 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static inline void	_emacs_default_binds(void);
 static inline void	_vi_ins_default_binds(void);
 static inline void	_vi_cmd_default_binds(void);
 static inline void	_hlcolor_default_binds(void);
+static inline void	_ssi_binds(void);
 static inline void	_defaultsettings(void);
 static inline void	_init_escapes(void);
 static inline void	_ft_rl_exit(void);
@@ -42,7 +43,7 @@ void	ft_rl_init(void)
 	g_newsettings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	tcsetattr(0, TCSANOW, &g_newsettings);
 	if (!newbindmap("emacs") || !newbindmap("vi-ins") || !newbindmap("vi-cmd")
-		|| !newbindmap("hlcolor") || atexit(_ft_rl_exit))
+		|| !newbindmap("hlcolor") || !newbindmap("__ssi")  || atexit(_ft_rl_exit))
 		__exit(ft_rl_perror());
 	g_argument.set = 0;
 	g_mark_s.set = 0;
@@ -60,6 +61,7 @@ void	ft_rl_init(void)
 	_vi_ins_default_binds();
 	_vi_cmd_default_binds();
 	_hlcolor_default_binds();
+	_ssi_binds();
 	ft_rl_sethlcolor_mode(FT_RL_HL_FG);
 	ft_rl_sethlcolor_clr(2);
 	ft_rl_seteditmode(emode);
@@ -273,6 +275,19 @@ static inline void	_hlcolor_default_binds(void)
 	ft_rl_bind("7", "self-insert", QUIET);
 	ft_rl_bind("8", "self-insert", QUIET);
 	ft_rl_bind("9", "self-insert", QUIET);
+}
+
+static inline void	_ssi_binds(void)
+{
+	char	seq[2] = "!";
+	uint8_t	c;
+
+	ft_rl_seteditmode(_MD_SSI);
+	ft_rl_const_bind("<SPC>", "self-insert");
+	ft_rl_const_bind("\\<", "self-insert");
+	ft_rl_const_bind("\\\\", "self-insert");
+	for (c = *seq; c++ <= '~'; *seq = (*seq == ';' || *seq == '[') ? ++c : c)
+		ft_rl_const_bind(seq, "self-insert");
 }
 
 static inline void	_defaultsettings(void)
