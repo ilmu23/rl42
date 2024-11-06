@@ -6,11 +6,17 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:41:20 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:23:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_rl_globals.h"
 #include "ft_rl_internal.h"
+
+#define getfn	(f = ft_rl_getinput(&input->keyseq))
+#define dargfn	(f == ft_rl_ins || (ft_rl_geteditmode() == _MD_VI_CMD && f == ft_rl_arg))
+
+#define inrange(x, y, z)	(x >= y && x <= z)
 
 uint8_t	ft_rl_dcl(rl_input_t *input)
 {
@@ -78,13 +84,50 @@ uint8_t	ft_rl_abt(__UNUSED rl_input_t *input)
 	return (1);
 }
 
-uint8_t	ft_rl_arg(__UNUSED rl_input_t *input) // not actually unused
+uint8_t	ft_rl_arg(__UNUSED rl_input_t *input)
 {
+	uint8_t	offset;
+	rl_fn_t	f;
+
+	offset = (input->keyseq[0] == '\e') ? 1 : 0;
+	if (inrange(input->keyseq[offset], '0', '9') && input->keyseq[offset + 1] == '\0')
+		g_argument.arg = input->keyseq[offset] - '0';
+	else
+		g_argument.arg = 0;
+	g_argument.set = 1;
+	input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
+	ft_rl_redisplay(input, SPROMPT);
+	for (getfn; g_argument.arg != _ARG_MAX && dargfn && inrange(*input->keyseq, '0', '9'); getfn) {
+		g_argument.arg = MIN(g_argument.arg * 10 + *input->keyseq - '0', _ARG_MAX);
+		__popblk(input->sprompt);
+		input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
+		ft_rl_redisplay(input, SPROMPT);
+	}
+	ft_rl_redisplay(input, PROMPT);
+	if (f != ft_rl_arg && f != ft_rl_arg_n && !(g_status & _VI_ARG)
+		&& (!(g_status & _YLA_RUNNING) || f != ft_rl_yla))
+		return (f(input));
 	return (1);
 }
 
-uint8_t	ft_rl_arg_n(__UNUSED rl_input_t *input) // not actually unused
+uint8_t	ft_rl_arg_n(__UNUSED rl_input_t *input)
 {
+	rl_fn_t	f;
+
+	g_argument.arg = 0;
+	g_argument.set = 1;
+	input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
+	ft_rl_redisplay(input, SPROMPT);
+	for (getfn; g_argument.arg != _ARG_MIN && f == ft_rl_ins && inrange(*input->keyseq, '0', '9'); getfn) {
+		g_argument.arg = MAX((int32_t)(g_argument.arg * 10 - (*input->keyseq - '0')), _ARG_MIN);
+		input->sprompt = __push(__itoa_base(g_argument.arg, DECIMAL));
+		ft_rl_redisplay(input, SPROMPT);
+	}
+	g_argument.arg = (g_argument.arg != 0) ? g_argument.arg : -1;
+	ft_rl_redisplay(input, PROMPT);
+	if (f != ft_rl_arg && f != ft_rl_arg_n
+		&& (!(g_status & _YLA_RUNNING) || f != ft_rl_yla))
+		return (f(input));
 	return (1);
 }
 
