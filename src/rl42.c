@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 07:14:47 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:00:39 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,15 @@
 int16_t	g_rows;
 int16_t	g_cols;
 
-__t_hmap	*g_funcs;
-
 uint64_t	g_maxlen;
 uint64_t	g_status;
 
 rl_hlc_t	g_hlcolor;
 
 rl_arg_t	g_argument;
+
+__t_hmap	*g_funcs;
+__t_hmap	*g_binds;
 
 rl_mark_t	g_mark_s;
 rl_mark_t	g_mark_e;
@@ -43,11 +44,6 @@ const __t_list	*g_kill_ring;
 const __t_list	*g_blocks;
 
 rl_settings_t	g_settings;
-
-rl_keytree_t	*g_map_emacs;
-rl_keytree_t	*g_map_vi_ins;
-rl_keytree_t	*g_map_vi_cmd;
-rl_keytree_t	*g_map_hlcolor;
 
 struct termios	g_oldsettings;
 struct termios	g_newsettings;

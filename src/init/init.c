@@ -6,11 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 09:32:03 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:00:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
+
+#define newbindmap(x)	(__mapadd(g_binds, x, __calloc(1, sizeof(rl_keytree_t))))
 
 static inline void	_const_binds(void);
 static inline void	_emacs_default_binds(void);
@@ -31,17 +33,16 @@ void	ft_rl_init(void)
 	init = 1;
 	_init_escapes();
 	g_funcs = __mapnew();
-	g_map_emacs = __push(__calloc(1, sizeof(rl_keytree_t)));
-	g_map_vi_ins = __push(__calloc(1, sizeof(rl_keytree_t)));
-	g_map_vi_cmd = __push(__calloc(1, sizeof(rl_keytree_t)));
-	g_map_hlcolor = __push(__calloc(1, sizeof(rl_keytree_t)));
+	g_binds = __mapnew();
+	if (!g_funcs || !g_binds)
+		__exit(ft_rl_perror());
 	tcgetattr(0, &g_oldsettings);
 	g_newsettings = g_oldsettings;
 	g_newsettings.c_iflag &= ~(ICRNL | IXON);
 	g_newsettings.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	tcsetattr(0, TCSANOW, &g_newsettings);
-	if (!g_funcs || !g_map_emacs || !g_map_vi_ins || !g_map_vi_cmd
-		|| !g_map_hlcolor || atexit(_ft_rl_exit))
+	if (!newbindmap("emacs") || !newbindmap("vi-ins") || !newbindmap("vi-cmd")
+		|| !newbindmap("hlcolor") || atexit(_ft_rl_exit))
 		__exit(ft_rl_perror());
 	g_argument.set = 0;
 	g_mark_s.set = 0;

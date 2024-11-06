@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 12:28:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 23:47:55 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 13:59:54 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ rl_keytree_t	*ft_rl_getcurtree(void)
 	switch (ft_rl_geteditmode())
 	{
 		case _MD_EMACS:
-			return g_map_emacs;
+			return __mapget(g_binds, "emacs");
 		case _MD_VI_INS:
-			return g_map_vi_ins;
+			return __mapget(g_binds, "vi-ins");
 		case _MD_VI_CMD:
-			return g_map_vi_cmd;
+			return __mapget(g_binds, "vi-cmd");
 		case _MD_HLCOLOR:
-			return g_map_hlcolor;
+			return __mapget(g_binds, "hlcolor");
 	}
 	return NULL;
 }
