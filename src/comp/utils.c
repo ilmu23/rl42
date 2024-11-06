@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 13:55:57 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 20:06:02 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:38:32 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,14 +124,16 @@ static inline uint16_t	_dwidth(void)
 
 static inline uint8_t	_query(rl_input_t *input, const size_t completions)
 {
-	uint8_t	c;
+	uint16_t	emode;
 
+	emode = ft_rl_geteditmode();
+	ft_rl_seteditmode(_MD_SSI);
 	input->cursor->row = input->cursor->i_row;
 	input->cursor->col = input->cursor->i_col + input->len;
 	ft_rl_cursor_setpos(input->cursor);
 	__printf("\nDisplay all %zu completions? [Y/n]", completions);
-	if (read(0, &c, 1) != 1)
-		exit(ft_rl_perror());
+	ft_rl_getinput(&input->keyseq);
 	ft_rl_redisplay(input, CLEAR);
-	return (c == 'y' || c == 'Y');
+	ft_rl_seteditmode(emode);
+	return (input->keyseq && tolower(*input->keyseq) == 'y');
 }
