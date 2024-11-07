@@ -6,20 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:00:39 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 /** globals **/
-__t_hmap	*g_keys;
-__t_hmap	*g_funcs;
-__t_hmap	*g_map_emacs;
-__t_hmap	*g_map_vi_ins;
-__t_hmap	*g_map_vi_cmd;
-__t_hmap	*g_map_hlcolor;
-
 int16_t	g_rows;
 int16_t	g_cols;
 
@@ -29,6 +22,9 @@ uint64_t	g_status;
 rl_hlc_t	g_hlcolor;
 
 rl_arg_t	g_argument;
+
+__t_hmap	*g_funcs;
+__t_hmap	*g_binds;
 
 rl_mark_t	g_mark_s;
 rl_mark_t	g_mark_e;
@@ -70,6 +66,8 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	g_hist_cur = NULL;
 	tcsetattr(0, TCSANOW, &g_newsettings);
 	ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
+	ft_ti_tputs(g_escapes.smkx, 1, ft_rl_putc);
+	ft_ti_tputs(TERM_BPM_ON, 1, ft_rl_putc);
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 	{
 		ft_rl_hist_newnode();
@@ -81,6 +79,8 @@ char	*ft_readline(const char *p, const uint8_t opts)
 	if (!(opts & FT_RL_HIST_OFF) && ft_rl_get(_HIST_SIZE_HASH) > 0)
 		_histcommit(out, opts);
 	tcsetattr(0, TCSANOW, &g_oldsettings);
+	ft_ti_tputs(TERM_BPM_OFF, 1, ft_rl_putc);
+	ft_ti_tputs(g_escapes.rmkx, 1, ft_rl_putc);
 	ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
 	__popblk(p);
 	return (_strdup(out));
@@ -111,9 +111,11 @@ static inline uint64_t	_plen(const char *p)
 
 static inline uint8_t	_getinput(void)
 {
+	rl_fn_t	f;
+
 	g_argument.set = 0;
-	g_input.key = ft_rl_getkey();
-	return (ft_rl_execmap(&g_input));
+	f = ft_rl_getinput(&g_input.keyseq);
+	return (f) ? f(&g_input) : 1;
 }
 
 static inline char	*_strdup(const char *s)

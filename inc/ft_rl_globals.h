@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 18:48:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 13:58:49 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,6 @@
 # define FT_RL_GLOBALS_H
 # include "__lft.h"
 # include "ft_rl_data.h"
-
-extern __t_hmap	*g_keys;
-extern __t_hmap	*g_funcs;
-extern __t_hmap	*g_map_emacs;
-extern __t_hmap	*g_map_vi_ins;
-extern __t_hmap	*g_map_vi_cmd;
-extern __t_hmap	*g_map_hlcolor;
 
 extern int16_t	g_rows;
 extern int16_t	g_cols;
@@ -31,6 +24,9 @@ extern uint64_t	g_status;
 extern rl_hlc_t	g_hlcolor;
 
 extern rl_arg_t	g_argument;
+
+extern __t_hmap	*g_funcs;
+extern __t_hmap	*g_binds;
 
 extern rl_mark_t	g_mark_s;
 extern rl_mark_t	g_mark_e;

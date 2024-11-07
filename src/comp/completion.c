@@ -6,18 +6,18 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:07:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 09:11:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 static inline __t_list	*_increment(__t_list *completions, const char *pattern);
+static inline rl_fn_t	_replace_mult(rl_input_t *input, const __t_list *completions);
 static inline char		*_uncase(char *fname);
 static inline void		_match(const char *pattern, DIR *dir, const __t_list **completions);
 static inline void		_buildpath(const char *path, __t_list *completions);
 static inline void		_replace(rl_input_t *input, const char *completion);
-static inline void		_replace_mult(rl_input_t *input, const __t_list *completions);
 
 __t_list	*ft_rl_complete_path(const char *pattern, __UNUSED const rl_input_t *context)
 {
@@ -42,11 +42,13 @@ __t_list	*ft_rl_complete_path(const char *pattern, __UNUSED const rl_input_t *co
 	return (_increment(out, pattern));
 }
 
-void	ft_rl_complete(rl_input_t *input)
+rl_fn_t	ft_rl_complete(rl_input_t *input)
 {
+	rl_fn_t			f;
 	const char		*pattern;
 	const __t_list	*completions;
 
+	f = NULL;
 	if (isspace(input->line[input->i])
 		&& isspace(input->line[MAX(input->i - 1, 0)]))
 		ft_rl_setmark(_MARK_START | _MARK_END);
@@ -67,8 +69,9 @@ void	ft_rl_complete(rl_input_t *input)
 	else if (!completions->next)
 		_replace(input, completions->blk);
 	else
-		_replace_mult(input, completions);
+		f = _replace_mult(input, completions);
 	ft_rl_unsetmark(_MARK_START | _MARK_END);
+	return f;
 }
 
 static inline __t_list	*_increment(__t_list *completions, const char *pattern)
@@ -141,6 +144,30 @@ static inline __t_list	*_increment(__t_list *completions, const char *pattern)
 	__lstpopall(completions->next);
 	completions->next = NULL;
 	return (completions);
+}
+
+static inline rl_fn_t	_replace_mult(rl_input_t *input, const __t_list *completions)
+{
+	const void	*prv;
+	rl_fn_t		f;
+
+	prv = NULL;
+	if (!ft_rl_comp_display(input, __lstfirst(completions), NULL, prv))
+		return NULL;
+	for (f = ft_rl_getinput(&input->keyseq); f == ft_rl_cmp; f = ft_rl_getinput(&input->keyseq))
+	{
+		_replace(input, completions->blk);
+		if (ft_rl_get(_CMP_HLIGHT_HASH))
+			ft_rl_comp_display(input, __lstfirst(completions), completions->blk, prv);
+		prv = completions->blk;
+		if (completions->next)
+			completions = completions->next;
+		else
+			completions = __lstfirst(completions);
+	}
+	ft_rl_redisplay(input, CLEAR);
+	ft_rl_clearblocks();
+	return f;
 }
 
 static inline char	*_uncase(char *fname)
@@ -226,28 +253,4 @@ static inline void	_replace(rl_input_t *input, const char *completion)
 	input->len = strlen(input->line);
 	input->i = g_mark_e.pos;
 	ft_rl_redisplay(input, INPUT);
-}
-
-static inline void	_replace_mult(rl_input_t *input, const __t_list *completions)
-{
-	const void	*prv;
-
-	prv = NULL;
-	if (!ft_rl_comp_display(input, __lstfirst(completions), NULL, prv))
-		return ;
-	input->key = ft_rl_getkey();
-	while (ft_rl_getmap(input->key) == ft_rl_cmp)
-	{
-		_replace(input, completions->blk);
-		if (ft_rl_get(_CMP_HLIGHT_HASH))
-			ft_rl_comp_display(input, __lstfirst(completions), completions->blk, prv);
-		prv = completions->blk;
-		if (completions->next)
-			completions = completions->next;
-		else
-			completions = __lstfirst(completions);
-		input->key = ft_rl_getkey();
-	}
-	ft_rl_redisplay(input, CLEAR);
-	ft_rl_clearblocks();
 }

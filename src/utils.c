@@ -6,13 +6,19 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:13:43 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:19:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline uint8_t	_interrupt(void);
+#define CUR_SHOW	((!(g_status & _HIDE_CURSOR)) ? ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc) : 0)
+#define CUR_HIDE	((!(g_status & _HIDE_CURSOR)) ? ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc) : 0)
+
+static inline const struct timespec	*_gettimeout(void);
+static inline uint8_t				_interrupt(void);
+
+static const rl_keytree_t	emptynode;
 
 rl_cmp_fn_t	ft_rl_get_completion_fn(void)
 {
@@ -32,48 +38,53 @@ rl_block_t	*ft_rl_newblock(const char *str, const int16_t pos[2])
 	return (out);
 }
 
-uint64_t	ft_rl_getkey(void)
+uint16_t	ft_rl_geteditmode(void)
 {
-	uint64_t	key;
-	uint64_t	keymask;
-	uint8_t		shift;
+	return (g_status & _MD_MASK);
+}
 
-	if (g_keybuf.size == 0)
+rl_fn_t	ft_rl_getinput(const char **seqstore)
+{
+	char			*seq;
+	char			c[2] = "\0\0";
+	int32_t			slctrv;
+	ssize_t			readrv;
+	rl_keytree_t	*tree;
+	fd_set			exc;
+	fd_set			in;
+
+	CUR_SHOW;
+	for (seq = NULL, tree = ft_rl_getcurtree(), readrv = read(0, c, 1); tree; readrv = read(0, c, 1))
 	{
-		if (!(g_status & _HIDE_CURSOR))
-			ft_ti_tputs(g_escapes.cnorm, 1, ft_rl_putc);
-		g_keybuf.size = read(0, &g_keybuf.key, sizeof(g_keybuf.key));
-		if (g_keybuf.size == -1)
+		if (readrv == -1)
 		{
 			if (_interrupt())
-				return (ft_rl_getkey());
+				continue ;
 			exit(ft_rl_perror());
 		}
-		if (!(g_status & _HIDE_CURSOR))
-			ft_ti_tputs(g_escapes.civis, 1, ft_rl_putc);
+		tree = tree->next[(uint8_t)*c];
+		__popblk(seq);
+		seq = __push(__strjoin(seq, c));
+		if (!tree || memcmp(tree->next, emptynode.next, 256 * sizeof(void *)) == 0)
+			break ;
+		if (tree->fn)
+		{
+			slct:
+			FD_ZERO(&in);
+			FD_ZERO(&exc);
+			FD_SET(0, &in);
+			FD_SET(0, &exc);
+			slctrv = pselect(1, &in, NULL, &exc, _gettimeout(), NULL);
+			if (slctrv == -1 && _interrupt())
+				goto slct;
+			if (slctrv == 0)
+				break ;
+		}
 	}
-	keymask = _KEYSHIFT_MASK;
-	shift = g_keybuf.size;
-	while (--shift > 0)
-		keymask |= keymask << 8;
-	while (!ft_rl_iskey(g_keybuf.key & keymask) && shift++ < g_keybuf.size)
-		keymask >>= 8;
-	if (shift == g_keybuf.size)
-	{
-		g_keybuf.key = 0;
-		g_keybuf.size = 0;
-		return (0);
-	}
-	key = g_keybuf.key & keymask;
-	g_keybuf.key >>= ((g_keybuf.size - shift) * 8);
-	g_keybuf.size -= g_keybuf.size - shift;
-	if (g_input.sprompt)
-	{
-		__popblk(g_input.sprompt);
-		g_input.sprompt = NULL;
-		ft_rl_redisplay(&g_input, PROMPT);
-	}
-	return (key);
+	CUR_HIDE;
+	if (tree && seqstore)
+		*seqstore = seq;
+	return (tree) ? tree->fn : NULL;
 }
 
 ssize_t	ft_rl_putc(const int8_t c)
@@ -97,20 +108,19 @@ uint8_t	ft_rl_isdir(const char *path)
 	return (S_ISDIR(file.st_mode));
 }
 
-uint8_t	ft_rl_geteditmode(void)
-{
-	return (g_status & _MD_MASK);
-}
-
 void	ft_rl_set_completion_fn(rl_cmp_fn_t f)
 {
 	ft_rl_init();
 	g_cmp_fn = f;
 }
 
-void	ft_rl_seteditmode(const uint8_t mode)
+void	ft_rl_seteditmode(const uint16_t mode)
 {
-	g_status ^= ft_rl_geteditmode() | mode;
+	uint16_t	emode;
+	
+	emode = ft_rl_geteditmode();
+	if (mode != emode)
+		g_status ^= emode | mode;
 }
 
 void	ft_rl_clearblocks(void)
@@ -134,11 +144,22 @@ void	ft_rl_bell(void)
 	}
 }
 
+static inline const struct timespec	*_gettimeout(void)
+{
+	static struct timespec	ts;
+
+	if (g_settings.keyseq_timeout <= 0)
+		return NULL;
+	ts = (struct timespec){
+		.tv_sec = g_settings.keyseq_timeout / 1000,
+		.tv_nsec = g_settings.keyseq_timeout * 1000000};
+	return &ts;
+}
+
 static inline uint8_t	_interrupt(void)
 {
 	if (errno != EINTR)
 		return (0);
-	g_keybuf.size = 0;
 	errno = 0;
 	return (1);
 }

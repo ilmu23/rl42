@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 15:34:49 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:31:08 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,10 @@
 # include <sys/stat.h>
 # include <sys/ioctl.h>
 # include <sys/param.h>
+# include <sys/select.h>
 
 // error.c
 int32_t			ft_rl_perror(void);
-
-// exec.c
-uint8_t			ft_rl_execmap(rl_input_t *input);
 
 // color.c
 const char		*ft_rl_hlcolor(void);
@@ -44,12 +42,12 @@ void			ft_rl_kring_rotate(void);
 
 // utils.c
 rl_block_t		*ft_rl_newblock(const char *str, const int16_t pos[2]);
-uint64_t		ft_rl_getkey(void);
+uint16_t		ft_rl_geteditmode(void);
+rl_fn_t			ft_rl_getinput(const char **seqstore);
 ssize_t			ft_rl_putc(const int8_t c);
 int32_t			ft_rl_getarg(void);
 uint8_t			ft_rl_isdir(const char *path);
-uint8_t			ft_rl_geteditmode(void);
-void			ft_rl_seteditmode(const uint8_t node);
+void			ft_rl_seteditmode(const uint16_t node);
 void			ft_rl_clearblocks(void);
 void			ft_rl_bell(void);
 
@@ -57,8 +55,8 @@ void			ft_rl_bell(void);
 /**  comp  **/
 
 /**   completion.c   **/
-__t_list			*ft_rl_complete_path(const char *pattern, const rl_input_t *context);
-void			ft_rl_complete(rl_input_t *input);
+__t_list		*ft_rl_complete_path(const char *pattern, const rl_input_t *context);
+rl_fn_t			ft_rl_complete(rl_input_t *input);
 
 /**   utils.c   **/
 uint64_t		ft_rl_comp_getlongest(const __t_list *completions);
@@ -115,9 +113,6 @@ void			ft_rl_hist_rmnode(void);
 /**   init.c   **/
 void			ft_rl_init_input(const char *p, const uint64_t plen);
 
-/**   initkeys.c   **/
-void			ft_rl_initkeys(void);
-
 /**   initfuncs.c   **/
 void			ft_rl_initfuncs(void);
 
@@ -153,8 +148,10 @@ void			ft_rl_word_end(void);
 /**  keys  **/
 
 /**   utils.c   **/
-uint8_t			ft_rl_iskey(const uint64_t key);
-char			*ft_rl_keystr(const uint64_t key);
+rl_keytree_t	*ft_rl_getcurtree(void);
+const char		*ft_rl_parse_escape(const char *esc);
+const char		*ft_rl_parse_sequence(const char *seq);
+void			ft_rl_bind_error(const uint8_t err, const char *context);
 
 /**  keys  **/
 

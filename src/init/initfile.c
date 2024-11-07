@@ -6,13 +6,14 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:03:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/25 16:33:47 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 08:53:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
 #define __E_INIT "rl42: init:"
+#define __E_CBIND "rl42: init: const bind:"
 #define __E_BIND "rl42: init: bind:"
 #define __E_SET "rl42: init: set:"
 
@@ -20,6 +21,7 @@ static inline uint64_t	_getval(const char *var, const char *val);
 static inline char		*_expand(const char *path);
 static inline void		_readfile(const char *path);
 static inline void		_parse(char *line);
+static inline void		_cbind(const char **args);
 static inline void		_bind(const char **args);
 static inline void		_set(const char **args);
 static inline void		_set_emode(const char *emode);
@@ -34,7 +36,7 @@ void	ft_rl_read_initfile(void)
 	{
 		path = _expand(_USER_INITFILE);
 		if (access(path, F_OK) != 0)
-			path = _expand(_USER_INITFILE);
+			path = _SYSTEM_INITFILE;
 		if (access(path, F_OK) != 0)
 			path = NULL;
 	}
@@ -135,7 +137,9 @@ static inline void	_parse(char *line)
 	args = __pusharr(__split(line, ' '));
 	if (!args)
 		exit(ft_rl_perror());
-	if (__strequals(args[0], "bind"))
+	if (__strequals(args[0], "const") && __strequals(args[1], "bind"))
+		_cbind(&args[1]);
+	else if (__strequals(args[0], "bind"))
 		_bind(args);
 	else if (__strequals(args[0], "set"))
 		_set(args);
@@ -149,12 +153,44 @@ static inline void	_parse(char *line)
 	__popblk(args);
 }
 
+static inline void	_cbind(const char **args)
+{
+	if (!args[1]) {
+#ifndef RL42NOCOMPLAIN
+		__dprintf(2, "%s missing keyseq\n", __E_CBIND);
+#endif
+		return ;
+	}
+	if (!args[2]) {
+#ifndef RL42NOCOMPLAIN
+		__dprintf(2, "%s missing function\n", __E_CBIND);
+#endif
+		return ;
+	}
+	if (args[3]) {
+		if (__strequals(args[3], "vi-ins"))
+			ft_rl_const_bind_vi_ins(args[1], args[2]);
+		else if (__strequals(args[3], "vi-cmd"))
+			ft_rl_const_bind_vi_cmd(args[1], args[2]);
+		else if (__strequals(args[3], "emacs"))
+			ft_rl_const_bind_emacs(args[1], args[2]);
+		else if (__strequals(args[3], "hlcolor"))
+			ft_rl_const_bind_hlcolor(args[1], args[2]);
+#ifndef RL42NOCOMPLAIN
+		else
+			__dprintf(2, "%s unrecognized mode: '%s'\n", __E_CBIND, args[3]);
+#endif
+		return ;
+	}
+	ft_rl_const_bind(args[1], args[2]);
+}
+
 static inline void	_bind(const char **args)
 {
 	if (!args[1])
 	{
 #ifndef RL42NOCOMPLAIN
-		__dprintf(2, "%s missing keycode\n", __E_BIND);
+		__dprintf(2, "%s missing keyseq\n", __E_BIND);
 #endif
 		return ;
 	}
@@ -168,18 +204,20 @@ static inline void	_bind(const char **args)
 	if (args[3])
 	{
 		if (__strequals(args[3], "vi-ins"))
-			ft_rl_map_vi_ins(args[1], args[2], REMAP);
+			ft_rl_bind_vi_ins(args[1], args[2], REMAP);
 		else if (__strequals(args[3], "vi-cmd"))
-			ft_rl_map_vi_cmd(args[1], args[2], REMAP);
+			ft_rl_bind_vi_cmd(args[1], args[2], REMAP);
 		else if (__strequals(args[3], "emacs"))
-			ft_rl_map_emacs(args[1], args[2], REMAP);
+			ft_rl_bind_emacs(args[1], args[2], REMAP);
+		else if (__strequals(args[3], "hlcolor"))
+			ft_rl_bind_hlcolor(args[1], args[2], REMAP);
 #ifndef RL42NOCOMPLAIN
 		else
 			__dprintf(2, "%s unrecognized mode: '%s'\n", __E_BIND, args[3]);
 #endif
 		return ;
 	}
-	ft_rl_map(args[1], args[2], REMAP);
+	ft_rl_bind(args[1], args[2], REMAP);
 }
 
 static inline void	_set(const char **args)

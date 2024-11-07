@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 10:27:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 11:48:17 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/10/30 19:55:03 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ uint64_t	ft_rl_get(const uint64_t var)
 			return (g_settings.cmp_qitems);
 		case _HIST_SIZE_HASH:
 			return (g_settings.hist_size);
+		case _KEY_TMEOUT_HASH:
+			return (g_settings.keyseq_timeout);
 		case _CMP_CASE_HASH:
 			setting = _CMP_CASE;
 			break ;
@@ -71,6 +73,9 @@ void	ft_rl_set(const char *var, const uint64_t val)
 			return ;
 		case _HIST_SIZE_HASH:
 			g_settings.hist_size = val;
+			return ;
+		case _KEY_TMEOUT_HASH:
+			g_settings.keyseq_timeout = val;
 			return ;
 		case _CMP_CASE_HASH:
 			setting = _CMP_CASE;

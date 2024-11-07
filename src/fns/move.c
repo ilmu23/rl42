@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:11:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/09/18 15:28:21 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:50:42 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,12 +181,17 @@ uint8_t	ft_rl_clr(rl_input_t *input)
 uint8_t	ft_rl_ffc(rl_input_t *input)
 {
 	uint64_t	i;
+	uint16_t	emode;
 	uint8_t		c;
 
 	if (g_argument.set && ft_rl_getarg() < 0)
 		return (ft_rl_bfc(input));
 	i = input->i + 1;
-	c = ft_rl_getkey();
+	emode = ft_rl_geteditmode();
+	ft_rl_seteditmode(_MD_SSI);
+	ft_rl_getinput(&input->keyseq);
+	ft_rl_seteditmode(emode);
+	c = (input->keyseq) ? *input->keyseq : '\0';
 	while (i < input->len && input->line[i] != c)
 		i++;
 	if (input->line[i] == c)
@@ -200,12 +205,17 @@ uint8_t	ft_rl_ffc(rl_input_t *input)
 uint8_t	ft_rl_bfc(rl_input_t *input)
 {
 	uint64_t	i;
+	uint16_t	emode;
 	uint8_t		c;
 
 	if (g_argument.set && ft_rl_getarg() < 0)
 		return (ft_rl_ffc(input));
 	i = input->i - 1;
-	c = ft_rl_getkey();
+	emode = ft_rl_geteditmode();
+	ft_rl_seteditmode(_MD_SSI);
+	ft_rl_getinput(&input->keyseq);
+	ft_rl_seteditmode(emode);
+	c = (input->keyseq) ? *input->keyseq : '\0';
 	while (i > 0 && input->line[i] != c)
 		i--;
 	if (input->line[i] == c)

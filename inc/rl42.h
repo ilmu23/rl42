@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:04:19 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/02 05:46:45 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,21 +43,26 @@ void		ft_rl_read_initfile(void);
 
 /**  keys  **/
 
-/**   keymap.c   **/
-void		ft_rl_map(const char *key, const char *func, rl_mapmode_t mode);
-void		ft_rl_map_emacs(const char *key, const char *func, rl_mapmode_t mode);
-void		ft_rl_map_vi_ins(const char *key, const char *func, rl_mapmode_t mode);
-void		ft_rl_map_vi_cmd(const char *key, const char *func, rl_mapmode_t mode);
-void		ft_rl_map_hlcolor(const char *key, const char *func, rl_mapmode_t mode);
-void		ft_rl_addkey(const char *key, const uint64_t value);
-void		ft_rl_addfunc(const char *func, const rl_fn_t f);
+/**   bind.c   **/
+uint8_t		ft_rl_bind(const char *seq, const char *fn, const rl_mapmode_t mode);
+uint8_t		ft_rl_bind_emacs(const char *seq, const char *fn, const rl_mapmode_t mode);
+uint8_t		ft_rl_bind_vi_ins(const char *seq, const char *fn, const rl_mapmode_t mode);
+uint8_t		ft_rl_bind_vi_cmd(const char *seq, const char *fn, const rl_mapmode_t mode);
+uint8_t		ft_rl_bind_hlcolor(const char *seq, const char *fn, const rl_mapmode_t mode);
+
+uint8_t		ft_rl_const_bind(const char *seq, const char *fn);
+uint8_t		ft_rl_const_bind_emacs(const char *seq, const char *fn);
+uint8_t		ft_rl_const_bind_vi_ins(const char *seq, const char *fn);
+uint8_t		ft_rl_const_bind_vi_cmd(const char *seq, const char *fn);
+uint8_t		ft_rl_const_bind_hlcolor(const char *seq, const char *fn);
+
+/**   fn.c   **/
+uint8_t		ft_rl_addfunc(const char *fn, const rl_fn_t f);
 
 /**   utils.c   **/
-uint8_t		ft_rl_ismapped(const uint64_t key);
-rl_fn_t		ft_rl_getmap(const uint64_t key);
-void		ft_rl_unmap(const char *key);
-void		ft_rl_unmap_fn(const char *func);
-void		ft_rl_unmap_all(void);
+uint8_t		ft_rl_isbound(const char *seq);
+uint8_t		ft_rl_unmap(const char *seq);
+rl_fn_t		ft_rl_getfn(const char *seq);
 
 /**  keys  **/
 
