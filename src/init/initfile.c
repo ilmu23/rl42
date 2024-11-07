@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:03:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 08:53:53 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/07 18:28:06 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,10 @@ static inline uint64_t	_getval(const char *var, const char *val)
 			if (__isint(val))
 				return (atol(val));
 			return (500);
+		case _KEY_TMEOUT_HASH:
+			if (__isint(val))
+				return (atol(val));
+			return (0);
 		case _CMP_CASE_HASH:
 		case _CMP_MCASE_HASH:
 		case _CMP_ENABLE_HASH:
