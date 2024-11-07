@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/07 16:30:17 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/07 18:03:48 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define FT_RL_DEFINES_H
 
 // Version
-# define _FT_RL_VERSION "2.1.4"
+# define _FT_RL_VERSION "2.2.0"
 
 // Unused identifier
 # define __UNUSED __attribute__((unused))
