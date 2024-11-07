@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 09:34:08 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/07 17:54:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,7 @@ uint8_t	ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction)
 	input->i = MAX(input->i - (ft_rl_geteditmode() == _MD_VI_CMD), 0);
 	ft_rl_cursor_reset(input);
 	__popblk(search.cursor);
-	if (direction == _I_SEARCH_BCK)
-	{
-		if (fn != ft_rl_rsh_i)
-			return (fn(input));
-	}
-	else if (fn != ft_rl_fsh_i)
+	if (isvalidfn(((direction == _SEARCH_BCK) ? ft_rl_fsh_i : ft_rl_rsh_i)))
 		return (fn(input));
 	return (1);
 }
@@ -116,7 +111,7 @@ static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8
 		f = ft_rl_getinput(&search->keyseq);
 	}
 	match = _match(search->line, direction);
-	if (match)
+	if (match && f == ft_rl_acl)
 	{
 		_replace(input, match);
 		if (g_hist_cur)
