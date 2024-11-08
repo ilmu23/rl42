@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/07 18:03:48 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 19:30:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,9 @@
 #  define _FT_RL_HFILE "~/.rl_history"
 # endif /* _FT_RL_HFILE */
 
-// default init files
+// Default init files
 # define _USER_INITFILE "~/.rl42rc"
 # define _SYSTEM_INITFILE "/etc/rl42rc"
-
-// Keystr buffer length
-# define _KEYSTR_LEN 16
-
-// Keyshift mask
-# define _KEYSHIFT_MASK 0x00000000000000FFULL
 
 // Argument limits
 # define _ARG_MAX 1000000
