@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 14:19:30 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 17:20:22 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ rl_fn_t	ft_rl_getinput(const char **seqstore)
 				continue ;
 			exit(ft_rl_perror());
 		}
+		if (tree->fn && !tree->next[(uint8_t)*c])
+			break ;
 		tree = tree->next[(uint8_t)*c];
 		__popblk(seq);
 		seq = __push(__strjoin(seq, c));
