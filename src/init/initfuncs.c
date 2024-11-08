@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/08 18:23:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 18:47:24 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("yank", ft_rl_ynk);
 	ft_rl_addfunc("yank-pop", ft_rl_ynp);
 	ft_rl_addfunc("complete", ft_rl_cmp);
+	ft_rl_addfunc("re-read-init-file", ft_rl_rri);
 	ft_rl_addfunc("discard-line", ft_rl_dcl);
 	ft_rl_addfunc("digit-argument", ft_rl_arg);
 	ft_rl_addfunc("negative-digit-argument", ft_rl_arg_n);

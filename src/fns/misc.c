@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 15:23:21 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 18:44:13 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,19 @@
 #define dargfn	(f == ft_rl_ins || (ft_rl_geteditmode() == _MD_VI_CMD && f == ft_rl_arg))
 
 #define inrange(x, y, z)	(x >= y && x <= z)
+
+uint8_t	ft_rl_rri(rl_input_t *input)
+{
+	uint64_t	i;
+
+	i = input->i;
+	ft_rl_cursor_reset(input);
+	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
+	ft_rl_read_initfile();
+	input->i = i;
+	ft_rl_cursor_reset(input);
+	return 1;
+}
 
 uint8_t	ft_rl_dcl(rl_input_t *input)
 {

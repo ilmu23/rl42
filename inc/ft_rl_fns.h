@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/08 18:22:40 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 18:35:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,8 @@ uint8_t	ft_rl_cmp(rl_input_t *input);
 
 /**   misc.c   **/
 
+/* re-read-init-file */
+uint8_t	ft_rl_rri(rl_input_t *input);
 /* discard-line */
 uint8_t	ft_rl_dcl(rl_input_t *input);
 /* digit-argument */

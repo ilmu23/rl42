@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/08 18:23:03 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 18:51:53 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,7 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_bind("<C-t>", "transpose-characters", QUIET);
 	ft_rl_bind("<M-t>", "transpose-words", QUIET);
 	ft_rl_bind("<TAB>", "complete", QUIET);
+	ft_rl_bind("<C-x><C-r>", "re-read-init-file", QUIET);
 	ft_rl_bind("<C-c>", "discard-line", QUIET);
 	ft_rl_bind("<M-0>", "digit-argument", QUIET);
 	ft_rl_bind("<M-1>", "digit-argument", QUIET);
@@ -186,6 +187,7 @@ static inline void	_vi_ins_default_binds(void)
 	ft_rl_bind("<C-d>", "end-of-file", QUIET);
 	ft_rl_bind("<C-g>", "abort", QUIET);
 	ft_rl_bind("<C-l>", "clear-screen", QUIET);
+	ft_rl_bind("<M-C-l>", "clear-display", QUIET);
 	ft_rl_bind("<C-r>", "inc-reverse-search-history", QUIET);
 	ft_rl_bind("<C-s>", "inc-forward-search-history", QUIET);
 	ft_rl_bind("<C-t>", "transpose-characters", QUIET);
@@ -207,10 +209,12 @@ static inline void	_vi_cmd_default_binds(void)
 	ft_rl_bind("<C-e>", "emacs-editing-mode", QUIET);
 	ft_rl_bind("<C-g>", "abort", QUIET);
 	ft_rl_bind("<C-l>", "clear-screen", QUIET);
+	ft_rl_bind("<M-C-l>", "clear-display", QUIET);
 	ft_rl_bind("<C-r>", "inc-reverse-search-history", QUIET);
 	ft_rl_bind("<C-s>", "inc-forward-search-history", QUIET);
 	ft_rl_bind("<C-t>", "transpose-characters", QUIET);
 	ft_rl_bind("<SPC>", "forward-char", QUIET);
+	ft_rl_bind("<M-r>", "re-read-init-file", QUIET);
 	ft_rl_bind("$", "end-of-line", QUIET);
 	ft_rl_bind(",", "exchange-point-and-mark", QUIET);
 	ft_rl_bind("/", "inc-forward-search-history", QUIET);
