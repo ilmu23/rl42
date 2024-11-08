@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 15:53:03 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 18:23:45 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc("forward-word", ft_rl_fwd_w);
 	ft_rl_addfunc("backward-word", ft_rl_bck_w);
 	ft_rl_addfunc("clear-screen", ft_rl_clr);
+	ft_rl_addfunc("clear-display", ft_rl_cld);
 	ft_rl_addfunc("forward-find-character", ft_rl_ffc);
 	ft_rl_addfunc("backward-find-character", ft_rl_bfc);
 	ft_rl_addfunc("accept-line", ft_rl_acl);

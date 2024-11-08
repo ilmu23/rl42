@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 15:35:56 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 18:23:03 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ static inline void	_emacs_default_binds(void)
 	ft_rl_bind("<M-f>", "forward-word", QUIET);
 	ft_rl_bind("<M-b>", "backward-word", QUIET);
 	ft_rl_bind("<C-l>", "clear-screen", QUIET);
+	ft_rl_bind("<M-C-l>", "clear-display", QUIET);
 	ft_rl_bind("<M-,>", "forward-find-character", QUIET);
 	ft_rl_bind("<M-;>", "backward-find-character", QUIET);
 	ft_rl_bind("<RET>", "accept-line", QUIET);
