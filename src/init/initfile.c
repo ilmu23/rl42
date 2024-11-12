@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:03:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/07 18:28:06 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 15:51:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,20 +208,20 @@ static inline void	_bind(const char **args)
 	if (args[3])
 	{
 		if (__strequals(args[3], "vi-ins"))
-			ft_rl_bind_vi_ins(args[1], args[2], REMAP);
+			ft_rl_bind_vi_ins(args[1], args[2], QREMAP);
 		else if (__strequals(args[3], "vi-cmd"))
-			ft_rl_bind_vi_cmd(args[1], args[2], REMAP);
+			ft_rl_bind_vi_cmd(args[1], args[2], QREMAP);
 		else if (__strequals(args[3], "emacs"))
-			ft_rl_bind_emacs(args[1], args[2], REMAP);
+			ft_rl_bind_emacs(args[1], args[2], QREMAP);
 		else if (__strequals(args[3], "hlcolor"))
-			ft_rl_bind_hlcolor(args[1], args[2], REMAP);
+			ft_rl_bind_hlcolor(args[1], args[2], QREMAP);
 #ifndef RL42NOCOMPLAIN
 		else
 			__dprintf(2, "%s unrecognized mode: '%s'\n", __E_BIND, args[3]);
 #endif
 		return ;
 	}
-	ft_rl_bind(args[1], args[2], REMAP);
+	ft_rl_bind(args[1], args[2], QREMAP);
 }
 
 static inline void	_set(const char **args)
