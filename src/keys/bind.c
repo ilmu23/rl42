@@ -6,19 +6,19 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 18:20:28 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 15:32:00 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:22:08 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-static inline uint8_t	_bind(rl_keytree_t *node, const rl_fn_t *f);
-static inline uint8_t	_rebind(const char *seq, rl_keytree_t *node, const rl_fn_t *f, const rl_mapmode_t mode);
+static inline uint8_t	_bind(const char *seq, rl_keytree_t *node, const rl_fninfo_t *f);
+static inline uint8_t	_rebind(const char *seq, rl_keytree_t *node, const rl_fninfo_t *f, const rl_mapmode_t mode);
 
 uint8_t	ft_rl_bind(const char *seq, const char *fn, const rl_mapmode_t mode)
 {
 	size_t			i;
-	rl_fn_t			*f;
+	rl_fninfo_t		*f;
 	rl_keytree_t	*tmp;
 	const char		*eseq;
 
@@ -40,7 +40,7 @@ uint8_t	ft_rl_bind(const char *seq, const char *fn, const rl_mapmode_t mode)
 	if (eseq[i] || tmp->c)
 		goto err;
 	__popblk(eseq);
-	return (!tmp->fn) ? _bind(tmp, f) : _rebind(seq, tmp, f, mode);
+	return (!tmp->fn) ? _bind(seq, tmp, f) : _rebind(seq, tmp, f, mode);
 	err:
 #ifndef RL42NOCOMPLAIN
 	if (!f)
@@ -113,7 +113,7 @@ uint8_t	ft_rl_bind_hlcolor(const char *seq, const char *fn, const rl_mapmode_t m
 uint8_t	ft_rl_const_bind(const char *seq, const char *fn)
 {
 	size_t			i;
-	rl_fn_t			*f;
+	rl_fninfo_t		*f;
 	rl_keytree_t	*tmp;
 	const char		*eseq;
 
@@ -136,7 +136,7 @@ uint8_t	ft_rl_const_bind(const char *seq, const char *fn)
 		goto err;
 	__popblk(eseq);
 	tmp->c = 1;
-	return _bind(tmp, f);
+	return _bind(seq, tmp, f);
 	err:
 #ifndef RL42NOCOMPLAIN
 	if (!f)
@@ -206,16 +206,37 @@ uint8_t	ft_rl_const_bind_hlcolor(const char *seq, const char *fn)
 	return rv;
 }
 
-static inline uint8_t	_bind(rl_keytree_t *node, const rl_fn_t *f)
+static inline uint8_t	_bind(const char *seq, rl_keytree_t *node, const rl_fninfo_t *f)
 {
-	node->fn = *f;
+	uint16_t	emode;
+	size_t		i;
+
+	node->fn = f->f;
+	emode = ft_rl_geteditmode();
+	switch (emode) {
+		case _MD_EMACS:
+			i = 0;
+			break ;
+		case _MD_VI_INS:
+			i = 1;
+			break ;
+		case _MD_VI_CMD:
+			i = 2;
+			break ;
+		default:
+			return 1;
+	}
+	__lstadd_back((const __t_list **)&f->binds[i], __lstnew(__strdup(seq)));
 	return 1;
 }
 
-static inline uint8_t	_rebind(const char *seq, rl_keytree_t *node, const rl_fn_t *f, const rl_mapmode_t mode)
+static inline uint8_t	_rebind(const char *seq, rl_keytree_t *node, const rl_fninfo_t *f, const rl_mapmode_t mode)
 {
-	switch (mode)
-	{
+	__t_list	*tmp;
+	uint16_t	emode;
+	size_t		i;
+
+	switch (mode) {
 		case WARN:
 			__dprintf(2, "ft_rl_bind: keysequence %s already mapped\n", seq);
 			__attribute__((fallthrough));
@@ -227,6 +248,24 @@ static inline uint8_t	_rebind(const char *seq, rl_keytree_t *node, const rl_fn_t
 		case QREMAP:
 			break ;
 	}
-	node->fn = *f;
+	node->fn = f->f;
+	emode = ft_rl_geteditmode();
+	switch (emode) {
+		case _MD_EMACS:
+			i = 0;
+			break ;
+		case _MD_VI_INS:
+			i = 1;
+			break ;
+		case _MD_VI_CMD:
+			i = 2;
+			break ;
+		default:
+			return 1;
+	}
+	for (tmp = f->binds[i]; tmp && !__strequals(tmp->blk, seq); tmp = tmp->next)
+		;
+	__lstrmnode((const __t_list **)&f->binds[i], tmp);
+	__lstadd_back((const __t_list **)&f->binds[i], __lstnew(__strdup(seq)));
 	return 1;
 }

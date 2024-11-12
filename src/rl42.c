@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 14:00:39 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 21:42:00 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ rl_mark_t	g_mark_u;
 
 rl_input_t	g_input;
 
-rl_keybuf_t	g_keybuf;
-
 rl_cmp_fn_t	g_cmp_fn;
 
 rl_escapes_t	g_escapes;
@@ -47,6 +45,21 @@ rl_settings_t	g_settings;
 
 struct termios	g_oldsettings;
 struct termios	g_newsettings;
+
+const char	*g_fn_names[_FNCOUNT] = { "self-insert", "remove-char", "backward-remove-char",
+	"beginning-of-line", "end-of-line", "forward-char", "backward-char", "end-of-word", "beginning-of-word",
+	"forward-word", "backward-word", "clear-screen", "clear-display", "forward-find-character", "backward-find-character",
+	"accept-line", "end-of-file", "next-history", "previous-history", "end-of-history", "beginning-of-history",
+	"forward-search-history", "reverse-search-history", "inc-forward-search-history", "inc-reverse-search-history",
+	"yank-nth-arg", "yank-last-arg", "upcase-word", "downcase-word", "capitalize-word", "forward-kill-line",
+	"backward-kill-line", "kill-whole-line", "forward-kill-word", "backward-kill-word", "kill-region",
+	"delete-horizontal-space", "copy-region-as-kill", "copy-forward-word", "copy-backward-word", "yank",
+	"yank-pop", "transpose-characters", "transpose-words", "complete", "re-read-init-file", "discard-line",
+	"digit-argument", "negative-digit-argument", "abort", "set-mark", "unset-mark", "exchange-point-and-mark",
+	"emacs-editing-mode", "vi-editing-mode", "vi-command-mode", "vi-insert-mode-a", "vi-insert-mode-A",
+	"vi-insert-mode-i", "vi-insert-mode-I", "vi-subst", "vi-subst-line", "vi-delete", "vi-replace",
+	"set-highlight-color", "hlcolor-toggle-bold", "hlcolor-toggle-underline", "hlcolor-toggle-fg/bg",
+	"hlcolor-set-sgr", "hlcolor-set-color", "hlcolor-set-rgb", "hlcolor-accept", "dump-functions"};
 /** globals **/
 
 static inline uint64_t	_plen(const char *p);

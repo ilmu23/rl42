@@ -6,17 +6,22 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/08 18:44:13 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:19:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_globals.h"
 #include "ft_rl_internal.h"
 
+#define _FMT_NORMAL 0
+#define _FMT_INITFILE 1
+
 #define getfn	(f = ft_rl_getinput(&input->keyseq))
 #define dargfn	(f == ft_rl_ins || (ft_rl_geteditmode() == _MD_VI_CMD && f == ft_rl_arg))
 
 #define inrange(x, y, z)	(x >= y && x <= z)
+
+static inline void	_print(const char *s);
 
 uint8_t	ft_rl_rri(rl_input_t *input)
 {
@@ -144,6 +149,58 @@ uint8_t	ft_rl_arg_n(__UNUSED rl_input_t *input)
 	return (1);
 }
 
+uint8_t	ft_rl_dfn(rl_input_t *input)
+{
+	size_t		i;
+	size_t		j;
+	size_t		k;
+	uint8_t		fmt;
+	uint16_t	emode;
+	__t_list	*tmp;
+	rl_fninfo_t	*f;
+
+	emode = ft_rl_geteditmode();
+	switch (emode) {
+		case _MD_EMACS:
+			k = 0;
+			break ;
+		case _MD_VI_INS:
+			k = 1;
+			break ;
+		case _MD_VI_CMD:
+			k = 2;
+			break ;
+		default:
+			return 1;
+	}
+	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
+	fmt = (g_argument.set) ? _FMT_INITFILE : _FMT_NORMAL;
+	if (_FMT_INITFILE)
+		ft_rl_getarg();
+	for (i = 0; i < _FNCOUNT; i++) {
+		f = __mapget(g_funcs, g_fn_names[i]);
+		if (fmt == _FMT_NORMAL)
+			__printf("%s %s", f->name, (f->binds[k]) ? "is bound to " : "is not bound" TERM_CRNL);
+		for (j = 0, tmp = f->binds[k]; tmp; j++, tmp = tmp->next) {
+			if (fmt == _FMT_NORMAL) {
+				_print(tmp->blk);
+				if (j == 5) {
+					ft_ti_tputs("..." TERM_CRNL, 1, ft_rl_putc);
+					break ;
+				}
+				ft_ti_tputs((tmp->next) ? ", " : "." TERM_CRNL, 1, ft_rl_putc);
+			} else {
+				__printf("bind\t%s\t%s" TERM_CRNL, tmp->blk, f->name);
+			}
+		}
+	}
+	ft_rl_cursor_getpos(&input->cursor->p_row, &input->cursor->p_col);
+	ft_ti_tputs(input->prompt, 1, ft_rl_putc);
+	ft_rl_cursor_getpos(&input->cursor->i_row, &input->cursor->i_col);
+	ft_rl_redisplay(input, INPUT);
+	return 1;
+}
+
 uint8_t	ft_rl_md_em(__UNUSED rl_input_t *input)
 {
 	ft_rl_seteditmode(_MD_EMACS);
@@ -185,4 +242,113 @@ uint8_t	ft_rl_md_vc(rl_input_t *input)
 	input->i = MAX((int64_t)input->i - 1, 0);
 	ft_rl_redisplay(input, INPUT);
 	return (1);
+}
+
+static inline void	_print(const char *s)
+{
+	for (; *s; s++) {
+		if (!isspace(*s) && isprint(*s))
+			ft_rl_putc(*s);
+		else switch (*s) {
+			case '\e':
+				ft_ti_tputs("<ESC>", 1, ft_rl_putc);
+				break ;
+			case '\t':
+				ft_ti_tputs("<TAB>", 1, ft_rl_putc);
+				break ;
+			case '\n':
+				ft_ti_tputs("<ENT>", 1, ft_rl_putc);
+				break ;
+			case '\r':
+				ft_ti_tputs("<RET>", 1, ft_rl_putc);
+				break ;
+			case ' ':
+				ft_ti_tputs("<SPC>", 1, ft_rl_putc);
+				break ;
+			case 0:
+				ft_ti_tputs("<C-@>", 1, ft_rl_putc);
+				break ;
+			case 1:
+				ft_ti_tputs("<C-a>", 1, ft_rl_putc);
+				break ;
+			case 2:
+				ft_ti_tputs("<C-b>", 1, ft_rl_putc);
+				break ;
+			case 3:
+				ft_ti_tputs("<C-c>", 1, ft_rl_putc);
+				break ;
+			case 4:
+				ft_ti_tputs("<C-d>", 1, ft_rl_putc);
+				break ;
+			case 5:
+				ft_ti_tputs("<C-e>", 1, ft_rl_putc);
+				break ;
+			case 6:
+				ft_ti_tputs("<C-f>", 1, ft_rl_putc);
+				break ;
+			case 7:
+				ft_ti_tputs("<C-g>", 1, ft_rl_putc);
+				break ;
+			case 8:
+				ft_ti_tputs("<C-h>", 1, ft_rl_putc);
+				break ;
+			case 11:
+				ft_ti_tputs("<C-k>", 1, ft_rl_putc);
+				break ;
+			case 12:
+				ft_ti_tputs("<C-l>", 1, ft_rl_putc);
+				break ;
+			case 14:
+				ft_ti_tputs("<C-n>", 1, ft_rl_putc);
+				break ;
+			case 15:
+				ft_ti_tputs("<C-o>", 1, ft_rl_putc);
+				break ;
+			case 16:
+				ft_ti_tputs("<C-p>", 1, ft_rl_putc);
+				break ;
+			case 17:
+				ft_ti_tputs("<C-q>", 1, ft_rl_putc);
+				break ;
+			case 18:
+				ft_ti_tputs("<C-r>", 1, ft_rl_putc);
+				break ;
+			case 19:
+				ft_ti_tputs("<C-s>", 1, ft_rl_putc);
+				break ;
+			case 20:
+				ft_ti_tputs("<C-t>", 1, ft_rl_putc);
+				break ;
+			case 21:
+				ft_ti_tputs("<C-u>", 1, ft_rl_putc);
+				break ;
+			case 22:
+				ft_ti_tputs("<C-v>", 1, ft_rl_putc);
+				break ;
+			case 23:
+				ft_ti_tputs("<C-w>", 1, ft_rl_putc);
+				break ;
+			case 24:
+				ft_ti_tputs("<C-x>", 1, ft_rl_putc);
+				break ;
+			case 25:
+				ft_ti_tputs("<C-y>", 1, ft_rl_putc);
+				break ;
+			case 26:
+				ft_ti_tputs("<C-z>", 1, ft_rl_putc);
+				break ;
+			case 28:
+				ft_ti_tputs("<C-\\>", 1, ft_rl_putc);
+				break ;
+			case 29:
+				ft_ti_tputs("<C-]>", 1, ft_rl_putc);
+				break ;
+			case 30:
+				ft_ti_tputs("<C-^>", 1, ft_rl_putc);
+				break ;
+			case 31:
+				ft_ti_tputs("<C-_>", 1, ft_rl_putc);
+				break ;
+		}
+	}
 }

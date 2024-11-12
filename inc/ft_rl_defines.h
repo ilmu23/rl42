@@ -6,12 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/08 19:30:47 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 21:42:02 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_RL_DEFINES_H
 # define FT_RL_DEFINES_H
+# include "ft_rl_fnames.h"
 
 // Version
 # define _FT_RL_VERSION "2.2.0"
@@ -27,6 +28,9 @@
 // Default init files
 # define _USER_INITFILE "~/.rl42rc"
 # define _SYSTEM_INITFILE "/etc/rl42rc"
+
+// Function count
+# define _FNCOUNT 73
 
 // Argument limits
 # define _ARG_MAX 1000000
