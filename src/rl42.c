@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/08 21:42:00 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:32:52 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ const char	*g_fn_names[_FNCOUNT] = { "self-insert", "remove-char", "backward-rem
 	"emacs-editing-mode", "vi-editing-mode", "vi-command-mode", "vi-insert-mode-a", "vi-insert-mode-A",
 	"vi-insert-mode-i", "vi-insert-mode-I", "vi-subst", "vi-subst-line", "vi-delete", "vi-replace",
 	"set-highlight-color", "hlcolor-toggle-bold", "hlcolor-toggle-underline", "hlcolor-toggle-fg/bg",
-	"hlcolor-set-sgr", "hlcolor-set-color", "hlcolor-set-rgb", "hlcolor-accept", "dump-functions"};
+	"hlcolor-set-sgr", "hlcolor-set-color", "hlcolor-set-rgb", "hlcolor-accept", "dump-functions",
+	"dump-variables"};
 /** globals **/
 
 static inline uint64_t	_plen(const char *p);

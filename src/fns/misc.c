@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 14:19:55 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 16:14:41 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,6 +194,57 @@ uint8_t	ft_rl_dfn(rl_input_t *input)
 			}
 		}
 	}
+	ft_rl_cursor_getpos(&input->cursor->p_row, &input->cursor->p_col);
+	ft_ti_tputs(input->prompt, 1, ft_rl_putc);
+	ft_rl_cursor_getpos(&input->cursor->i_row, &input->cursor->i_col);
+	ft_rl_redisplay(input, INPUT);
+	return 1;
+}
+
+#define _pvar(var, val, type, fmt)	((fmt == _FMT_INITFILE) \
+		? __printf("set\t%s\t" type TERM_CRNL, var, val) \
+		: __printf("%s is set to '" type "'" TERM_CRNL, var, val))
+
+uint8_t	ft_rl_dvr(rl_input_t *input)
+{
+	const char	*tmp;
+	uint64_t	val;
+	__UNUSED uint8_t		fmt;
+
+	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
+	fmt = (g_argument.set) ? _FMT_INITFILE : _FMT_NORMAL;
+	if (fmt == _FMT_INITFILE)
+		ft_rl_getarg();
+	val = ft_rl_get(_BSTYLE_HASH);
+	tmp = (val == BELL_NONE) ? "" : (val == BELL_AUDIBLE) ? "audible" : "visible";
+	_pvar("bell-style", tmp, "%s", fmt);
+	_pvar("completion-display-width", ft_rl_get(_CMP_DWIDTH_HASH), "%hd", fmt);
+	_pvar("completion-ignore-case", ((ft_rl_get(_CMP_CASE_HASH)) ? "on" : "off"), "%s", fmt);
+	_pvar("completion-map-case", ((ft_rl_get(_CMP_MCASE_HASH)) ? "on" : "off"), "%s", fmt);
+	_pvar("completion-query-items", ft_rl_get(_CMP_QITEMS_HASH), "%lld", fmt);
+	val = ft_rl_geteditmode();
+	switch (val) {
+		case _MD_EMACS:
+			tmp = "emacs";
+			break ;
+		case _MD_VI_INS:
+			tmp = "emacs";
+			break ;
+		case _MD_VI_CMD:
+			tmp = "emacs";
+			break ;
+		default:
+			tmp = NULL;
+	}
+	if (tmp)
+		_pvar("editing-mode", tmp, "%s", fmt);
+	_pvar("enable-completion", ((ft_rl_get(_CMP_ENABLE_HASH)) ? "on" : "off"), "%s", fmt);
+	_pvar("history-size", ft_rl_get(_HIST_SIZE_HASH), "%lld", fmt);
+	_pvar("keyseq-timeout", ft_rl_get(_KEY_TMEOUT_HASH), "%lld", fmt);
+	_pvar("mark-directories", ((ft_rl_get(_CMP_MDIRS_HASH)) ? "on" : "off"), "%s", fmt);
+	_pvar("mark-symlinked-directories", ((ft_rl_get(_CMP_MLDIRS_HASH)) ? "on" : "off"), "%s", fmt);
+	_pvar("match-hidden-files", ((ft_rl_get(_CMP_HFILES_HASH)) ? "on" : "off"), "%s", fmt);
+	_pvar("highlight-current-completion", ((ft_rl_get(_CMP_HLIGHT_HASH)) ? "on" : "off"), "%s", fmt);
 	ft_rl_cursor_getpos(&input->cursor->p_row, &input->cursor->p_col);
 	ft_ti_tputs(input->prompt, 1, ft_rl_putc);
 	ft_rl_cursor_getpos(&input->cursor->i_row, &input->cursor->i_col);
