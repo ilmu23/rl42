@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 07:10:44 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 13:54:03 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,10 @@ typedef struct s_rl_histnode	rl_histnode_t;
 typedef struct s_rl_keytree		rl_keytree_t;
 typedef struct s_rl_escapes		rl_escapes_t;
 typedef struct s_rl_cursor		rl_cursor_t;
-typedef struct s_rl_keybuf		rl_keybuf_t;
+typedef struct s_rl_fninfo		rl_fninfo_t;
 typedef struct s_rl_input		rl_input_t;
 typedef struct s_rl_block		rl_block_t;
 typedef struct s_rl_mark		rl_mark_t;
-typedef struct s_rl_map			rl_map_t;
 typedef struct s_rl_rgb			rl_rgb_t;
 typedef struct s_rl_hlc			rl_hlc_t;
 typedef struct s_rl_arg			rl_arg_t;
@@ -145,10 +144,11 @@ struct s_rl_cursor
 	int16_t	col;
 };
 
-struct s_rl_keybuf
+struct s_rl_fninfo
 {
-	uint64_t	key;
-	int8_t		size;
+	rl_fn_t		f;
+	const char	*name;
+	__t_list	*binds[3];
 };
 
 struct s_rl_input
@@ -176,12 +176,6 @@ struct s_rl_mark
 {
 	uint8_t		set;
 	uint64_t	pos;
-};
-
-struct s_rl_map
-{
-	const uint64_t	key;
-	const rl_fn_t	f;
 };
 
 struct s_rl_rgb

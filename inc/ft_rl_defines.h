@@ -6,12 +6,13 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/07 18:03:48 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:32:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_RL_DEFINES_H
 # define FT_RL_DEFINES_H
+# include "ft_rl_fnames.h"
 
 // Version
 # define _FT_RL_VERSION "2.2.0"
@@ -24,15 +25,12 @@
 #  define _FT_RL_HFILE "~/.rl_history"
 # endif /* _FT_RL_HFILE */
 
-// default init files
+// Default init files
 # define _USER_INITFILE "~/.rl42rc"
 # define _SYSTEM_INITFILE "/etc/rl42rc"
 
-// Keystr buffer length
-# define _KEYSTR_LEN 16
-
-// Keyshift mask
-# define _KEYSHIFT_MASK 0x00000000000000FFULL
+// Function count
+# define _FNCOUNT 74
 
 // Argument limits
 # define _ARG_MAX 1000000

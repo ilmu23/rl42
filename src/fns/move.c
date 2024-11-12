@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:11:04 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 14:50:42 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 18:24:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,10 +171,18 @@ uint8_t	ft_rl_clr(rl_input_t *input)
 {
 	input->cursor->p_row = 1;
 	input->cursor->p_col = 1;
-	__printf("%s%s%s", TERM_CUR_RESET, TERM_CLEAR_END, input->prompt);
+	ft_ti_tputs(TERM_CUR_RESET TERM_CLEAR_SCREEN, 1, ft_rl_putc);
+	ft_ti_tputs(input->prompt, 1, ft_rl_putc);
 	ft_rl_cursor_getpos(&input->cursor->i_row, &input->cursor->i_col);
 	ft_ti_tputs(input->line, 1, ft_rl_putc);
 	ft_rl_cursor_reset(input);
+	return (1);
+}
+
+uint8_t	ft_rl_cld(rl_input_t *input)
+{
+	ft_rl_clr(input);
+	ft_ti_tputs(TERM_CLEAR_BUFFER, 1, ft_rl_putc);
 	return (1);
 }
 

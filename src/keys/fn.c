@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:58:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/30 18:20:15 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:08:27 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 uint8_t	ft_rl_addfunc(const char *fn, const rl_fn_t f)
 {
-	rl_fn_t	*fnp;
+	rl_fninfo_t	*fnp;
 
 	ft_rl_init();
 	fnp = __push(__alloc(sizeof(*fnp)));
 	if (!fnp)
 		goto err;
-	*fnp = f;
+	*fnp = (rl_fninfo_t){.f = f, .name = fn, .binds[0] = NULL, .binds[1] = NULL, .binds[2] = NULL};
 	if (!__mapadd(g_funcs, fn, fnp))
 		goto err;
 	__popblk(fnp);

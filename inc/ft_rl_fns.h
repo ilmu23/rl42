@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/06 17:41:04 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:31:55 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ uint8_t	ft_rl_fwd_w(rl_input_t *input);
 uint8_t	ft_rl_bck_w(rl_input_t *input);
 /* clear-screen */
 uint8_t	ft_rl_clr(rl_input_t *input);
+/* clear-display */
+uint8_t	ft_rl_cld(rl_input_t *input);
 /* forward-find-character */
 uint8_t	ft_rl_ffc(rl_input_t *input);
 /* backward-find-character */
@@ -120,6 +122,8 @@ uint8_t	ft_rl_cmp(rl_input_t *input);
 
 /**   misc.c   **/
 
+/* re-read-init-file */
+uint8_t	ft_rl_rri(rl_input_t *input);
 /* discard-line */
 uint8_t	ft_rl_dcl(rl_input_t *input);
 /* digit-argument */
@@ -134,6 +138,10 @@ uint8_t	ft_rl_smk(rl_input_t *input);
 uint8_t	ft_rl_umk(rl_input_t *input);
 /* exchange-point-and-mark */
 uint8_t	ft_rl_xmk(rl_input_t *input);
+/* dump-functions */
+uint8_t	ft_rl_dfn(rl_input_t *input);
+/* dump-variables */
+uint8_t	ft_rl_dvr(rl_input_t *input);
 /* emacs-editing-mode */
 uint8_t	ft_rl_md_em(rl_input_t *input);
 /* vi-command-mode */

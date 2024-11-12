@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 01:58:58 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 05:46:45 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/08 19:59:10 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FT_READLINE_H
 # include "ft_rl_data.h"
 # include "ft_rl_keys.h"
+# include "ft_rl_fnames.h"
 # include "ft_rl_defines.h"
 
 // rl42.c
