@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/08 17:20:22 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 16:40:19 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ static inline const struct timespec	*_gettimeout(void)
 		return NULL;
 	ts = (struct timespec){
 		.tv_sec = g_settings.keyseq_timeout / 1000,
-		.tv_nsec = g_settings.keyseq_timeout * 1000000};
+		.tv_nsec = (g_settings.keyseq_timeout % 1000) * 1000000};
 	return &ts;
 }
 
