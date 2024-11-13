@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 18:48:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/08 19:11:43 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:00:19 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,15 @@ extern rl_arg_t	g_argument;
 
 extern __t_hmap	*g_funcs;
 extern __t_hmap	*g_binds;
+extern __t_hmap	*g_macrodata[3];
 
 extern rl_mark_t	g_mark_s;
 extern rl_mark_t	g_mark_e;
 extern rl_mark_t	g_mark_u;
 
 extern rl_input_t	g_input;
+
+extern rl_fninfo_t	g_macro;
 
 extern rl_cmp_fn_t	g_cmp_fn;
 
@@ -47,5 +50,7 @@ extern rl_settings_t	g_settings;
 
 extern struct termios	g_oldsettings;
 extern struct termios	g_newsettings;
+
+extern const rl_keytree_t	g_emptynode;
 
 #endif

@@ -6,13 +6,15 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 15:57:52 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 17:22:45 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "__lft.h"
 
+static inline size_t	_qsplitcount(const char *s, const uint8_t c);
 static inline size_t	_splitcount(const char *s, const uint8_t c);
+static inline char		*_makeqsplit(const char *s, const uint8_t c);
 static inline char		*_makesplit(const char *s, const uint8_t c);
 static inline char		*_basemin(const __t_base base);
 
@@ -52,6 +54,32 @@ size_t	__strlcpy(char *dst, const char *src, const size_t size)
 	}
 	dst[i] = '\0';
 	return ((src) ? strlen(src) : 0);
+}
+
+char	**__qsplit(const char *s, const uint8_t c)
+{
+	char	**out;
+	size_t	splits;
+	size_t	i;
+
+	if (!s)
+		return NULL;
+	splits = _qsplitcount(s, c);
+	__push(s);
+	out = __push(__calloc((splits + 1), sizeof(*out)));
+	__popblk(s);
+	if (!out)
+		return NULL;
+	for (i = 0; i < splits; i++) {
+		out[i] = _makeqsplit(s, c);
+		if (!out[i])
+			return NULL;
+	}
+	_makeqsplit(s, c);
+	while (i--)
+		__popblk(out[i]);
+	__popblk(out);
+	return out;
 }
 
 char	**__split(const char *s, const uint8_t c)
@@ -300,6 +328,34 @@ char	*__strlower(char *s)
 	return (s);
 }
 
+static inline size_t	_qsplitcount(const char *s, const uint8_t c)
+{
+	uint8_t	quote;
+	uint8_t	escape;
+	size_t	splits;
+	size_t	i;
+
+	if (!c)
+		return ((!*s) ? 0 : 1);
+	i = 0;
+	splits = 0;
+	while (s[i])
+	{
+		while (s[i] && s[i] == c)
+			i++;
+		for (quote = escape = 0; s[i] && (s[i] != c || quote); i++) {
+			if (s[i] == '"' && !escape)
+				quote ^= 1;
+			escape = (!escape && s[i] == '\\') ? 1 : 0;
+		}
+		while (s[i] && s[i] != c)
+			i++;
+		if (s[i - 1] != c)
+			splits++;
+	}
+	return (splits);
+}
+
 static inline size_t	_splitcount(const char *s, const uint8_t c)
 {
 	size_t	splits;
@@ -319,6 +375,32 @@ static inline size_t	_splitcount(const char *s, const uint8_t c)
 			splits++;
 	}
 	return (splits);
+}
+
+static inline char	*_makeqsplit(const char *s, const uint8_t c)
+{
+	char			*out;
+	char			*tmp;
+	uint8_t			escape;
+	uint8_t			quote;
+	static size_t	i = 0;
+	size_t			j;
+
+	while (s[i] && s[i] == c)
+		i++;
+	for (j = i, quote = escape = 0; s[i] && (s[i] != c || quote); i++) {
+		if (s[i] == '"' && !escape)
+			quote ^= 1;
+		escape = (!escape && s[i] == '\\') ? 1 : 0;
+	}
+	if (j == i)
+	{
+		i = 0;
+		return (NULL);
+	}
+	for (out = __push(__substr(s, j, i - j)), tmp = strchr(out, '\\'); tmp; tmp = strchr(tmp + 1, '\\'))
+		__strlcpy(tmp, tmp + 1, strlen(tmp));
+	return out;
 }
 
 static inline char	*_makesplit(const char *s, const uint8_t c)

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 16:14:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:17:44 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,47 @@
 #define inrange(x, y, z)	(x >= y && x <= z)
 
 static inline void	_print(const char *s);
+
+uint8_t	ft_rl_mcr(rl_input_t *input)
+{
+	size_t			i;
+	size_t			j;
+	const char		*seq;
+	rl_keytree_t	*tree;
+
+	switch (ft_rl_geteditmode()) {
+		case _MD_EMACS:
+			i = 0;
+			break ;
+		case _MD_VI_INS:
+			i = 1;
+			break ;
+		case _MD_VI_CMD:
+			i = 2;
+			break ;
+		default:
+			return 1;
+	}
+	seq = __mapget(g_macrodata[i], input->keyseq);
+	for (i = 0; seq[i];) {
+		for (j = i, tree = ft_rl_getcurtree(); seq[i] && tree;) {
+			if (tree->fn && !tree->next[(uint8_t)seq[i]])
+				break ;
+			tree = tree->next[(uint8_t)seq[i++]];
+			if (!tree || memcmp(tree->next, g_emptynode.next, 256 * sizeof(void *)) == 0)
+				break ;
+		}
+		if (tree) {
+			input->keyseq = __push(__substr(seq, j, i - j));
+			if (tree->fn == ft_rl_mcr && strlen(input->keyseq) && isprint(*input->keyseq))
+				ft_rl_ins(input);
+			else if (tree->fn != ft_rl_mcr)
+				tree->fn(input);
+			__popblk(input->keyseq);
+		}
+	}
+	return 1;
+}
 
 uint8_t	ft_rl_rri(rl_input_t *input)
 {

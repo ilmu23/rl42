@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 17:40:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 16:40:19 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:10:35 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 
 static inline const struct timespec	*_gettimeout(void);
 static inline uint8_t				_interrupt(void);
-
-static const rl_keytree_t	emptynode;
 
 rl_cmp_fn_t	ft_rl_get_completion_fn(void)
 {
@@ -67,7 +65,7 @@ rl_fn_t	ft_rl_getinput(const char **seqstore)
 		tree = tree->next[(uint8_t)*c];
 		__popblk(seq);
 		seq = __push(__strjoin(seq, c));
-		if (!tree || memcmp(tree->next, emptynode.next, 256 * sizeof(void *)) == 0)
+		if (!tree || memcmp(tree->next, g_emptynode.next, 256 * sizeof(void *)) == 0)
 			break ;
 		if (tree->fn)
 		{

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 14:32:52 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:10:37 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,15 @@ rl_arg_t	g_argument;
 
 __t_hmap	*g_funcs;
 __t_hmap	*g_binds;
+__t_hmap	*g_macrodata[3];
 
 rl_mark_t	g_mark_s;
 rl_mark_t	g_mark_e;
 rl_mark_t	g_mark_u;
 
 rl_input_t	g_input;
+
+rl_fninfo_t	g_macro;
 
 rl_cmp_fn_t	g_cmp_fn;
 
@@ -45,6 +48,8 @@ rl_settings_t	g_settings;
 
 struct termios	g_oldsettings;
 struct termios	g_newsettings;
+
+const rl_keytree_t	g_emptynode;
 
 const char	*g_fn_names[_FNCOUNT] = { "self-insert", "remove-char", "backward-remove-char",
 	"beginning-of-line", "end-of-line", "forward-char", "backward-char", "end-of-word", "beginning-of-word",

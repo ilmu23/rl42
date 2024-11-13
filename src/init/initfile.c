@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:03:15 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 15:51:30 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 18:21:25 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ static inline void	_parse(char *line)
 			line[i] = ' ';
 		i++;
 	}
-	args = __pusharr(__split(line, ' '));
+	args = __pusharr(__qsplit(line, ' '));
 	if (!args)
 		exit(ft_rl_perror());
 	if (__strequals(args[0], "const") && __strequals(args[1], "bind"))
