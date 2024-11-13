@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/13 18:10:37 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:58:03 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ const char	*g_fn_names[_FNCOUNT] = { "self-insert", "remove-char", "backward-rem
 	"vi-insert-mode-i", "vi-insert-mode-I", "vi-subst", "vi-subst-line", "vi-delete", "vi-replace",
 	"set-highlight-color", "hlcolor-toggle-bold", "hlcolor-toggle-underline", "hlcolor-toggle-fg/bg",
 	"hlcolor-set-sgr", "hlcolor-set-color", "hlcolor-set-rgb", "hlcolor-accept", "dump-functions",
-	"dump-variables"};
+	"dump-variables", "dump-macros"};
 /** globals **/
 
 static inline uint64_t	_plen(const char *p);

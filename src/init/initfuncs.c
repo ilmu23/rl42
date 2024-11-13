@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 15:46:01 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:57:58 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,4 +89,5 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc(hlcolor_accept, ft_rl_hl_acc);
 	ft_rl_addfunc(dump_functions, ft_rl_dfn);
 	ft_rl_addfunc(dump_variables, ft_rl_dvr);
+	ft_rl_addfunc(dump_macros, ft_rl_dmc);
 }

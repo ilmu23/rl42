@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 14:32:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 19:03:09 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include "ft_rl_fnames.h"
 
 // Version
-# define _FT_RL_VERSION "2.2.0"
+# define _FT_RL_VERSION "2.2.1"
 
 // Unused identifier
 # define __UNUSED __attribute__((unused))
@@ -30,7 +30,7 @@
 # define _SYSTEM_INITFILE "/etc/rl42rc"
 
 // Function count
-# define _FNCOUNT 74
+# define _FNCOUNT 75
 
 // Argument limits
 # define _ARG_MAX 1000000
