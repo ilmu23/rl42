@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 01:33:06 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 14:31:55 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:26:15 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,8 @@ uint8_t	ft_rl_cmp(rl_input_t *input);
 
 /**   misc.c   **/
 
+/* __macro */
+uint8_t	ft_rl_mcr(rl_input_t *input);
 /* re-read-init-file */
 uint8_t	ft_rl_rri(rl_input_t *input);
 /* discard-line */
@@ -142,6 +144,8 @@ uint8_t	ft_rl_xmk(rl_input_t *input);
 uint8_t	ft_rl_dfn(rl_input_t *input);
 /* dump-variables */
 uint8_t	ft_rl_dvr(rl_input_t *input);
+/* dump-macros */
+uint8_t	ft_rl_dmc(rl_input_t *input);
 /* emacs-editing-mode */
 uint8_t	ft_rl_md_em(rl_input_t *input);
 /* vi-command-mode */

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 00:37:03 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:26:33 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/12 18:20:34 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,6 +312,7 @@ uint8_t		__strequals(const char *s1, const char *s2);
 
 size_t		__strlcpy(char *dst, const char *src, const size_t size);
 
+char		**__qsplit(const char *s, const uint8_t c);
 char		**__split(const char *s, const uint8_t c);
 
 char		*__substr(const char *s, const size_t start, const size_t len);

@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:50:39 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 17:21:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 17:34:58 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ void	ft_rl_init(void)
 	_init_escapes();
 	g_funcs = __mapnew();
 	g_binds = __mapnew();
-	if (!g_funcs || !g_binds)
+	g_macrodata[0] = __mapnew();
+	g_macrodata[1] = __mapnew();
+	g_macrodata[2] = __mapnew();
+	if (!g_funcs || !g_binds || !g_macrodata[0] || !g_macrodata[1] || !g_macrodata[2])
 		__exit(ft_rl_perror());
 	tcgetattr(0, &g_oldsettings);
 	g_newsettings = g_oldsettings;
@@ -46,6 +49,7 @@ void	ft_rl_init(void)
 	if (!newbindmap("emacs") || !newbindmap("vi-ins") || !newbindmap("vi-cmd")
 		|| !newbindmap("hlcolor") || !newbindmap("__ssi")  || atexit(_ft_rl_exit))
 		__exit(ft_rl_perror());
+	g_macro = (rl_fninfo_t){.f = ft_rl_mcr, .name = "__macro", .binds[0] = NULL, .binds[1] = NULL, .binds[2] = NULL};
 	g_argument.set = 0;
 	g_mark_s.set = 0;
 	g_mark_e.set = 0;

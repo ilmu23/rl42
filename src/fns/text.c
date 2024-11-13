@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:14:13 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 09:13:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 17:44:21 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 static inline uint8_t	_iskill(const rl_fn_t f);
 static inline uint8_t	_repeat(rl_input_t *input);
+static inline void		_insertstr(rl_input_t *input, const char *s);
 static inline void		_copy(const rl_input_t *input, const uint64_t start, const uint64_t end, const uint8_t direction);
 
 uint8_t	ft_rl_eof(rl_input_t *input)
@@ -96,10 +97,8 @@ uint8_t	ft_rl_pst(rl_input_t *input)
 {
 	size_t				i;
 	ssize_t				rv;
-	uint64_t			plen;
 	char				*paste;
 	char				buf[7] = "\0\0\0\0\0\0\0";
-	const char			*subs[2];
 	static const char	*end = "\e[201~";
 
 	for (i = 0, paste = NULL, rv = read(0, &buf[i], 1); rv == 1; rv = read(0, &buf[i], 1)) {
@@ -113,17 +112,7 @@ uint8_t	ft_rl_pst(rl_input_t *input)
 			i = 0;
 		}
 	}
-	subs[0] = (input->i > 0) ? __push(__substr(input->line, 0, input->i)) : "";
-	subs[1] = (input->i < input->len) ? __push(__substr(input->line, input->i, input->len - input->i)) : "";
-	__popblk(input->line);
-	input->line = __push(__strnjoin(3, subs[0], paste, subs[1]));
-	if (!input->line)
-		exit(ft_rl_perror());
-	__popblks(2, subs[0], subs[1]);
-	plen = strlen(paste);
-	input->len += plen;
-	input->i += plen;
-	ft_rl_redisplay(input, INPUT);
+	_insertstr(input, paste);
 	return 1;
 }
 
@@ -539,6 +528,24 @@ static inline uint8_t	_repeat(rl_input_t *input)
 		return (rv);
 	}
 	return (f(input));
+}
+
+static inline void	_insertstr(rl_input_t *input, const char *s)
+{
+	size_t		plen;
+	const char	*subs[2];
+
+	subs[0] = (input->i > 0) ? __push(__substr(input->line, 0, input->i)) : "";
+	subs[1] = (input->i < input->len) ? __push(__substr(input->line, input->i, input->len - input->i)) : "";
+	__popblk(input->line);
+	input->line = __push(__strnjoin(3, subs[0], s, subs[1]));
+	if (!input->line)
+		exit(ft_rl_perror());
+	__popblks(2, subs[0], subs[1]);
+	plen = strlen(s);
+	input->len += plen;
+	input->i += plen;
+	ft_rl_redisplay(input, INPUT);
 }
 
 static inline void	_copy(const rl_input_t *input, const uint64_t start, const uint64_t end, const uint8_t direction)

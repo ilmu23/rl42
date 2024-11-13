@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 19:59:27 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 14:40:44 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:57:38 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,6 @@ extern const char	*g_fn_names[];
 # define hlcolor_accept g_fn_names[71]
 # define dump_functions g_fn_names[72]
 # define dump_variables g_fn_names[73]
+# define dump_macros g_fn_names[74]
 
 #endif

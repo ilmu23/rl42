@@ -6,10 +6,11 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 16:14:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 19:01:40 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "__lft.h"
 #include "ft_rl_globals.h"
 #include "ft_rl_internal.h"
 
@@ -21,7 +22,63 @@
 
 #define inrange(x, y, z)	(x >= y && x <= z)
 
+#define _pvar(var, val, type, fmt)	((fmt == _FMT_INITFILE) \
+		? __printf("set\t%s\t" type TERM_CRNL, var, val) \
+		: __printf("%s is set to '" type "'" TERM_CRNL, var, val))
+
+#define _pmacro(seq, cnt, fmt)	((fmt == _FMT_INITFILE) \
+		?	(ft_ti_tputs("bind\t", 1, ft_rl_putc), \
+			_print(seq), \
+			ft_ti_tputs("\t\"", 1, ft_rl_putc), \
+			_print(cnt), \
+			ft_ti_tputs("\"" TERM_CRNL, 1, ft_rl_putc)) \
+		:	(_print(seq), \
+			ft_ti_tputs(" outputs ", 1 ,ft_rl_putc), \
+			_print(cnt), \
+			ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc)))
+
 static inline void	_print(const char *s);
+
+uint8_t	ft_rl_mcr(rl_input_t *input)
+{
+	size_t			i;
+	size_t			j;
+	const char		*seq;
+	rl_keytree_t	*tree;
+
+	switch (ft_rl_geteditmode()) {
+		case _MD_EMACS:
+			i = 0;
+			break ;
+		case _MD_VI_INS:
+			i = 1;
+			break ;
+		case _MD_VI_CMD:
+			i = 2;
+			break ;
+		default:
+			return 1;
+	}
+	seq = __mapget(g_macrodata[i], input->keyseq);
+	for (i = 0; seq[i];) {
+		for (j = i, tree = ft_rl_getcurtree(); seq[i] && tree;) {
+			if (tree->fn && !tree->next[(uint8_t)seq[i]])
+				break ;
+			tree = tree->next[(uint8_t)seq[i++]];
+			if (!tree || memcmp(tree->next, g_emptynode.next, 256 * sizeof(void *)) == 0)
+				break ;
+		}
+		if (tree) {
+			input->keyseq = __push(__substr(seq, j, i - j));
+			if (tree->fn == ft_rl_mcr && strlen(input->keyseq) && isprint(*input->keyseq))
+				ft_rl_ins(input);
+			else if (tree->fn != ft_rl_mcr)
+				tree->fn(input);
+			__popblk(input->keyseq);
+		}
+	}
+	return 1;
+}
 
 uint8_t	ft_rl_rri(rl_input_t *input)
 {
@@ -190,7 +247,9 @@ uint8_t	ft_rl_dfn(rl_input_t *input)
 				}
 				ft_ti_tputs((tmp->next) ? ", " : "." TERM_CRNL, 1, ft_rl_putc);
 			} else {
-				__printf("bind\t%s\t%s" TERM_CRNL, tmp->blk, f->name);
+				ft_ti_tputs("bind\t", 1, ft_rl_putc);
+				_print(tmp->blk);
+				__printf("\t%s" TERM_CRNL, f->name);
 			}
 		}
 	}
@@ -200,10 +259,6 @@ uint8_t	ft_rl_dfn(rl_input_t *input)
 	ft_rl_redisplay(input, INPUT);
 	return 1;
 }
-
-#define _pvar(var, val, type, fmt)	((fmt == _FMT_INITFILE) \
-		? __printf("set\t%s\t" type TERM_CRNL, var, val) \
-		: __printf("%s is set to '" type "'" TERM_CRNL, var, val))
 
 uint8_t	ft_rl_dvr(rl_input_t *input)
 {
@@ -245,6 +300,41 @@ uint8_t	ft_rl_dvr(rl_input_t *input)
 	_pvar("mark-symlinked-directories", ((ft_rl_get(_CMP_MLDIRS_HASH)) ? "on" : "off"), "%s", fmt);
 	_pvar("match-hidden-files", ((ft_rl_get(_CMP_HFILES_HASH)) ? "on" : "off"), "%s", fmt);
 	_pvar("highlight-current-completion", ((ft_rl_get(_CMP_HLIGHT_HASH)) ? "on" : "off"), "%s", fmt);
+	ft_rl_cursor_getpos(&input->cursor->p_row, &input->cursor->p_col);
+	ft_ti_tputs(input->prompt, 1, ft_rl_putc);
+	ft_rl_cursor_getpos(&input->cursor->i_row, &input->cursor->i_col);
+	ft_rl_redisplay(input, INPUT);
+	return 1;
+}
+
+uint8_t	ft_rl_dmc(rl_input_t *input)
+{
+	size_t			i;
+	uint8_t			fmt;
+	__t_hmap		*tmp;
+	__t_hmap_pair	**macros;
+
+	switch (ft_rl_geteditmode()) {
+		case _MD_EMACS:
+			i = 0;
+			break ;
+		case _MD_VI_INS:
+			i = 1;
+			break ;
+		case _MD_VI_CMD:
+			i = 2;
+			break ;
+		default:
+			return 1;
+	}
+	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
+	fmt = (g_argument.set) ? _FMT_INITFILE : _FMT_NORMAL;
+	if (_FMT_INITFILE)
+		ft_rl_getarg();
+	for (tmp = g_macrodata[i], macros = tmp->items, i = 0; i < tmp->size; i++) {
+		if (macros[i] && macros[i] != (void *)&__hmap_sentinel)
+			_pmacro(macros[i]->key, macros[i]->value, fmt);
+	}
 	ft_rl_cursor_getpos(&input->cursor->p_row, &input->cursor->p_col);
 	ft_ti_tputs(input->prompt, 1, ft_rl_putc);
 	ft_rl_cursor_getpos(&input->cursor->i_row, &input->cursor->i_col);
@@ -298,7 +388,7 @@ uint8_t	ft_rl_md_vc(rl_input_t *input)
 static inline void	_print(const char *s)
 {
 	for (; *s; s++) {
-		if (!isspace(*s) && isprint(*s))
+		if (*s != '"' && !isspace(*s) && isprint(*s))
 			ft_rl_putc(*s);
 		else switch (*s) {
 			case '\e':
@@ -399,6 +489,12 @@ static inline void	_print(const char *s)
 				break ;
 			case 31:
 				ft_ti_tputs("<C-_>", 1, ft_rl_putc);
+				break ;
+			case '"':
+				ft_ti_tputs("\\\"", 1, ft_rl_putc);
+				break ;
+			case 0x7f:
+				ft_ti_tputs("<BCK>", 1, ft_rl_putc);
 				break ;
 		}
 	}
