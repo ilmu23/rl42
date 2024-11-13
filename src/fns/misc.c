@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:16:59 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/13 18:17:44 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:27:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 #define dargfn	(f == ft_rl_ins || (ft_rl_geteditmode() == _MD_VI_CMD && f == ft_rl_arg))
 
 #define inrange(x, y, z)	(x >= y && x <= z)
+
+#define _pvar(var, val, type, fmt)	((fmt == _FMT_INITFILE) \
+		? __printf("set\t%s\t" type TERM_CRNL, var, val) \
+		: __printf("%s is set to '" type "'" TERM_CRNL, var, val))
 
 static inline void	_print(const char *s);
 
@@ -241,10 +245,6 @@ uint8_t	ft_rl_dfn(rl_input_t *input)
 	ft_rl_redisplay(input, INPUT);
 	return 1;
 }
-
-#define _pvar(var, val, type, fmt)	((fmt == _FMT_INITFILE) \
-		? __printf("set\t%s\t" type TERM_CRNL, var, val) \
-		: __printf("%s is set to '" type "'" TERM_CRNL, var, val))
 
 uint8_t	ft_rl_dvr(rl_input_t *input)
 {
