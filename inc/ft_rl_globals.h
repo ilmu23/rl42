@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 18:48:20 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/13 18:00:19 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/29 16:36:56 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ extern rl_escapes_t	g_escapes;
 
 extern const __t_list	*g_hist;
 extern const __t_list	*g_hist_cur;
+extern const __t_list	*g_hist_init;
 extern const __t_list	*g_kill_ring;
 extern const __t_list	*g_blocks;
 

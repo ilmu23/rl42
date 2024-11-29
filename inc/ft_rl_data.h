@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:51:46 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/12 13:54:03 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/29 16:39:08 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ typedef __t_list	*(*rl_cmp_fn_t)(const char *, const rl_input_t *);
 enum e_rl_etype
 {
 	E_ACL,
-	E_EOF
+	E_EOF,
+	E_OPR
 };
 
 enum e_rl_rdmode

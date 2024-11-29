@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/13 19:03:09 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/29 16:55:40 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # define _SYSTEM_INITFILE "/etc/rl42rc"
 
 // Function count
-# define _FNCOUNT 75
+# define _FNCOUNT 76
 
 // Argument limits
 # define _ARG_MAX 1000000

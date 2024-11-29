@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:59:29 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/13 18:57:58 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/29 16:56:18 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	ft_rl_initfuncs(void)
 	ft_rl_addfunc(forward_find_character, ft_rl_ffc);
 	ft_rl_addfunc(backward_find_character, ft_rl_bfc);
 	ft_rl_addfunc(accept_line, ft_rl_acl);
+	ft_rl_addfunc(operate_and_get_next, ft_rl_opr);
 	ft_rl_addfunc(previous_history, ft_rl_pvh);
 	ft_rl_addfunc(next_history, ft_rl_nxh);
 	ft_rl_addfunc(beginning_of_history, ft_rl_soh);

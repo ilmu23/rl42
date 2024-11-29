@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 19:13:30 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/10/18 12:25:05 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/29 16:37:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	ft_rl_hist_load(const char *path)
 	const char	*line;
 
 	g_hist = NULL;
+	g_hist_init = NULL;
 	if (path && *path == '~')
 	{
 		path = __strsjoin(getenv("HOME"), __substr(path, 1, strlen(path)), '/');

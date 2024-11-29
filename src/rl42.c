@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:17:01 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/13 18:58:03 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/29 17:12:30 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ rl_escapes_t	g_escapes;
 
 const __t_list	*g_hist;
 const __t_list	*g_hist_cur;
+const __t_list	*g_hist_init;
 const __t_list	*g_kill_ring;
 const __t_list	*g_blocks;
 
@@ -65,7 +66,7 @@ const char	*g_fn_names[_FNCOUNT] = { "self-insert", "remove-char", "backward-rem
 	"vi-insert-mode-i", "vi-insert-mode-I", "vi-subst", "vi-subst-line", "vi-delete", "vi-replace",
 	"set-highlight-color", "hlcolor-toggle-bold", "hlcolor-toggle-underline", "hlcolor-toggle-fg/bg",
 	"hlcolor-set-sgr", "hlcolor-set-color", "hlcolor-set-rgb", "hlcolor-accept", "dump-functions",
-	"dump-variables", "dump-macros"};
+	"dump-variables", "dump-macros", "operate-and-get-next"};
 /** globals **/
 
 static inline uint64_t	_plen(const char *p);
@@ -157,6 +158,16 @@ static inline char	*_getline(const char *p)
 	ft_rl_cursor_getpos(&g_input.cursor->row, &g_input.cursor->col);
 	g_input.cursor->i_row = g_input.cursor->row;
 	g_input.cursor->i_col = g_input.cursor->col;
+	if (g_hist_init) {
+		g_input.line = __push(__strdup(((rl_histnode_t *)g_hist_init->blk)->line));
+		if (!g_input.line)
+			exit(ft_rl_perror());
+		g_input.i = g_input.len = strlen(g_input.line);
+		ft_rl_redisplay(&g_input, INPUT);
+		ft_rl_cursor_reset(&g_input);
+		g_hist_cur = g_hist_init;
+		g_hist_init = NULL;
+	}
 	while (_getinput())
 		;
 	__popblk(g_input.line);

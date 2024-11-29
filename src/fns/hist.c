@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 02:12:36 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/02 09:11:54 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/11/29 16:54:04 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,14 @@ uint8_t	ft_rl_acl(rl_input_t *input)
 	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
 	input->exittype = E_ACL;
 	return (0);
+}
+
+uint8_t	ft_rl_opr(rl_input_t *input)
+{
+	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
+	input->exittype = E_OPR;
+	g_hist_init = (g_hist_cur) ? g_hist_cur->prev : NULL;
+	return 0;
 }
 
 uint8_t	ft_rl_pvh(rl_input_t *input)
