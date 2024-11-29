@@ -48,6 +48,7 @@ KEY             |   FUNCTION
 \<M-,>          |   forward-find-character
 \<M-;>          |   backward-find-character
 \<RET>          |   accept-line
+\<C-o>          |   operate-and-get-next
 \<C-d>          |   end-of-file
 \<DOWN>         |   next-history
 \<C-n>          |   next-history
