@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 00:19:33 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/29 16:55:40 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/12/02 13:41:36 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@
 # define _VI_ARG 0x20ULL
 # define _KILL_APPEND 0x40ULL
 # define _HIDE_CURSOR 0x100ULL
+# define _KILL_NOUPDATE 0x400ULL
 
 /// modes
 # define _MD_EMACS 0x4ULL

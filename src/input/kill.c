@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 04:07:16 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/08/30 15:49:38 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/12/02 13:44:24 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,12 @@ void ft_rl_kill_region(rl_input_t *input, const uint8_t direction)
 	subs[1] = __push(__substr(input->line, g_mark_e.pos, input->len - g_mark_e.pos));
 	if (!subs[0] || !subs[1])
 		exit(ft_rl_perror());
-	if (g_status & _KILL_APPEND)
-		_append(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos), direction);
-	else
-		__lstadd_front(&g_kill_ring, __lstnew(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos)));
+	if (!(g_status & _KILL_NOUPDATE)) {
+		if (g_status & _KILL_APPEND)
+			_append(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos), direction);
+		else
+			__lstadd_front(&g_kill_ring, __lstnew(__substr(input->line, g_mark_s.pos, g_mark_e.pos - g_mark_s.pos)));
+	}
 	__popblk(input->line);
 	input->line = __push(__strjoin(subs[0], subs[1]));
 	__popblks(2, subs[0], subs[1]);
