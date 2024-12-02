@@ -6,18 +6,18 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:47:23 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/11/07 17:54:41 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/12/02 17:40:43 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_rl_internal.h"
 
-#define isvalidfn(x)	((fn && fn != x && fn != ft_rl_acl && fn != ft_rl_eof))
+#define isvalidfn(x)		((fn && fn != x && fn != ft_rl_acl && fn != ft_rl_eof))
 
 static inline rl_fn_t	_isearch(rl_input_t *input, rl_input_t *search, const uint8_t direction);
 static inline rl_fn_t	_search(rl_input_t *input, rl_input_t *search, const uint8_t direction);
 static inline __t_list	*_match(const char *pattern, const uint8_t direction);
-static inline void		_init(rl_input_t *search, const uint8_t direction);
+static inline void		_init(rl_input_t *input, rl_input_t *search, const uint8_t direction);
 static inline void		_replace(rl_input_t *input, const __t_list *node);
 static inline void		_display(rl_input_t *input, rl_input_t *search);
 
@@ -27,8 +27,7 @@ uint8_t	ft_rl_hist_search(rl_input_t *input, const uint8_t direction)
 	rl_fn_t		fn;
 
 	ft_rl_eol(input);
-	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
-	_init(&search, direction);
+	_init(input, &search, direction);
 	if (ft_rl_geteditmode() == _MD_VI_CMD)
 		ft_rl_seteditmode(_MD_VI_INS);
 	fn = _search(input, &search, direction);
@@ -47,8 +46,7 @@ uint8_t	ft_rl_hist_isearch(rl_input_t *input, const uint8_t direction)
 	rl_fn_t		fn;
 
 	ft_rl_eol(input);
-	ft_ti_tputs(TERM_CRNL, 1, ft_rl_putc);
-	_init(&search, direction);
+	_init(input, &search, direction);
 	if (ft_rl_geteditmode() == _MD_VI_CMD)
 		ft_rl_seteditmode(_MD_VI_INS);
 	fn = _isearch(input, &search, direction);
@@ -142,10 +140,12 @@ static inline __t_list	*_match(const char *pattern, const uint8_t direction)
 	return ((__t_list *)node);
 }
 
-static inline void	_init(rl_input_t *search, const uint8_t direction)
+static inline void	_init(rl_input_t *input, rl_input_t *search, const uint8_t direction)
 {
+	int16_t	tmp;
+
 	memcpy(search, &(rl_input_t){.line = NULL,
-			.keyseq = NULL, .exittype = E_ACL, .cursor = ft_rl_cursor_init(),
+			.keyseq = NULL, .exittype = E_ACL, .cursor = __push(__alloc(sizeof(*search->cursor))),
 			.plen = 14 - ((direction < _I_SEARCH_BCK) * 2),
 			.len = 0, .i = 0}, sizeof(*search));
 	switch (direction)
@@ -167,6 +167,15 @@ static inline void	_init(rl_input_t *search, const uint8_t direction)
 		exit(ft_rl_perror());
 	if (search->plen == 14)
 		search->prompt += 8;
+	search->cursor->p_row = search->cursor->row = tmp = input->cursor->row + 1;
+	search->cursor->p_col = search->cursor->col = 1;
+	ft_rl_cursor_setpos(search->cursor);
+	tmp = tmp - search->cursor->row;
+	if (tmp) {
+		input->cursor->p_row -= tmp;
+		input->cursor->i_row -= tmp;
+		input->cursor->row -= tmp;
+	}
 	ft_ti_tputs(search->prompt, 1, ft_rl_putc);
 	ft_rl_cursor_getpos(&search->cursor->row, &search->cursor->col);
 	search->cursor->i_row = search->cursor->row;
