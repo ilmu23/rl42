@@ -6,7 +6,7 @@
 #    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2024/10/30 20:48:18 by ivalimak         ###   ########.fr        #
+#    Updated: 2025/01/08 21:32:59 by ivalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,12 @@ cflags.asan		=	$(cflags.debug) -fsanitize=address
 cflags.normal	=	-Ofast
 cflags.extra	=	
 CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
+
+HIST_FILE	=	
+
+ifneq ("$(HIST_FILE)", "")
+	CFLAGS +=	-D_FT_RL_HFILE+$(HIST_FILE)
+endif
 
 SRCDIR	=	src
 OBJDIR	=	obj
