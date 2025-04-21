@@ -2,7 +2,7 @@
 *.o
 *.log
 *.out*
-*test*
+*.txt
 .cache
 .clangd
 compile_commands.json
