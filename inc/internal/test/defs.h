@@ -5,14 +5,14 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<defs.h>>
 
 #pragma once
 
-#include "defs.h"
+#define SGR0		"\x1b[m"
+#define SGR_OK		"\x1b[38;5;42m"
+#define SGR_KO		"\x1b[38;5;88m"
+#define SGR_INFO	"\x1b[1;38;5;202m"
+#define ENDL		SGR0 "\n"
 
-#include "data.h"
-
-#define RL42_VERSION 3.0.1
-
-char	*ft_readline(const char *prompt);
+#define hl(check)	((check) ? SGR_OK: SGR_KO)

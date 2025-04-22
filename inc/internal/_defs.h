@@ -5,14 +5,10 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<_defs.h>>
 
 #pragma once
 
-#include "defs.h"
+#define __RL42_INTERNAL
 
-#include "data.h"
-
-#define RL42_VERSION 3.0.1
-
-char	*ft_readline(const char *prompt);
+#define free_rlstring(s)	(free((void *)s->str), free((void *)s))

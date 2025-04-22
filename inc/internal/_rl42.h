@@ -9,10 +9,9 @@
 
 #pragma once
 
-#include "defs.h"
+#include "internal/_defs.h"
 
-#include "data.h"
+#include "rl42.h"
+#include "internal/_data.h"
 
-#define RL42_VERSION 3.0.1
-
-char	*ft_readline(const char *prompt);
+#include <stddef.h>
