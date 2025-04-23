@@ -13,6 +13,6 @@
 
 #include "data.h"
 
-#define RL42_VERSION 3.0.1
+#define RL42_VERSION 3.0.2
 
 char	*ft_readline(const char *prompt);

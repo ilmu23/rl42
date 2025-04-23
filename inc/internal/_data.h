@@ -113,3 +113,21 @@ typedef struct __mark {
 	u8	set;
 	u64	pos;
 }	rl42_mark;
+
+// Stores two items as a pair
+// item1 = first item
+// item2 = second item
+typedef struct __pair {
+	void	*item1;
+	void	*item2;
+}	pair;
+
+// Generic map
+// items = array for storing the key - value pairs
+// capacity = size of the item array
+// itemcount = amount of pairs in the array
+typedef struct __map {
+	pair	**items;
+	size_t	capacity;
+	size_t	itemcount;
+}	map;
