@@ -66,6 +66,15 @@ size_t		vector_find(const vector *vec, const uintptr_t data, u8 (*cmp)(const uin
  */
 uintptr_t	vector_get(const vector *vec, const size_t i);
 
+/** @brief Returns a copy of the raw data array held by a vector
+ *
+ * @param vec Vector to operate on
+ * @param n Amount of array elements to copy
+ * @returns @c <b>void *</b> Copy of the array,
+ * NULL if the copy failed
+ */
+void		*vector_get_raw_data(const vector *vec, const size_t element_size, const size_t n);
+
 /** @brief Frees all resources associated with a vector
  *
  * @param vec Vector to free

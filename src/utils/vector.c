@@ -126,6 +126,36 @@ uintptr_t	vector_get(const vector *vec, const size_t i) {
 	return (i < vec->size) ? vec->data[i] : VECTOR_OUT_OF_BOUNDS;
 }
 
+void	*vector_get_raw_data(const vector *vec, const size_t element_size, const size_t n) {
+	size_t	i;
+	size_t	_n;
+	void	*out;
+
+	if (element_size != 1 && element_size != 2 && element_size != 4 && element_size != 8)
+		return NULL;
+	_n = (n < vec->size) ? n : vec->size;
+	out = malloc(_n * element_size);
+	if (out) {
+		for (i = 0; i < _n; i++) {
+			switch (element_size) {
+				case 1:
+					((u8 *)out)[i] = (u8)vec->data[i];
+					break ;
+				case 2:
+					((u16 *)out)[i] = (u16)vec->data[i];
+					break ;
+				case 4:
+					((u32 *)out)[i] = (u32)vec->data[i];
+					break ;
+				case 8:
+					((u64 *)out)[i] = (u64)vec->data[i];
+					break ;
+			}
+		}
+	}
+	return out;
+}
+
 u8	vector_delete(vector *vec, void (*_free)(void *)) {
 	size_t	i;
 

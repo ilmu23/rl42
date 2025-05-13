@@ -52,6 +52,8 @@ static inline i32	_test1(void) {
 	vector		*vector;
 	size_t		i;
 	u32			vals[5] = {42, 21, 1, 23, 814};
+	u32			*raw;
+	i32			chk;
 	i32			rv;
 
 	rv = 1;
@@ -62,15 +64,21 @@ static inline i32	_test1(void) {
 	for (i = 0; i < 5; i++)
 		if (!vector_add(vector, vals[i]))
 			return error("Failed to add element #%zu\n", i + 1);
+	raw = vector_get_raw_data(vector, sizeof(*raw), SIZE_MAX);
+	if (!raw)
+		return error("Failed to get raw data\n");
+	chk = memcmp(raw, vals, sizeof(*raw) * vector->size);
+	if (chk != 0)
+		rv = 0;
+	fprintf(stderr, "%sraw data comparison %s" ENDL, hl(chk == 0), (chk == 0) ? "OK" : "KO");
+	free(raw);
 	for (i = 0; i < 5; i++) {
 		element = vector_get(vector, 0);
 		if (element != vals[i])
 			rv = 0;
 		fprintf(stderr, "%svector[%zu]: %lu" ENDL, hl(element == vals[i]), i, element);
-		if (!vector_remove(vector, 0, NULL)) {
-			error("Failed to remove element #%zu\n", i);
-			rv = 0;
-		}
+		if (!vector_remove(vector, 0, NULL))
+			rv = error("Failed to remove element #%zu\n", i);
 	}
 	if (!vector_delete(vector, NULL))
 		return error("Failed to delete vector\n");
@@ -98,10 +106,8 @@ static inline i32	_test2(void) {
 		if (element != expected[i])
 			rv = 0;
 		fprintf(stderr, "%svector[%zu]: %lu" ENDL, hl(element == expected[i]), i, element);
-		if (!vector_remove(vector, 0, NULL)) {
-			error("Failed to remove element #%zu\n", i);
-			rv = 0;
-		}
+		if (!vector_remove(vector, 0, NULL))
+			rv = error("Failed to remove element #%zu\n", i);
 	}
 	if (!vector_delete(vector, NULL))
 		return error("Failed to delete vector\n");
@@ -129,10 +135,8 @@ static inline i32	_test3(void) {
 		if (element != expected[i])
 			rv = 0;
 		fprintf(stderr, "%svector[%zu]: %lu" ENDL, hl(element == expected[i]), i, element);
-		if (!vector_remove(vector, 0, NULL)) {
-			error("Failed to remove element #%zu\n", i);
-			rv = 0;
-		}
+		if (!vector_remove(vector, 0, NULL))
+			rv = error("Failed to remove element #%zu\n", i);
 	}
 	if (!vector_delete(vector, NULL))
 		return error("Failed to delete vector\n");
@@ -145,6 +149,8 @@ static inline i32	_test4(void) {
 	size_t		i;
 	const char	*vals[5] = {"ayy", "lmao", "hello", "there", "hello"};
 	const char	*expected[4];
+	const char	**raw;
+	i32			chk;
 	i32			rv;
 
 	rv = 1;
@@ -165,6 +171,14 @@ static inline i32	_test4(void) {
 	}
 	if (!vector_remove(vector, 2, free))
 		return error("Failed to remove element #2\n");
+	raw = vector_get_raw_data(vector, sizeof(*raw), SIZE_MAX);
+	if (!raw)
+		return error("Failed to get raw data\n");
+	chk = memcmp(raw, expected, sizeof(*raw) * vector->size);
+	if (chk != 0)
+		rv = 0;
+	fprintf(stderr, "%sraw data comparison %s" ENDL, hl(chk == 0), (chk == 0) ? "OK" : "KO");
+	free(raw);
 	for (i = 0; i < vector->size; i++) {
 		element = vector_get(vector, i);
 		if (element != (uintptr_t)expected[i])
