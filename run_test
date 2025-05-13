@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 printf "\e[1;35mRL42 >\e[m Running %s test\n" $1
 

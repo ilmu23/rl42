@@ -14,7 +14,7 @@ BUILD	=	fsan
 ## COMPILER FLAGS
 
 CC				=	gcc
-cflags.common	=	-Wall -Wextra -Werror -Wpedantic -std=c23 -pedantic-errors -I$(INCDIR)
+cflags.common	=	-Wall -Wextra -Werror -Wpedantic -std=c2x -pedantic-errors -I$(INCDIR)
 cflags.debug	=	-g
 cflags.fsan		=	$(cflags.debug) -fsanitize=address,undefined
 cflags.normal	=	-O3
@@ -49,10 +49,12 @@ OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 ## TESTS
 
-TESTBIN	=	$(TESTDIR)/$(BINDIR)
+TESTBIN		=	$(TESTDIR)/$(BINDIR)
+TESTUTILS	=	$(SRCDIR)/$(UTILDIR)/message.c
 
 STRLEN_UTF8_TEST	=	$(TESTBIN)/strlen_utf8_test
 RL42_STRING_TEST	=	$(TESTBIN)/rl42_string_test
+VECTOR_TEST			=	$(TESTBIN)/vector_test
 MAP_TEST			=	$(TESTBIN)/map_test
 
 all: $(NAME)
@@ -65,23 +67,28 @@ $(NAME): $(OBJDIR) $(OBJS)
 tests: $(TESTDIR)/$(BINDIR) utiltests
 	@printf "\e[1;35mRL42 >\e[m All tests passed!\n"
 
-utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(MAP_TEST)
+utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(VECTOR_TEST) $(MAP_TEST)
 	@./run_test strlen_utf8 $(STRLEN_UTF8_TEST)
 	@./run_test rl42_string $(RL42_STRING_TEST)
+	@./run_test vector $(VECTOR_TEST)
 	@./run_test map $(MAP_TEST)
 	@printf "\e[1;35mRL42 >\e[m All util tests passed!\n"
 
 $(STRLEN_UTF8_TEST): $(TESTDIR)/$(UTILDIR)/strlen_utf8.c $(SRCDIR)/$(UTILDIR)/rl42_string.c
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(RL42_STRING_TEST): $(TESTDIR)/$(UTILDIR)/rl42_string.c $(SRCDIR)/$(UTILDIR)/rl42_string.c
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+
+$(VECTOR_TEST): $(TESTDIR)/$(UTILDIR)/vector.c $(SRCDIR)/$(UTILDIR)/vector.c
+	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(MAP_TEST): $(TESTDIR)/$(UTILDIR)/map.c $(SRCDIR)/$(UTILDIR)/map.c
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(OBJDIR):
 	@printf "\e[1;35mRL42 >\e[m Creating objdirs\n"

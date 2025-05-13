@@ -16,9 +16,8 @@
 
 #define _REMOVE_CHANCE	40
 
-#define rand_range(min, max)	(rand() % (max - min + 1) + min)
-
 static inline char	*_strdup(const char *s);
+
 static inline u8	_test1(void);
 static inline u8	_test2(void);
 static inline u8	_test3(void);

@@ -13,6 +13,8 @@
 
 #include "internal/_data.h"
 
+#include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -38,3 +40,52 @@ char		*rl42str_to_cstr(const rl42_string *s);
  * @returns @c <b>size_t</b> Length of the string
  */
 size_t		strlen_utf8(const char *s);
+
+/** @brief Gets the size of an utf-8 encoded character
+ *
+ * @param c Character to check
+ * @returns @c <b>u8</b> Size of the character
+ */
+u8			charsize_utf8(const char c);
+
+/** @brief Generates a hash from a cstr
+ *
+ * @param s String to hash
+ * @param salt Salt used in the hashing
+ * @param max Maximum value of the hash
+ * @returns @c <b>u64</b> Hash of the string
+ */
+u64			cstr_hash(const char *s, const u64 salt, const size_t max);
+
+/** @brief Generates a hash from a rl42_string
+ *
+ * @param s String to hash
+ * @param salt Salt used in the hashing
+ * @param max Maximum value of the hash
+ * @returns @c <b>u64</b> Hash of the string
+ */
+u64			rl42str_hash(const rl42_string *s, const u64 salt, const size_t max);
+
+/** @brief Displays an error message
+ *
+ * @param fmt Format string for the message
+ * @param ... Variables required by the format
+ * @returns @c <b>u8</b> 0
+ */
+u8			error(const char *fmt, ...);
+
+/** @brief Displays a warning message
+ *
+ * @param fmt Format string for the message
+ * @param ... Variables required by the format
+ * @returns @c <b>u8</b> 0
+ */
+u8			warn(const char *fmt, ...);
+
+/** @brief Displays an info message
+ *
+ * @param fmt Format string for the message
+ * @param ... Variables required by the format
+ * @returns @c <b>u8</b> 0
+ */
+u8			info(const char *fmt, ...);

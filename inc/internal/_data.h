@@ -27,6 +27,45 @@ typedef enum __redisplay_mode {
 	CLEAR
 }	rl42_redisplay_mode;
 
+// Vector sorting modes
+// ASCENDING = sort elements in ascending order
+// DESCENDING = sort elements in descending order
+// NONE = No sorting
+typedef enum __vec_sort {
+	ASCENDING,
+	DESCENDING,
+	NONE
+}	vector_sort_mode;
+
+// Stores two items as a pair
+// item1 = first item
+// item2 = second item
+typedef struct __pair {
+	void	*item1;
+	void	*item2;
+}	pair;
+
+// Generic map
+// items = array for storing the key - value pairs
+// capacity = size of the item array
+// itemcount = amount of pairs in the array
+typedef struct __map {
+	pair	**items;
+	size_t	capacity;
+	size_t	itemcount;
+}	map;
+
+// Generic vector
+// data = array for storing data
+// capacity = size of the array
+// size = amount of elements in the array
+typedef struct __vector {
+	vector_sort_mode	sort_mode;
+	uintptr_t			*data;
+	size_t				capacity;
+	size_t				size;
+}	vector;
+
 // History node containing the original line and
 // the potentially edited version
 typedef struct __hist_node {
@@ -43,12 +82,12 @@ typedef struct __char {
 }	rl42_char;
 
 // Node in a key sequence tree
-// next = map containing all possible following characters
 // f = function bound to the currently enterd sequence
+// next = map containing all possible following characters
 // c = indicated whether this sequence has been const bound
 typedef struct __key_tree {
-	// map	*next;
 	rl42_fn	f;
+	map		*next;
 	u8		c;
 }	rl42_key_tree;
 
@@ -58,7 +97,7 @@ typedef struct __key_tree {
 typedef struct __fn_info {
 	rl42_fn		f;
 	const char	*fname;
-	// list (?)	*binds;
+	vector		*binds[3];
 }	rl42_fn_info;
 
 // Stores a string of rl42_chars with metadata
@@ -113,21 +152,3 @@ typedef struct __mark {
 	u8	set;
 	u64	pos;
 }	rl42_mark;
-
-// Stores two items as a pair
-// item1 = first item
-// item2 = second item
-typedef struct __pair {
-	void	*item1;
-	void	*item2;
-}	pair;
-
-// Generic map
-// items = array for storing the key - value pairs
-// capacity = size of the item array
-// itemcount = amount of pairs in the array
-typedef struct __map {
-	pair	**items;
-	size_t	capacity;
-	size_t	itemcount;
-}	map;
