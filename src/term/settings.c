@@ -5,20 +5,25 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<settings.c>>
 
-#pragma once
+#include "internal/_term.h"
 
-#include "internal/_defs.h"
+term_settings	old;
+term_settings	new;
 
-#include "rl42.h"
-#include "internal/_data.h"
+u8	term_apply_settings(const u8 settings) {
+	u8	rv;
 
-#include <stddef.h>
-
-/* @brief Initializes all internal data structures for use
- *
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8	rl42_init(void);
+	switch (settings) {
+		case TERM_SETTINGS_DEFAULT:
+			rv = (tcsetattr(0, TCSANOW, &old) != -1) ? 1 : 0;
+			break ;
+		case TERM_SETTINGS_RL42:
+			rv = (tcsetattr(0, TCSANOW, &new) != -1) ? 1 : 0;
+			break ;
+		default:
+			rv = 0;
+	}
+	return rv;
+}

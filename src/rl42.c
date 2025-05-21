@@ -5,20 +5,10 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<rl42.c>>
 
-#pragma once
+#include "internal/_rl42.h"
 
-#include "internal/_defs.h"
-
-#include "rl42.h"
-#include "internal/_data.h"
-
-#include <stddef.h>
-
-/* @brief Initializes all internal data structures for use
- *
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8	rl42_init(void);
+char	*ft_readline([[maybe_unused]] const char *prompt) {
+	return NULL;
+}

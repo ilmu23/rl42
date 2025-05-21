@@ -5,20 +5,35 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<_function.h>>
 
 #pragma once
 
 #include "internal/_defs.h"
 
-#include "rl42.h"
 #include "internal/_data.h"
+#include "internal/_utils.h"
+#include "internal/_vector.h"
 
-#include <stddef.h>
+#include "function.h"
 
-/* @brief Initializes all internal data structures for use
+#include <errno.h>
+#include <string.h>
+
+#define FUNCTION_COUNT	64
+
+/** @brief Gets function info by name
  *
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
+ * @param f Name of the function
+ * @returns @c <b>rl42_fn_info</b> Information about the function,
+ * NULL if no function with the specified nname is found
  */
-u8	rl42_init(void);
+rl42_fn_info	*get_fn_info_name(const char *f);
+
+/** @brief Gets function info
+ *
+ * @param f Function to fetch information about
+ * @returns @c <b>rl42_fn_info</b> Information about the function,
+ * NULL if the function hasn't been registered
+ */
+rl42_fn_info	*get_fn_info(rl42_fn f);

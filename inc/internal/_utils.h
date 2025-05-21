@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define in_range(x, min, max)	((x >= min && x <= max) ? 1 : 0)
+
 /** @brief Converts a C string to a rl42 string
  *
  * @param s string to convert

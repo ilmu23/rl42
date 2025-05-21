@@ -11,10 +11,12 @@
 
 #define __RL42_INTERNAL
 
+#include "defs.h"
+
 #define SGR0		"\x1b[m"
-#define SGR_ERROR	"\x1b[1;38;5;88m"
-#define SGR_WARN	"\x1b[1;38;5;202m"
 #define SGR_INFO	"\x1b[1;38;5;190m"
+#define SGR_WARN	"\x1b[1;38;5;202m"
+#define SGR_ERROR	"\x1b[1;38;5;196m"
 
 #define free_rlstring(s)		((s) ? free((void *)s->str), free((void *)s) : (void)0)
 #define free_key_tree_node(n)	((n) ? free((void *)n->next), free((void *)n) : (void)0)

@@ -5,20 +5,55 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<rl42_key_tree.c>>
 
-#pragma once
+#include "internal/_keybinds.h"
 
-#include "internal/_defs.h"
+static rl42_editing_mode	current_mode;
+static rl42_key_tree		*trees[3];
 
-#include "rl42.h"
-#include "internal/_data.h"
+rl42_editing_mode	get_editing_mode(void) {
+	return current_mode;
+}
 
-#include <stddef.h>
+void	set_editing_mode(const rl42_editing_mode mode) {
+	switch (mode) {
+		case EMACS:
+		case VI_CMD:
+		case VI_INS:
+			current_mode = mode;
+		default:
+			break ;
+	}
+}
 
-/* @brief Initializes all internal data structures for use
- *
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8	rl42_init(void);
+rl42_key_tree	*get_key_tree(const rl42_editing_mode mode) {
+	if (mode == CURRENT)
+		return get_key_tree(current_mode);
+	return trees[mode];
+}
+
+rl42_key_tree	*new_key_tree_node(void) {
+	rl42_key_tree	*out;
+
+	out = malloc(sizeof(*out));
+	if (out) {
+		*out = (rl42_key_tree){
+			.f = NULL,
+			.next = map_new(KEY_TREE_DEFAULT_MAP_SIZE),
+			.c = 0
+		};
+		if (!out->next) {
+			free(out);
+			out = NULL;
+		}
+	}
+	return out;
+}
+
+u8	init_key_trees(void) {
+	trees[EMACS] = new_key_tree_node();
+	trees[VI_CMD] = new_key_tree_node();
+	trees[VI_INS] = new_key_tree_node();
+	return (trees[EMACS] && trees[VI_CMD] && trees[VI_INS]) ? 1 : 0;
+}

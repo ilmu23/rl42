@@ -10,8 +10,8 @@
 #pragma once
 
 #define SGR0		"\x1b[m"
-#define SGR_OK		"\x1b[38;5;42m"
-#define SGR_KO		"\x1b[38;5;88m"
+#define SGR_OK		"\x1b[1;38;5;42m"
+#define SGR_KO		"\x1b[1;38;5;196m"
 #define ENDL		SGR0 "\n"
 
 #define hl(check)				((check) ? SGR_OK: SGR_KO)
