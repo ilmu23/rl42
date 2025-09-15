@@ -37,7 +37,11 @@ u8	rl42_init(void) {
 		// MAYBE: init macro data
 		if (atexit(_rl42_exit) != 0)
 			rv = 0;
+#ifdef __TEST_BUILD
+		if (isatty(0) && !_init_term())
+#else
 		if (!_init_term())
+#endif
 			rv = 0;
 		if (!_init_fns())
 			rv = 0;

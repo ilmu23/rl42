@@ -69,6 +69,8 @@ OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 ## TESTS
 
+TCFLAGS	=	$(CFLAGS) -D__TEST_BUILD
+
 TESTBIN		=	$(TESTDIR)/$(BINDIR)
 TESTUTILS	=	$(SRCDIR)/$(UTILDIR)/message.c
 
@@ -143,27 +145,27 @@ utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(VECTOR_TEST) $(MAP_TEST)
 
 $(FUNCTION_TEST): $(FUNCTION_TEST_FILES)
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(KEYBIND_TEST): $(KEYBIND_TEST_FILES)
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(STRLEN_UTF8_TEST): $(STRLEN_UTF8_TEST_FILES)
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(RL42_STRING_TEST): $(RL42_STRING_TEST_FILES)
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(VECTOR_TEST): $(VECTOR_TEST_FILES)
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(MAP_TEST): $(MAP_TEST_FILES)
 	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(OBJDIR):
 	@printf "\e[1;35mRL42 >\e[m Creating objdirs\n"
