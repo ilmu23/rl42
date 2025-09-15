@@ -8,6 +8,7 @@
 // <<keybind_test.c>>
 
 #include <stdio.h>
+#include <unistd.h>
 
 #include "internal/_function.h"
 #include "internal/_keybinds.h"
@@ -27,38 +28,37 @@ i32	main(void) {
 		return 1;
 	}
 	rv = 0;
-	// SOMEHOW DISABLE STDERR FOR THE DURATION OF RL42_INIT
 	rl42_init();
 	info("Test 1 ---- valid bindings\n");
 	_rv = rl42_bind("<C-x><C-a>a", _FN_1_NAME, WARN, CURRENT);
 	if (!_rv)
-		rv = 0;
+		rv = 1;
 	fprintf(stderr, "%srl42_bind(<C-x><C-a>a, " _FN_1_NAME ", WARN, CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
 	_rv = rl42_bind("m", _FN_2_NAME, WARN, CURRENT);
 	if (!_rv)
-		rv = 0;
+		rv = 1;
 	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", WARN, CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
 	info("Test 2 ---- invalid bindings\n");
 	_rv = rl42_bind("<HELLO>", _FN_1_NAME, WARN, EMACS);
 	if (_rv)
-		rv = 0;
+		rv = 1;
 	fprintf(stderr, "%srl42_bind(<HELLO>, " _FN_1_NAME ", WARN, EMACS): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
 	_rv = rl42_bind("<C-e>", "cool-function", WARN, VI_CMD);
 	if (_rv)
-		rv = 0;
+		rv = 1;
 	fprintf(stderr, "%srl42_bind(<C-e>, cool-function, WARN, VI_CMD): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
 	_rv = rl42_bind("<C-x><C-r", _FN_2_NAME, WARN, VI_INS);
 	if (_rv)
-		rv = 0;
+		rv = 1;
 	fprintf(stderr, "%srl42_bind(<C-x><C-r, " _FN_2_NAME ", WARN, VI_INS): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
 	info("Test 3 ---- remap\n");
-	_rv = rl42_bind("m", _FN_1_NAME, WARN, CURRENT);
+	_rv = rl42_bind("m", _FN_2_NAME, WARN, CURRENT);
 	if (_rv)
-		rv = 0;
-	fprintf(stderr, "%srl42_bind(m, " _FN_1_NAME ", WARN, CURRENT): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
-	_rv = rl42_bind("m", _FN_1_NAME, REMAP, CURRENT);
+		rv = 1;
+	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", WARN, CURRENT): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
+	_rv = rl42_bind("m", _FN_2_NAME, REMAP, CURRENT);
 	if (!_rv)
-		rv = 0;
-	fprintf(stderr, "%srl42_bind(m, " _FN_1_NAME ", REMAP, CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
+		rv = 1;
+	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", REMAP, CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
 	return rv;
 }

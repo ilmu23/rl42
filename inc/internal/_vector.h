@@ -13,73 +13,43 @@
 
 #include "internal/_data.h"
 
-#include <stdlib.h>
-#include <string.h>
+#define VECTOR_OUT_OF_BOUNDS	((void *)1)
 
-#define VECTOR_NOT_FOUND		SIZE_MAX
-#define VECTOR_OUT_OF_BOUNDS	UINTPTR_MAX
+#define vector(type, count, free)	(__vec_new(sizeof(type), count, free))
+vector	__vec_new(const size_t size, const size_t count, void (*free)(void *));
 
-/** @brief Creates a new vector capable of storing at least size elements
- *
- * @param size Amount of elements to reserve memory for
- * @param smode Default sorting for the vector
- * @returns @c <b>vector</b> The newly created map,
- * NULL if creation failed
- */
-vector		*vector_new(const size_t size, const vector_sort_mode smode);
+#define	vector_delete(vector)	(__vec_del(vector))
+void	__vec_del(vector);
 
-/** @brief Adds a new element to the vector
- *
- * @param vec Vector to operate on
- * @param data Element to add
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8			vector_add(vector *vec, const uintptr_t data);
+#define	vector_push(vector, value)	(__vec_psh(vector, (const void *)&value))
+u8		__vec_psh(vector vec, const void *val);
 
-/** @brief Removes an element from a vector
- *
- * @param vec Vector to operate on
- * @param i Index of the element to remove
- * @param _free Function for freeing the element
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 if i is out of bounds,
- */
-u8			vector_remove(vector *vec, const size_t i, void (*_free)(void *));
+#define	vector_pop(vector)	(__vec_pop(vector))
+void	__vec_pop(vector vec);
 
-/** @brief Looks for an element in a vector
- *
- * @param vec Vector to operate on
- * @param data Element to look for
- * @param cmp Function to use for comparisons
- * @returns @c <b>u8</b> Index of the element,
- * VECTOR_NOT_FOUND if no match was found
- */
-size_t		vector_find(const vector *vec, const uintptr_t data, u8 (*cmp)(const uintptr_t *, const uintptr_t *));
+#define	vector_get(vector, i)	(__vec_get(vector, i))
+void	*__vec_get(const vector vec, const size_t i);
 
-/** @brief Gets an element from a vector
- *
- * @param vec Vector to operate on
- * @param i index of the element to get
- * @returns @c <b>uintptr_t</b> The element,
- * VECTOR_OUT_OF_BOUNDS if i is out of bounds
- */
-uintptr_t	vector_get(const vector *vec, const size_t i);
+#define	vector_set(vector, i, value)	(__vec_set(vector, i, (const void *)&value))
+u8		__vec_set(vector vec, const size_t i, const void *val);
 
-/** @brief Returns a copy of the raw data array held by a vector
- *
- * @param vec Vector to operate on
- * @param n Amount of array elements to copy
- * @returns @c <b>void *</b> Copy of the array,
- * NULL if the copy failed
- */
-void		*vector_get_raw_data(const vector *vec, const size_t element_size, const size_t n);
+#define	vector_size(vector)	(__vec_sze(vector))
+size_t	__vec_sze(const vector vec);
 
-/** @brief Frees all resources associated with a vector
- *
- * @param vec Vector to free
- * @param _free Function for freeing the elements stored in the vector
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8			vector_delete(vector *vec, void (*_free)(void *));
+#define	vector_capacity(vector)	(__vec_cap(vector))
+size_t	__vec_cap(const vector vec);
+
+#define vector_resize(vector, size)	(__vec_rsz(vector, size))
+u8		__vec_rsz(vector vec, const size_t size);
+
+#define vector_shrink_to_fit(vector)	(__vec_stf(vector))
+u8		__vec_stf(vector vec);
+
+#define vector_clear(vector)	(__vec_clr(vector))
+void	__vec_clr(vector vec);
+
+#define vector_insert(vector, i, value)	(__vec_ins(vector, i, (const void *)&value))
+u8		__vec_ins(vector vec, const size_t i, const void *val);
+
+#define vector_erase(vector, i)	(__vec_ers(vector, i))
+u8		__vec_ers(vector vec, const size_t i);

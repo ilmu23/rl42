@@ -203,7 +203,7 @@ static const struct {
 	const char		*name;
 }	functions[] = {
 	{.address = NULL, .name = NULL}
-	};
+};
 
 static inline u8	_init_fns(void) {
 	size_t	fn_count;

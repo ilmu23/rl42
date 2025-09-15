@@ -29,7 +29,7 @@
 #define r3	rstrings[2]
 #define r4	rstrings[3]
 
-#define rstr_check(rstr, exp_len, exp_sze)			(rstr->len == exp_len && rstr->sze == exp_sze)
+#define rstr_check(rstr, exp_len)					(vector_size(rstr) == exp_len)
 #define cstr_check(cstr, exp_str, exp_len, exp_sze)	(memcmp(cstr, exp_str, exp_sze) == 0 \
 													 && strlen_utf8(cstr) == exp_len \
 													 && strlen(cstr) == exp_sze)
@@ -44,10 +44,13 @@ const size_t		strlengths[STR_COUNT] = {L1, L2, L3, L4};
 const char			*strings[STR_COUNT] = {S1, S2, S3, S4};
 
 i32	main(void) {
-	const rl42_string	*rstrings[STR_COUNT];
-	const char			*cstrings[STR_COUNT];
-	size_t				i;
-	i32					rv;
+	const char	*cstrings[STR_COUNT];
+	vector		rstrings[STR_COUNT];
+	size_t		i;
+	size_t		j;
+	size_t		len;
+	char		buf[5];
+	i32			rv;
 
 	rv = 0;
 	r1 = cstr_to_rl42str(S1);
@@ -55,11 +58,14 @@ i32	main(void) {
 	r3 = cstr_to_rl42str(S3);
 	r4 = cstr_to_rl42str(S4);
 	for (i = 0; i < STR_COUNT; i++) {
-		if (!rstr_check(rstrings[i], strlengths[i], strsizes[i]))
+		if (!rstr_check(rstrings[i], strlengths[i]))
 			rv = 1;
-		fprintf(stderr, "%scstr_to_rl42str(S%zu): len = %zu, sze = %zu" ENDL,
-				hl(rstr_check(rstrings[i], strlengths[i], strsizes[i])),
-				i + 1, rstrings[i]->len, rstrings[i]->sze);
+		fprintf(stderr, "%scstr_to_rl42str(S%zu): \"", hl(rstr_check(rstrings[i], strlengths[i])), i + 1);
+		for (j = 0, len = vector_size(rstrings[i]); j < len; j++) {
+			utf8_encode(*(u32 *)vector_get(rstrings[i], j), buf);
+			fputs(buf, stderr);
+		}
+		fputs("\"" ENDL, stderr);
 	}
 	c1 = rl42str_to_cstr(r1);
 	c2 = rl42str_to_cstr(r2);
@@ -68,10 +74,10 @@ i32	main(void) {
 	for (i = 0; i < STR_COUNT; i++) {
 		if (!cstr_check(cstrings[i], strings[i], strlengths[i], strsizes[i]))
 			rv = 1;
-		fprintf(stderr, "%srl42str_to_cstr(r%zu): %s" ENDL,
+		fprintf(stderr, "%srl42str_to_cstr(r%zu): \"%s\"" ENDL,
 				hl(cstr_check(cstrings[i], strings[i], strlengths[i], strsizes[i])),
 				i + 1, cstrings[i]);
-		free_rlstring(rstrings[i]);
+		vector_delete(rstrings[i]);
 		free((void *)cstrings[i]);
 	}
 	return rv;

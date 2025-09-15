@@ -54,6 +54,7 @@ UTILFILES	=	map.c \
 				message.c \
 				rl42_string.c \
 				strhash.c \
+				utf8.c \
 				vector.c
 
 FILES	=	rl42.c \
@@ -90,6 +91,7 @@ KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
 						$(SRCDIR)/$(UTILDIR)/rl42_string.c \
 						$(SRCDIR)/$(UTILDIR)/vector.c \
 						$(SRCDIR)/$(UTILDIR)/strhash.c \
+						$(SRCDIR)/$(UTILDIR)/utf8.c \
 						$(SRCDIR)/$(UTILDIR)/map.c \
 						$(SRCDIR)/init.c
 
@@ -100,13 +102,19 @@ VECTOR_TEST				=	$(TESTBIN)/vector_test
 MAP_TEST				=	$(TESTBIN)/map_test
 
 STRLEN_UTF8_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/strlen_utf8.c \
-							$(SRCDIR)/$(UTILDIR)/rl42_string.c
+							$(SRCDIR)/$(UTILDIR)/rl42_string.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/utf8.c
 RL42_STRING_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/rl42_string.c \
-							$(SRCDIR)/$(UTILDIR)/rl42_string.c
+							$(SRCDIR)/$(UTILDIR)/rl42_string.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/utf8.c
 VECTOR_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/vector.c \
 							$(SRCDIR)/$(UTILDIR)/vector.c
 MAP_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/map.c \
-							$(SRCDIR)/$(UTILDIR)/map.c
+							$(SRCDIR)/$(UTILDIR)/map.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/strhash.c
 
 all: $(NAME)
 

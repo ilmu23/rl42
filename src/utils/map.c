@@ -7,119 +7,146 @@
 //
 // <<map.c>>
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "internal/_map.h"
+#include "internal/_utils.h"
 
-static inline size_t	_findpair(const map *map, const u32 key);
-static inline pair		*_newpair(void *item1, void *item2);
-static inline u8		_grow(map *map);
+#define _DELETED	((void *)2)
 
-map	*map_new(const size_t size) {
-	map	*out;
+#define _HASH_SALT	347
 
-	if (!size)
-		return NULL;
-	out = malloc(sizeof(*out));
+typedef struct {
+	uintptr_t	key;
+	u8			val[];
+}	pair;
+
+struct __map {
+	map_key_type	key_type;
+	size_t			capacity;
+	size_t			elements;
+	size_t			element_size;
+	void			(*free)(void *);
+	pair			**data;
+};
+
+static inline size_t	_find_pair(const map map, const uintptr_t key);
+static inline u8		_grow(map map);
+
+map	__map_new(const size_t size, const size_t count, const map_key_type type, void (*_free)(void *)) {
+	map	out;
+
+	out = (size) ? malloc(sizeof(*out)) : NULL;
 	if (out) {
-		*out = (map){
-			.items = calloc(size, sizeof(*out->items)),
-			.capacity = size,
-			.itemcount = 0
-		};
-		if (!out->items) {
+		out->data = calloc(count, sizeof(*out->data));
+		if (!out->data) {
 			free(out);
-			out = NULL;
+			return NULL;
 		}
+		out->element_size = size;
+		out->capacity = count;
+		out->key_type = type;
+		out->elements = 0;
+		out->free = _free;
 	}
 	return out;
 }
 
-u8	map_add(map *map, const u32 key, const void *val) {
+void	__map_del(map map) {
+	if (map) {
+		__map_clr(map);
+		free(map->data);
+		free(map);
+	}
+}
+
+u8	__map_set(map map, uintptr_t key, const void *val) {
 	size_t	i;
 
-	if ((map->itemcount * 100) / map->capacity > MAP_GROW_THRESHOLD && !_grow(map))
+	if ((map->elements * 100) / map->capacity > MAP_GROW_THRESHOLD && !_grow(map))
 		return 0;
-	for (i = key % map->capacity; map->items[i]; i = (i < map->capacity - 1) ? i + 1 : 0)
-		;
-	map->items[i] = _newpair((void *)(uintptr_t)key, (void *)val);
-	if (!map->items[i])
-		return 0;
-	map->itemcount++;
+	if (map->key_type == STRING)
+		key = cstr_hash((const char *)key, _HASH_SALT, UINTPTR_MAX);
+	i = key % map->capacity;
+	while (map->data[i] && map->data[i] != _DELETED)
+		i = (i < map->capacity - 1) ? i + 1 : 0;
+	if (!map->data[i]) {
+		map->data[i] = malloc(sizeof(*map->data[i]) + map->element_size);
+		if (!map->data[i])
+			return 0;
+	}
+	map->data[i]->key = key;
+	memcpy(map->data[i]->val, val, map->element_size);
+	map->elements++;
 	return 1;
 }
 
-u8	map_remove(map *map, const u32 key, void (*_free)(void *)) {
+u8	__map_ers(map map, uintptr_t key) {
 	size_t	i;
 
-	i = _findpair(map, key);
-	if (!map->items[i])
+	i = _find_pair(map, (map->key_type == INTEGER) ? key : cstr_hash((const char *)key, _HASH_SALT, UINTPTR_MAX));
+	if (!map->data[i] || map->data[i] == _DELETED)
 		return 0;
-	if (_free)
-		_free(map->items[i]->item2);
-	free(map->items[i]);;
-	map->items[i] = MAP_DELETED;
+	if (map->free)
+		map->free(*(void **)map->data[i]->val);
+	free(map->data[i]);
+	map->data[i] = _DELETED;
+	map->elements--;
 	return 1;
 }
 
-void	*map_find(const map * map, const u32 key) {
+void	*__map_get(const map map, uintptr_t key) {
 	size_t	i;
-
-	i = _findpair(map, key);
-	return (map->items[i]) ? map->items[i]->item2 : MAP_NOT_FOUND;
+	
+	i = _find_pair(map, (map->key_type == INTEGER) ? key : cstr_hash((const char *)key, _HASH_SALT, UINTPTR_MAX));
+	return (map->data[i] && map->data[i] != _DELETED) ? map->data[i]->val : MAP_NOT_FOUND;
 }
 
-u8	map_delete(map *map, void (*_free)(void *)) {
+void	__map_clr(map map) {
 	size_t	i;
 
-	for (i = 0; i < map->capacity; i++)
-		if (map->items[i] && map->items[i] != MAP_DELETED) {
-			if (_free)
-				_free(map->items[i]->item2);
-			free(map->items[i]);
+	for (i = 0; i < map->capacity; i++) {
+		if (map->data[i] && map->data[i] != _DELETED) {
+			if (map->free)
+				map->free(*(void **)map->data[i]->val);
+			free(map->data[i]);
+			map->data[i] = _DELETED;
+			if (!--map->elements)
+				break ;
 		}
-	free(map->items);
-	free(map);
-	return 1;
+	}
 }
 
-static inline size_t	_findpair(const map *map, const u32 key) {
+static inline size_t	_find_pair(const map map, const uintptr_t key) {
 	size_t	i;
 
-	for (i = key % map->capacity; map->items[i]; i = (i < map->capacity - 1) ? i + 1 : 0)
-		if (map->items[i] != MAP_DELETED && (u32)(uintptr_t)map->items[i]->item1 == key)
+	for (i = key % map->capacity; map->data[i]; i = (i < map->capacity - 1) ? i + 1 : 0)
+		if (map->data[i] != _DELETED && map->data[i]->key == key)
 			break ;
 	return i;
 }
 
-static inline pair	*_newpair(void *item1, void *item2) {
-	pair	*out;
-
-	out = malloc(sizeof(*out));
-	if (out) {
-		*out = (pair){
-			.item1 = item1,
-			.item2 = item2
-		};
-	}
-	return out;
-}
-
-static inline u8	_grow(map *map) {
+static inline u8		_grow(map map) {
 	size_t	i;
+	size_t	j;
 	size_t	new_capacity;
-	pair	**new_items;
+	pair	**new_data;
 
 	new_capacity = map->capacity * 2;
-	new_items = calloc(new_capacity, sizeof(*new_items));
-	if (!new_items)
+	new_data = calloc(new_capacity, sizeof(*new_data));
+	if (!new_data)
 		return 0;
-	for (i = map->itemcount = 0; i < map->capacity; i++) {
-		if (map->items[i] && map->items[i] != MAP_DELETED) {
-			new_items[(u32)(uintptr_t)map->items[i]->item1 % new_capacity] = map->items[i];;
-			map->itemcount++;
+	for (i = 0; i < map->capacity; i++) {
+		if (map->data[i] && map->data[i] != _DELETED) {
+			j = map->data[i]->key % new_capacity;
+			while (new_data[j])
+				j = (j < new_capacity - 1) ? j + 1 : 0;
+			new_data[j] = map->data[i];
 		}
 	}
-	free(map->items);
+	free(map->data);
 	map->capacity = new_capacity;
-	map->items = new_items;
+	map->data = new_data;
 	return 1;
 }

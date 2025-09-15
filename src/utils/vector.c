@@ -7,213 +7,137 @@
 //
 // <<vector.c>>
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "internal/_vector.h"
 
-static enum {
-	SORT_STAGE_1,
-	SORT_STAGE_2
-}	sort_stage;
+struct __vec {
+	void	(*free)(void *);
+	size_t	element_size;
+	size_t	capacity;
+	size_t	elements;
+	u8		*data;
+};
 
-static inline u8	_ascending_sort(const uintptr_t *e1, const uintptr_t *e2);
-static inline u8	_descending_sort(const uintptr_t *e1, const uintptr_t *e2);
+#define index(vec, i)	((void *)((uintptr_t)vec->data + (vec->element_size * i)))
 
-vector	*vector_new(const size_t size, const vector_sort_mode smode) {
-	vector	*out;
+static inline void	_set_element(vector vec, const size_t i, const void *val);
 
-	if (!size)
-		return NULL;
-	out = malloc(sizeof(*out));
+vector	__vec_new(const size_t size, const size_t count, void (*_free)(void *)) {
+	vector	out;
+
+	out = (size) ? malloc(sizeof(*out)) : NULL;
 	if (out) {
-		*out = (vector) {
-			.sort_mode = smode,
-			.data = malloc(size * sizeof(*out->data)),
-			.capacity = size,
-			.size = 0
-		};
+		out->data = malloc(size * count);
 		if (!out->data) {
 			free(out);
-			out = NULL;
+			return NULL;
 		}
+		out->element_size = size;
+		out->capacity = count;
+		out->elements = 0;
+		out->free = _free;
 	}
 	return out;
 }
 
-u8	vector_add(vector *vec, const uintptr_t data) {
-	uintptr_t	*new_arr;
-	size_t		i;
-
-	if (vec->size == vec->capacity) {
-		new_arr = malloc(vec->capacity * 2 * sizeof(*new_arr));
-		if (!new_arr)
-			return 0;
-		memcpy(new_arr, vec->data, vec->capacity * sizeof(*new_arr));
-		free(vec->data);
-		vec->data = new_arr;
-		vec->capacity *= 2;
-	}
-	switch (vec->sort_mode) {
-		case ASCENDING:
-//			_lower_bound_ascending(NULL, NULL);
-			sort_stage = SORT_STAGE_1;
-			i = vector_find(vec, data, _ascending_sort);
-			break ;
-		case DESCENDING:
-//			_lower_bound_descending(NULL, NULL);
-			sort_stage = SORT_STAGE_1;
-			i = vector_find(vec, data, _descending_sort);
-			break ;
-		case NONE:
-			i = vec->size;
-	}
-	if (i == VECTOR_NOT_FOUND)
-		i = (sort_stage == SORT_STAGE_1) ? 0 : vec->size;
-	if (i != vec->size)
-		memmove(&vec->data[i + 1], &vec->data[i], (vec->size - i) * sizeof(*vec->data));
-	vec->data[i] = data;
-	vec->size++;
-	return 1;
-}
-
-u8	vector_remove(vector *vec, const size_t i, void (*_free)(void *)) {
-	if (i >= vec->size)
-		return 0;
-	if (_free)
-		_free((void *)vec->data[i]);
-	if (i < vec->size - 1)
-		memmove(&vec->data[i], &vec->data[i + 1], (vec->size - i - 1) * sizeof(*vec->data));
-	vec->size--;
-	return 1;
-}
-
-size_t	vector_find(const vector *vec, const uintptr_t data, u8 (*cmp)(const uintptr_t *, const uintptr_t *)) {
-	size_t	search_width;
-	size_t	i;
-
-	if (cmp) {
-		for (i = 0; i < vec->size; i++)
-			if (cmp(&data, &vec->data[i]))
-				break ;
-	} else {
-		switch (vec->sort_mode) {
-			case ASCENDING:
-				for (i = search_width = vec->size / 2; data != vec->data[i];) {
-					search_width /= 2;
-					if (data < vec->data[i])
-						i += search_width;
-					else
-						i -= search_width;
-				}
-				break ;
-			case DESCENDING:
-				for (i = search_width = vec->size / 2; data != vec->data[i];) {
-					search_width /= 2;
-					if (data < vec->data[i])
-						i -= search_width;
-					else
-						i += search_width;
-				}
-				break ;
-			case NONE:
-				for (i = 0; i < vec->size; i++)
-					if (data == vec->data[i])
-						break ;
-		}
-	}
-	return (i < vec->size) ? i : VECTOR_NOT_FOUND;
-}
-
-uintptr_t	vector_get(const vector *vec, const size_t i) {
-	return (i < vec->size) ? vec->data[i] : VECTOR_OUT_OF_BOUNDS;
-}
-
-void	*vector_get_raw_data(const vector *vec, const size_t element_size, const size_t n) {
-	size_t	i;
-	size_t	_n;
-	void	*out;
-
-	if (element_size != 1 && element_size != 2 && element_size != 4 && element_size != 8)
-		return NULL;
-	_n = (n < vec->size) ? n : vec->size;
-	out = malloc((_n + 1) * element_size);
-	if (out) {
-		for (i = 0; i < _n; i++) {
-			switch (element_size) {
-				case 1:
-					((u8 *)out)[i] = (u8)vec->data[i];
-					break ;
-				case 2:
-					((u16 *)out)[i] = (u16)vec->data[i];
-					break ;
-				case 4:
-					((u32 *)out)[i] = (u32)vec->data[i];
-					break ;
-				case 8:
-					((u64 *)out)[i] = (u64)vec->data[i];
-					break ;
-			}
-		}
-	}
-	switch (element_size) {
-		case 1:
-			((u8 *)out)[i] = (u8)0;
-			break ;
-		case 2:
-			((u16 *)out)[i] = (u16)0;
-			break ;
-		case 4:
-			((u32 *)out)[i] = (u32)0;
-			break ;
-		case 8:
-			((u64 *)out)[i] = (u64)0;
-			break ;
-	}
-	return out;
-}
-
-u8	vector_delete(vector *vec, void (*_free)(void *)) {
-	size_t	i;
-
+void	__vec_del(vector vec) {
 	if (vec) {
-		if (_free)
-			for (i = 0; i < vec->size; i++)
-				_free((void *)vec->data[i]);
+		__vec_clr(vec);
 		free(vec->data);
 		free(vec);
 	}
+}
+
+u8	__vec_psh(vector vec, const void *val) {
+	if (vec->elements == vec->capacity && !__vec_rsz(vec, vec->capacity * 2))
+		return 0;
+	_set_element(vec, vec->elements++, val);
 	return 1;
 }
 
-static inline u8	_ascending_sort(const uintptr_t *e1, const uintptr_t *e2) {
-
-	u8					rv;
-
-	switch (sort_stage) {
-		case SORT_STAGE_1:
-			if (*e1 > *e2)
-				sort_stage = SORT_STAGE_2;
-			return 0;
-		case SORT_STAGE_2:
-			rv = *e1 < *e2;
-			if (rv)
-				sort_stage = SORT_STAGE_1;
-			return rv;
+void	__vec_pop(vector vec) {
+	if (vec->elements) {
+		vec->elements--;
+		if (vec->free)
+			vec->free (*(void **)index(vec, vec->elements));
 	}
-	return 0;
 }
 
-static inline u8	_descending_sort(const uintptr_t *e1, const uintptr_t *e2) {
-	u8					rv;
+void	*__vec_get(const vector vec, const size_t i) {
+	return (i < vec->elements) ? index(vec, i) : VECTOR_OUT_OF_BOUNDS;
+}
 
-	switch (sort_stage) {
-		case SORT_STAGE_1:
-			if (*e1 < *e2)
-				sort_stage = SORT_STAGE_2;
-			return 0;
-		case SORT_STAGE_2:
-			rv = *e1 > *e2;
-			if (rv)
-				sort_stage = SORT_STAGE_1;
-			return rv;
+u8	__vec_set(vector vec, const size_t i, const void *val) {
+	if (i >= vec->elements)
+		return 0;
+	_set_element(vec, i, val);
+	return 1;
+}
+
+size_t	__vec_sze(const vector vec) {
+	return vec->elements;
+}
+
+size_t	__vec_cap(const vector vec) {
+	return vec->capacity;
+}
+
+u8	__vec_rsz(vector vec, const size_t size) {
+	if (size < vec->elements && vec->free) {
+		do
+			vec->free(*(void **)index(vec, --vec->elements));
+		while (size < vec->elements);
 	}
-	return 0;
+	vec->capacity = size;
+	vec->data = realloc(vec->data, vec->capacity * vec->element_size);
+	return (vec->data) ? 1 : 0;
+}
+
+u8	__vec_stf(vector vec) {
+	return __vec_rsz(vec, vec->elements);
+}
+
+void	__vec_clr(vector vec) {
+	if (vec->free) {
+		do
+			vec->free(*(void **)index(vec, --vec->elements));
+		while (vec->elements);
+	}
+	vec->elements = 0;
+}
+
+u8	__vec_ins(vector vec, const size_t i, const void *val) {
+	size_t	_i;
+
+	if (i >= vec->elements)
+		return __vec_psh(vec, val);
+	if (vec->elements == vec->capacity && !__vec_rsz(vec, vec->capacity * 2))
+		return 0;
+	for (_i = vec->elements; _i > i; _i--)
+		_set_element(vec, _i, __vec_get(vec, _i - 1));
+	_set_element(vec, i, val);
+	vec->elements++;
+	return 1;
+}
+
+u8	__vec_ers(vector vec, const size_t i) {
+	size_t	_i;
+
+	if (i >= vec->elements)
+		return 0;
+	if (i != vec->elements - 1) {
+		if (vec->free)
+			vec->free(*(void **)index(vec, i));
+		for (_i = i; _i < vec->elements - 1; _i++)
+			_set_element(vec, _i, __vec_get(vec, _i + 1));
+		vec->elements--;
+	} else
+		__vec_pop(vec);
+	return 1;
+}
+
+static inline void	_set_element(vector vec, const size_t i, const void *val) {
+	memmove(index(vec, i), val, vec->element_size);
 }

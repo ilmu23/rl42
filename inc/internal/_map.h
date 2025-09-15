@@ -13,55 +13,29 @@
 
 #include "internal/_data.h"
 
-#include <stdlib.h>
+typedef enum {
+	STRING,
+	INTEGER
+}	map_key_type;
 
-#define MAP_DELETED		((void *)1)
-#define MAP_NOT_FOUND	((void *)2)
+#define MAP_NOT_FOUND	((void *)1)
 
-#define MAP_GROW_THRESHOLD	70
+#define MAP_GROW_THRESHOLD	80
 
-/** @brief Creates a new map capable of storing at least size elements
- *
- * @param size Amount of elements to reserve memory for
- * @returns @c <b>map *</b> The newly created map,
- * NULL if creation failed
- */
-map		*map_new(const size_t size);
+#define map(type, count, key_type, free)	(__map_new(sizeof(type), count, key_type, free))
+map		__map_new(const size_t size, const size_t count, const map_key_type type, void (*free)(void *));
 
-/** @brief Adds a new element to the map
- *
- * @param map Map to operate on
- * @param key Key for accessing the element
- * @param val The element itself
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		map_add(map *map, const u32 key, const void *val);
+#define map_delete(map)	(__map_del(map))
+void	__map_del(map map);
 
-/** @brief Removes an element from a map
- *
- * @param map Map to operate on
- * @param key Key for accessing the element
- * @param _free Function for freeing the element
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 if no element was found
- */
-u8		map_remove(map *map, const u32 key, void (*_free)(void *));
+#define map_set(map, key, value)	(__map_set(map, (const uintptr_t)key, (const void *)&value))
+u8		__map_set(map map, uintptr_t key, const void *val);
 
-/** @brief Looks for the element identified by key
- *
- * @param map Map to operate on
- * @param key Key for accessing the element
- * @returns @c <b>void *</b> The element referred to by key,
- * MAP_NOT_FOUND if no element corresponding to key was found
- */
-void	*map_find(const map *map, const u32 key);
+#define map_erase(map, key)	(__map_ers(map, (const uintptr_t)key))
+u8		__map_ers(map map, uintptr_t key);
 
-/** @brief Frees all resources associated with a map
- *
- * @param map Map to free
- * @param _free Function for freeing the elements stored in the map
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		map_delete(map *map, void (*_free)(void *));
+#define map_get(map, key)	(__map_get(map, (const uintptr_t)key))
+void	*__map_get(const map map, uintptr_t key);
+
+#define	map_clear(map)	(__map_clr(map))
+void	__map_clr(map map);

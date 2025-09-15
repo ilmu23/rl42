@@ -50,6 +50,12 @@ rl42_key_tree		*get_key_tree(const rl42_editing_mode mode);
  */
 rl42_key_tree		*new_key_tree_node(void);
 
+/** @brief Frees a key tree node
+ *
+ * @param node Node to free
+ */
+void				free_key_tree_node(rl42_key_tree *node);
+
 /** @brief Allocates the roots of all key trees
  *
  * @returns @c <b>u8</b> Non-zero on success,
@@ -64,4 +70,4 @@ u8					init_key_trees(void);
  * EXPAND_INVALID_SEQ if seq was invalid,
  * NULL if an error occurred
  */
-rl42_string			*expand_seq(const char *seq);
+vector			expand_seq(const char *seq);

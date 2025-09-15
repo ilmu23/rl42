@@ -12,6 +12,7 @@
 #include "internal/_defs.h"
 
 #include "internal/_data.h"
+#include "internal/_vector.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -26,7 +27,7 @@
  * @returns @c <b>rl42_string *</b> The converted string,
  * NULL if conversion failed
  */
-rl42_string	*cstr_to_rl42str(const char *s);
+vector		cstr_to_rl42str(const char *s);
 
 /** @brief Converts a rl42 string to a C string
  *
@@ -34,7 +35,7 @@ rl42_string	*cstr_to_rl42str(const char *s);
  * @returns @c <b>char *</b> The converted string,
  * NULL if conversion failed
  */
-char		*rl42str_to_cstr(const rl42_string *s);
+char		*rl42str_to_cstr(const vector s);
 
 /** @brief Counts the lenght of an utf-8 encoded C string
  *
@@ -49,6 +50,22 @@ size_t		strlen_utf8(const char *s);
  * @returns @c <b>u8</b> Size of the character
  */
 u8			charsize_utf8(const char c);
+
+/** @brief Decodes an utf-8 encoded character into its unicode codepoint
+ *
+ * @param c Character to decode
+ * @returns @c <b>u32</b> Unicode codepoint of the character
+ */
+u32			utf8_decode(const char *c);
+
+/** @brief Encodes an unicode codepoint into a C string
+ * @param ucp Codepoint to encode
+ * @param buf Optional buffer for encoding
+ * @returns @c <b>const char *</b> Pointer to encoded string
+ * (buf or new allocation, depending on whether buf was NULL)
+ * NULL if encoding failed
+ */
+const char	*utf8_encode(const u32 ucp, char buf[5]);
 
 /** @brief Generates a hash from a cstr
  *
@@ -66,7 +83,7 @@ u64			cstr_hash(const char *s, const u64 salt, const size_t max);
  * @param max Maximum value of the hash
  * @returns @c <b>u64</b> Hash of the string
  */
-u64			rl42str_hash(const rl42_string *s, const u64 salt, const size_t max);
+u64			rl42str_hash(const vector s, const u64 salt, const size_t max);
 
 /** @brief Displays an error message
  *

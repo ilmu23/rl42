@@ -40,7 +40,7 @@ rl42_key_tree	*new_key_tree_node(void) {
 	if (out) {
 		*out = (rl42_key_tree){
 			.f = NULL,
-			.next = map_new(KEY_TREE_DEFAULT_MAP_SIZE),
+			.next = map(rl42_key_tree *, KEY_TREE_DEFAULT_MAP_SIZE, INTEGER, (void (*)(void *))free_key_tree_node),
 			.c = 0
 		};
 		if (!out->next) {
@@ -49,6 +49,11 @@ rl42_key_tree	*new_key_tree_node(void) {
 		}
 	}
 	return out;
+}
+
+void	free_key_tree_node(rl42_key_tree *node) {
+	map_delete(node->next);
+	free(node);
 }
 
 u8	init_key_trees(void) {

@@ -37,15 +37,15 @@ static const struct {
 };
 
 i32	main(void) {
-	rl42_fn_info	*fn_info1;
-	rl42_fn_info	*fn_info2;
+	const rl42_fn_info	*fn_info1;
+	const rl42_fn_info	*fn_info2;
 	size_t			i;
 	i32				rv;
 	u8				check;
 
 	rv = 0;
 	info("Test 1 ---- fn_info on non-registered functions\n");
-	fn_info1 = get_fn_info(_fn_1);
+	fn_info1 = get_fn_info_fn(_fn_1);
 	if (fn_info1 != NULL)
 		rv = 1;
 	fprintf(stderr, "%sget_fn_info(_fn_1): %p, expected %p" ENDL, hl(fn_info1 == NULL), (void *)fn_info1, NULL);
@@ -61,7 +61,7 @@ i32	main(void) {
 	}
 	info("TEST 2 ---- fn_info on registered functions\n");
 	for (i = 0; i < _FN_COUNT; i++) {
-		fn_info1 = get_fn_info(functions[i].f);
+		fn_info1 = get_fn_info_fn(functions[i].f);
 		fn_info2 = get_fn_info_name(functions[i].fname);
 		check = (fn_info1 && fn_info1 == fn_info2) ? 1 : 0;
 		if (!_print_fn_info(fn_info1, fn_info2, check, i))
@@ -83,7 +83,7 @@ static inline u8	_print_fn_info(const rl42_fn_info *fn_info1, const rl42_fn_info
 
 	rv = 1;
 	if (check) {
-		fprintf(stderr, SGR_OK "get_fn_info(_fn_%zu) == get_fn_info_name(%s)" ENDL, i + 1, functions[i].fname);
+		fprintf(stderr, SGR_OK "get_fn_info_fn(_fn_%zu) == get_fn_info_name(%s)" ENDL, i + 1, functions[i].fname);
 		_check = (fn_info1->f == functions[i].f) ? 1 : 0;
 		if (!_check)
 			rv = 0;

@@ -8,67 +8,44 @@
 // <<rl42_string.c>>
 
 #include "internal/_utils.h"
-#include <limits.h>
 
-rl42_string	*cstr_to_rl42str(const char *s) {
-	rl42_string	*out;
-	size_t		i;
-
-	out = malloc(sizeof(*out));
-	if (out) {
-		out->len = strlen_utf8(s);
-		out->cap = out->len;
-		out->str = calloc(out->cap, sizeof(*out->str));
-		if (out->str) {
-			for (i = out->sze = 0; *s; i++) {
-				out->str[i].csize = charsize_utf8(*s);
-				memcpy(out->str[i].cbuf, s, out->str[i].csize);
-				out->sze += out->str[i].csize;
-				s += out->str[i].csize;
-			}
-		} else {
-			free(out);
-			out = NULL;
-		}
-	}
-	return out;
-}
-
-char	*rl42str_to_cstr(const rl42_string *s) {
-	size_t	i;
-	size_t	j;
-	char	*out;
-
-	out = malloc(s->sze + 1);
-	if (out) {
-		for (i = j = 0; i < s->len; i++) {
-			memcpy(&out[j], s->str[i].cbuf, s->str[i].csize);
-			j += s->str[i].csize;
-		}
-		out[j] = '\0';
-	}
-	return out;
-}
-
-size_t	strlen_utf8(const char *s) {
+vector	cstr_to_rl42str(const char *s) {
+	vector	out;
 	size_t	len;
 	size_t	i;
+	u32		ucp;
 
-	for (i = len = 0; s[i]; len++)
-		i += charsize_utf8(s[i]);
-	return len;
+	len = strlen(s);
+	out = vector(u32, (u32){strlen_utf8(s)}, NULL);
+	if (out) for (i = 0; i < len; i++) {
+		ucp = utf8_decode(&s[i]);
+		if (!vector_push(out, ucp))
+			goto cstr_to_rl42str_err;
+		if (ucp > 0xFFFFU)
+			i += 3;
+		else if (ucp > 0x7FFU)
+			i += 2;
+		else if (ucp > 0x7FU)
+			i++;
+	}
+	return out;
+cstr_to_rl42str_err:
+	vector_delete(out);
+	return NULL;
 }
 
-u8	charsize_utf8(const char c) {
-	if (c & 0x80) {
-		switch (c & 0x70) {
-			case 0x70:
-				return 4;
-			case 0x60:
-				return 3;
-			case 0x40:
-				return 2;
-		}
+char	*rl42str_to_cstr(const vector s) {
+	size_t	i;
+	size_t	j;
+	size_t	len;
+	char	*out;
+
+	len = vector_size(s);
+	out = malloc(((len * sizeof(u32)) + 1) * sizeof(*out));
+	if (out) for (i = j = 0; i < len; i++) {
+		utf8_encode(*(u32 *)vector_get(s, i), &out[j]);
+		while (out[j])
+			j++;
 	}
-	return 1;
+	return out;
 }

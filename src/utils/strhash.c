@@ -8,6 +8,7 @@
 // <<strhash.c>>
 
 #include "internal/_utils.h"
+#include "internal/_vector.h"
 
 static inline u64	_upow(const u64 x, u64 y);
 
@@ -23,16 +24,14 @@ u64	cstr_hash(const char *s, const u64 salt, const size_t max) {
 	return hash;
 }
 
-u64	rl42str_hash(const rl42_string *s, const u64 salt, const size_t max) {
+u64	rl42str_hash(const vector s, const u64 salt, const size_t max) {
 	size_t	i;
+	size_t	len;
 	u64		hash;
-	u8		j;
 
-	for (i = hash = 0; i < s->len; i++) {
-		for (j = 0; j < s->str[i].csize; j++) {
-			hash += _upow(salt, s->len - i + j + 1) * s->str[i].cbuf[j];
-			hash %= max;
-		}
+	for (i = hash = 0 , len = vector_size(s); i < len; i++) {
+		hash += _upow(salt, len - i + 1) * *(u32 *)vector_get(s, i);
+		hash %= max;
 	}
 	return hash;
 }

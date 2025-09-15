@@ -36,4 +36,4 @@ rl42_fn_info	*get_fn_info_name(const char *f);
  * @returns @c <b>rl42_fn_info</b> Information about the function,
  * NULL if the function hasn't been registered
  */
-rl42_fn_info	*get_fn_info(rl42_fn f);
+rl42_fn_info	*get_fn_info_fn(rl42_fn f);
