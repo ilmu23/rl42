@@ -24,6 +24,10 @@ struct __vec {
 
 static inline void	_set_element(vector vec, const size_t i, const void *val);
 
+static void	__free(void **blk) {
+	free(*blk);
+}
+
 vector	__vec_new(const size_t size, const size_t count, void (*_free)(void *)) {
 	vector	out;
 
@@ -37,7 +41,7 @@ vector	__vec_new(const size_t size, const size_t count, void (*_free)(void *)) {
 		out->element_size = size;
 		out->capacity = count;
 		out->elements = 0;
-		out->free = _free;
+		out->free = (_free != VECTOR_FREE) ? _free : (void (*)(void *))__free;
 	}
 	return out;
 }
@@ -87,7 +91,7 @@ size_t	__vec_cap(const vector vec) {
 u8	__vec_rsz(vector vec, const size_t size) {
 	if (size < vec->elements && vec->free) {
 		do
-			vec->free(*(void **)index(vec, --vec->elements));
+			vec->free(index(vec, --vec->elements));
 		while (size < vec->elements);
 	}
 	vec->capacity = size;
@@ -102,7 +106,7 @@ u8	__vec_stf(vector vec) {
 void	__vec_clr(vector vec) {
 	if (vec->free) {
 		do
-			vec->free(*(void **)index(vec, --vec->elements));
+			vec->free(index(vec, --vec->elements));
 		while (vec->elements);
 	}
 	vec->elements = 0;
@@ -129,7 +133,7 @@ u8	__vec_ers(vector vec, const size_t i) {
 		return 0;
 	if (i != vec->elements - 1) {
 		if (vec->free)
-			vec->free(*(void **)index(vec, i));
+			vec->free(index(vec, i));
 		for (_i = i; _i < vec->elements - 1; _i++)
 			_set_element(vec, _i, __vec_get(vec, _i + 1));
 		vec->elements--;

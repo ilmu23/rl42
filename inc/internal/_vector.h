@@ -13,6 +13,8 @@
 
 #include "internal/_data.h"
 
+#define VECTOR_FREE	((void (*)(void *))1)
+
 #define VECTOR_OUT_OF_BOUNDS	((void *)1)
 
 #define vector(type, count, free)	(__vec_new(sizeof(type), count, free))
