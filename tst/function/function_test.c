@@ -74,6 +74,7 @@ i32	main(void) {
 		rv = 1;
 	if (rl42_register_function(_fn_3, "fn-3"))
 		rv = 1;
+	clean_fns();
 	return rv;
 }
 
