@@ -24,9 +24,10 @@ static inline u8	_init_fns(void);
 extern term_settings	old;
 extern term_settings	new;
 
+static u8	init_in_progress = 0;
+static u8	init = 0;
+
 u8	rl42_init(void) {
-	static u8	init = 0;
-	static u8	init_in_progress = 0;
 	u8			rv;
 
 	rv = 1;
@@ -185,8 +186,11 @@ static inline void	_init_binds(void) {
 }
 
 static inline void	_rl42_exit(void) {
-	term_apply_settings(TERM_SETTINGS_DEFAULT);
-	// TODO: proper exit cleanup
+	if (init) {
+		term_apply_settings(TERM_SETTINGS_DEFAULT);
+		clean_key_trees();
+		clean_fns();
+	}
 }
 
 static inline u8	_init_term(void) {

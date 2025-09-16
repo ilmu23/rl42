@@ -56,6 +56,12 @@ rl42_key_tree		*new_key_tree_node(void);
  */
 void				free_key_tree_node(rl42_key_tree *node);
 
+/** @brief Frees all keybind information
+ *
+ * Only to be used on exit as a cleanup function
+ */
+void				clean_key_trees(void);
+
 /** @brief Allocates the roots of all key trees
  *
  * @returns @c <b>u8</b> Non-zero on success,

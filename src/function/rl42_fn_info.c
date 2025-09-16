@@ -11,6 +11,8 @@
 
 static vector	functions;
 
+static void	_clean_fn_info(rl42_fn_info *f);
+
 rl42_fn_info	*get_fn_info_name(const char *f) {
 	const rl42_fn_info	*fns;
 	size_t				size;
@@ -37,12 +39,16 @@ rl42_fn_info	*get_fn_info_fn(rl42_fn f) {
 	return NULL;
 }
 
+void	clean_fns(void) {
+	vector_delete(functions);
+}
+
 u8	rl42_register_function(rl42_fn f, const char *fname) {
 	const rl42_fn_info	*tmp;
 	rl42_fn_info		new;
 
 	if (!functions) {
-		functions = vector(rl42_fn_info, FUNCTION_COUNT, NULL);
+		functions = vector(rl42_fn_info, FUNCTION_COUNT, (void (*)(void *))_clean_fn_info);
 		if (!functions)
 			return error("rl42_register_function: unable to create function database\n");
 	}
@@ -66,4 +72,10 @@ u8	rl42_register_function(rl42_fn f, const char *fname) {
 		return error("rl42_register_function(%s): %s\n", fname, strerror(errno));
 	}
 	return (vector_push(functions, new)) ? 1 : error("rl42_register_function(%s): %s\n", fname, strerror(errno));
+}
+
+static void	_clean_fn_info(rl42_fn_info *f) {
+	vector_delete(f->binds[0]);
+	vector_delete(f->binds[1]);
+	vector_delete(f->binds[2]);
 }

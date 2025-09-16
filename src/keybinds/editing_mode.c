@@ -56,6 +56,12 @@ void	free_key_tree_node(rl42_key_tree *node) {
 	free(node);
 }
 
+void	clean_key_trees(void) {
+	free_key_tree_node(trees[EMACS]);
+	free_key_tree_node(trees[VI_CMD]);
+	free_key_tree_node(trees[VI_INS]);
+}
+
 u8	init_key_trees(void) {
 	trees[EMACS] = new_key_tree_node();
 	trees[VI_CMD] = new_key_tree_node();
