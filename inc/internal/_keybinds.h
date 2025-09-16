@@ -76,4 +76,4 @@ u8					init_key_trees(void);
  * EXPAND_INVALID_SEQ if seq was invalid,
  * NULL if an error occurred
  */
-vector			expand_seq(const char *seq);
+vector				expand_seq(const char *seq);

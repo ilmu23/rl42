@@ -32,4 +32,4 @@ char	*ft_readline(const char *prompt);
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8	rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
+u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
