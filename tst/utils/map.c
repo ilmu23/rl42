@@ -216,7 +216,7 @@ static inline u8	_test4(void) {
 
 	rv = 1;
 	fprintf(stderr, SGR_INFO "Test 2 ---- string map with string keys" ENDL);
-	map = map(char *, 12, INTEGER, free);
+	map = map(char *, 12, STRING, free);
 	if (!map) {
 		fprintf(stderr, SGR_KO "failed to create a map of size 12" ENDL);
 		return 0;
