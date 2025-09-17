@@ -89,7 +89,7 @@ static inline i32	_test2(void) {
 
 	rv = 1;
 	info("Test 2 ---- dynamic resizing / element freeing\n");
-	vector = vector(char *, 2, VECTOR_FREE);
+	vector = vector(char *, 2, free);
 	if (!vector)
 		return error("Failed to create a vector of size 2\n");
 	for (i = 0; i < 5; i++) {
