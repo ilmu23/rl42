@@ -33,6 +33,9 @@ void	*__vec_get(const vector vec, const size_t i);
 #define	vector_set(vector, i, value)	(__vec_set(vector, i, (const void *)&value))
 u8		__vec_set(vector vec, const size_t i, const void *val);
 
+#define vector_swap(vector, i1, i2)	(__vec_swp(vector, i1, i2))
+u8		__vec_swp(vector vec, const size_t i1, const size_t i2);
+
 #define	vector_size(vector)	(__vec_sze(vector))
 size_t	__vec_sze(const vector vec);
 

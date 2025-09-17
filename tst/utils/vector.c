@@ -127,33 +127,38 @@ static inline i32	_test3(void) {
 	vector		vector;
 	size_t		i;
 	u32			vals[5] = {42, 21, 1, 23, 814};
+	u32			expected[5] = {814, 21, 23, 1, 42};
 	i32			chk;
 	i32			rv;
 
 	rv = 1;
-	info("Test 3 ---- insertion / out of bounds access\n");
+	info("Test 3 ---- insertion / out of bounds access / element swapping\n");
 	vector = vector(u32, 1, NULL);
 	if (!vector)
 		return error("Failed to create a vector of size 1\n");
 	for (i = 0; i < 5; i++)
 		if (!vector_insert(vector, 0, vals[4 - i]))
 			return error("Failed to add element #%zu\n", 4 - i + 1);
+	if (!vector_swap(vector, 0, 4))
+		return error("Failed to swap elements 1 and 5\n");
+	if (!vector_swap(vector, 2, 3))
+		return error("Failed to swap elements 3 and 4\n");
+	if (!vector_swap(vector, 1, 1))
+		return error("Failed to swap element 2 with itself\n");
 	tmp = vector_get(vector, 0);
-	chk = memcmp(tmp, vals, sizeof(vals));
+	chk = memcmp(tmp, expected, sizeof(vals));
 	if (chk != 0)
 		rv = 0;
 	fprintf(stderr, "%sraw data comparison %s" ENDL, hl(chk == 0), (chk == 0) ? "OK" : "KO");
 	for (i = 0; i < 6; i++) {
-		tmp = vector_get(vector, 0);
+		tmp = vector_get(vector, i);
 		if (tmp == VECTOR_OUT_OF_BOUNDS) {
 			fprintf(stderr, "%svector[%zu]: access out of bounds" ENDL, hl(i == 5), i);
 			continue ;
 		}
-		if (*tmp != vals[i])
+		if (*tmp != expected[i])
 			rv = 0;
-		fprintf(stderr, "%svector[%zu]: %u" ENDL, hl(*tmp == vals[i]), i, *tmp);
-		if (!vector_erase(vector, 0))
-			rv = error("Failed to remove element #%zu\n", i);
+		fprintf(stderr, "%svector[%zu]: %u" ENDL, hl(*tmp == expected[i]), i, *tmp);
 	}
 	vector_delete(vector);
 	return rv;
