@@ -32,7 +32,7 @@ u8 rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const r
 		if (tmp == MAP_NOT_FOUND) {
 			tmp = new_key_tree_node();
 			if (!tmp || !map_set(binds->next, *(u32 *)vector_get(expanded_seq, i), tmp)) {
-				free_key_tree_node(tmp);
+				free_key_tree_node(&tmp);
 				vector_delete(expanded_seq);
 				return error("rl42: rl42_bind(%s, %s): %s\n", seq, f, strerror(errno));
 			}

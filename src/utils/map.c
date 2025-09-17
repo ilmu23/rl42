@@ -34,6 +34,8 @@ struct __map {
 static inline size_t	_find_pair(const map map, const uintptr_t key);
 static inline u8		_grow(map map);
 
+static void	__free(void **blk);
+
 map	__map_new(const size_t size, const size_t count, const map_key_type type, void (*_free)(void *)) {
 	map	out;
 
@@ -48,7 +50,7 @@ map	__map_new(const size_t size, const size_t count, const map_key_type type, vo
 		out->capacity = count;
 		out->key_type = type;
 		out->elements = 0;
-		out->free = _free;
+		out->free = (_free != free) ? _free : (void (*)(void *))__free;
 	}
 	return out;
 }
@@ -89,7 +91,7 @@ u8	__map_ers(map map, uintptr_t key) {
 	if (!map->data[i] || map->data[i] == _DELETED)
 		return 0;
 	if (map->free)
-		map->free(*(void **)map->data[i]->val);
+		map->free(map->data[i]->val);
 	free(map->data[i]);
 	map->data[i] = _DELETED;
 	map->elements--;
@@ -109,7 +111,7 @@ void	__map_clr(map map) {
 	for (i = 0; i < map->capacity; i++) {
 		if (map->data[i] && map->data[i] != _DELETED) {
 			if (map->free)
-				map->free(*(void **)map->data[i]->val);
+				map->free(map->data[i]->val);
 			free(map->data[i]);
 			map->data[i] = _DELETED;
 			if (!--map->elements)
@@ -149,4 +151,8 @@ static inline u8		_grow(map map) {
 	map->capacity = new_capacity;
 	map->data = new_data;
 	return 1;
+}
+
+static void	__free(void **blk) {
+	free(*blk);
 }

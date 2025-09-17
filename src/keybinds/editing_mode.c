@@ -51,15 +51,15 @@ rl42_key_tree	*new_key_tree_node(void) {
 	return out;
 }
 
-void	free_key_tree_node(rl42_key_tree *node) {
-	map_delete(node->next);
-	free(node);
+void	free_key_tree_node(rl42_key_tree **node) {
+	map_delete((*node)->next);
+	free(*node);
 }
 
 void	clean_key_trees(void) {
-	free_key_tree_node(trees[EMACS]);
-	free_key_tree_node(trees[VI_CMD]);
-	free_key_tree_node(trees[VI_INS]);
+	free_key_tree_node(&trees[EMACS]);
+	free_key_tree_node(&trees[VI_CMD]);
+	free_key_tree_node(&trees[VI_INS]);
 }
 
 u8	init_key_trees(void) {

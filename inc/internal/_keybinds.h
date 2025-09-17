@@ -52,9 +52,9 @@ rl42_key_tree		*new_key_tree_node(void);
 
 /** @brief Frees a key tree node
  *
- * @param node Node to free
+ * @param node Pointer to node to free
  */
-void				free_key_tree_node(rl42_key_tree *node);
+void				free_key_tree_node(rl42_key_tree **node);
 
 /** @brief Frees all keybind information
  *
