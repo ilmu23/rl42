@@ -27,6 +27,11 @@ typedef enum __redisplay_mode {
 	CLEAR
 }	rl42_redisplay_mode;
 
+typedef enum __direction {
+	FORWARD,
+	BACKWARD
+}	rl42_direction;
+
 // Generic map
 typedef struct __map *	map;
 
@@ -39,8 +44,9 @@ typedef struct __vec *	vector;
 // History node containing the original line and
 // the potentially edited version
 typedef struct __hist_node {
-	const char	*line;
-	const char	*edit;
+	const size_t	entry_n;
+	const char		*line;
+	const char		*edit;
 }	rl42_hist_node;
 
 // Node in a key sequence tree

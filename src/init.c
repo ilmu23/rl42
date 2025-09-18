@@ -8,6 +8,7 @@
 // <<init.c>>
 
 #include "internal/_term.h"
+#include "internal/_history.h"
 #include "internal/_keybinds.h"
 
 #define bind_emacs(seq, f)	(rl42_bind(seq, f, WARN, EMACS))
@@ -47,7 +48,8 @@ u8	rl42_init(void) {
 		if (!_init_fns())
 			rv = 0;
 		_init_binds();
-		// TODO: load history
+		if (!hist_load(getenv("RL42_HISTORY")))
+			rv = 0;
 		// TODO: read initfile
 		// MAYBE: init highlight color
 		init_in_progress = 0;

@@ -5,31 +5,45 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<_history.h>>
 
 #pragma once
 
-#include "defs.h"
+#include "internal/_data.h"
 
-#include "data.h"
-
-#define RL42_VERSION 3.0.7
-
-/** @brief Gets a line from the user with editing
+/** @brief Get neighboring history node
  *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
+ * @param node Node to get from
+ * @param direction Direction to move to
+ * @returns @c <b>rl42_hist_node *</b> Neighboring node,
+ * node if trying to go beyond the start or end of history
  */
-char	*ft_readline(const char *prompt);
+rl42_hist_node	*hist_get_next_node(const rl42_hist_node *node, const rl42_direction direction);
 
-/** @brief Binds a key sequence to a function
+/** @brief Gets the first (newest) history entry
  *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
+ * @returns @c <b>rl42_hist_node *</b> First history entry
  */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
+rl42_hist_node	*hist_get_first_node(void);
+
+/** @brief Gets the last (oldest) history entry
+ *
+ * @returns @c <b>rl42_hist_node *</b> Last history entry
+ */
+rl42_hist_node	*hist_get_last_node(void);
+
+/** @brief Add line to history
+ *
+ * @param line Line to add
+ * @returns @c <b>u8</b> 1 if adding the line succeeded,
+ * 0 if not
+ */
+u8				hist_add_line(const char *line);
+
+/** @brief Loads history from a file
+ *
+ * @param fname Name of the file to load
+ * @returns @c <b>u8</b> 1 if loading the history succeeded,
+ * 0 if not
+ */
+u8				hist_load(const char *fname);

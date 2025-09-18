@@ -21,12 +21,6 @@ cflags.normal	=	-O3
 cflags.extra	=	
 CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
 
-HIST_FILE	=	
-
-ifneq ("$(HIST_FILE)", "")
-	CFLAGS +=	-D_FT_RL_HFILE+$(HIST_FILE)
-endif
-
 ## DIRECTORIES
 
 BINDIR	=	bin
@@ -36,6 +30,7 @@ INCDIR	=	inc
 TESTDIR	=	tst
 
 FUNCDIR	=	function
+HISTDIR	=	history
 KEYBDIR	=	keybinds
 TERMDIR	=	term
 UTILDIR	=	utils
@@ -44,13 +39,16 @@ UTILDIR	=	utils
 
 FUNCFILES	=	rl42_fn_info.c
 
+HISTFILES	=	history.c
+
 KEYBFILES	=	editing_mode.c \
 				keyseq.c \
 				rl42_bind.c
 
 TERMFILES	=	settings.c
 
-UTILFILES	=	map.c \
+UTILFILES	=	list.c \
+				map.c \
 				message.c \
 				rl42_string.c \
 				strhash.c \
@@ -60,6 +58,7 @@ UTILFILES	=	map.c \
 FILES	=	rl42.c \
 			init.c \
 			$(addprefix $(FUNCDIR)/, $(FUNCFILES)) \
+			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
 			$(addprefix $(KEYBDIR)/, $(KEYBFILES)) \
 			$(addprefix $(TERMDIR)/, $(TERMFILES)) \
 			$(addprefix $(UTILDIR)/, $(UTILFILES))
@@ -81,10 +80,11 @@ FUNCTION_TEST_FILES	=	$(TESTDIR)/$(FUNCDIR)/function_test.c \
 						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
 						$(SRCDIR)/$(UTILDIR)/vector.c
 
-### KEYBIND TESTS
-KEYBIND_TEST		=	$(TESTBIN)/keybind_test
+### HISTORY TESTS
+HISTORY_TEST		=	$(TESTBIN)/history_test
 
-KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
+HISTORY_TEST_FILES	=	$(TESTDIR)/$(HISTDIR)/history_test.c \
+						$(SRCDIR)/$(HISTDIR)/history.c \
 						$(SRCDIR)/$(KEYBDIR)/rl42_bind.c \
 						$(SRCDIR)/$(KEYBDIR)/editing_mode.c \
 						$(SRCDIR)/$(KEYBDIR)/keyseq.c \
@@ -94,6 +94,25 @@ KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
 						$(SRCDIR)/$(UTILDIR)/vector.c \
 						$(SRCDIR)/$(UTILDIR)/strhash.c \
 						$(SRCDIR)/$(UTILDIR)/utf8.c \
+						$(SRCDIR)/$(UTILDIR)/list.c \
+						$(SRCDIR)/$(UTILDIR)/map.c \
+						$(SRCDIR)/init.c
+
+### KEYBIND TESTS
+KEYBIND_TEST		=	$(TESTBIN)/keybind_test
+
+KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
+						$(SRCDIR)/$(HISTDIR)/history.c \
+						$(SRCDIR)/$(KEYBDIR)/rl42_bind.c \
+						$(SRCDIR)/$(KEYBDIR)/editing_mode.c \
+						$(SRCDIR)/$(KEYBDIR)/keyseq.c \
+						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
+						$(SRCDIR)/$(TERMDIR)/settings.c \
+						$(SRCDIR)/$(UTILDIR)/rl42_string.c \
+						$(SRCDIR)/$(UTILDIR)/vector.c \
+						$(SRCDIR)/$(UTILDIR)/strhash.c \
+						$(SRCDIR)/$(UTILDIR)/utf8.c \
+						$(SRCDIR)/$(UTILDIR)/list.c \
 						$(SRCDIR)/$(UTILDIR)/map.c \
 						$(SRCDIR)/init.c
 
@@ -133,12 +152,16 @@ $(NAME): $(OBJDIR) $(OBJS)
 	@ar -crs $(NAME) $(OBJS)
 	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
 
-tests: $(TESTDIR)/$(BINDIR) functests keybtests utiltests
+tests: $(TESTDIR)/$(BINDIR) functests histtests keybtests utiltests
 	@printf "\e[1;38;5;27mRL42 >\e[m All tests passed!\n"
 
 functests: $(FUNCTION_TEST)
 	@./run_test rl42_fn $(FUNCTION_TEST)
 	@printf "\e[1;38;5;27mRL42 >\e[m All function tests passed!\n"
+
+histtests: $(HISTORY_TEST)
+	@./run_test history $(HISTORY_TEST)
+	@printf "\e[1;38;5;27mRL42 >\e[m All history tests passed!\n"
 
 keybtests: $(KEYBIND_TEST)
 	@./run_test rl42_bind $(KEYBIND_TEST)
@@ -153,6 +176,10 @@ utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(VECTOR_TEST) $(LIST_TEST) $
 	@printf "\e[1;38;5;27mRL42 >\e[m All util tests passed!\n"
 
 $(FUNCTION_TEST): $(FUNCTION_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+
+$(HISTORY_TEST): $(HISTORY_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
@@ -183,6 +210,7 @@ $(MAP_TEST): $(MAP_TEST_FILES)
 $(OBJDIR):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating objdirs\n"
 	@mkdir -p $(OBJDIR)/$(FUNCDIR)
+	@mkdir -p $(OBJDIR)/$(HISTDIR)
 	@mkdir -p $(OBJDIR)/$(KEYBDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 	@mkdir -p $(OBJDIR)/$(UTILDIR)
@@ -200,6 +228,7 @@ clean:
 
 tclean:
 	@rm -f $(FUNCTION_TEST)
+	@rm -f $(HISTORY_TEST)
 	@rm -f $(KEYBIND_TEST)
 	@rm -f $(STRLEN_UTF8_TEST)
 	@rm -f $(RL42_STRING_TEST)
