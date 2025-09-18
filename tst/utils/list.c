@@ -176,7 +176,7 @@ static inline u8	_test4(void) {
 	u8			rv;
 
 	rv = 1;
-	info("Test 4 --- Insertion / Resize\n");
+	info("Test 4 --- Insertion / Random resize\n");
 	list = list(u32, 7, NULL);
 	if (!list)
 		return error("Failed to create list of size 3\n");
@@ -197,6 +197,8 @@ static inline u8	_test4(void) {
 		return error("Failed to add element #5\n");
 	if (!list_insert_before(list, end, vals[5]))
 		return error("Failed to add element #6\n");
+	if (!list_resize(list, rand_range(1, 10)))
+		return error("Failed to resize list\n");
 	for (i = 0, node = list_first(list); node; node = list_next(list, node), i++) {
 		val = *(u32 *)node->data;
 		if (val != vals[i])
