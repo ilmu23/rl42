@@ -192,6 +192,8 @@ list_node	__lst_nth(const list list, const size_t i) {
 	__list_node__	*out;
 	size_t			_i;
 
+	if (!list->elements)
+		return NULL;
 	if (i == 0)
 		return &((__list_node__ *)vector_get(list->data, list->first))->node;
 	if (i >= list->elements - 1)
