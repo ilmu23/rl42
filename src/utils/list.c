@@ -10,13 +10,14 @@
 #include <alloca.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/resource.h>
 
 #include "internal/_list.h"
 #include "internal/_vector.h"
 
 #define _INDEX_NONE	SIZE_MAX
 
-#define _ALLOCA_MAX_SIZE	524288 // 512 KiB
+#define _ALLOCA_STACK_FRACTION	64
 
 #define get_node(_node)	((__list_node__ *)((uintptr_t)_node - offsetof(__list_node__, node)))
 
@@ -39,12 +40,21 @@ struct __lst {
 	vector	data;
 };
 
+static struct {
+	size_t	max;
+	u8		set;
+}	_alloca_size;
+
+static inline void	_set_alloca_max(void);
+
 static void	_free_node(__list_node__ *node);
 static void	__free(void **blk);
 
 list	__lst_new(const size_t size, const size_t count, void (*_free)(void *)) {
 	list	out;
 
+	if (!_alloca_size.set)
+		_set_alloca_max();
 	out = (size) ? malloc(sizeof(*out)) : NULL;
 	if (out) {
 		out->data = vector(__list_node__, count, (void (*)(void *))_free_node);
@@ -315,7 +325,7 @@ u8	__lst_rsz(list list, const size_t size) {
 	vec_size = vector_size(list->data);
 	if (size < vec_size) {
 		tmp_size = vec_size * sizeof(*tmp);
-		tmp = (tmp_size <= _ALLOCA_MAX_SIZE) ? alloca(tmp_size) : malloc(tmp_size);
+		tmp = (tmp_size <= _alloca_size.max) ? alloca(tmp_size) : malloc(tmp_size);
 		if (!tmp)
 			return 0;
 		for (i = 0, node = vector_get(list->data, list->first); node != VECTOR_OUT_OF_BOUNDS; node = vector_get(list->data, node->next))
@@ -327,7 +337,7 @@ u8	__lst_rsz(list list, const size_t size) {
 			}
 			vector_set(list->data, i, tmp[i]);
 		}
-		if (tmp_size > _ALLOCA_MAX_SIZE)
+		if (tmp_size > _alloca_size.max)
 			free(tmp);
 		list->highest_index = size;
 		list->elements = size;
@@ -347,6 +357,14 @@ void	__lst_clr(list list) {
 	list->elements = 0;
 	list->first = 0;
 	list->last = 0;
+}
+
+static inline void	_set_alloca_max(void) {
+	struct rlimit	limit;
+
+	getrlimit(RLIMIT_STACK, &limit);
+	_alloca_size.max = limit.rlim_cur / _ALLOCA_STACK_FRACTION;
+	_alloca_size.set = 1;
 }
 
 static void	_free_node(__list_node__ *node) {
