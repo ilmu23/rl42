@@ -82,12 +82,14 @@ u8	__vec_set(vector vec, const size_t i, const void *val) {
 	return 1;
 }
 
-u8	__vec_swp(vector vec, const size_t i1, const size_t i2) {
+u8	__vec_swp(vector vec, const size_t i1, const size_t i2, u8 (*swap)(void *, void *)) {
 	u8	*tmp;
 
 	if (i1 >= vec->elements || i2 >= vec->elements)
 		return 0;
 	if (i1 != i2) {
+		if (swap)
+			return swap(index(vec, i1), index(vec, i2));
 		tmp = alloca(vec->element_size);
 		memcpy(tmp, index(vec, i1), vec->element_size);
 		memcpy(index(vec, i1), index(vec, i2), vec->element_size);

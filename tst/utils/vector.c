@@ -139,11 +139,11 @@ static inline i32	_test3(void) {
 	for (i = 0; i < 5; i++)
 		if (!vector_insert(vector, 0, vals[4 - i]))
 			return error("Failed to add element #%zu\n", 4 - i + 1);
-	if (!vector_swap(vector, 0, 4))
+	if (!vector_swap(vector, 0, 4, NULL))
 		return error("Failed to swap elements 1 and 5\n");
-	if (!vector_swap(vector, 2, 3))
+	if (!vector_swap(vector, 2, 3, NULL))
 		return error("Failed to swap elements 3 and 4\n");
-	if (!vector_swap(vector, 1, 1))
+	if (!vector_swap(vector, 1, 1, NULL))
 		return error("Failed to swap element 2 with itself\n");
 	tmp = vector_get(vector, 0);
 	chk = memcmp(tmp, expected, sizeof(vals));
