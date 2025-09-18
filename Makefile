@@ -101,18 +101,26 @@ KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
 STRLEN_UTF8_TEST		=	$(TESTBIN)/strlen_utf8_test
 RL42_STRING_TEST		=	$(TESTBIN)/rl42_string_test
 VECTOR_TEST				=	$(TESTBIN)/vector_test
+LIST_TEST				=	$(TESTBIN)/list_test
 MAP_TEST				=	$(TESTBIN)/map_test
 
 STRLEN_UTF8_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/strlen_utf8.c \
 							$(SRCDIR)/$(UTILDIR)/rl42_string.c \
 							$(SRCDIR)/$(UTILDIR)/vector.c \
 							$(SRCDIR)/$(UTILDIR)/utf8.c
+
 RL42_STRING_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/rl42_string.c \
 							$(SRCDIR)/$(UTILDIR)/rl42_string.c \
 							$(SRCDIR)/$(UTILDIR)/vector.c \
 							$(SRCDIR)/$(UTILDIR)/utf8.c
+
 VECTOR_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/vector.c \
 							$(SRCDIR)/$(UTILDIR)/vector.c
+
+LIST_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/list.c \
+							$(SRCDIR)/$(UTILDIR)/list.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c
+
 MAP_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/map.c \
 							$(SRCDIR)/$(UTILDIR)/map.c \
 							$(SRCDIR)/$(UTILDIR)/vector.c \
@@ -136,10 +144,11 @@ keybtests: $(KEYBIND_TEST)
 	@./run_test rl42_bind $(KEYBIND_TEST)
 	@printf "\e[1;38;5;27mRL42 >\e[m All keybind tests passed!\n"
 
-utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(VECTOR_TEST) $(MAP_TEST)
+utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(VECTOR_TEST) $(LIST_TEST) $(MAP_TEST)
 	@./run_test strlen_utf8 $(STRLEN_UTF8_TEST)
 	@./run_test rl42_string $(RL42_STRING_TEST)
 	@./run_test vector $(VECTOR_TEST)
+	@./run_test list $(LIST_TEST)
 	@./run_test map $(MAP_TEST)
 	@printf "\e[1;38;5;27mRL42 >\e[m All util tests passed!\n"
 
@@ -160,6 +169,10 @@ $(RL42_STRING_TEST): $(RL42_STRING_TEST_FILES)
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
 $(VECTOR_TEST): $(VECTOR_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+
+$(LIST_TEST): $(LIST_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
 
@@ -191,6 +204,7 @@ tclean:
 	@rm -f $(STRLEN_UTF8_TEST)
 	@rm -f $(RL42_STRING_TEST)
 	@rm -f $(VECTOR_TEST)
+	@rm -f $(LIST_TEST)
 	@rm -f $(MAP_TEST)
 
 fclean: clean tclean

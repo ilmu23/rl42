@@ -30,6 +30,9 @@ typedef enum __redisplay_mode {
 // Generic map
 typedef struct __map *	map;
 
+// Generic list
+typedef struct __lst *	list;
+
 // Generic vector
 typedef struct __vec *	vector;
 
