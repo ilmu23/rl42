@@ -67,7 +67,7 @@ void	__vec_pop(vector vec) {
 	if (vec->elements) {
 		vec->elements--;
 		if (vec->free)
-			vec->free (*(void **)index(vec, vec->elements));
+			vec->free (index(vec, vec->elements));
 	}
 }
 
