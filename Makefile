@@ -31,6 +31,7 @@ TESTDIR	=	tst
 
 FUNCDIR	=	function
 HISTDIR	=	history
+KBINDIR	=	input
 KEYBDIR	=	keybinds
 TERMDIR	=	term
 UTILDIR	=	utils
@@ -40,6 +41,8 @@ UTILDIR	=	utils
 FUNCFILES	=	rl42_fn_info.c
 
 HISTFILES	=	history.c
+
+KBINFILES	=	listen.c
 
 KEYBFILES	=	editing_mode.c \
 				keyseq.c \
@@ -59,6 +62,7 @@ FILES	=	rl42.c \
 			init.c \
 			$(addprefix $(FUNCDIR)/, $(FUNCFILES)) \
 			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
+			$(addprefix $(KBINDIR)/, $(KBINFILES)) \
 			$(addprefix $(KEYBDIR)/, $(KEYBFILES)) \
 			$(addprefix $(TERMDIR)/, $(TERMFILES)) \
 			$(addprefix $(UTILDIR)/, $(UTILFILES))
@@ -78,7 +82,20 @@ FUNCTION_TEST		=	$(TESTBIN)/function_test
 
 FUNCTION_TEST_FILES	=	$(TESTDIR)/$(FUNCDIR)/function_test.c \
 						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
-						$(SRCDIR)/$(UTILDIR)/vector.c
+						$(SRCDIR)/$(HISTDIR)/history.c \
+						$(SRCDIR)/$(KEYBDIR)/rl42_bind.c \
+						$(SRCDIR)/$(KEYBDIR)/editing_mode.c \
+						$(SRCDIR)/$(KEYBDIR)/keyseq.c \
+						$(SRCDIR)/$(KBINDIR)/listen.c \
+						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
+						$(SRCDIR)/$(TERMDIR)/settings.c \
+						$(SRCDIR)/$(UTILDIR)/rl42_string.c \
+						$(SRCDIR)/$(UTILDIR)/vector.c \
+						$(SRCDIR)/$(UTILDIR)/strhash.c \
+						$(SRCDIR)/$(UTILDIR)/utf8.c \
+						$(SRCDIR)/$(UTILDIR)/list.c \
+						$(SRCDIR)/$(UTILDIR)/map.c \
+						$(SRCDIR)/init.c
 
 ### HISTORY TESTS
 HISTORY_TEST		=	$(TESTBIN)/history_test
@@ -88,6 +105,7 @@ HISTORY_TEST_FILES	=	$(TESTDIR)/$(HISTDIR)/history_test.c \
 						$(SRCDIR)/$(KEYBDIR)/rl42_bind.c \
 						$(SRCDIR)/$(KEYBDIR)/editing_mode.c \
 						$(SRCDIR)/$(KEYBDIR)/keyseq.c \
+						$(SRCDIR)/$(KBINDIR)/listen.c \
 						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
 						$(SRCDIR)/$(TERMDIR)/settings.c \
 						$(SRCDIR)/$(UTILDIR)/rl42_string.c \
@@ -106,6 +124,7 @@ KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
 						$(SRCDIR)/$(KEYBDIR)/rl42_bind.c \
 						$(SRCDIR)/$(KEYBDIR)/editing_mode.c \
 						$(SRCDIR)/$(KEYBDIR)/keyseq.c \
+						$(SRCDIR)/$(KBINDIR)/listen.c \
 						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
 						$(SRCDIR)/$(TERMDIR)/settings.c \
 						$(SRCDIR)/$(UTILDIR)/rl42_string.c \
@@ -211,6 +230,7 @@ $(OBJDIR):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating objdirs\n"
 	@mkdir -p $(OBJDIR)/$(FUNCDIR)
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
+	@mkdir -p $(OBJDIR)/$(KBINDIR)
 	@mkdir -p $(OBJDIR)/$(KEYBDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 	@mkdir -p $(OBJDIR)/$(UTILDIR)

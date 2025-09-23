@@ -95,10 +95,10 @@ typedef struct __prompt {
 // line = current input line
 // i = cursor index in the input line
 typedef struct __line {
-	const vector	keyseq;
-	rl42_prompt		prompt;
-	vector			line;
-	size_t			i;
+	rl42_prompt	prompt;
+	vector		keyseq;
+	vector		line;
+	size_t		i;
 }	rl42_line;
 
 // Stores a rl42 mark position
@@ -108,3 +108,13 @@ typedef struct __mark {
 	u64	pos;
 	u8	set;
 }	rl42_mark;
+
+// Stores a keyboard event
+// code = key code
+// text = text produced
+// mods = modifiers present
+typedef struct __kb_event {
+	u32	code;
+	u32	text;
+	u16	mods;
+}	rl42_kb_event;

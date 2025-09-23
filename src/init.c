@@ -7,6 +7,7 @@
 //
 // <<init.c>>
 
+#include "internal/_kb.h"
 #include "internal/_term.h"
 #include "internal/_history.h"
 #include "internal/_keybinds.h"
@@ -189,6 +190,7 @@ static inline void	_init_binds(void) {
 static inline void	_rl42_exit(void) {
 	if (init) {
 		term_apply_settings(TERM_SETTINGS_DEFAULT);
+		clean_kb_listener();
 		clean_key_trees();
 		clean_fns();
 	}
@@ -200,7 +202,8 @@ static inline u8	_init_term(void) {
 	new = old;
 	new.c_iflag &= ~(ICRNL | IXON);
 	new.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-	// TODO: init terminal specific escapes
+	if (!init_kb_listener())
+		return 0;
 	if (!term_apply_settings(TERM_SETTINGS_RL42))
 		return 0;
 	// TODO: hide cursor, update terminal size, unhide cursor
