@@ -48,8 +48,7 @@ u8	rl42_init(void) {
 		if (!_init_fns())
 			rv = 0;
 		_init_binds();
-		if (!hist_load(getenv("RL42_HISTORY")))
-			rv = 0;
+		hist_load(getenv("RL42_HISTORY"));
 		// TODO: read initfile
 		// MAYBE: init highlight color
 		init_in_progress = 0;
