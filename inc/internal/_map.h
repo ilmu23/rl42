@@ -28,14 +28,20 @@ map		__map_new(const size_t size, const size_t count, const map_key_type type, v
 #define map_delete(map)	(__map_del(map))
 void	__map_del(map map);
 
+#define map_get(map, key)	(__map_get(map, (const uintptr_t)key))
+void	*__map_get(const map map, uintptr_t key);
+
 #define map_set(map, key, value)	(__map_set(map, (const uintptr_t)key, (const void *)&value))
 u8		__map_set(map map, uintptr_t key, const void *val);
 
 #define map_erase(map, key)	(__map_ers(map, (const uintptr_t)key))
 u8		__map_ers(map map, uintptr_t key);
 
-#define map_get(map, key)	(__map_get(map, (const uintptr_t)key))
-void	*__map_get(const map map, uintptr_t key);
+#define map_size(map)	(__map_sze(map))
+size_t	__map_sze(const map map);
+
+#define map_empty(map)	(__map_ety(map))
+u8		__map_ety(const map map);
 
 #define	map_clear(map)	(__map_clr(map))
 void	__map_clr(map map);

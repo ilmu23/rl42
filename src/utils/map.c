@@ -63,6 +63,13 @@ void	__map_del(map map) {
 	}
 }
 
+void	*__map_get(const map map, uintptr_t key) {
+	size_t	i;
+	
+	i = _find_pair(map, (map->key_type == INTEGER) ? key : cstr_hash((const char *)key, _HASH_SALT, UINTPTR_MAX));
+	return (map->data[i] && map->data[i] != _DELETED) ? map->data[i]->val : MAP_NOT_FOUND;
+}
+
 u8	__map_set(map map, uintptr_t key, const void *val) {
 	size_t	i;
 
@@ -98,11 +105,12 @@ u8	__map_ers(map map, uintptr_t key) {
 	return 1;
 }
 
-void	*__map_get(const map map, uintptr_t key) {
-	size_t	i;
-	
-	i = _find_pair(map, (map->key_type == INTEGER) ? key : cstr_hash((const char *)key, _HASH_SALT, UINTPTR_MAX));
-	return (map->data[i] && map->data[i] != _DELETED) ? map->data[i]->val : MAP_NOT_FOUND;
+size_t	__map_sze(const map map) {
+	return map->elements;
+}
+
+u8	__map_ety(const map map) {
+	return (map->elements == 0) ? 1 : 0;
 }
 
 void	__map_clr(map map) {
