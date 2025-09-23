@@ -7,6 +7,7 @@
 //
 // <<rl42_fn_info.c>>
 
+#include "internal/_rl42.h"
 #include "internal/_function.h"
 
 static vector	functions;
@@ -47,6 +48,7 @@ u8	rl42_register_function(rl42_fn f, const char *fname) {
 	const rl42_fn_info	*tmp;
 	rl42_fn_info		new;
 
+	rl42_init();
 	if (!functions) {
 		functions = vector(rl42_fn_info, FUNCTION_COUNT, (void (*)(void *))_clean_fn_info);
 		if (!functions)
