@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef char	utf8_cbuf[5];
+
 #define in_range(x, min, max)	((x >= min && x <= max) ? 1 : 0)
 
 /** @brief Converts a C string to a rl42 string
@@ -65,7 +67,7 @@ u32			utf8_decode(const char *c);
  * (buf or new allocation, depending on whether buf was NULL)
  * NULL if encoding failed
  */
-const char	*utf8_encode(const u32 ucp, char buf[5]);
+const char	*utf8_encode(const u32 ucp, utf8_cbuf buf);
 
 /** @brief Generates a hash from a cstr
  *

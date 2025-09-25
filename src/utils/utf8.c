@@ -63,7 +63,7 @@ u32	utf8_decode(const char *c) {
 	return out;
 }
 
-const char	*utf8_encode(const u32 ucp, char buf[5]) {
+const char	*utf8_encode(const u32 ucp, utf8_cbuf buf) {
 	u8	len;
 
 	if (ucp <= 0x7FU)
