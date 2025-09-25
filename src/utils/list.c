@@ -188,7 +188,7 @@ void	__lst_pop_f(list list) {
 	} while (tmp->delete);
 }
 
-list_node	__lst_nth(const list list, const size_t i) {
+list_node	__lst_nth(clist list, const size_t i) {
 	__list_node__	*out;
 	size_t			_i;
 
@@ -211,13 +211,13 @@ list_node	__lst_nth(const list list, const size_t i) {
 	return &out->node;
 }
 
-list_node	__lst_nxt(const list list, const list_node node) {
+list_node	__lst_nxt(clist list, const list_node node) {
 	if (get_node(node)->next == _INDEX_NONE)
 		return NULL;
 	return &((__list_node__ *)vector_get(list->data, get_node(node)->next))->node;
 }
 
-list_node	__lst_prv(const list list, const list_node node) {
+list_node	__lst_prv(clist list, const list_node node) {
 	if (get_node(node)->prev == _INDEX_NONE)
 		return NULL;
 	return &((__list_node__ *)vector_get(list->data, get_node(node)->prev))->node;
@@ -309,11 +309,11 @@ void	__lst_ers(list list, const list_node node) {
 	} while (_node->delete);
 }
 
-size_t	__lst_sze(const list list) {
+size_t	__lst_sze(clist list) {
 	return list->elements;
 }
 
-size_t	__lst_cap(const list list) {
+size_t	__lst_cap(clist list) {
 	return vector_capacity(list->data);
 }
 

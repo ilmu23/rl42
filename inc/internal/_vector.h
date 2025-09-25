@@ -28,7 +28,7 @@ u8		__vec_psh(vector vec, const void *val);
 void	__vec_pop(vector vec);
 
 #define	vector_get(vector, i)	(__vec_get(vector, i))
-void	*__vec_get(const vector vec, const size_t i);
+void	*__vec_get(cvector vec, const size_t i);
 
 #define	vector_set(vector, i, value)	(__vec_set(vector, i, (const void *)&value))
 u8		__vec_set(vector vec, const size_t i, const void *val);
@@ -37,10 +37,10 @@ u8		__vec_set(vector vec, const size_t i, const void *val);
 u8		__vec_swp(vector vec, const size_t i1, const size_t i2, u8 (*swap)(void *, void *));
 
 #define	vector_size(vector)	(__vec_sze(vector))
-size_t	__vec_sze(const vector vec);
+size_t	__vec_sze(cvector vec);
 
 #define	vector_capacity(vector)	(__vec_cap(vector))
-size_t	__vec_cap(const vector vec);
+size_t	__vec_cap(cvector vec);
 
 #define vector_resize(vector, size)	(__vec_rsz(vector, size))
 u8		__vec_rsz(vector vec, const size_t size);

@@ -35,7 +35,7 @@ vector		cstr_to_rl42str(const char *s);
  * @returns @c <b>char *</b> The converted string,
  * NULL if conversion failed
  */
-char		*rl42str_to_cstr(const vector s);
+char		*rl42str_to_cstr(cvector s);
 
 /** @brief Counts the lenght of an utf-8 encoded C string
  *
@@ -83,7 +83,7 @@ u64			cstr_hash(const char *s, const u64 salt, const size_t max);
  * @param max Maximum value of the hash
  * @returns @c <b>u64</b> Hash of the string
  */
-u64			rl42str_hash(const vector s, const u64 salt, const size_t max);
+u64			rl42str_hash(cvector s, const u64 salt, const size_t max);
 
 /** @brief Displays an error message
  *

@@ -24,7 +24,7 @@ u64	cstr_hash(const char *s, const u64 salt, const size_t max) {
 	return hash;
 }
 
-u64	rl42str_hash(const vector s, const u64 salt, const size_t max) {
+u64	rl42str_hash(cvector s, const u64 salt, const size_t max) {
 	size_t	i;
 	size_t	len;
 	u64		hash;

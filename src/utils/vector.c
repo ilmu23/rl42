@@ -71,7 +71,7 @@ void	__vec_pop(vector vec) {
 	}
 }
 
-void	*__vec_get(const vector vec, const size_t i) {
+void	*__vec_get(cvector vec, const size_t i) {
 	return (i < vec->elements) ? index(vec, i) : VECTOR_OUT_OF_BOUNDS;
 }
 
@@ -98,11 +98,11 @@ u8	__vec_swp(vector vec, const size_t i1, const size_t i2, u8 (*swap)(void *, vo
 	return 1;
 }
 
-size_t	__vec_sze(const vector vec) {
+size_t	__vec_sze(cvector vec) {
 	return vec->elements;
 }
 
-size_t	__vec_cap(const vector vec) {
+size_t	__vec_cap(cvector vec) {
 	return vec->capacity;
 }
 

@@ -38,13 +38,13 @@ void   		__lst_pop_f(list list);
 #define		list_last(list)		(__lst_nth(list, SIZE_MAX))
 #define		list_first(list)	(__lst_nth(list, 0))
 #define		list_nth(list, i)	(__lst_nth(list, i))
-list_node	__lst_nth(const list list, const size_t i);
+list_node	__lst_nth(clist list, const size_t i);
 
 #define		list_next(list, node)	(__lst_nxt(list, node))
-list_node  	__lst_nxt(const list list, const list_node node);
+list_node  	__lst_nxt(clist list, const list_node node);
 
 #define		list_prev(list, node)	(__lst_prv(list, node))
-list_node	__lst_prv(const list list, const list_node node);
+list_node	__lst_prv(clist list, const list_node node);
 
 #define		list_insert_after(list, node, value)	(__lst_ins_a(list, node, (const void *)&value))
 u8	   		__lst_ins_a(list list, const list_node node, const void *val);
@@ -56,10 +56,10 @@ u8	   		__lst_ins_b(list list, const list_node node, const void *val);
 void   		__lst_ers(list list, const list_node node);
 
 #define		list_size(list)	(__lst_sze(list))
-size_t 		__lst_sze(const list list);
+size_t 		__lst_sze(clist list);
 
 #define		list_capacity(list)	(__lst_cap)
-size_t 		__lst_cap(const list list);
+size_t 		__lst_cap(clist list);
 
 #define		list_resize(list, size)	(__lst_rsz(list, size))
 u8	   		__lst_rsz(list list, const size_t size);

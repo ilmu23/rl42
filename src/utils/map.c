@@ -31,7 +31,7 @@ struct __map {
 	pair			**data;
 };
 
-static inline size_t	_find_pair(const map map, const uintptr_t key);
+static inline size_t	_find_pair(cmap map, const uintptr_t key);
 static inline u8		_grow(map map);
 
 static void	__free(void **blk);
@@ -63,7 +63,7 @@ void	__map_del(map map) {
 	}
 }
 
-void	*__map_get(const map map, uintptr_t key) {
+void	*__map_get(cmap map, uintptr_t key) {
 	size_t	i;
 	
 	i = _find_pair(map, (map->key_type == INTEGER) ? key : cstr_hash((const char *)key, _HASH_SALT, UINTPTR_MAX));
@@ -105,11 +105,11 @@ u8	__map_ers(map map, uintptr_t key) {
 	return 1;
 }
 
-size_t	__map_sze(const map map) {
+size_t	__map_sze(cmap map) {
 	return map->elements;
 }
 
-u8	__map_ety(const map map) {
+u8	__map_ety(cmap map) {
 	return (map->elements == 0) ? 1 : 0;
 }
 
@@ -128,7 +128,7 @@ void	__map_clr(map map) {
 	}
 }
 
-static inline size_t	_find_pair(const map map, const uintptr_t key) {
+static inline size_t	_find_pair(cmap map, const uintptr_t key) {
 	size_t	i;
 
 	for (i = key % map->capacity; map->data[i]; i = (i < map->capacity - 1) ? i + 1 : 0)

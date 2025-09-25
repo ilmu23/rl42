@@ -34,7 +34,7 @@ cstr_to_rl42str_err:
 	return NULL;
 }
 
-char	*rl42str_to_cstr(const vector s) {
+char	*rl42str_to_cstr(cvector s) {
 	size_t	i;
 	size_t	j;
 	size_t	len;

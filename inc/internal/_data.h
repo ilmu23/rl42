@@ -33,13 +33,16 @@ typedef enum __direction {
 }	rl42_direction;
 
 // Generic map
-typedef struct __map *	map;
+typedef struct __map *			map;
+typedef const struct __map *	cmap;
 
 // Generic list
-typedef struct __lst *	list;
+typedef struct __lst *			list;
+typedef const struct __lst *	clist;
 
 // Generic vector
-typedef struct __vec *	vector;
+typedef struct __vec *			vector;
+typedef const struct __vec *	cvector;
 
 // History node containing the original line and
 // the potentially edited version
