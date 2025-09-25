@@ -74,8 +74,8 @@ static inline __fn	_match_seq(rl42_line *input, rl42_key_tree *current, const rl
 	if (event->mods & KB_MOD_ALT)
 		vector_push(input->keyseq, (u32){'\x1b'});
 	vector_push(input->keyseq, ucp);
-	for (i = 0, len = vector_size(input->keyseq), binds = get_key_tree(CURRENT); i < len && binds->next; i++) {
 		tmp = map_get(binds->next, *(u32 *)vector_get(input->keyseq, i));
+	for (i = 0, tmp = NULL, len = vector_size(line->keyseq), binds = get_key_tree(CURRENT); i < len && binds->next; i++) {
 		if (tmp == MAP_NOT_FOUND)
 			break ;
 		binds = *tmp;
