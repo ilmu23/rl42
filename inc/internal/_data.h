@@ -9,12 +9,51 @@
 
 #pragma once
 
-#include "internal/_defs.h"
-
-#include "data.h"
+#include "defs.h"
 
 #include <stddef.h>
 
+// Generic vector
+typedef struct __vec *			vector;
+typedef const struct __vec *	cvector;
+
+// Stores information about the cursor
+// prompt row / col = starting position of the current prompt
+// input row / col = starting position of the current input line
+// row / col = current cursor position
+typedef struct __cursor {
+	i16	prompt_row;
+	i16	prompt_col;
+	i16	input_row;
+	i16	input_col;
+	i16	row;
+	i16	col;
+}	rl42_cursor;
+
+// Stores all prompt information
+// sprompt = current special prompt, for example the current digit-argument
+// prompt = user provided prompt
+typedef struct __prompt {
+	vector	sprompt;
+	vector	prompt;
+}	rl42_prompt;
+
+// Stores the current input environment
+// prompt = current prompt
+// keyseq = keyseq that is currently being executed
+// line = current input line
+// i = cursor index in the input line
+typedef struct __line {
+	rl42_cursor	cursor;
+	rl42_prompt	prompt;
+	vector		keyseq;
+	vector		line;
+	size_t		i;
+}	rl42_line;
+
+typedef u8	(*rl42_fn)(rl42_line *);
+
+#ifdef __RL42_INTERNAL
 // Modes used by rl42_redisplay
 // CURSOR = Redisplay starting from the cursor
 // LINE = Redisplay the whole input line
@@ -40,10 +79,6 @@ typedef const struct __map *	cmap;
 typedef struct __lst *			list;
 typedef const struct __lst *	clist;
 
-// Generic vector
-typedef struct __vec *			vector;
-typedef const struct __vec *	cvector;
-
 // History node containing the original line and
 // the potentially edited version
 typedef struct __hist_node {
@@ -51,28 +86,6 @@ typedef struct __hist_node {
 	const char		*line;
 	const char		*edit;
 }	rl42_hist_node;
-
-// Stores all prompt information
-// sprompt = current special prompt, for example the current digit-argument
-// prompt = user provided prompt
-typedef struct __prompt {
-	vector	sprompt;
-	vector	prompt;
-}	rl42_prompt;
-
-// Stores the current input environment
-// prompt = current prompt
-// keyseq = keyseq that is currently being executed
-// line = current input line
-// i = cursor index in the input line
-typedef struct __line {
-	rl42_prompt	prompt;
-	vector		keyseq;
-	vector		line;
-	size_t		i;
-}	rl42_line;
-
-typedef u8	(*rl42_fn)(rl42_line *);
 
 // Node in a key sequence tree
 // f = function bound to the currently enterd sequence
@@ -93,19 +106,6 @@ typedef struct __fn_info {
 	vector		binds[3];
 }	rl42_fn_info;
 
-// Stores information about the cursor
-// prompt row / col = starting position of the current prompt
-// input row / col = starting position of the current input line
-// row / col = current cursor position
-typedef struct __cursor {
-	i16	prompt_row;
-	i16	prompt_col;
-	i16	input_row;
-	i16	input_col;
-	i16	row;
-	i16	col;
-}	rl42_cursor;
-
 // Stores a rl42 mark position
 // pos = position of the mark in the input line
 // set = indicates whether the mark is active
@@ -123,3 +123,7 @@ typedef struct __kb_event {
 	u32	text;
 	u16	mods;
 }	rl42_kb_event;
+
+// Placeholder for display options
+typedef u8	rl42_display_opts;
+#endif

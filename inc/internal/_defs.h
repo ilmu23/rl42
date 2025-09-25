@@ -11,6 +11,8 @@
 
 #include "defs.h"
 
+#define __RL42_INTERNAL
+
 #define SGR0		"\x1b[m"
 #define SGR_INFO	"\x1b[1;38;5;190m"
 #define SGR_WARN	"\x1b[1;38;5;202m"
