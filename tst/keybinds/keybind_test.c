@@ -15,9 +15,9 @@
 #include "internal/test/defs.h"
 
 #define _FN_1_NAME	"fn-1"
-static inline u8	_fn_1([[maybe_unused]] void *x) { return 1; }
+static inline u8	_fn_1([[maybe_unused]] rl42_line *x) { return 1; }
 #define _FN_2_NAME	"fn-2"
-static inline u8	_fn_2([[maybe_unused]] void *x) { return 1; }
+static inline u8	_fn_2([[maybe_unused]] rl42_line *x) { return 1; }
 
 i32	main(void) {
 	i32	rv;

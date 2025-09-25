@@ -49,6 +49,28 @@ typedef struct __hist_node {
 	const char		*edit;
 }	rl42_hist_node;
 
+// Stores all prompt information
+// sprompt = current special prompt, for example the current digit-argument
+// prompt = user provided prompt
+typedef struct __prompt {
+	vector	sprompt;
+	vector	prompt;
+}	rl42_prompt;
+
+// Stores the current input environment
+// prompt = current prompt
+// keyseq = keyseq that is currently being executed
+// line = current input line
+// i = cursor index in the input line
+typedef struct __line {
+	rl42_prompt	prompt;
+	vector		keyseq;
+	vector		line;
+	size_t		i;
+}	rl42_line;
+
+typedef u8	(*rl42_fn)(rl42_line *);
+
 // Node in a key sequence tree
 // f = function bound to the currently enterd sequence
 // next = map containing all possible following characters
@@ -80,26 +102,6 @@ typedef struct __cursor {
 	i16	row;
 	i16	col;
 }	rl42_cursor;
-
-// Stores all prompt information
-// sprompt = current special prompt, for example the current digit-argument
-// prompt = user provided prompt
-typedef struct __prompt {
-	vector	sprompt;
-	vector	prompt;
-}	rl42_prompt;
-
-// Stores the current input environment
-// prompt = current prompt
-// keyseq = keyseq that is currently being executed
-// line = current input line
-// i = cursor index in the input line
-typedef struct __line {
-	rl42_prompt	prompt;
-	vector		keyseq;
-	vector		line;
-	size_t		i;
-}	rl42_line;
 
 // Stores a rl42 mark position
 // pos = position of the mark in the input line

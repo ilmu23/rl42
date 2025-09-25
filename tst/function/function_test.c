@@ -13,14 +13,14 @@
 #include "internal/test/defs.h"
 
 #define _FN_1_NAME	"fn-1"
-static inline u8	_fn_1([[maybe_unused]] void *x) { return 1; }
+static inline u8	_fn_1([[maybe_unused]] rl42_line *x) { return 1; }
 #define _FN_2_NAME	"fn-2"
-static inline u8	_fn_2([[maybe_unused]] void *x) { return 2; }
+static inline u8	_fn_2([[maybe_unused]] rl42_line *x) { return 2; }
 #define _FN_3_NAME	"fn-3"
-static inline u8	_fn_3([[maybe_unused]] void *x) { return 3; }
+static inline u8	_fn_3([[maybe_unused]] rl42_line *x) { return 3; }
 #define _FN_4_NAME	"fn-4"
-static inline u8	_fn_4([[maybe_unused]] void *x) { return 4; }
-static inline u8	_fn_5([[maybe_unused]] void *x) { return 4; }
+static inline u8	_fn_4([[maybe_unused]] rl42_line *x) { return 4; }
+static inline u8	_fn_5([[maybe_unused]] rl42_line *x) { return 4; }
 
 #define _FN_COUNT 4
 

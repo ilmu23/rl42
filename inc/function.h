@@ -11,6 +11,8 @@
 
 #include "rl42.h"
 
+#include "internal/_data.h"
+
 /** @brief Registers a function with rl42
  *
  * @param f Function to register

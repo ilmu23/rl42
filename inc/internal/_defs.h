@@ -9,8 +9,6 @@
 
 #pragma once
 
-#define __RL42_INTERNAL
-
 #include "defs.h"
 
 #define SGR0		"\x1b[m"
