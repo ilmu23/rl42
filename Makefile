@@ -36,6 +36,13 @@ KEYBDIR	=	keybinds
 TERMDIR	=	term
 UTILDIR	=	utils
 
+### RL42 FUNCTION DIRS
+
+RLFNDIR	=	fn
+
+INFNDIR	=	input
+HSFNDIR	=	history
+
 ## SOURCE FILES
 
 FUNCFILES	=	rl42_fn_info.c
@@ -60,6 +67,13 @@ UTILFILES	=	list.c \
 				utf8.c \
 				vector.c
 
+RLFNFILES	=	$(addprefix $(INFNDIR)/, $(INFNFILES)) \
+				$(addprefix $(HSFNDIR)/, $(HSFNFILES))
+
+INFNFILES	=	self_insert.c
+
+HSFNFILES	=	accept_line.c
+
 FILES	=	rl42.c \
 			init.c \
 			$(addprefix $(FUNCDIR)/, $(FUNCFILES)) \
@@ -67,7 +81,8 @@ FILES	=	rl42.c \
 			$(addprefix $(KBINDIR)/, $(KBINFILES)) \
 			$(addprefix $(KEYBDIR)/, $(KEYBFILES)) \
 			$(addprefix $(TERMDIR)/, $(TERMFILES)) \
-			$(addprefix $(UTILDIR)/, $(UTILFILES))
+			$(addprefix $(UTILDIR)/, $(UTILFILES)) \
+			$(addprefix $(RLFNDIR)/, $(RLFNFILES))
 
 SRCS	=	$(addprefix $(SRCDIR)/, $(FILES))
 OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
@@ -198,6 +213,8 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(KEYBDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 	@mkdir -p $(OBJDIR)/$(UTILDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(INFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(HSFNDIR)
 
 $(TESTBIN):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating test executable dir\n"

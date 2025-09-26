@@ -24,6 +24,9 @@
 #include "internal/_function.h"
 #include "internal/_keybinds.h"
 
+#include "internal/fn/input.h"
+#include "internal/fn/history.h"
+
 #ifndef __DEBUG_BUILD
 # define _BIND_MODE WARN
 #else
@@ -232,7 +235,8 @@ static const struct {
 	const rl42_fn	address;
 	const char		*name;
 }	functions[] = {
-	{.address = NULL, .name = NULL}
+	{.address = self_insert, .name = "self-insert"},
+	{.address = accept_line, .name = "accept-line"},
 };
 
 static inline u8	_init_fns(void) {
