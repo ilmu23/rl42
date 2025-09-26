@@ -45,6 +45,8 @@ char	*rl42str_to_cstr(cvector s) {
 	char	*out;
 
 	len = vector_size(s);
+	if (!len)
+		return strdup("");
 	out = malloc(((len * sizeof(u32)) + 1) * sizeof(*out));
 	if (out) for (i = j = 0; i < len; i++) {
 		utf8_encode(*(u32 *)vector_get(s, i), &out[j]);
