@@ -9,7 +9,9 @@
 
 #pragma once
 
-#include "internal/_defs.h"
+#ifndef __RL42_INTERNAL
+# define __RL42_INTERNAL
+#endif
 
 #include "internal/_data.h"
 

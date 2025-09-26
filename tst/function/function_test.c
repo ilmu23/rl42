@@ -7,8 +7,14 @@
 //
 // <<function_test.c>>
 
+#include <errno.h>
 #include <stdio.h>
+#include <string.h>
 
+#define __RL42_INTERNAL
+#include "function.h"
+
+#include "internal/_utils.h"
 #include "internal/_function.h"
 #include "internal/test/defs.h"
 

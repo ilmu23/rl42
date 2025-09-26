@@ -13,6 +13,7 @@
 #include <string.h>
 
 #include "internal/_map.h"
+#include "internal/_defs.h"
 #include "internal/test/defs.h"
 
 #define _REMOVE_CHANCE	40

@@ -7,6 +7,8 @@
 //
 // <<settings.c>>
 
+#include <termios.h>
+
 #include "internal/_term.h"
 
 term_settings	old;

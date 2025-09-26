@@ -5,33 +5,20 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<data.h>>
+// <<_display.h>>
 
 #pragma once
 
-#include "defs.h"
+#ifndef __RL42_INTERNAL
+# define __RL42_INTERNAL
+#endif
 
-// Changes the behaviour of the rl42_bind function in the case that
-// the key sequence the user is trying to bind is already bound
-// WARN = Issue a warning to the user
-// QUIET = Silently fail
-// REMAP = Notify the user and remap the key sequence, it it isn't const bound
-// QREMAP = Silently remap the key sequence, if it isn't const bound
-typedef enum __bind_mode {
-	WARN = 0,
-	QUIET = 1,
-	REMAP = 2,
-	QREMAP = 3
-}	rl42_bind_mode;
+#include "internal/_data.h"
 
-// Editing mode identifiers
-// EMACS = emacs editing mode
-// VI_CMD = vi command mode
-// VI_INS = vi insert mode
-// CURRENT = Currently active editing mode
-typedef enum __editing_mode {
-	EMACS = 0,
-	VI_CMD = 1,
-	VI_INS = 2,
-	CURRENT
-}	rl42_editing_mode;
+/** @brief Displays a line
+ *
+ * @param line Line to display
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8	term_display_line(const rl42_line *line, const rl42_display_opts opts);

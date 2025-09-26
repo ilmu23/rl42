@@ -9,16 +9,11 @@
 
 #pragma once
 
-#include "internal/_defs.h"
+#ifndef __RL42_INTERNAL
+# define __RL42_INTERNAL
+#endif
 
 #include "internal/_data.h"
-#include "internal/_utils.h"
-#include "internal/_vector.h"
-
-#include "function.h"
-
-#include <errno.h>
-#include <string.h>
 
 #define FUNCTION_COUNT	64
 

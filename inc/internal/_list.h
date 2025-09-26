@@ -9,6 +9,10 @@
 
 #pragma once
 
+#ifndef __RL42_INTERNAL
+# define __RL42_INTERNAL
+#endif
+
 #include "internal/_data.h"
 
 typedef struct __lst_node *	list_node;

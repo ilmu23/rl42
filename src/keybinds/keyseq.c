@@ -7,7 +7,11 @@
 //
 // <<keyseq.c>>
 
+#include <string.h>
+
+#include "internal/_utils.h"
 #include "internal/_hashes.h"
+#include "internal/_vector.h"
 #include "internal/_keybinds.h"
 
 typedef union {

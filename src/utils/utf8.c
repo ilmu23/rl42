@@ -7,6 +7,8 @@
 //
 // <<utf8.c>>
 
+#include <stdlib.h>
+
 #include "internal/_utils.h"
 
 #define _BYTE_START	0x80U

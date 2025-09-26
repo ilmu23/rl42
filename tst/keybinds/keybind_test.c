@@ -10,8 +10,10 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "internal/_function.h"
-#include "internal/_keybinds.h"
+#include "rl42.h"
+#include "function.h"
+
+#include "internal/_utils.h"
 #include "internal/test/defs.h"
 
 #define _FN_1_NAME	"fn-1"
@@ -28,7 +30,7 @@ i32	main(void) {
 		return 1;
 	}
 	rv = 0;
-	rl42_init();
+	rl42_unbind("m", CURRENT);
 	info("Test 1 ---- valid bindings\n");
 	_rv = rl42_bind("<C-x><C-a>a", _FN_1_NAME, WARN, CURRENT);
 	if (!_rv)

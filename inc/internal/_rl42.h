@@ -9,12 +9,7 @@
 
 #pragma once
 
-#include "internal/_defs.h"
-
-#include "rl42.h"
-#include "internal/_data.h"
-
-#include <stddef.h>
+#include "defs.h"
 
 /* @brief Initializes all internal data structures for use
  *

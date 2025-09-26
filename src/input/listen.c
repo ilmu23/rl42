@@ -9,6 +9,7 @@
 
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/epoll.h>
 
 #include "internal/_kb.h"

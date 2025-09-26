@@ -7,6 +7,9 @@
 //
 // <<rl42_key_tree.c>>
 
+#include <stdlib.h>
+
+#include "internal/_map.h"
 #include "internal/_keybinds.h"
 
 static rl42_editing_mode	current_mode;

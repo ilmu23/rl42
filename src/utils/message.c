@@ -7,6 +7,10 @@
 //
 // <<message.c>>
 
+#include <stdio.h>
+#include <stdarg.h>
+
+#include "internal/_defs.h"
 #include "internal/_utils.h"
 
 static inline void	_print_message(const char *fmt, va_list args);

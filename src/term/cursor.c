@@ -5,33 +5,53 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<data.h>>
+// <<cursor.c>>
 
-#pragma once
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-#include "defs.h"
+#include "internal/_term.h"
 
-// Changes the behaviour of the rl42_bind function in the case that
-// the key sequence the user is trying to bind is already bound
-// WARN = Issue a warning to the user
-// QUIET = Silently fail
-// REMAP = Notify the user and remap the key sequence, it it isn't const bound
-// QREMAP = Silently remap the key sequence, if it isn't const bound
-typedef enum __bind_mode {
-	WARN = 0,
-	QUIET = 1,
-	REMAP = 2,
-	QREMAP = 3
-}	rl42_bind_mode;
+#define _TERM_CURS_POS	"\x1b[6n"
 
-// Editing mode identifiers
-// EMACS = emacs editing mode
-// VI_CMD = vi command mode
-// VI_INS = vi insert mode
-// CURRENT = Currently active editing mode
-typedef enum __editing_mode {
-	EMACS = 0,
-	VI_CMD = 1,
-	VI_INS = 2,
-	CURRENT
-}	rl42_editing_mode;
+u8	term_cursor_get_pos(i16 *row, i16 *col) {
+	ssize_t	rv;
+	size_t	i;
+	char	*end;
+	char	buf[64];
+
+	write(1, _TERM_CURS_POS, sizeof(_TERM_CURS_POS) - 1);
+	rv = read(0, buf, 64);
+	if (rv == -1)
+		return 0;
+	// TODO: check that we actually got the response instead of
+	// some user input that was buffered before it
+	for (i = 0; i < (size_t)rv; i++)
+		if (isdigit(buf[i]))
+			break ;
+	if (i == (size_t)rv)
+		return 0;
+	*row = (u16)strtol(&buf[i], &end, 10);
+	i += (uintptr_t)end - ((uintptr_t)buf + i);
+	while (i < (size_t)rv) {
+		if (isdigit(buf[i]))
+			break ;
+		i++;
+	}
+	if (i == (size_t)rv)
+		return 0;
+	*col = (u16)strtol(&buf[i], NULL, 10);
+	return 1;
+}
+
+u8	term_cursor_move_to(const i16 row, const i16 col) {
+	ssize_t	rv;
+	char	buf[64];
+
+	rv = snprintf(buf, 64, "\x1b[%hd;%hdH", row, col);
+	if (rv >= 64)
+		return 0;
+	return (write(1, buf, rv) == rv) ? 1 : 0;
+}

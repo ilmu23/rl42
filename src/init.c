@@ -7,14 +7,32 @@
 //
 // <<init.c>>
 
+#include <stdlib.h>
+#include <termios.h>
+
+#ifdef __TEST_BUILD
+#include <unistd.h>
+#endif
+
+#define __RL42_INTERNAL
+#include "rl42.h"
+#include "function.h"
+
 #include "internal/_kb.h"
 #include "internal/_term.h"
 #include "internal/_history.h"
+#include "internal/_function.h"
 #include "internal/_keybinds.h"
 
-#define bind_emacs(seq, f)	(rl42_bind(seq, f, WARN, EMACS))
-#define bind_vi_cmd(seq, f)	(rl42_bind(seq, f, WARN, VI_CMD))
-#define bind_vi_ins(seq, f)	(rl42_bind(seq, f, WARN, VI_INS))
+#ifndef __DEBUG_BUILD
+# define _BIND_MODE WARN
+#else
+# define _BIND_MODE QUIET
+#endif
+
+#define bind_emacs(seq, f)	(rl42_bind(seq, f, _BIND_MODE, EMACS))
+#define bind_vi_cmd(seq, f)	(rl42_bind(seq, f, _BIND_MODE, VI_CMD))
+#define bind_vi_ins(seq, f)	(rl42_bind(seq, f, _BIND_MODE, VI_INS))
 #define bind_insert(seq, f)	(bind_emacs(seq, f), bind_vi_ins(seq, f))
 #define bind_all(seq, f)	(bind_emacs(seq, f), bind_vi_cmd(seq, f), bind_vi_ins(seq, f))
 

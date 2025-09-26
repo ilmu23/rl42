@@ -8,8 +8,11 @@
 // <<rl42_string.c>>
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "internal/_utils.h"
+#include "internal/_vector.h"
 #include "internal/test/defs.h"
 
 #define STR_COUNT	4

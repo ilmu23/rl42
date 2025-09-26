@@ -7,7 +7,11 @@
 //
 // <<rl42_string.c>>
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "internal/_utils.h"
+#include "internal/_vector.h"
 
 vector	cstr_to_rl42str(const char *s) {
 	vector	out;

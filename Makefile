@@ -15,9 +15,9 @@ BUILD	=	fsan
 
 CC				=	gcc
 cflags.common	=	-Wall -Wextra -Werror -Wpedantic -std=c2x -pedantic-errors -I$(INCDIR)
-cflags.debug	=	-g
+cflags.debug	=	-g -D__DEBUG_BUILD
 cflags.fsan		=	$(cflags.debug) -fsanitize=address,undefined
-cflags.normal	=	-O3
+cflags.normal	=	-s -O1
 cflags.extra	=	
 CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
 
@@ -48,7 +48,9 @@ KEYBFILES	=	editing_mode.c \
 				keyseq.c \
 				rl42_bind.c
 
-TERMFILES	=	settings.c
+TERMFILES	=	cursor.c \
+				display.c \
+				settings.c
 
 UTILFILES	=	list.c \
 				map.c \
@@ -75,65 +77,24 @@ OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 TCFLAGS	=	$(CFLAGS) -D__TEST_BUILD
 
 TESTBIN		=	$(TESTDIR)/$(BINDIR)
-TESTUTILS	=	$(SRCDIR)/$(UTILDIR)/message.c
 
 ### FUNCTION TESTS
 FUNCTION_TEST		=	$(TESTBIN)/function_test
 
 FUNCTION_TEST_FILES	=	$(TESTDIR)/$(FUNCDIR)/function_test.c \
-						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
-						$(SRCDIR)/$(HISTDIR)/history.c \
-						$(SRCDIR)/$(KEYBDIR)/rl42_bind.c \
-						$(SRCDIR)/$(KEYBDIR)/editing_mode.c \
-						$(SRCDIR)/$(KEYBDIR)/keyseq.c \
-						$(SRCDIR)/$(KBINDIR)/listen.c \
-						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
-						$(SRCDIR)/$(TERMDIR)/settings.c \
-						$(SRCDIR)/$(UTILDIR)/rl42_string.c \
-						$(SRCDIR)/$(UTILDIR)/vector.c \
-						$(SRCDIR)/$(UTILDIR)/strhash.c \
-						$(SRCDIR)/$(UTILDIR)/utf8.c \
-						$(SRCDIR)/$(UTILDIR)/list.c \
-						$(SRCDIR)/$(UTILDIR)/map.c \
-						$(SRCDIR)/init.c
+						$(SRCS)
 
 ### HISTORY TESTS
 HISTORY_TEST		=	$(TESTBIN)/history_test
 
 HISTORY_TEST_FILES	=	$(TESTDIR)/$(HISTDIR)/history_test.c \
-						$(SRCDIR)/$(HISTDIR)/history.c \
-						$(SRCDIR)/$(KEYBDIR)/rl42_bind.c \
-						$(SRCDIR)/$(KEYBDIR)/editing_mode.c \
-						$(SRCDIR)/$(KEYBDIR)/keyseq.c \
-						$(SRCDIR)/$(KBINDIR)/listen.c \
-						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
-						$(SRCDIR)/$(TERMDIR)/settings.c \
-						$(SRCDIR)/$(UTILDIR)/rl42_string.c \
-						$(SRCDIR)/$(UTILDIR)/vector.c \
-						$(SRCDIR)/$(UTILDIR)/strhash.c \
-						$(SRCDIR)/$(UTILDIR)/utf8.c \
-						$(SRCDIR)/$(UTILDIR)/list.c \
-						$(SRCDIR)/$(UTILDIR)/map.c \
-						$(SRCDIR)/init.c
+						$(SRCS)
 
 ### KEYBIND TESTS
 KEYBIND_TEST		=	$(TESTBIN)/keybind_test
 
 KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
-						$(SRCDIR)/$(HISTDIR)/history.c \
-						$(SRCDIR)/$(KEYBDIR)/rl42_bind.c \
-						$(SRCDIR)/$(KEYBDIR)/editing_mode.c \
-						$(SRCDIR)/$(KEYBDIR)/keyseq.c \
-						$(SRCDIR)/$(KBINDIR)/listen.c \
-						$(SRCDIR)/$(FUNCDIR)/rl42_fn_info.c \
-						$(SRCDIR)/$(TERMDIR)/settings.c \
-						$(SRCDIR)/$(UTILDIR)/rl42_string.c \
-						$(SRCDIR)/$(UTILDIR)/vector.c \
-						$(SRCDIR)/$(UTILDIR)/strhash.c \
-						$(SRCDIR)/$(UTILDIR)/utf8.c \
-						$(SRCDIR)/$(UTILDIR)/list.c \
-						$(SRCDIR)/$(UTILDIR)/map.c \
-						$(SRCDIR)/init.c
+						$(SRCS)
 
 ### UTIL TESTS
 STRLEN_UTF8_TEST		=	$(TESTBIN)/strlen_utf8_test
@@ -153,16 +114,19 @@ RL42_STRING_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/rl42_string.c \
 							$(SRCDIR)/$(UTILDIR)/utf8.c
 
 VECTOR_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/vector.c \
-							$(SRCDIR)/$(UTILDIR)/vector.c
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/message.c
 
 LIST_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/list.c \
 							$(SRCDIR)/$(UTILDIR)/list.c \
-							$(SRCDIR)/$(UTILDIR)/vector.c
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/message.c
 
 MAP_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/map.c \
 							$(SRCDIR)/$(UTILDIR)/map.c \
 							$(SRCDIR)/$(UTILDIR)/vector.c \
-							$(SRCDIR)/$(UTILDIR)/strhash.c
+							$(SRCDIR)/$(UTILDIR)/strhash.c \
+							$(SRCDIR)/$(UTILDIR)/message.c
 
 all: $(NAME)
 
@@ -196,35 +160,35 @@ utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(VECTOR_TEST) $(LIST_TEST) $
 
 $(FUNCTION_TEST): $(FUNCTION_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(HISTORY_TEST): $(HISTORY_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(KEYBIND_TEST): $(KEYBIND_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(STRLEN_UTF8_TEST): $(STRLEN_UTF8_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(RL42_STRING_TEST): $(RL42_STRING_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(VECTOR_TEST): $(VECTOR_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(LIST_TEST): $(LIST_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(MAP_TEST): $(MAP_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $(TESTUTILS) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(OBJDIR):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating objdirs\n"

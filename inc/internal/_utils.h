@@ -9,15 +9,11 @@
 
 #pragma once
 
-#include "internal/_defs.h"
+#ifndef __RL42_INTERNAL
+# define __RL42_INTERNAL
+#endif
 
 #include "internal/_data.h"
-#include "internal/_vector.h"
-
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
 
 typedef char	utf8_cbuf[5];
 

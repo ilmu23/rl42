@@ -9,16 +9,12 @@
 
 #pragma once
 
-#include "internal/_defs.h"
+#ifndef __RL42_INTERNAL
+# define __RL42_INTERNAL
+#endif
 
-#include "internal/_map.h"
-#include "internal/_rl42.h"
-#include "internal/_utils.h"
-#include "internal/_vector.h"
-#include "internal/_function.h"
-
-#include <errno.h>
-#include <string.h>
+#include "data.h"
+#include "internal/_data.h"
 
 #define EXPAND_INVALID_SEQ	((void *)1)
 

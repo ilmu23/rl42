@@ -7,7 +7,13 @@
 //
 // <<rl42_fn_info.c>>
 
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "internal/_rl42.h"
+#include "internal/_utils.h"
+#include "internal/_vector.h"
 #include "internal/_function.h"
 
 static vector	functions;
@@ -63,9 +69,9 @@ u8	rl42_register_function(rl42_fn f, const char *fname) {
 	new = (rl42_fn_info){
 		.f = f,
 		.fname = fname,
-		.binds[0] = vector(char *, 1, NULL),
-		.binds[1] = vector(char *, 1, NULL),
-		.binds[2] = vector(char *, 1, NULL)
+		.binds[0] = vector(char *, 1, free),
+		.binds[1] = vector(char *, 1, free),
+		.binds[2] = vector(char *, 1, free)
 	};
 	if (!new.binds[0] || !new.binds[1] || !new.binds[2]) {
 		vector_delete(new.binds[0]);

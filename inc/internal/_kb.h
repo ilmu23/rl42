@@ -9,8 +9,11 @@
 
 #pragma once
 
+#ifndef __RL42_INTERNAL
+# define __RL42_INTERNAL
+#endif
+
 #include "internal/_data.h"
-#include <unistd.h>
 
 #define KB_MOD_SHIFT	0x01U
 #define KB_MOD_ALT		0x02U
