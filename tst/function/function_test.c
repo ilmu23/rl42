@@ -94,7 +94,7 @@ static inline u8	_print_fn_info(const rl42_fn_info *fn_info1, const rl42_fn_info
 		if (!_check)
 			rv = 0;
 		fprintf(stderr, "%s\tfunction address: %s" ENDL, hl(_check), (_check) ? "OK" : "KO");
-		_check = (fn_info1->fname == functions[i].fname) ? 1 : 0;
+		_check = (strcmp(fn_info1->fname, functions[i].fname) == 0) ? 1 : 0;
 		if (!_check)
 			rv = 0;
 		fprintf(stderr, "%s\tfunction name: '%s', expected '%s'" ENDL, hl(_check), fn_info1->fname, functions[i].fname);

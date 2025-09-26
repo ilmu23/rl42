@@ -68,7 +68,7 @@ u8	rl42_register_function(rl42_fn f, const char *fname) {
 		return error("rl42_register_function(%s): function name '%s' already taken\n", fname, tmp->fname);
 	new = (rl42_fn_info){
 		.f = f,
-		.fname = fname,
+		.fname = strdup(fname),
 		.binds[0] = vector(char *, 1, free),
 		.binds[1] = vector(char *, 1, free),
 		.binds[2] = vector(char *, 1, free)
@@ -86,4 +86,5 @@ static void	_clean_fn_info(rl42_fn_info *f) {
 	vector_delete(f->binds[0]);
 	vector_delete(f->binds[1]);
 	vector_delete(f->binds[2]);
+	free((void *)f->fname);
 }
