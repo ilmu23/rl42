@@ -231,12 +231,15 @@ static inline u8	_init_term(void) {
 	return term_apply_settings(TERM_SETTINGS_DEFAULT);
 }
 
+#define rl42_fn(f, n)	{.address = f, .name = n}
+
 static const struct {
 	const rl42_fn	address;
 	const char		*name;
 }	functions[] = {
-	{.address = self_insert, .name = "self-insert"},
-	{.address = accept_line, .name = "accept-line"},
+	rl42_fn(accept_line, "accept-line"),
+	rl42_fn(end_of_file, "end-of-file"),
+	rl42_fn(self_insert, "self-insert"),
 };
 
 static inline u8	_init_fns(void) {

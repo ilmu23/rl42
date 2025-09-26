@@ -11,4 +11,5 @@
 
 #include "internal/_data.h"
 
+u8	end_of_file(rl42_line *line);
 u8	self_insert(rl42_line *line);

@@ -70,7 +70,8 @@ UTILFILES	=	list.c \
 RLFNFILES	=	$(addprefix $(INFNDIR)/, $(INFNFILES)) \
 				$(addprefix $(HSFNDIR)/, $(HSFNFILES))
 
-INFNFILES	=	self_insert.c
+INFNFILES	=	end_of_file.c \
+				self_insert.c
 
 HSFNFILES	=	accept_line.c
 

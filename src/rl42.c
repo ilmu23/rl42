@@ -57,7 +57,7 @@ char	*ft_readline(const char *prompt) {
 		}
 	} while (rv);
 	term_apply_settings(TERM_SETTINGS_DEFAULT);
-	out = rl42str_to_cstr(line.line);
+	out = (line.line) ? rl42str_to_cstr(line.line) : NULL;
 	vector_delete(line.prompt.prompt);
 	vector_delete(line.keyseq);
 	vector_delete(line.line);
