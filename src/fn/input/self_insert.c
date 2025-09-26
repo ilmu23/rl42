@@ -9,7 +9,6 @@
 
 #include "internal/_vector.h"
 #include "internal/_display.h"
-#include "internal/fn/input.h"
 
 #undef vector_insert
 #define vector_insert(vec, i, val)	(__vec_ins(vec, i, val))
