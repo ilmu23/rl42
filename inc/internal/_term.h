@@ -60,9 +60,12 @@ u8	term_cursor_set_pos(const i16 row, const i16 col);
 /** @brief Moves corsor to given location
  *
  * Unlike term_cursor_set_pos, this function calculates the correct position
- * based on the given row and column instead of treating them as absolute values
- * @param cursor Current cursor context. Moves to the position set in cursor->row/col
+ * based on the given row and column instead of treating them as absolute values,
+ * updating the prompt and input roots as needed
+ * @param line Current input line
+ * @param row Desired row
+ * @param col Desired column
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8	term_cursor_move_to(rl42_cursor *cursor);
+u8	term_cursor_move_to(rl42_line *line, i16 row, i16 col);

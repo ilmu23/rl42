@@ -40,8 +40,9 @@ UTILDIR	=	utils
 
 RLFNDIR	=	fn
 
-INFNDIR	=	input
 HSFNDIR	=	history
+INFNDIR	=	input
+MVFNDIR	=	move
 
 ## SOURCE FILES
 
@@ -62,18 +63,23 @@ TERMFILES	=	cursor.c \
 UTILFILES	=	list.c \
 				map.c \
 				message.c \
+				misc.c \
 				rl42_string.c \
 				strhash.c \
 				utf8.c \
 				vector.c
 
-RLFNFILES	=	$(addprefix $(INFNDIR)/, $(INFNFILES)) \
-				$(addprefix $(HSFNDIR)/, $(HSFNFILES))
+RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
+				$(addprefix $(INFNDIR)/, $(INFNFILES)) \
+				$(addprefix $(MVFNDIR)/, $(MVFNFILES))
+
+HSFNFILES	=	accept_line.c
 
 INFNFILES	=	end_of_file.c \
 				self_insert.c
 
-HSFNFILES	=	accept_line.c
+MVFNFILES	=	backward_char.c \
+				forward_char.c
 
 FILES	=	rl42.c \
 			init.c \
@@ -230,8 +236,9 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(KEYBDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 	@mkdir -p $(OBJDIR)/$(UTILDIR)
-	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(INFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(HSFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(INFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MVFNDIR)
 
 $(TESTBIN):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating test executable dir\n"

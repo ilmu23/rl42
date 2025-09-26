@@ -23,6 +23,7 @@
 #include "internal/_function.h"
 #include "internal/_keybinds.h"
 
+#include "internal/fn/move.h"
 #include "internal/fn/input.h"
 #include "internal/fn/history.h"
 
@@ -221,6 +222,8 @@ static const struct {
 	rl42_fn(accept_line, "accept-line"),
 	rl42_fn(end_of_file, "end-of-file"),
 	rl42_fn(self_insert, "self-insert"),
+	rl42_fn(forward_char, "forward-char"),
+	rl42_fn(backward_char, "backward-char"),
 };
 
 static inline u8	_init_fns(void) {

@@ -23,33 +23,29 @@
 
 #define clear()	((write(1, _TERM_CLEAR_END, sizeof(_TERM_CLEAR_END) - 1) == (ssize_t)sizeof(_TERM_CLEAR_END) - 1) ? 1 : 0)
 
-static inline u8	_add_str_to_buf(cvector s, char buf[_BUFFER_SIZE], size_t *i, size_t *cursor_offset, const size_t cursor_index);
+static inline u8	_add_str_to_buf(cvector s, char buf[_BUFFER_SIZE], size_t *i);
 
 u8	term_display_line(rl42_line *line, const rl42_display_opts opts) {
 	static char	buf[_BUFFER_SIZE];
-	size_t		cursor_offset;
 	size_t		i;
 
 	i = 0;
-	cursor_offset = 0;
-	if (line->prompt.sprompt && !_add_str_to_buf(line->prompt.sprompt, buf, &i, NULL, 0))
+	if (line->prompt.sprompt && !_add_str_to_buf(line->prompt.sprompt, buf, &i))
 		return 0;
-	if (!_add_str_to_buf(line->prompt.prompt, buf, &i, NULL, 0))
+	if (!_add_str_to_buf(line->prompt.prompt, buf, &i))
 		return 0;
-	if (~opts & DISPLAY_PROMPT_ONLY && !_add_str_to_buf(line->line, buf, &i, &cursor_offset, line->i))
+	if (~opts & DISPLAY_PROMPT_ONLY && !_add_str_to_buf(line->line, buf, &i))
 		return 0;
-	if (!term_cursor_set_pos(line->cursor.prompt_row, line->cursor.prompt_col))
+	if (!term_cursor_set_pos(line->prompt.root.row, line->prompt.root.col))
 		return 0;
 	if (!clear() || write(1, buf, i) != (ssize_t)i)
 		return 0;
 	if (opts & DISPLAY_PROMPT_ONLY)
 		return 1;
-	line->cursor.row = line->cursor.input_row;
-	line->cursor.col = line->cursor.input_col + cursor_offset;
-	return term_cursor_move_to(&line->cursor);
+	return term_cursor_move_to(line, line->root.row, line->root.col + calculate_cursor_offset(line));
 }
 
-static inline u8	_add_str_to_buf(cvector s, char buf[_BUFFER_SIZE], size_t *i, size_t *cursor_offset, const size_t cursor_index) {
+static inline u8	_add_str_to_buf(cvector s, char buf[_BUFFER_SIZE], size_t *i) {
 	utf8_cbuf	encoded;
 	size_t		size;
 	size_t		len;
@@ -65,8 +61,6 @@ static inline u8	_add_str_to_buf(cvector s, char buf[_BUFFER_SIZE], size_t *i, s
 			len = strlen(encoded);
 			memcpy(&buf[*i], encoded, len);
 			*i += len;
-			if (cursor_offset && _i < cursor_index)
-				(*cursor_offset)++;
 		} else if (ucp < 0x20U) {
 			if (*i + (sizeof(_SGR_REV_VIDEO) - 1 + sizeof(_SGR_RESET) - 1 + 2) >= _BUFFER_SIZE)
 				return 0;
@@ -76,8 +70,6 @@ static inline u8	_add_str_to_buf(cvector s, char buf[_BUFFER_SIZE], size_t *i, s
 			buf[(*i)++] = (char)ucp + '@';
 			memcpy(&buf[*i], _SGR_RESET, sizeof(_SGR_RESET) - 1);
 			*i += sizeof(_SGR_RESET) - 1;
-			if (cursor_offset && _i < cursor_index)
-				*cursor_offset += 2;
 		}
 	}
 	return (*i != _BUFFER_SIZE) ? 1 : 0;

@@ -17,39 +17,36 @@
 typedef struct __vec *			vector;
 typedef const struct __vec *	cvector;
 
-// Stores information about the cursor
-// prompt row / col = starting position of the current prompt
-// input row / col = starting position of the current input line
-// row / col = current cursor position
-typedef struct __cursor {
-	i16	prompt_row;
-	i16	prompt_col;
-	i16	input_row;
-	i16	input_col;
+// Stores a cursor position
+// row = row number
+// col = column number
+typedef struct __cursor_pos {
 	i16	row;
 	i16	col;
-}	rl42_cursor;
+}	rl42_cursor_pos;
 
 // Stores all prompt information
+// root = row / col of start of prompt
 // sprompt = current special prompt, for example the current digit-argument
 // prompt = user provided prompt
 typedef struct __prompt {
-	vector	sprompt;
-	vector	prompt;
+	rl42_cursor_pos	root;
+	vector			sprompt;
+	vector			prompt;
 }	rl42_prompt;
 
 // Stores the current input environment
-// cursor = cursor information
+// root = row / col of start of input
 // prompt = current prompt
 // keyseq = keyseq that is currently being executed
 // line = current input line
 // i = cursor index in the input line
 typedef struct __line {
-	rl42_cursor	cursor;
-	rl42_prompt	prompt;
-	vector		keyseq;
-	vector		line;
-	size_t		i;
+	rl42_cursor_pos	root;
+	rl42_prompt		prompt;
+	vector			keyseq;
+	vector			line;
+	size_t			i;
 }	rl42_line;
 
 typedef u8	(*rl42_fn)(rl42_line *);

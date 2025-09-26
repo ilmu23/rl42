@@ -83,6 +83,13 @@ u64			cstr_hash(const char *s, const u64 salt, const size_t max);
  */
 u64			rl42str_hash(cvector s, const u64 salt, const size_t max);
 
+/** @brief Calculates the correct position for the cursor
+ *
+ * @param line Information about the current line
+ * @returns @c <b>size_t</b> Cursor offset from line->cursor.input_col
+ */
+size_t		calculate_cursor_offset(const rl42_line *line);
+
 /** @brief Displays an error message
  *
  * @param fmt Format string for the message
