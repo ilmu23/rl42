@@ -12,7 +12,7 @@
 #include "internal/_map.h"
 #include "internal/_keybinds.h"
 
-static rl42_editing_mode	current_mode;
+static rl42_editing_mode	current_mode = EMACS;
 static rl42_key_tree		*trees[3];
 
 rl42_editing_mode	get_editing_mode(void) {
