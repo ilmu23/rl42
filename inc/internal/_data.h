@@ -39,6 +39,7 @@ typedef struct __prompt {
 }	rl42_prompt;
 
 // Stores the current input environment
+// cursor = cursor information
 // prompt = current prompt
 // keyseq = keyseq that is currently being executed
 // line = current input line
@@ -69,6 +70,9 @@ typedef const struct __lst *	clist;
 
 // History node containing the original line and
 // the potentially edited version
+// entry_n = Entry number, starting from 1 for the first entry
+// line = stored line
+// edit = temporarily edited line
 typedef struct __hist_node {
 	const size_t	entry_n;
 	const char		*line;
@@ -88,6 +92,7 @@ typedef struct __key_tree {
 // Contains info about rl42 functions
 // f = pointer to the function
 // fname = name of the function
+// binds = all sequences bound to the function, separated by editing mode
 typedef struct __fn_info {
 	rl42_fn		f;
 	const char	*fname;
