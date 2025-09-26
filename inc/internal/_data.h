@@ -54,18 +54,6 @@ typedef struct __line {
 typedef u8	(*rl42_fn)(rl42_line *);
 
 #ifdef __RL42_INTERNAL
-// Modes used by rl42_redisplay
-// CURSOR = Redisplay starting from the cursor
-// LINE = Redisplay the whole input line
-// PROMPT = Redisplay the prompt and the input line
-// CLEAR = Clear the screen and redisplay everything
-typedef enum __redisplay_mode {
-	CURSOR,
-	LINE,
-	PROMPT,
-	CLEAR
-}	rl42_redisplay_mode;
-
 typedef enum __direction {
 	FORWARD,
 	BACKWARD
