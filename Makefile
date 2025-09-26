@@ -160,7 +160,7 @@ $(NAME): $(OBJDIR) $(OBJS)
 	@ar -crs $(NAME) $(OBJS)
 	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
 
-$(INTERACTIVE_TESTER):
+$(INTERACTIVE_TESTER): $(SRCS)
 	@make --no-print-directory re BUILD=$(ITBUILD)
 	@make --no-print-directory $(TESTBIN)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
