@@ -44,7 +44,7 @@ char	*ft_readline(const char *prompt) {
 	match.fn = NULL;
 	term_apply_settings(TERM_SETTINGS_RL42);
 	term_cursor_get_pos(&line.cursor.prompt_row, &line.cursor.prompt_col);
-	term_display_line(&line, 0);
+	term_display_line(&line, DISPLAY_PROMPT_ONLY);
 	term_cursor_get_pos(&line.cursor.input_row, &line.cursor.input_col);
 	line.cursor.row = line.cursor.input_row;
 	line.cursor.col = line.cursor.input_col;

@@ -8,7 +8,6 @@
 // <<init.c>>
 
 #include <stdlib.h>
-#include <termios.h>
 
 #ifdef __TEST_BUILD
 #include <unistd.h>
@@ -41,11 +40,7 @@
 
 static inline void	_init_binds(void);
 static inline void	_rl42_exit(void);
-static inline u8	_init_term(void);
 static inline u8	_init_fns(void);
-
-extern term_settings	old;
-extern term_settings	new;
 
 static u8	init_in_progress = 0;
 static u8	init = 0;
@@ -62,9 +57,9 @@ u8	rl42_init(void) {
 		if (atexit(_rl42_exit) != 0)
 			rv = 0;
 #ifdef __TEST_BUILD
-		if (isatty(0) && !_init_term())
+		if (isatty(0) && !term_init())
 #else
-		if (!_init_term())
+		if (!term_init())
 #endif
 			rv = 0;
 		if (!_init_fns())
@@ -215,20 +210,6 @@ static inline void	_rl42_exit(void) {
 		clean_key_trees();
 		clean_fns();
 	}
-}
-
-static inline u8	_init_term(void) {
-	if (tcgetattr(0, &old) == -1)
-		return 0;
-	new = old;
-	new.c_iflag &= ~(ICRNL | IXON);
-	new.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-	if (!init_kb_listener())
-		return 0;
-	if (!term_apply_settings(TERM_SETTINGS_RL42))
-		return 0;
-	// TODO: hide cursor, update terminal size, unhide cursor
-	return term_apply_settings(TERM_SETTINGS_DEFAULT);
 }
 
 #define rl42_fn(f, n)	{.address = f, .name = n}
