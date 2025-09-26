@@ -14,7 +14,7 @@ BUILD	=	fsan
 ## COMPILER FLAGS
 
 CC				=	gcc
-cflags.common	=	-Wall -Wextra -Werror -Wpedantic -std=c2x -pedantic-errors -I$(INCDIR)
+cflags.common	=	-Wall -Wextra -Werror -Wpedantic -std=gnu2x -pedantic-errors -I$(INCDIR)
 cflags.debug	=	-g -D__DEBUG_BUILD
 cflags.fsan		=	$(cflags.debug) -fsanitize=address,undefined
 cflags.normal	=	-s -O1
