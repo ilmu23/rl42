@@ -143,11 +143,28 @@ MAP_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/map.c \
 							$(SRCDIR)/$(UTILDIR)/strhash.c \
 							$(SRCDIR)/$(UTILDIR)/message.c
 
+### INTERACTIVE TESTER
+INTERACTIVE_TESTER	=	$(TESTBIN)/interactive
+
+ITBUILD	=	fsan
+
+ITCFLAGS	=	$(cflags.common) $(cflags.$(ITBUILD)) $(cflags.extra)
+ITLDFLAGS	=	-L. -lrl42
+
 all: $(NAME)
+
+tester: $(INTERACTIVE_TESTER)
 
 $(NAME): $(OBJDIR) $(OBJS)
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating %s\n" $@
 	@ar -crs $(NAME) $(OBJS)
+	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
+
+$(INTERACTIVE_TESTER):
+	@make --no-print-directory re BUILD=$(ITBUILD)
+	@make --no-print-directory $(TESTBIN)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(ITCFLAGS) $(TESTDIR)/interactive/main.c $(ITLDFLAGS) -o $@
 	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
 
 tests: $(TESTDIR)/$(BINDIR) functests histtests keybtests utiltests
