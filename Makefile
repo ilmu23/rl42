@@ -160,9 +160,8 @@ $(NAME): $(OBJDIR) $(OBJS)
 	@ar -crs $(NAME) $(OBJS)
 	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
 
-$(INTERACTIVE_TESTER): $(SRCS) $(TESTDIR)/interactive/main.c
-	@make --no-print-directory re BUILD=$(ITBUILD)
-	@make --no-print-directory $(TESTBIN)
+$(INTERACTIVE_TESTER): $(TESTBIN) $(SRCS) $(TESTDIR)/interactive/main.c
+	@make --no-print-directory clean all BUILD=$(ITBUILD)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(ITCFLAGS) $(TESTDIR)/interactive/main.c $(ITLDFLAGS) -o $@
 	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
