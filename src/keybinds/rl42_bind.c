@@ -11,7 +11,6 @@
 #include <string.h>
 
 #include "internal/_map.h"
-#include "internal/_list.h"
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
@@ -30,7 +29,10 @@ u8 rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const r
 	size_t			len;
 	size_t			i;
 
-	rl42_init();
+	if (!rl42_init()) {
+		error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
+		return 0;
+	}
 	fninfo = get_fn_info_name(f);
 	if (!fninfo)
 		return (!(bmode & 1)) ? warn("rl42: rl42_bind(%s, %s): function not found\n", seq, f) : 0;
@@ -64,7 +66,10 @@ u8	rl42_unbind(const char *seq, const rl42_editing_mode emode) {
 	size_t			i;
 
 	errno = 0;
-	rl42_init();
+	if (!rl42_init()) {
+		error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
+		return 0;
+	}
 	expanded_seq = expand_seq(seq);
 	if (!expanded_seq || expanded_seq == EXPAND_INVALID_SEQ)
 		return error("rl42: rl42_unbind(%s): %s\n", seq, (expanded_seq == NULL) ? strerror(errno) : "invalid key sequence");

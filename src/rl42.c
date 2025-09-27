@@ -7,6 +7,9 @@
 //
 // <<rl42.c>>
 
+#include <errno.h>
+#include <string.h>
+
 #include "internal/_kb.h"
 #include "internal/_map.h"
 #include "internal/_rl42.h"
@@ -33,7 +36,10 @@ char	*ft_readline(const char *prompt) {
 	char		*out;
 	u8			rv;
 
-	rl42_init();
+	if (!rl42_init()) {
+		error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
+		return NULL;
+	}
 	line = (rl42_line){
 		.prompt.prompt = cstr_to_rl42str(prompt),
 		.keyseq = vector(u32, 64, NULL),

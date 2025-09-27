@@ -54,7 +54,10 @@ u8	rl42_register_function(rl42_fn f, const char *fname) {
 	const rl42_fn_info	*tmp;
 	rl42_fn_info		new;
 
-	rl42_init();
+	if (!rl42_init()) {
+		error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
+		return 0;
+	}
 	if (!functions) {
 		functions = vector(rl42_fn_info, FUNCTION_COUNT, (void (*)(void *))_clean_fn_info);
 		if (!functions)
