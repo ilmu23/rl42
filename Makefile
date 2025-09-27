@@ -268,6 +268,7 @@ clean:
 	@rm -f $(OBJS)
 
 tclean:
+	@rm -f $(INTERACTIVE_TESTER)
 	@rm -f $(FUNCTION_TEST)
 	@rm -f $(HISTORY_TEST)
 	@rm -f $(KEYBIND_TEST)
