@@ -21,7 +21,7 @@ struct __vec {
 	u8		*data;
 };
 
-#define index(vec, i)	((void *)((uintptr_t)vec->data + (vec->element_size * i)))
+#define index(vec, i)	((void *)((uintptr_t)vec->data + (vec->element_size * (i))))
 
 static inline void	_set_element(vector vec, const size_t i, const void *val);
 
@@ -72,7 +72,7 @@ void	__vec_pop(vector vec) {
 }
 
 void	*__vec_get(cvector vec, const size_t i) {
-	return (i < vec->elements) ? index(vec, i) : VECTOR_OUT_OF_BOUNDS;
+	return (i < vec->elements) ? index(vec, i) : (i == (size_t)-1 && vec->elements) ? index(vec, vec->elements -1) : VECTOR_OUT_OF_BOUNDS;
 }
 
 u8	__vec_set(vector vec, const size_t i, const void *val) {

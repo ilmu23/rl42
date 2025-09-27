@@ -14,6 +14,7 @@
 #include "internal/_terminfo_caps.h"
 
 #include <stddef.h>
+#include <sys/types.h>
 
 // Invalid boolean capability name
 #define TI_NOT_BOOL	-1
@@ -78,6 +79,35 @@ i32			ti_getnum(const u8 name);
  */
 const char	*ti_getstr(const u16 name);
 
+/** @brief Returns an escape sequence for moving the cursor to the desired location
+ *
+ * @apram seq Cursor move sequence (ti_cup)
+ * @param row Desired row
+ * @param col Desired column
+ * @returns @c <b>const char *</b> Sequence for moving to the desired location,
+ * NULL if an error occurred
+ */
+const char	*ti_tgoto(const char *seq, const i32 row, const i32 col);
+
+/** @brief Instantiates an escape sequence with the given parameters
+ *
+ * @param seq Sequence to apply the parameters on
+ * @param ... Parameters to apply
+ * @returns @c <b>const char *</b> seq with the parameters applied,
+ * NULL if an error occurred
+ */
+const char	*ti_tparm(const char *seq, ...);
+
+/** @brief Outputs the string s, executing any delays found in it
+ *
+ * @param s Output string
+ * @param affln Number of lines affected / 1 if not applicable
+ * @param putc Function for outputting the characters
+ * @returns @c <b>ssize_t</b> Amount of bytes written,
+ * -1 if an error occurred
+ */
+ssize_t		ti_tputs(const char *s, const size_t affln, ssize_t (*putc)(const char));
+
 /** @Unloads the currently loaded description
  *
  * Frees all resources used for storing the
@@ -85,5 +115,3 @@ const char	*ti_getstr(const u16 name);
  * if no description is loaded
  */
 void		ti_unload(void);
-
-//TODO: ti_tgoto, ti_tparm, ti_tputs

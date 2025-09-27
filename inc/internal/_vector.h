@@ -29,6 +29,8 @@ u8		__vec_psh(vector vec, const void *val);
 #define	vector_pop(vector)	(__vec_pop(vector))
 void	__vec_pop(vector vec);
 
+#define vector_first(vector)	(__vec_get(vector, 0))
+#define vector_last(vector)		(__vec_get(vector, (size_t)-1))
 #define	vector_get(vector, i)	(__vec_get(vector, i))
 void	*__vec_get(cvector vec, const size_t i);
 

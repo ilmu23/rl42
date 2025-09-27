@@ -7,8 +7,10 @@
 //
 // <<terminfo.c>>
 
+#include <ctype.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -20,6 +22,8 @@
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 #include "internal/_terminfo.h"
+
+#define _BUFFER_SIZE 4096
 
 #define _BIT_COUNT_32	01036U
 
@@ -38,10 +42,22 @@
 #define _OFF_NEXT_FREE		10
 #define _OFF_BODY			12
 
+#define _TP_PARAMS		9
+#define _TP_VARCOUNT	26
+#define _TP_SVARS		_TP_VARCOUNT
+#define _TP_DVARS		_TP_VARCOUNT
+
+#define _TP_F_DVARS_INIT_DONE	0x1U
+#define _TP_F_INCREMENT_P12		0x2U
+#define _TP_F_IN_CONDITIONAL	0x4U
+
 #define offset(p, n)	((void *)((uintptr_t)p + n))
 
 #define is_present_u16(n, i)	(n.u16[i] != (u16)TI_ABS_NUM && n.u16[i] != (u16)_CAN_NUM)
 #define is_present_u32(n, i)	(n.u32[i] != (u32)TI_ABS_NUM && n.u32[i] != (u32)_CAN_NUM)
+
+#define tp_stack_top(st)		(*(uintptr_t *)vector_last(st))
+#define tp_stack_push(st, val)	(vector_push(st, (uintptr_t){val}))
 
 typedef struct {
 	u16	bit_count;
@@ -76,6 +92,8 @@ static inline i32	_open(const char *term);
 static inline u8	_extract_dirs(const char *list, vector dirs, vector allocs);
 static inline u8	_get_entry(const i32 fd, entry *entry);
 
+static inline u8	_tp_sprintf(const char **seq, char buf[_BUFFER_SIZE + 1], const uintptr_t val);
+
 static struct {
 	map	boolean;
 	map	numeric;
@@ -87,6 +105,8 @@ static struct {
 	char	name[NAME_MAX + 1];
 	u8		loaded;
 }	description;
+
+static char	seq_buf[_BUFFER_SIZE + 1];
 
 u8	ti_load(const char *term) {
 	size_t	i;
@@ -157,6 +177,259 @@ const char	*ti_getstr(const u16 name) {
 		return TI_NOT_STR;
 	val = map_get(caps.string, name);
 	return (val != MAP_NOT_FOUND) ? *val : TI_ABS_STR;
+}
+
+const char	*ti_tparm(const char *seq, ...) {
+	_BitInt(_TP_PARAMS)	present_params;
+	_BitInt(3)			flags;
+	static uintptr_t	svars[_TP_SVARS];
+	uintptr_t			dvars[_TP_DVARS];
+	uintptr_t			params[_TP_PARAMS];
+	uintptr_t			x;
+	uintptr_t			y;
+	va_list				args;
+	vector				stack;
+	size_t				seqlen;
+	size_t				i;
+	char				tmp[_BUFFER_SIZE + 1];
+	u8					param_count;
+
+	for (present_params = param_count = seqlen = 0; seq[seqlen]; seqlen++) {
+		if (seq[seqlen] == 'p') switch (seq[++seqlen]) {
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				if (!((present_params >> (seq[seqlen] - '1')) & 0x1U)) {
+					present_params |= 0x1U << (seq[seqlen] - '1');
+					if (seq[seqlen] - '0' > param_count)
+						param_count = seq[seqlen] - '0';
+				}
+				break ;
+			default:
+				return NULL;
+		}
+	}
+	stack = vector(uintptr_t, 5, NULL);
+	if (!stack)
+		goto _ti_tparm_err_ret;
+	va_start(args, seq);
+	for (i = 0; i < _TP_PARAMS; i++) {
+		params[i] = (param_count) ? va_arg(args, uintptr_t) : (uintptr_t)-1;
+		param_count -= (present_params >> i) & 0x1U;
+	}
+	va_end(args);
+	memset(seq_buf, 0, strlen(seq_buf));
+	for (i = flags = 0; *seq && i < _BUFFER_SIZE; seq++) {
+		if (*seq == '%') switch (*(++seq)) {
+			case 'c':
+				seq_buf[i++] = (u8)tp_stack_top(stack);
+				vector_pop(stack);
+				break ;
+			case 'd':
+			case 'o':
+			case 'x':
+			case 'X':
+			case 's':
+			case ':':
+			case ' ':
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				if (!_tp_sprintf(&seq, tmp, tp_stack_top(stack)))
+					goto _ti_tparm_err_ret;
+				i = strlcat(seq_buf, tmp, _BUFFER_SIZE + 1);
+				if (i >= sizeof(seq_buf))
+					goto _ti_tparm_err_ret;
+				break ;
+			case 'i':
+				if (~flags & _TP_F_INCREMENT_P12) {
+					params[0]++;
+					params[1]++;
+					flags |= _TP_F_INCREMENT_P12;
+				}
+				break ;
+			case 'p':
+				seq++;
+				if (in_range(*seq, '1', '9'))
+					tp_stack_push(stack, params[*seq - '1']);
+				else
+					goto _ti_tparm_err_ret;
+				break ;
+			case 'P':
+				if (islower(*(++seq))) {
+					if (~flags & _TP_F_DVARS_INIT_DONE) {
+						memset(dvars, 0, sizeof(dvars));
+						flags |= _TP_F_DVARS_INIT_DONE;
+					}
+					dvars[*seq - 'a'] = tp_stack_top(stack);
+				} else
+					svars[*seq - 'A'] = tp_stack_top(stack);
+				vector_pop(stack);
+				break ;
+			case 'g':
+				if (islower(*(++seq))) {
+					if (~flags & _TP_F_DVARS_INIT_DONE) {
+						memset(dvars, 0, sizeof(dvars));
+						flags |= _TP_F_DVARS_INIT_DONE;
+					}
+					tp_stack_push(stack, dvars[*seq - 'a']);
+				} else
+					tp_stack_push(stack, svars[*seq - 'A']);
+				break ;
+			case '\'':
+				tp_stack_push(stack, *(++seq));
+				seq++;
+				break ;
+			case '{':
+				for (x = 0, seq++; isdigit(*seq); seq++)
+					x = x * 10 + *seq - '0';
+				tp_stack_push(stack, x);
+				break ;
+			case 'l':
+				x = strlen((const char *)tp_stack_top(stack));
+				vector_pop(stack);
+				tp_stack_push(stack, x);
+				break ;
+			case '+':
+			case '-':
+			case '*':
+			case '/':
+			case 'm':
+			case '|':
+			case '^':
+			case '=':
+			case '>':
+			case '<':
+			case 'A':
+			case 'O':
+				x = tp_stack_top(stack);
+				vector_pop(stack);
+				y = tp_stack_top(stack);
+				vector_pop(stack);
+				switch (*seq) {
+					case '+':
+						tp_stack_push(stack, y + x);
+						break ;
+					case '-':
+						tp_stack_push(stack, y - x);
+						break ;
+					case '*':
+						tp_stack_push(stack, y * x);
+						break ;
+					case '/':
+						tp_stack_push(stack, y / x);
+						break ;
+					case 'm':
+						tp_stack_push(stack, y % x);
+						break ;
+					case '|':
+						tp_stack_push(stack, y | x);
+						break ;
+					case '^':
+						tp_stack_push(stack, y ^ x);
+						break ;
+					case '=':
+						tp_stack_push(stack, y == x);
+						break ;
+					case '>':
+						tp_stack_push(stack, y > x);
+						break ;
+					case '<':
+						tp_stack_push(stack, y < x);
+						break ;
+					case 'A':
+						tp_stack_push(stack, y && x);
+						break ;
+					case 'O':
+						tp_stack_push(stack, y || x);
+				}
+				break ;
+			case '!':
+			case '~':
+				x = tp_stack_top(stack);
+				vector_pop(stack);
+				tp_stack_push(stack, (*seq == '!') ? !x : ~x);
+				break ;
+			case '?':
+				if (flags & _TP_F_IN_CONDITIONAL)
+					goto _ti_tparm_err_ret;
+				flags |=  _TP_F_IN_CONDITIONAL;
+				break ;
+			case 't':
+				if (~flags & _TP_F_IN_CONDITIONAL)
+					goto _ti_tparm_err_ret;
+				x = tp_stack_top(stack);
+				vector_pop(stack);
+				if (!x) {
+					for (seq++, y = 0; ; seq++) {
+						if (*seq == '%') switch (*(++seq)) {
+							case '?':
+								y++;
+								break ;
+							case ';':
+							case 'e':
+								if (y == 0) {
+									if (*seq == ';')
+										flags &= ~_TP_F_IN_CONDITIONAL;
+									goto _ti_tparm_continue;
+								}
+								y -= (*seq == ':') ? 1 : 0;
+								break ;
+							case '\0':
+								goto _ti_tparm_continue;
+						}
+					}
+				}
+				break ;
+			case 'e':
+				if (~flags & _TP_F_IN_CONDITIONAL)
+					goto _ti_tparm_err_ret;
+				for (seq++, x = 0; ; seq++) {
+					if (*seq == '%') switch (*(++seq)) {
+						case '?':
+							x++;
+							break ;
+						case ';':
+							if (x == 0) {
+								flags &= ~_TP_F_IN_CONDITIONAL;
+								goto _ti_tparm_continue;
+							}
+							x--;
+						case '\0':
+							goto _ti_tparm_continue;
+					}
+				}
+				break ;
+			case ';':
+				if (~flags & _TP_F_IN_CONDITIONAL)
+					goto _ti_tparm_err_ret;
+				flags &=  ~_TP_F_IN_CONDITIONAL;
+				break ;
+			case '%':
+				seq_buf[i++] = '%';
+		} else
+			seq_buf[i++] = *seq;
+_ti_tparm_continue:
+	}
+	vector_delete(stack);
+	seq_buf[i] = '\0';
+	return (i < _BUFFER_SIZE) ? seq_buf : NULL;
+_ti_tparm_err_ret:
+	vector_delete(stack);
+	return NULL;
 }
 
 void	ti_unload(void) {
@@ -280,4 +553,35 @@ static inline u8	_get_entry(const i32 fd, entry *entry) {
 	entry->offs = offset(entry->data, offs_offset);
 	entry->strs = offset(entry->data, strs_offset);
 	return 1;
+}
+
+static inline u8	_tp_sprintf(const char **seq, char buf[_BUFFER_SIZE + 1], const uintptr_t val) {
+	const char	*tmp;
+	ssize_t		rv;
+	size_t		i;
+	char		fmt[_BUFFER_SIZE + 1];
+
+	tmp = *seq;
+	if (*tmp == ':')
+		tmp++;
+	for (i = 1, *fmt = '%'; i < _BUFFER_SIZE && strchr("-*# 0123456789.", *tmp) && *tmp; tmp++, i++)
+		fmt[i] = *tmp;
+	if (i == _BUFFER_SIZE)
+		return 0;
+	fmt[i++] = *tmp;
+	fmt[i] = '\0';
+	switch (fmt[i - 1]) {
+		case 'd':
+			rv = snprintf(buf, _BUFFER_SIZE, fmt, (const i32)val);
+			break ;
+		case 'o':
+		case 'x':
+		case 'X':
+			rv = snprintf(buf, _BUFFER_SIZE, fmt, (const u32)val);
+			break ;
+		case 's':
+			rv = snprintf(buf, _BUFFER_SIZE, fmt, (const char *)val);
+	}
+	*seq = tmp;
+	return (rv != -1 && rv < _BUFFER_SIZE) ? 1 : 0;
 }
