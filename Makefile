@@ -60,13 +60,15 @@ TERMFILES	=	cursor.c \
 				display.c \
 				settings.c
 
-UTILFILES	=	list.c \
+UTILFILES	=	cstr_utils.c \
+				list.c \
 				map.c \
 				message.c \
 				misc.c \
 				rl42_string.c \
 				strhash.c \
 				utf8.c \
+				terminfo.c \
 				vector.c
 
 RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
@@ -121,6 +123,7 @@ KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
 ### UTIL TESTS
 STRLEN_UTF8_TEST		=	$(TESTBIN)/strlen_utf8_test
 RL42_STRING_TEST		=	$(TESTBIN)/rl42_string_test
+TERMINFO_TEST			=	$(TESTBIN)/terminfo_test
 VECTOR_TEST				=	$(TESTBIN)/vector_test
 LIST_TEST				=	$(TESTBIN)/list_test
 MAP_TEST				=	$(TESTBIN)/map_test
@@ -134,6 +137,14 @@ RL42_STRING_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/rl42_string.c \
 							$(SRCDIR)/$(UTILDIR)/rl42_string.c \
 							$(SRCDIR)/$(UTILDIR)/vector.c \
 							$(SRCDIR)/$(UTILDIR)/utf8.c
+
+TERMINFO_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/terminfo.c \
+							$(SRCDIR)/$(UTILDIR)/terminfo.c \
+							$(SRCDIR)/$(UTILDIR)/cstr_utils.c \
+							$(SRCDIR)/$(UTILDIR)/map.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/strhash.c \
+							$(SRCDIR)/$(UTILDIR)/message.c
 
 VECTOR_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/vector.c \
 							$(SRCDIR)/$(UTILDIR)/vector.c \
@@ -188,9 +199,10 @@ keybtests: $(KEYBIND_TEST)
 	@./run_test rl42_bind $(KEYBIND_TEST)
 	@printf "\e[1;38;5;27mRL42 >\e[m All keybind tests passed!\n"
 
-utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(VECTOR_TEST) $(LIST_TEST) $(MAP_TEST)
+utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(TERMINFO_TEST) $(VECTOR_TEST) $(LIST_TEST) $(MAP_TEST)
 	@./run_test strlen_utf8 $(STRLEN_UTF8_TEST)
 	@./run_test rl42_string $(RL42_STRING_TEST)
+	@./run_test terminfo $(TERMINFO_TEST)
 	@./run_test vector $(VECTOR_TEST)
 	@./run_test list $(LIST_TEST)
 	@./run_test map $(MAP_TEST)
@@ -213,6 +225,10 @@ $(STRLEN_UTF8_TEST): $(STRLEN_UTF8_TEST_FILES)
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(RL42_STRING_TEST): $(RL42_STRING_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+
+$(TERMINFO_TEST): $(TERMINFO_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
@@ -257,6 +273,7 @@ tclean:
 	@rm -f $(KEYBIND_TEST)
 	@rm -f $(STRLEN_UTF8_TEST)
 	@rm -f $(RL42_STRING_TEST)
+	@rm -f $(TERMINFO_TEST)
 	@rm -f $(VECTOR_TEST)
 	@rm -f $(LIST_TEST)
 	@rm -f $(MAP_TEST)

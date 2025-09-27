@@ -83,6 +83,34 @@ u64			cstr_hash(const char *s, const u64 salt, const size_t max);
  */
 u64			rl42str_hash(cvector s, const u64 salt, const size_t max);
 
+/** @brief Appends s2 to the end of s1
+ *
+ * Allocates space for appending s1 to s2 and
+ * returns the resulting string. NULL arguments
+ * are treated as empty strings, hence cstr_join(NULL, NULL)
+ * would return the string ""
+ * @param s1 String to append to
+ * @param s2 String to append
+ * @returns @c <b>char *</b> s1 + s2,
+ * NULL if allocation failed
+ */
+char		*cstr_join(const char *s1, const char *s2);
+
+/** @brief Appends s2 to the end of s1
+ *
+ * Functions exactly like cstr_join, except instead of
+ * allocating space for the result uses at most buf_size
+ * bytes from buf to store the result. A buf_size of less than
+ * strlen(s1) + strlen(s2) + 1 will result in truncation
+ * @param s1 String to append to
+ * @param s2 String to append
+ * @param buf Buffer to store the result in
+ * @param buf_size Size of buf
+ * @returns @c <b>char *</b> s1 + s2,
+ * NULL if buf was NULL or buf_size was 0
+ */
+char		*cstr_joinb(const char *s1, const char *s2, char *buf, const size_t buf_size);
+
 /** @brief Calculates the correct position for the cursor
  *
  * @param line Information about the current line
