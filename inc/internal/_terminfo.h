@@ -82,8 +82,8 @@ const char	*ti_getstr(const u16 name);
 /** @brief Returns an escape sequence for moving the cursor to the desired location
  *
  * @apram seq Cursor move sequence (ti_cup)
- * @param row Desired row
- * @param col Desired column
+ * @param row Desired row, 1-based
+ * @param col Desired column, 1-based
  * @returns @c <b>const char *</b> Sequence for moving to the desired location,
  * NULL if an error occurred
  */

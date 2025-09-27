@@ -7,13 +7,16 @@
 //
 // <<terminfo.c>>
 
+#include <time.h>
 #include <ctype.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <termios.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <linux/limits.h>
@@ -42,14 +45,18 @@
 #define _OFF_NEXT_FREE		10
 #define _OFF_BODY			12
 
-#define _TP_PARAMS		9
-#define _TP_VARCOUNT	26
-#define _TP_SVARS		_TP_VARCOUNT
-#define _TP_DVARS		_TP_VARCOUNT
+#define _TPM_PARAMS		9
+#define _TPM_VARCOUNT	26
+#define _TPM_SVARS		_TPM_VARCOUNT
+#define _TPM_DVARS		_TPM_VARCOUNT
 
-#define _TP_F_DVARS_INIT_DONE	0x1U
-#define _TP_F_INCREMENT_P12		0x2U
-#define _TP_F_IN_CONDITIONAL	0x4U
+#define _TPM_F_DVARS_INIT_DONE	0x1U
+#define _TPM_F_INCREMENT_P12		0x2U
+#define _TPM_F_IN_CONDITIONAL	0x4U
+
+#define _TPS_DELAY_ALWAYS		0x1U
+#define _TPS_DELAY_NORMAL		0x2U
+#define _TPS_DELAY_MANDATORY	0x4U
 
 #define offset(p, n)	((void *)((uintptr_t)p + n))
 
@@ -92,7 +99,11 @@ static inline i32	_open(const char *term);
 static inline u8	_extract_dirs(const char *list, vector dirs, vector allocs);
 static inline u8	_get_entry(const i32 fd, entry *entry);
 
-static inline u8	_tp_sprintf(const char **seq, char buf[_BUFFER_SIZE + 1], const uintptr_t val);
+static inline u8	_tpm_sprintf(const char **seq, char buf[_BUFFER_SIZE + 1], const uintptr_t val);
+
+static inline i64	_tps_get_baud_rate(void);
+static inline i8	_tps_sleep(const u64 ms, const u8 sleep_type, ssize_t (*putc)(const char));
+static inline u8	_tps_is_delay(const char *s);
 
 static struct {
 	map	boolean;
@@ -179,12 +190,18 @@ const char	*ti_getstr(const u16 name) {
 	return (val != MAP_NOT_FOUND) ? *val : TI_ABS_STR;
 }
 
+const char	*ti_tgoto(const char *seq, const i32 row, const i32 col) {
+	if (row < 1 || col < 1)
+		return NULL;
+	return ti_tparm(seq, row - 1, col - 1);
+}
+
 const char	*ti_tparm(const char *seq, ...) {
-	_BitInt(_TP_PARAMS)	present_params;
+	_BitInt(_TPM_PARAMS)	present_params;
 	_BitInt(3)			flags;
-	static uintptr_t	svars[_TP_SVARS];
-	uintptr_t			dvars[_TP_DVARS];
-	uintptr_t			params[_TP_PARAMS];
+	static uintptr_t	svars[_TPM_SVARS];
+	uintptr_t			dvars[_TPM_DVARS];
+	uintptr_t			params[_TPM_PARAMS];
 	uintptr_t			x;
 	uintptr_t			y;
 	va_list				args;
@@ -219,7 +236,7 @@ const char	*ti_tparm(const char *seq, ...) {
 	if (!stack)
 		goto _ti_tparm_err_ret;
 	va_start(args, seq);
-	for (i = 0; i < _TP_PARAMS; i++) {
+	for (i = 0; i < _TPM_PARAMS; i++) {
 		params[i] = (param_count) ? va_arg(args, uintptr_t) : (uintptr_t)-1;
 		param_count -= (present_params >> i) & 0x1U;
 	}
@@ -248,17 +265,17 @@ const char	*ti_tparm(const char *seq, ...) {
 			case '7':
 			case '8':
 			case '9':
-				if (!_tp_sprintf(&seq, tmp, tp_stack_top(stack)))
+				if (!_tpm_sprintf(&seq, tmp, tp_stack_top(stack)))
 					goto _ti_tparm_err_ret;
 				i = strlcat(seq_buf, tmp, _BUFFER_SIZE + 1);
 				if (i >= sizeof(seq_buf))
 					goto _ti_tparm_err_ret;
 				break ;
 			case 'i':
-				if (~flags & _TP_F_INCREMENT_P12) {
+				if (~flags & _TPM_F_INCREMENT_P12) {
 					params[0]++;
 					params[1]++;
-					flags |= _TP_F_INCREMENT_P12;
+					flags |= _TPM_F_INCREMENT_P12;
 				}
 				break ;
 			case 'p':
@@ -270,9 +287,9 @@ const char	*ti_tparm(const char *seq, ...) {
 				break ;
 			case 'P':
 				if (islower(*(++seq))) {
-					if (~flags & _TP_F_DVARS_INIT_DONE) {
+					if (~flags & _TPM_F_DVARS_INIT_DONE) {
 						memset(dvars, 0, sizeof(dvars));
-						flags |= _TP_F_DVARS_INIT_DONE;
+						flags |= _TPM_F_DVARS_INIT_DONE;
 					}
 					dvars[*seq - 'a'] = tp_stack_top(stack);
 				} else
@@ -281,9 +298,9 @@ const char	*ti_tparm(const char *seq, ...) {
 				break ;
 			case 'g':
 				if (islower(*(++seq))) {
-					if (~flags & _TP_F_DVARS_INIT_DONE) {
+					if (~flags & _TPM_F_DVARS_INIT_DONE) {
 						memset(dvars, 0, sizeof(dvars));
-						flags |= _TP_F_DVARS_INIT_DONE;
+						flags |= _TPM_F_DVARS_INIT_DONE;
 					}
 					tp_stack_push(stack, dvars[*seq - 'a']);
 				} else
@@ -364,12 +381,12 @@ const char	*ti_tparm(const char *seq, ...) {
 				tp_stack_push(stack, (*seq == '!') ? !x : ~x);
 				break ;
 			case '?':
-				if (flags & _TP_F_IN_CONDITIONAL)
+				if (flags & _TPM_F_IN_CONDITIONAL)
 					goto _ti_tparm_err_ret;
-				flags |=  _TP_F_IN_CONDITIONAL;
+				flags |=  _TPM_F_IN_CONDITIONAL;
 				break ;
 			case 't':
-				if (~flags & _TP_F_IN_CONDITIONAL)
+				if (~flags & _TPM_F_IN_CONDITIONAL)
 					goto _ti_tparm_err_ret;
 				x = tp_stack_top(stack);
 				vector_pop(stack);
@@ -383,7 +400,7 @@ const char	*ti_tparm(const char *seq, ...) {
 							case 'e':
 								if (y == 0) {
 									if (*seq == ';')
-										flags &= ~_TP_F_IN_CONDITIONAL;
+										flags &= ~_TPM_F_IN_CONDITIONAL;
 									goto _ti_tparm_continue;
 								}
 								y -= (*seq == ':') ? 1 : 0;
@@ -395,7 +412,7 @@ const char	*ti_tparm(const char *seq, ...) {
 				}
 				break ;
 			case 'e':
-				if (~flags & _TP_F_IN_CONDITIONAL)
+				if (~flags & _TPM_F_IN_CONDITIONAL)
 					goto _ti_tparm_err_ret;
 				for (seq++, x = 0; ; seq++) {
 					if (*seq == '%') switch (*(++seq)) {
@@ -404,7 +421,7 @@ const char	*ti_tparm(const char *seq, ...) {
 							break ;
 						case ';':
 							if (x == 0) {
-								flags &= ~_TP_F_IN_CONDITIONAL;
+								flags &= ~_TPM_F_IN_CONDITIONAL;
 								goto _ti_tparm_continue;
 							}
 							x--;
@@ -414,9 +431,9 @@ const char	*ti_tparm(const char *seq, ...) {
 				}
 				break ;
 			case ';':
-				if (~flags & _TP_F_IN_CONDITIONAL)
+				if (~flags & _TPM_F_IN_CONDITIONAL)
 					goto _ti_tparm_err_ret;
-				flags &=  ~_TP_F_IN_CONDITIONAL;
+				flags &=  ~_TPM_F_IN_CONDITIONAL;
 				break ;
 			case '%':
 				seq_buf[i++] = '%';
@@ -430,6 +447,64 @@ _ti_tparm_continue:
 _ti_tparm_err_ret:
 	vector_delete(stack);
 	return NULL;
+}
+
+#define str_equals(s1, s2)	(s1 == s2 || (s1 && s2 && strcmp(s1, s2) == 0))
+
+#define _TPS_SPEEDCOUNT	31
+
+#define _TPS_SLEEP_NANOSLEEP	0
+#define _TPS_SLEEP_PAD			1
+
+static const speed_t	_tps_speeds[_TPS_SPEEDCOUNT * 2] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+						13, 14, 15, 4097, 4098, 4099, 4100, 4101, 4102, 4103, 4104, 4105, 4106,
+						4107, 4108, 4109, 4110, 41111, 0, 50, 75, 110, 134, 150, 200, 300, 600,
+						1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 130400,
+						460800, 500000, 576000, 921600, 1000000, 1152000, 1500000,
+						2000000, 2500000, 3000000, 3500000, 4000000
+};
+
+static speed_t	_tps_ospeed;
+
+ssize_t	ti_tputs(const char *s, const size_t affln, ssize_t (*putc)(const char)) {
+	ssize_t	bytes_written;
+	ssize_t	rv;
+	u64		delay_ms;
+	u8		delay_type;
+	u8		delay;
+
+	if (s == TI_ABS_STR || s == TI_NOT_STR)
+		return 0;
+	delay = 0;
+	if (str_equals(s, ti_getstr(ti_bel)) || str_equals(s, ti_getstr(ti_flash)))
+		delay |= _TPS_DELAY_ALWAYS;
+	if (!ti_getflag(ti_xon) && ti_getnum(ti_pb) != (i32)TI_ABS_NUM && _tps_get_baud_rate() >= ti_getnum(ti_pb))
+		delay |= _TPS_DELAY_NORMAL;
+	delay_type = (ti_getflag(ti_npc)) ? _TPS_SLEEP_NANOSLEEP : _TPS_SLEEP_PAD;
+	bytes_written = 0;
+	do {
+		if (_tps_is_delay(s)) {
+			s += 2;
+			delay_ms = strtoul(s, (char **)&s, 10);
+			if (*s == '.') {
+				delay_ms *= 10;
+				if (isdigit(*(++s)))
+					delay_ms += *s++ - '0';
+			}
+			while (*s == '*' || *s == '/') {
+				if (*s++ == '*')
+					delay_ms *= affln;
+				else
+					delay |= _TPS_DELAY_MANDATORY;
+			}
+			s++;
+			if (delay_ms && delay)
+				rv = _tps_sleep(delay_ms, delay_type, putc);
+		} else
+			rv = putc(*s++);
+		bytes_written += rv;
+	} while (*s && rv == 1);
+	return (rv != -1) ? bytes_written : -1;
 }
 
 void	ti_unload(void) {
@@ -555,7 +630,7 @@ static inline u8	_get_entry(const i32 fd, entry *entry) {
 	return 1;
 }
 
-static inline u8	_tp_sprintf(const char **seq, char buf[_BUFFER_SIZE + 1], const uintptr_t val) {
+static inline u8	_tpm_sprintf(const char **seq, char buf[_BUFFER_SIZE + 1], const uintptr_t val) {
 	const char	*tmp;
 	ssize_t		rv;
 	size_t		i;
@@ -584,4 +659,67 @@ static inline u8	_tp_sprintf(const char **seq, char buf[_BUFFER_SIZE + 1], const
 	}
 	*seq = tmp;
 	return (rv != -1 && rv < _BUFFER_SIZE) ? 1 : 0;
+}
+
+static inline i64	_tps_get_baud_rate(void) {
+	size_t	i;
+
+	for (i = 0; i < _TPS_SPEEDCOUNT; i++)
+		if (_tps_speeds[i] >= _tps_ospeed)
+			return (_tps_speeds[i] == _tps_ospeed) ? (i64)_tps_speeds[i + _TPS_SPEEDCOUNT] : -1;
+	return -1;
+}
+
+static inline i8	_tps_sleep(const u64 ms, const u8 sleep_type, ssize_t (*putc)(const char)) {
+	static const char	*pad_char;
+	struct timespec		alarm_clock;
+	ssize_t				bytes_written;
+	u64					pads_needed;
+
+
+	if  (sleep_type == _TPS_SLEEP_NANOSLEEP) {
+		if (clock_gettime(CLOCK_MONOTONIC, &alarm_clock) == -1)
+			return 0;
+		errno = 0;
+		alarm_clock.tv_nsec += ms * 1000000;
+		while (alarm_clock.tv_nsec >= 1000000000) {
+			alarm_clock.tv_nsec -= 1000000000;
+			alarm_clock.tv_sec++;
+		}
+		while (clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &alarm_clock, NULL) != 0)
+			if (errno != EINTR)
+				return 0;
+	} else {
+		if (!pad_char) {
+			pad_char = ti_getstr(ti_pad);
+			if (pad_char == TI_ABS_STR)
+				pad_char = "\0";
+		}
+		for (pads_needed = (ms * _tps_get_baud_rate()) / 1000; pads_needed; pads_needed--) {
+			bytes_written = putc(*pad_char);
+			if (bytes_written == -1)
+				return 0;
+		}
+	}
+	return 1;
+}
+
+static inline u8	_tps_is_delay(const char *s) {
+	size_t	n;
+
+	if (*s++ != '$')
+		return 0;
+	if (*s++ != '<')
+		return 0;
+	for (n = 0; isdigit(*s++); n++)
+		;
+	if (!n)
+		return 0;
+	if (*s == '.' && (!isdigit(*(++s)) || isdigit(*(++s))))
+		return 0;
+	if (*s == '*' || *s == '/')
+		n = *s++;
+	if ((*s == '*' || *s == '/') && *s++ == (const char)n)
+		return 0;
+	return (*s == '>') ? 1 : 0;
 }
