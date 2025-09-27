@@ -84,14 +84,18 @@ static struct {
 
 static struct {
 	entry	entry;
+	char	name[NAME_MAX + 1];
 	u8		loaded;
 }	description;
 
 u8	ti_load(const char *term) {
 	size_t	i;
 
-	if (description.loaded)
+	if (description.loaded) {
+		if (strcmp(description.name, term) == 0)
+			return 1;
 		ti_unload();
+	}
 	if (!_get_entry(_open(term), &description.entry))
 		return 0;
 	caps.boolean = map(boolean_cap, _BOOL_CAPS_DEFAULT_SIZE, INTEGER, NULL);
@@ -114,6 +118,7 @@ u8	ti_load(const char *term) {
 		if (description.entry.offs[i] != _INVALID_STR && !map_set(caps.string, i + 1, (string_cap){offset(description.entry.strs, description.entry.offs[i])}))
 			goto ti_load_err_ret;
 	}
+	snprintf(description.name, NAME_MAX, "%s", term);
 	description.loaded = 1;
 	return 1;
 ti_load_err_ret:
