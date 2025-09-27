@@ -10,47 +10,54 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <termios.h>
 #include <sys/ioctl.h>
 
 #include "internal/_kb.h"
 #include "internal/_term.h"
+#include "internal/_utils.h"
 #include "internal/_terminfo.h"
+
+typedef struct {
+	const char	*val;
+	u16			name;
+}	escape;
 
 static struct {
 	const char	*kbs;	// Backspace
-	const char	*kf1;	// F-1
-	const char	*kf2;	// F-2
-	const char	*kf3;	// F-3
-	const char	*kf4;	// F-4
-	const char	*kf5;	// F-5
-	const char	*kf6;	// F-6
-	const char	*kf7;	// F-7
-	const char	*kf8;	// F-8
-	const char	*kf9;	// F-9
-	const char	*kf10;	// F-10
-	const char	*kf11;	// F-11
-	const char	*kf12;	// F-12
-	const char	*kcuu1;	// Up
-	const char	*kcud1;	// Down
-	const char	*kcub1;	// Left
-	const char	*kcuf1;	// Right
-	const char	*kich1;	// Insert
-	const char	*khome;	// Home
-	const char	*knp;	// Page-Up
-	const char	*kdch1;	// Delete
-	const char	*kend;	// End
-	const char	*kpp;	// Pade-Down
-	const char	*kri;	// Shift + Up
-	const char	*kind;	// Shift + Down
-	const char	*kLFT;	// Shift + Left
-	const char	*kRIT;	// Shift + Right
-	const char	*kIC;	// Shift + Insert
-	const char	*kHOM;	// Shift + Home
-	const char	*kNXT;	// Shift + Page-Up
-	const char	*kDC;	// Shift + Delete
-	const char	*kEND;	// Shift + End
-	const char	*kPRV;	// Shift + Page-Down
+	escape		kf1;	// F-1
+	escape		kf2;	// F-2
+	escape		kf3;	// F-3
+	escape		kf4;	// F-4
+	escape		kf5;	// F-5
+	escape		kf6;	// F-6
+	escape		kf7;	// F-7
+	escape		kf8;	// F-8
+	escape		kf9;	// F-9
+	escape		kf10;	// F-10
+	escape		kf11;	// F-11
+	escape		kf12;	// F-12
+	escape		kcuu1;	// Up
+	escape		kcud1;	// Down
+	escape		kcub1;	// Left
+	escape		kcuf1;	// Right
+	escape		kich1;	// Insert
+	escape		khome;	// Home
+	escape		knp;	// Page-Up
+	escape		kdch1;	// Delete
+	escape		kend;	// End
+	escape		kpp;	// Pade-Down
+	escape		kri;	// Shift + Up
+	escape		kind;	// Shift + Down
+	escape		kLFT;	// Shift + Left
+	escape		kRIT;	// Shift + Right
+	escape		kIC;	// Shift + Insert
+	escape		kHOM;	// Shift + Home
+	escape		kNXT;	// Shift + Page-Up
+	escape		kDC;	// Shift + Delete
+	escape		kEND;	// Shift + End
+	escape		kPRV;	// Shift + Page-Down
 }	key_seqs;
 
 static struct {
@@ -121,9 +128,13 @@ u8	term_apply_settings(const u8 settings) {
 	switch (settings) {
 		case TERM_SETTINGS_DEFAULT:
 			rv = (tcsetattr(0, TCSANOW, &old) != -1) ? 1 : 0;
+			if (esc_seqs.rmkx != TI_ABS_STR)
+				rv = (write(1, esc_seqs.rmkx, strlen(esc_seqs.rmkx)) != -1) ? 1 : 0;
 			break ;
 		case TERM_SETTINGS_RL42:
 			rv = (tcsetattr(0, TCSANOW, &new) != -1) ? 1 : 0;
+			if (esc_seqs.smkx != TI_ABS_STR)
+				rv = (write(1, esc_seqs.smkx, strlen(esc_seqs.smkx)) != -1) ? 1 : 0;
 			break ;
 		default:
 			rv = 0;
@@ -136,69 +147,69 @@ const char	*term_get_seq(const u16 name) {
 		case ti_kbs:
 			return key_seqs.kbs;
 		case ti_kf1:
-			return key_seqs.kf1;
+			return key_seqs.kf1.val;
 		case ti_kf2:
-			return key_seqs.kf2;
+			return key_seqs.kf2.val;
 		case ti_kf3:
-			return key_seqs.kf3;
+			return key_seqs.kf3.val;
 		case ti_kf4:
-			return key_seqs.kf4;
+			return key_seqs.kf4.val;
 		case ti_kf5:
-			return key_seqs.kf5;
+			return key_seqs.kf5.val;
 		case ti_kf6:
-			return key_seqs.kf6;
+			return key_seqs.kf6.val;
 		case ti_kf7:
-			return key_seqs.kf7;
+			return key_seqs.kf7.val;
 		case ti_kf8:
-			return key_seqs.kf8;
+			return key_seqs.kf8.val;
 		case ti_kf9:
-			return key_seqs.kf9;
+			return key_seqs.kf9.val;
 		case ti_kf10:
-			return key_seqs.kf10;
+			return key_seqs.kf10.val;
 		case ti_kf11:
-			return key_seqs.kf11;
+			return key_seqs.kf11.val;
 		case ti_kf12:
-			return key_seqs.kf12;
+			return key_seqs.kf12.val;
 		case ti_kcuu1:
-			return key_seqs.kcuu1;
+			return key_seqs.kcuu1.val;
 		case ti_kcud1:
-			return key_seqs.kcud1;
+			return key_seqs.kcud1.val;
 		case ti_kcub1:
-			return key_seqs.kcub1;
+			return key_seqs.kcub1.val;
 		case ti_kcuf1:
-			return key_seqs.kcuf1;
+			return key_seqs.kcuf1.val;
 		case ti_kich1:
-			return key_seqs.kich1;
+			return key_seqs.kich1.val;
 		case ti_khome:
-			return key_seqs.khome;
+			return key_seqs.khome.val;
 		case ti_knp:
-			return key_seqs.knp;
+			return key_seqs.knp.val;
 		case ti_kdch1:
-			return key_seqs.kdch1;
+			return key_seqs.kdch1.val;
 		case ti_kend:
-			return key_seqs.kend;
+			return key_seqs.kend.val;
 		case ti_kpp:
-			return key_seqs.kpp;
+			return key_seqs.kpp.val;
 		case ti_kri:
-			return key_seqs.kri;
+			return key_seqs.kri.val;
 		case ti_kind:
-			return key_seqs.kind;
+			return key_seqs.kind.val;
 		case ti_kLFT:
-			return key_seqs.kLFT;
+			return key_seqs.kLFT.val;
 		case ti_kRIT:
-			return key_seqs.kRIT;
+			return key_seqs.kRIT.val;
 		case ti_kIC:
-			return key_seqs.kIC;
+			return key_seqs.kIC.val;
 		case ti_kHOM:
-			return key_seqs.kHOM;
+			return key_seqs.kHOM.val;
 		case ti_kNXT:
-			return key_seqs.kNXT;
+			return key_seqs.kNXT.val;
 		case ti_kDC:
-			return key_seqs.kDC;
+			return key_seqs.kDC.val;
 		case ti_kEND:
-			return key_seqs.kEND;
+			return key_seqs.kEND.val;
 		case ti_kPRV:
-			return key_seqs.kPRV;
+			return key_seqs.kPRV.val;
 		case ti_cup:
 			return esc_seqs.cup;
 		case ti_bel:
@@ -257,6 +268,28 @@ const char	*term_get_seq(const u16 name) {
 	return NULL;
 }
 
+u16	term_match_key_seq(const char *seq) {
+	enum { CSI, SS3 }	seq_type;
+	const escape		*esc;
+	size_t				len;
+
+	seq_type = (seq[1] == '[') ? CSI : SS3;
+	if (seq_type == CSI) for (len = 2; seq[len]; len++) {
+		if (in_range((u8)seq[len], 0x40U, 0x7EU)) {
+			len++;
+			break ;
+		}
+	} else
+		len = 3;
+	esc = &key_seqs.kf1;
+	do {
+		if (strncmp(seq, esc->val, len) == 0)
+			return esc->name;
+		esc++;
+	} while (esc != &key_seqs.kPRV);
+	return 0;
+}
+
 // TODO: add implementations once ti_tparm exists
 
 u8	term_set_fg_color([[maybe_unused]] const u8 color) {
@@ -278,38 +311,38 @@ static inline u8	_init_seqs(void) {
 	if (!ti_load((term) ? term : "dumb"))
 		return 0;
 	key_seqs.kbs = ti_getstr(ti_kbs);
-	key_seqs.kf1 = ti_getstr(ti_kf1);
-	key_seqs.kf2 = ti_getstr(ti_kf2);
-	key_seqs.kf3 = ti_getstr(ti_kf3);
-	key_seqs.kf4 = ti_getstr(ti_kf4);
-	key_seqs.kf5 = ti_getstr(ti_kf5);
-	key_seqs.kf6 = ti_getstr(ti_kf6);
-	key_seqs.kf7 = ti_getstr(ti_kf7);
-	key_seqs.kf8 = ti_getstr(ti_kf8);
-	key_seqs.kf9 = ti_getstr(ti_kf9);
-	key_seqs.kf10 = ti_getstr(ti_kf10);
-	key_seqs.kf11 = ti_getstr(ti_kf11);
-	key_seqs.kf12 = ti_getstr(ti_kf12);
-	key_seqs.kcuu1 = ti_getstr(ti_kcuu1);
-	key_seqs.kcud1 = ti_getstr(ti_kcud1);
-	key_seqs.kcub1 = ti_getstr(ti_kcub1);
-	key_seqs.kcuf1 = ti_getstr(ti_kcuf1);
-	key_seqs.kich1 = ti_getstr(ti_kich1);
-	key_seqs.khome = ti_getstr(ti_khome);
-	key_seqs.knp = ti_getstr(ti_knp);
-	key_seqs.kdch1 = ti_getstr(ti_kdch1);
-	key_seqs.kend = ti_getstr(ti_kend);
-	key_seqs.kpp = ti_getstr(ti_kpp);
-	key_seqs.kri = ti_getstr(ti_kri);
-	key_seqs.kind = ti_getstr(ti_kind);
-	key_seqs.kLFT = ti_getstr(ti_kLFT);
-	key_seqs.kRIT = ti_getstr(ti_kRIT);
-	key_seqs.kIC = ti_getstr(ti_kIC);
-	key_seqs.kHOM = ti_getstr(ti_kHOM);
-	key_seqs.kNXT = ti_getstr(ti_kNXT);
-	key_seqs.kDC = ti_getstr(ti_kDC);
-	key_seqs.kEND = ti_getstr(ti_kEND);
-	key_seqs.kPRV = ti_getstr(ti_kPRV);
+	key_seqs.kf1 = (escape){ .name = ti_kf1, .val = ti_getstr(ti_kf1) };
+	key_seqs.kf2 = (escape){ .name = ti_kf2, .val = ti_getstr(ti_kf2) };
+	key_seqs.kf3 = (escape){ .name = ti_kf3, .val = ti_getstr(ti_kf3) };
+	key_seqs.kf4 = (escape){ .name = ti_kf4, .val = ti_getstr(ti_kf4) };
+	key_seqs.kf5 = (escape){ .name = ti_kf5, .val = ti_getstr(ti_kf5) };
+	key_seqs.kf6 = (escape){ .name = ti_kf6, .val = ti_getstr(ti_kf6) };
+	key_seqs.kf7 = (escape){ .name = ti_kf7, .val = ti_getstr(ti_kf7) };
+	key_seqs.kf8 = (escape){ .name = ti_kf8, .val = ti_getstr(ti_kf8) };
+	key_seqs.kf9 = (escape){ .name = ti_kf9, .val = ti_getstr(ti_kf9) };
+	key_seqs.kf10 = (escape){ .name = ti_kf10, .val = ti_getstr(ti_kf10) };
+	key_seqs.kf11 = (escape){ .name = ti_kf11, .val = ti_getstr(ti_kf11) };
+	key_seqs.kf12 = (escape){ .name = ti_kf12, .val = ti_getstr(ti_kf12) };
+	key_seqs.kcuu1 = (escape){ .name = ti_kcuu1, .val = ti_getstr(ti_kcuu1) };
+	key_seqs.kcud1 = (escape){ .name = ti_kcud1, .val = ti_getstr(ti_kcud1) };
+	key_seqs.kcub1 = (escape){ .name = ti_kcub1, .val = ti_getstr(ti_kcub1) };
+	key_seqs.kcuf1 = (escape){ .name = ti_kcuf1, .val = ti_getstr(ti_kcuf1) };
+	key_seqs.kich1 = (escape){ .name = ti_kich1, .val = ti_getstr(ti_kich1) };
+	key_seqs.khome = (escape){ .name = ti_khome, .val = ti_getstr(ti_khome) };
+	key_seqs.knp = (escape){ .name = ti_knp, .val = ti_getstr(ti_knp) };
+	key_seqs.kdch1 = (escape){ .name = ti_kdch1, .val = ti_getstr(ti_kdch1) };
+	key_seqs.kend = (escape){ .name = ti_kend, .val = ti_getstr(ti_kend) };
+	key_seqs.kpp = (escape){ .name = ti_kpp, .val = ti_getstr(ti_kpp) };
+	key_seqs.kri = (escape){ .name = ti_kri, .val = ti_getstr(ti_kri) };
+	key_seqs.kind = (escape){ .name = ti_kind, .val = ti_getstr(ti_kind) };
+	key_seqs.kLFT = (escape){ .name = ti_kLFT, .val = ti_getstr(ti_kLFT) };
+	key_seqs.kRIT = (escape){ .name = ti_kRIT, .val = ti_getstr(ti_kRIT) };
+	key_seqs.kIC = (escape){ .name = ti_kIC, .val = ti_getstr(ti_kIC) };
+	key_seqs.kHOM = (escape){ .name = ti_kHOM, .val = ti_getstr(ti_kHOM) };
+	key_seqs.kNXT = (escape){ .name = ti_kNXT, .val = ti_getstr(ti_kNXT) };
+	key_seqs.kDC = (escape){ .name = ti_kDC, .val = ti_getstr(ti_kDC) };
+	key_seqs.kEND = (escape){ .name = ti_kEND, .val = ti_getstr(ti_kEND) };
+	key_seqs.kPRV = (escape){ .name = ti_kPRV, .val = ti_getstr(ti_kPRV) };
 	esc_seqs.cup = ti_getstr(ti_cup);
 	esc_seqs.bel = ti_getstr(ti_bel);
 	esc_seqs.flash = ti_getstr(ti_flash);

@@ -9,14 +9,17 @@
 
 #include <string.h>
 
+#include "internal/_kb.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
 #include "internal/_hashes.h"
 #include "internal/_vector.h"
 #include "internal/_keybinds.h"
-#include "internal/_terminfo.h"
+#include "internal/_terminfo_caps.h"
 
-typedef union {
+#define _INVALID_ESCAPE	UINT32_MAX
+
+typedef struct {
 	const char	*str;
 	u32			ucp;
 }	escape;
@@ -79,9 +82,10 @@ vector	expand_seq(const char *seq) {
 			if (!seq[i])
 				goto err;
 			tmp = _match_escape(&seq[j], i - j + 1);
-			if (!tmp.str)
+			if (tmp.str)
+				tmp.ucp = utf8_decode(tmp.str);
+			else if (!tmp.ucp)
 				goto err;
-			tmp.ucp = utf8_decode(tmp.str);
 			if (!vector_push(out, tmp.ucp))
 				goto err;
 		} else {
@@ -108,7 +112,7 @@ static inline escape	_match_escape(const char *seq, size_t len) {
 	u64		hash;
 
 	if (len > 16)
-		return (escape){.str = NULL};
+		return (escape){.str = NULL, .ucp = _INVALID_ESCAPE};
 	memcpy(esc, seq, len);
 	esc[len] = '\0';
 	for (i = 0; i < len; i++)
@@ -449,69 +453,69 @@ static inline escape	_match_escape(const char *seq, size_t len) {
 		case KEY_M_TILDE_HASH:
 			return (escape){.str = "\x1b~"};
 		case KEY_F_1_HASH:
-			return (escape){.str = term_get_seq(ti_kf1)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F1};
 		case KEY_F_2_HASH:
-			return (escape){.str = term_get_seq(ti_kf2)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F2};
 		case KEY_F_3_HASH:
-			return (escape){.str = term_get_seq(ti_kf3)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F3};
 		case KEY_F_4_HASH:
-			return (escape){.str = term_get_seq(ti_kf4)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F4};
 		case KEY_F_5_HASH:
-			return (escape){.str = term_get_seq(ti_kf5)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F5};
 		case KEY_F_6_HASH:
-			return (escape){.str = term_get_seq(ti_kf6)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F6};
 		case KEY_F_7_HASH:
-			return (escape){.str = term_get_seq(ti_kf7)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F7};
 		case KEY_F_8_HASH:
-			return (escape){.str = term_get_seq(ti_kf8)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F8};
 		case KEY_F_9_HASH:
-			return (escape){.str = term_get_seq(ti_kf9)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F9};
 		case KEY_F_10_HASH:
-			return (escape){.str = term_get_seq(ti_kf10)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F10};
 		case KEY_F_11_HASH:
-			return (escape){.str = term_get_seq(ti_kf11)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F11};
 		case KEY_F_12_HASH:
-			return (escape){.str = term_get_seq(ti_kf12)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F12};
 		case KEY_UP_HASH:
-			return (escape){.str = term_get_seq(ti_kcuu1)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F1};
 		case KEY_DOWN_HASH:
-			return (escape){.str = term_get_seq(ti_kcud1)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_DOWN};
 		case KEY_LEFT_HASH:
-			return (escape){.str = term_get_seq(ti_kcub1)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_LEFT};
 		case KEY_RIGHT_HASH:
-			return (escape){.str = term_get_seq(ti_kcuf1)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_RIGHT};
 		case KEY_INS_HASH:
-			return (escape){.str = term_get_seq(ti_kich1)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_INSERT};
 		case KEY_HME_HASH:
-			return (escape){.str = term_get_seq(ti_khome)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_HOME};
 		case KEY_PGU_HASH:
-			return (escape){.str = term_get_seq(ti_knp)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_PAGE_UP};
 		case KEY_DEL_HASH:
-			return (escape){.str = term_get_seq(ti_kdch1)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_DELETE};
 		case KEY_END_HASH:
-			return (escape){.str = term_get_seq(ti_kend)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_END};
 		case KEY_PGD_HASH:
-			return (escape){.str = term_get_seq(ti_kpp)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_PAGE_DOWN};
 		case KEY_S_UP_HASH:
-			return (escape){.str = term_get_seq(ti_kri)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_UP};
 		case KEY_S_DOWN_HASH:
-			return (escape){.str = term_get_seq(ti_kind)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_DOWN};
 		case KEY_S_LEFT_HASH:
-			return (escape){.str = term_get_seq(ti_kLFT)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_LEFT};
 		case KEY_S_RIGHT_HASH:
-			return (escape){.str = term_get_seq(ti_kRIT)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_RIGHT};
 		case KEY_S_INS_HASH:
-			return (escape){.str = term_get_seq(ti_kIC)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_INSERT};
 		case KEY_S_HME_HASH:
-			return (escape){.str = term_get_seq(ti_kHOM)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_HOME};
 		case KEY_S_PGU_HASH:
-			return (escape){.str = term_get_seq(ti_kNXT)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_PAGE_UP};
 		case KEY_S_DEL_HASH:
-			return (escape){.str = term_get_seq(ti_kDC)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_DELETE};
 		case KEY_S_END_HASH:
-			return (escape){.str = term_get_seq(ti_kEND)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_END};
 		case KEY_S_PGD_HASH:
-			return (escape){.str = term_get_seq(ti_kPRV)};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_SHIFT_PAGE_DOWN};
 			break ;
 	}
 	return (escape){.str = NULL};

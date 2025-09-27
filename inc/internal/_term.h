@@ -47,6 +47,14 @@ u8			term_apply_settings(const u8 settings);
  */
 const char	*term_get_seq(const u16 name);
 
+/** @brief Matches a received key escape sequence
+ *
+ * @param seq Sequence to match
+ * @returns @c <b>u16</b> Name of the sequence,
+ * 0 if no match was found
+ */
+u16			term_match_key_seq(const char *seq);
+
 /** @brief Sets the terminals foreground color
  *
  * @param color Index of the color to set
