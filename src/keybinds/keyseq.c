@@ -9,10 +9,12 @@
 
 #include <string.h>
 
+#include "internal/_term.h"
 #include "internal/_utils.h"
 #include "internal/_hashes.h"
 #include "internal/_vector.h"
 #include "internal/_keybinds.h"
+#include "internal/_terminfo.h"
 
 typedef union {
 	const char	*str;
@@ -132,14 +134,17 @@ static inline escape	_match_escape(const char *seq, size_t len) {
 			return (escape){.str = &bel[1]};
 		case KEY_C_H_HASH:
 			return (escape){.str = &bs[1]};
+		case KEY_TAB_HASH:
 		case KEY_C_I_HASH:
 			return (escape){.str = &ht[1]};
+		case KEY_ENT_HASH:
 		case KEY_C_J_HASH:
 			return (escape){.str = &lf[1]};
 		case KEY_C_K_HASH:
 			return (escape){.str = &vt[1]};
 		case KEY_C_L_HASH:
 			return (escape){.str = &ff[1]};
+		case KEY_RET_HASH:
 		case KEY_C_M_HASH:
 			return (escape){.str = &cr[1]};
 		case KEY_C_N_HASH:
@@ -246,11 +251,15 @@ static inline escape	_match_escape(const char *seq, size_t len) {
 		case KEY_SPC_HASH:
 			return (escape){.str = " "};
 		case KEY_BCK_HASH:
-			return (escape){.str = &bck[1]};
+			if (*term_get_seq(ti_kbs) == '\x7f')
+				return (escape){.str = &bck[1]};
+			return (escape){.str = &bs[1]};
 		case KEY_M_SPC_HASH:
 			return (escape){.str = "\x1b "};
 		case KEY_M_BCK_HASH:
-			return (escape){.str = bck};
+			if (*term_get_seq(ti_kbs) == '\x7f')
+				return (escape){.str = bck};
+			return (escape){.str = bs};
 		case KEY_M_BANG_HASH:
 			return (escape){.str = "\x1b!"};
 		case KEY_M_DQUOTE_HASH:
@@ -439,37 +448,70 @@ static inline escape	_match_escape(const char *seq, size_t len) {
 			return (escape){.str = "\x1b}"};
 		case KEY_M_TILDE_HASH:
 			return (escape){.str = "\x1b~"};
-		// TODO: terminal specific escapes
 		case KEY_F_1_HASH:
+			return (escape){.str = term_get_seq(ti_kf1)};
 		case KEY_F_2_HASH:
+			return (escape){.str = term_get_seq(ti_kf2)};
 		case KEY_F_3_HASH:
+			return (escape){.str = term_get_seq(ti_kf3)};
 		case KEY_F_4_HASH:
+			return (escape){.str = term_get_seq(ti_kf4)};
 		case KEY_F_5_HASH:
+			return (escape){.str = term_get_seq(ti_kf5)};
 		case KEY_F_6_HASH:
+			return (escape){.str = term_get_seq(ti_kf6)};
 		case KEY_F_7_HASH:
+			return (escape){.str = term_get_seq(ti_kf7)};
 		case KEY_F_8_HASH:
+			return (escape){.str = term_get_seq(ti_kf8)};
 		case KEY_F_9_HASH:
+			return (escape){.str = term_get_seq(ti_kf9)};
 		case KEY_F_10_HASH:
+			return (escape){.str = term_get_seq(ti_kf10)};
 		case KEY_F_11_HASH:
+			return (escape){.str = term_get_seq(ti_kf11)};
 		case KEY_F_12_HASH:
+			return (escape){.str = term_get_seq(ti_kf12)};
 		case KEY_UP_HASH:
+			return (escape){.str = term_get_seq(ti_kcuu1)};
 		case KEY_DOWN_HASH:
+			return (escape){.str = term_get_seq(ti_kcud1)};
 		case KEY_LEFT_HASH:
+			return (escape){.str = term_get_seq(ti_kcub1)};
 		case KEY_RIGHT_HASH:
-		case KEY_S_LEFT_HASH:
-		case KEY_S_RIGHT_HASH:
-		case KEY_TAB_HASH:
-		case KEY_ENT_HASH:
-		case KEY_RET_HASH:
+			return (escape){.str = term_get_seq(ti_kcuf1)};
 		case KEY_INS_HASH:
+			return (escape){.str = term_get_seq(ti_kich1)};
 		case KEY_HME_HASH:
+			return (escape){.str = term_get_seq(ti_khome)};
 		case KEY_PGU_HASH:
+			return (escape){.str = term_get_seq(ti_knp)};
 		case KEY_DEL_HASH:
+			return (escape){.str = term_get_seq(ti_kdch1)};
 		case KEY_END_HASH:
+			return (escape){.str = term_get_seq(ti_kend)};
 		case KEY_PGD_HASH:
+			return (escape){.str = term_get_seq(ti_kpp)};
+		case KEY_S_UP_HASH:
+			return (escape){.str = term_get_seq(ti_kri)};
+		case KEY_S_DOWN_HASH:
+			return (escape){.str = term_get_seq(ti_kind)};
+		case KEY_S_LEFT_HASH:
+			return (escape){.str = term_get_seq(ti_kLFT)};
+		case KEY_S_RIGHT_HASH:
+			return (escape){.str = term_get_seq(ti_kRIT)};
+		case KEY_S_INS_HASH:
+			return (escape){.str = term_get_seq(ti_kIC)};
 		case KEY_S_HME_HASH:
+			return (escape){.str = term_get_seq(ti_kHOM)};
+		case KEY_S_PGU_HASH:
+			return (escape){.str = term_get_seq(ti_kNXT)};
 		case KEY_S_DEL_HASH:
+			return (escape){.str = term_get_seq(ti_kDC)};
 		case KEY_S_END_HASH:
+			return (escape){.str = term_get_seq(ti_kEND)};
+		case KEY_S_PGD_HASH:
+			return (escape){.str = term_get_seq(ti_kPRV)};
 			break ;
 	}
 	return (escape){.str = NULL};

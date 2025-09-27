@@ -22,12 +22,14 @@
 
 typedef struct termios	term_settings;
 
+typedef _BitInt(9)	sgr_opts;
+
 /** @brief Initializes terminal related settings
  *
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8	term_init(void);
+u8			term_init(void);
 
 /** @brief Applies specified terminal settings
  *
@@ -35,7 +37,39 @@ u8	term_init(void);
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8	term_apply_settings(const u8 settings);
+u8			term_apply_settings(const u8 settings);
+
+/** @brief Gets the escape sequence corresponding to name
+ *
+ * @param name Name of the escape sequnce to get
+ * @returns @c <b>const char *</b> Escape sequence for name,
+ * NULL if not found
+ */
+const char	*term_get_seq(const u16 name);
+
+/** @brief Sets the terminals foreground color
+ *
+ * @param color Index of the color to set
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8			term_set_fg_color(const u8 color);
+
+/** @brief Sets the terminals background color
+ *
+ * @param color Index of the color to set
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8			term_set_bg_color(const u8 color);
+
+/** @brief Sets graphics mode options
+ *
+ * @param opts Bit field of options to enable
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8			term_set_sgr(const sgr_opts opts);
 
 /** @brief Gets the current cursor position
  *
@@ -44,7 +78,7 @@ u8	term_apply_settings(const u8 settings);
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8	term_cursor_get_pos(i16 *row, i16 *col);
+u8			term_cursor_get_pos(i16 *row, i16 *col);
 
 /** @brief Sets cursor position
  *
@@ -55,7 +89,7 @@ u8	term_cursor_get_pos(i16 *row, i16 *col);
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8	term_cursor_set_pos(const i16 row, const i16 col);
+u8			term_cursor_set_pos(const i16 row, const i16 col);
 
 /** @brief Moves corsor to given location
  *
@@ -68,4 +102,4 @@ u8	term_cursor_set_pos(const i16 row, const i16 col);
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8	term_cursor_move_to(rl42_line *line, i16 row, i16 col);
+u8			term_cursor_move_to(rl42_line *line, i16 row, i16 col);

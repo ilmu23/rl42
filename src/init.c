@@ -22,6 +22,7 @@
 #include "internal/_history.h"
 #include "internal/_function.h"
 #include "internal/_keybinds.h"
+#include "internal/_terminfo.h"
 
 #include "internal/fn/move.h"
 #include "internal/fn/input.h"
@@ -210,6 +211,7 @@ static inline void	_rl42_exit(void) {
 		clean_kb_listener();
 		clean_key_trees();
 		clean_fns();
+		ti_unload();
 	}
 }
 
