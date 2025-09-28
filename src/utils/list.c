@@ -330,7 +330,7 @@ u8	__lst_rsz(list list, const size_t size) {
 		tmp = (tmp_size <= _alloca_size.max) ? alloca(tmp_size) : malloc(tmp_size);
 		if (!tmp)
 			return 0;
-		for (i = 0, node = vector_get(list->data, list->first); node != VECTOR_OUT_OF_BOUNDS; node = vector_get(list->data, node->next))
+		for (i = 0, node = vector_get(list->data, list->first); i < vec_size; node = vector_get(list->data, node->next))
 			tmp[i++] = *node;
 		for (i = 0; i < vec_size; i++) {
 			if (i < size) {
