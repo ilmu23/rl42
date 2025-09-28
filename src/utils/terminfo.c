@@ -211,6 +211,8 @@ const char	*ti_tparm(const char *seq, ...) {
 	char				tmp[_BUFFER_SIZE + 1];
 	u8					param_count;
 
+	if (seq == TI_ABS_STR || seq == TI_NOT_STR)
+		return NULL;
 	for (present_params = param_count = seqlen = 0; seq[seqlen]; seqlen++) {
 		if (seq[seqlen] == 'p') switch (seq[++seqlen]) {
 			case '1':
