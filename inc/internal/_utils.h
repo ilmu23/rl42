@@ -13,6 +13,8 @@
 # define __RL42_INTERNAL
 #endif
 
+#include <sys/types.h>
+
 #include "internal/_data.h"
 
 typedef char	utf8_cbuf[5];
@@ -110,6 +112,13 @@ char		*cstr_join(const char *s1, const char *s2);
  * NULL if buf was NULL or buf_size was 0
  */
 char		*cstr_joinb(const char *s1, const char *s2, char *buf, const size_t buf_size);
+
+/** @brief Prints a single character to stdout
+ *
+ * @returns @c <b>ssize_t</b> Bytes written,
+ * -1 in case of an error
+ */
+ssize_t		__putchar(const char c);
 
 /** @brief Calculates the correct position for the cursor
  *

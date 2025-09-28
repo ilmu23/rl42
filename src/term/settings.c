@@ -19,6 +19,8 @@
 #include "internal/_utils.h"
 #include "internal/_terminfo.h"
 
+#define sgr_opt(n)	((opts >> (n - 1)) & 0x1U)
+
 typedef struct {
 	const char	*val;
 	u16			name;
@@ -290,17 +292,24 @@ u16	term_match_key_seq(const char *seq) {
 	return 0;
 }
 
-// TODO: add implementations once ti_tparm exists
-
-u8	term_set_fg_color([[maybe_unused]] const u8 color) {
+u8	term_set_fg_color(const u8 color) {
+	if (esc_seqs.setaf)
+		return (ti_tputs(ti_tparm(esc_seqs.setaf, color), 1, __putchar) != -1) ? 1 : 0;
 	return 0;
 }
 
-u8	term_set_bg_color([[maybe_unused]] const u8 color) {
+u8	term_set_bg_color(const u8 color) {
+	if (esc_seqs.setab)
+		return (ti_tputs(ti_tparm(esc_seqs.setab, color), 1, __putchar) != -1) ? 1 : 0;
 	return 0;
 }
 
-u8	term_set_sgr([[maybe_unused]] const sgr_opts opts) {
+u8	term_set_sgr(const sgr_opts opts) {
+	const char	*sgr_str;
+
+	sgr_str = (opts) ? ti_tparm(esc_seqs.sgr, sgr_opt(1), sgr_opt(2), sgr_opt(3), sgr_opt(4), sgr_opt(5), sgr_opt(6), sgr_opt(7), sgr_opt(8), sgr_opt(9)) : esc_seqs.sgr0;
+	if (sgr_str)
+		return (ti_tputs(sgr_str, 1, __putchar) != -1) ? 1 : 0;
 	return 0;
 }
 

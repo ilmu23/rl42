@@ -7,8 +7,14 @@
 //
 // <<misc.c>>
 
+#include <unistd.h>
+
 #include "internal/_data.h"
 #include "internal/_vector.h"
+
+ssize_t	__putchar(const char c) {
+	return write(1, &c, sizeof(c));
+}
 
 size_t	calculate_cursor_offset(const rl42_line *line) {
 	size_t	offset;

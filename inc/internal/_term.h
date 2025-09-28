@@ -20,6 +20,17 @@
 #define TERM_SETTINGS_DEFAULT	0
 #define TERM_SETTINGS_RL42		1
 
+// SGR option bit masks
+#define SGR_STANDOUT	0x001U
+#define SGR_UNDERLINE	0x002U
+#define SGR_REVERSE		0x004U
+#define SGR_BLINK		0x008U
+#define SGR_DIM			0x010U
+#define SGR_BOLD		0x020U
+#define SGR_INVIS		0x040U
+#define SGR_PROTECT		0x080U
+#define SGR_ALTCHARSET	0x100U
+
 typedef struct termios	term_settings;
 
 typedef _BitInt(9)	sgr_opts;
