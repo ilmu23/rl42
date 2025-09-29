@@ -5,11 +5,13 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<input.h>>
+// <<text.h>>
 
 #pragma once
 
-#include "internal/_data.h"
+#include "function.h"
 
-u8	end_of_file(rl42_line *line);
-u8	self_insert(rl42_line *line);
+rl42_fn(backward_delete_char);
+rl42_fn(delete_char);
+rl42_fn(end_of_file);
+rl42_fn(self_insert);

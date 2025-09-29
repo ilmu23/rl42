@@ -13,6 +13,8 @@
 
 #include "internal/_data.h"
 
+#define rl42_fn(name)	u8	name(rl42_line *line)
+
 /** @brief Registers a function with rl42
  *
  * @param f Function to register

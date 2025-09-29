@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "internal/_data.h"
+#include "function.h"
 
-u8	forward_char(rl42_line *line);
-u8	backward_char(rl42_line *line);
+rl42_fn(forward_char);
+rl42_fn(backward_char);

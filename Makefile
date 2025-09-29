@@ -41,7 +41,7 @@ UTILDIR	=	utils
 RLFNDIR	=	fn
 
 HSFNDIR	=	history
-INFNDIR	=	input
+TXFNDIR	=	text
 MVFNDIR	=	move
 
 ## SOURCE FILES
@@ -72,7 +72,7 @@ UTILFILES	=	cstr_utils.c \
 				vector.c
 
 RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
-				$(addprefix $(INFNDIR)/, $(INFNFILES)) \
+				$(addprefix $(TXFNDIR)/, $(TXFNFILES)) \
 				$(addprefix $(MVFNDIR)/, $(MVFNFILES))
 
 HSFNFILES	=	accept_line.c
@@ -253,7 +253,7 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 	@mkdir -p $(OBJDIR)/$(UTILDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(HSFNDIR)
-	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(INFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(TXFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MVFNDIR)
 
 $(TESTBIN):

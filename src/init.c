@@ -25,7 +25,7 @@
 #include "internal/_terminfo.h"
 
 #include "internal/fn/move.h"
-#include "internal/fn/input.h"
+#include "internal/fn/text.h"
 #include "internal/fn/history.h"
 
 #ifndef __DEBUG_BUILD
@@ -215,17 +215,17 @@ static inline void	_rl42_exit(void) {
 	}
 }
 
-#define rl42_fn(f, n)	{.address = f, .name = n}
+#define __rl42_fn(f, n)	{.address = f, .name = n}
 
 static const struct {
 	const rl42_fn	address;
 	const char		*name;
 }	functions[] = {
-	rl42_fn(accept_line, "accept-line"),
-	rl42_fn(end_of_file, "end-of-file"),
-	rl42_fn(self_insert, "self-insert"),
-	rl42_fn(forward_char, "forward-char"),
-	rl42_fn(backward_char, "backward-char"),
+	__rl42_fn(accept_line, "accept-line"),
+	__rl42_fn(backward_char, "backward-char"),
+	__rl42_fn(end_of_file, "end-of-file"),
+	__rl42_fn(forward_char, "forward-char"),
+	__rl42_fn(self_insert, "self-insert"),
 };
 
 static inline u8	_init_fns(void) {

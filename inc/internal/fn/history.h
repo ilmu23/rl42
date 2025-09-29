@@ -9,6 +9,6 @@
 
 #pragma once
 
-#include "internal/_data.h"
+#include "function.h"
 
-u8	accept_line(rl42_line *line);
+rl42_fn(accept_line);
