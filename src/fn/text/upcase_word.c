@@ -5,18 +5,30 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<text.h>>
+// <<upcase_word.c>>
 
-#pragma once
+#include <ctype.h>
 
+#define __RL42_INTERNAL
 #include "function.h"
 
-rl42_fn(backward_delete_char);
-rl42_fn(capitalize_word);
-rl42_fn(clear_display);
-rl42_fn(clear_screen);
-rl42_fn(delete_char);
-rl42_fn(downcase_word);
-rl42_fn(end_of_file);
-rl42_fn(self_insert);
-rl42_fn(upcase_word);
+#include "internal/_vector.h"
+#include "internal/_display.h"
+
+rl42_fn(upcase_word) {
+	size_t	i;
+	size_t	len;
+	u32		*word;
+
+	i = line->i;
+	if (isspace(*(u32 *)vector_get(line->line, (i != 0) ? i - 1 : i)))
+		return 1;
+	while (i > 0 && !isspace(*(u32 *)vector_get(line->line, i - 1)))
+		i--;
+	len = vector_size(line->line);
+	word = (u32 *)vector_get(line->line, i);
+	do
+		vector_set(line->line, i++, (u32){toupper(*word++)});
+	while (i < len && !isspace(*word));
+	return term_display_line(line, 0);
+}

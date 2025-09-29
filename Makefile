@@ -83,11 +83,14 @@ HSFNFILES	=	accept_line.c \
 				operate_and_get_next.c
 
 TXFNFILES	=	backward_delete_char.c \
+				capitalize_word.c \
 				clear_display.c \
 				clear_screen.c \
 				delete_char.c \
+				downcase_word.c \
 				end_of_file.c \
-				self_insert.c
+				self_insert.c \
+				upcase_word.c
 
 MVFNFILES	=	backward_char.c \
 				backward_word.c \
