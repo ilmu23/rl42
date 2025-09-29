@@ -18,6 +18,7 @@ rl42_fn(clear_screen);
 rl42_fn(delete_char);
 rl42_fn(downcase_word);
 rl42_fn(end_of_file);
+rl42_fn(quoted_insert);
 rl42_fn(self_insert);
 rl42_fn(transpose_chars);
 rl42_fn(transpose_words);

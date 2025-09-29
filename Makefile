@@ -89,6 +89,7 @@ TXFNFILES	=	backward_delete_char.c \
 				delete_char.c \
 				downcase_word.c \
 				end_of_file.c \
+				quoted_insert.c \
 				self_insert.c \
 				transpose_chars.c \
 				transpose_words.c \

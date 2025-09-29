@@ -5,40 +5,37 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<quoted_insert.c>>
 
-#pragma once
+#define __RL42_INTERNAL
+#include "function.h"
 
-#include "defs.h"
+#include "internal/_kb.h"
+#include "internal/_term.h"
+#include "internal/_utils.h"
+#include "internal/_vector.h"
+#include "internal/_display.h"
+#include "internal/_terminfo.h"
 
-#include "data.h"
+#define _BUF_SIZE	17
 
-#define RL42_VERSION "3.1.5-text"
+rl42_fn(quoted_insert) {
+	size_t	i;
+	char	buf[_BUF_SIZE];
+	u32		ucp;
+	i16		x;
+	i16		y;
 
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
-
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	term_cursor_get_pos(&x, &y);
+	ti_tputs("^", 1, __putchar);
+	term_cursor_set_pos(x, y);
+	if (!kb_listen_buf(-1, buf, _BUF_SIZE))
+		return 0;
+	for (i = 0; buf[i]; i += charsize_utf8(buf[i])) {
+		ucp = utf8_decode(&buf[i]);
+		if (!vector_push(line->line, ucp))
+			return 0;
+		line->i++;
+	}
+	return term_display_line(line, 0);
+}

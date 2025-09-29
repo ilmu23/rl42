@@ -88,7 +88,7 @@ static inline void	_init_binds(void) {
 	bind_all("<DOWN>", "forward-history");
 	bind_all("<UP>", "backward-history");
 	bind_all("<C-g>", "abort");
-	bind_all("<C-v>", "dump-variables");
+	bind_all("<C-v>", "quoted-insert");
 	bind_insert("<SPC>", "self-insert");
 	bind_insert("\\<", "self-insert");
 	bind_insert("\\\\", "self-insert");
@@ -241,6 +241,7 @@ static const struct {
 	__rl42_fn(forward_history, "forward-history"),
 	__rl42_fn(forward_word, "forward-word"),
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
+	__rl42_fn(quoted_insert, "quoted-insert"),
 	__rl42_fn(self_insert, "self-insert"),
 	__rl42_fn(transpose_chars, "transpose-chars"),
 	__rl42_fn(transpose_words, "transpose-words"),

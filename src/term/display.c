@@ -61,13 +61,13 @@ static inline u8	_add_str_to_buf(cvector s, char buf[_BUFFER_SIZE], size_t *i) {
 			len = strlen(encoded);
 			memcpy(&buf[*i], encoded, len);
 			*i += len;
-		} else if (ucp < 0x20U) {
+		} else if (ucp < 0x20U || ucp == 0x7FU) {
 			if (*i + (sizeof(_SGR_REV_VIDEO) - 1 + sizeof(_SGR_RESET) - 1 + 2) >= _BUFFER_SIZE)
 				return 0;
 			memcpy(&buf[*i], _SGR_REV_VIDEO, sizeof(_SGR_REV_VIDEO) - 1);
 			*i += sizeof(_SGR_REV_VIDEO) - 1;
 			buf[(*i)++] = '^';
-			buf[(*i)++] = (char)ucp + '@';
+			buf[(*i)++] = (ucp < 0x20) ? (char)ucp + '@' : '?';
 			memcpy(&buf[*i], _SGR_RESET, sizeof(_SGR_RESET) - 1);
 			*i += sizeof(_SGR_RESET) - 1;
 		}
