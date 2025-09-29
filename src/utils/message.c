@@ -5,40 +5,50 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<message.c>>
 
-#pragma once
+#include <stdio.h>
+#include <stdarg.h>
 
-#include "defs.h"
+#include "internal/_defs.h"
+#include "internal/_utils.h"
 
-#include "data.h"
+static inline void	_print_message(const char *fmt, va_list args);
 
-#define RL42_VERSION "3.0.25"
+u8	error(const char *fmt, ...) {
+	va_list	args;
 
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
+	va_start(args, fmt);
+	fputs(SGR_ERROR, stderr);
+	_print_message(fmt, args);
+	fputs(SGR0, stderr);
+	va_end(args);
+	return 0;
+}
 
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
+u8	warn(const char *fmt, ...) {
+	va_list	args;
 
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	va_start(args, fmt);
+	fputs(SGR_WARN, stderr);
+	_print_message(fmt, args);
+	fputs(SGR0, stderr);
+	va_end(args);
+	return 0;
+}
+
+u8	info(const char *fmt, ...) {
+	va_list	args;
+
+	va_start(args, fmt);
+	fputs(SGR_INFO, stderr);
+	_print_message(fmt, args);
+	fputs(SGR0, stderr);
+	va_end(args);
+	return 0;
+}
+
+static inline void	_print_message(const char *fmt, va_list args) {
+	vfprintf(stderr, fmt, args);
+	fflush(stderr);
+}

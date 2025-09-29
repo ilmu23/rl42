@@ -5,40 +5,45 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<_map.h>>
 
 #pragma once
 
-#include "defs.h"
+#ifndef __RL42_INTERNAL
+# define __RL42_INTERNAL
+#endif
 
-#include "data.h"
+#include "internal/_data.h"
 
-#define RL42_VERSION "3.0.25"
+typedef enum {
+	STRING,
+	INTEGER
+}	map_key_type;
 
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
+#define MAP_NOT_FOUND	((void *)1)
 
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
+#define MAP_GROW_THRESHOLD	80
 
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+#define map(type, count, key_type, free)	(__map_new(sizeof(type), count, key_type, free))
+map		__map_new(const size_t size, const size_t count, const map_key_type type, void (*free)(void *));
+
+#define map_delete(map)	(__map_del(map))
+void	__map_del(map map);
+
+#define map_get(map, key)	(__map_get(map, (const uintptr_t)key))
+void	*__map_get(cmap map, uintptr_t key);
+
+#define map_set(map, key, value)	(__map_set(map, (const uintptr_t)key, (const void *)&value))
+u8		__map_set(map map, uintptr_t key, const void *val);
+
+#define map_erase(map, key)	(__map_ers(map, (const uintptr_t)key))
+u8		__map_ers(map map, uintptr_t key);
+
+#define map_size(map)	(__map_sze(map))
+size_t	__map_sze(cmap map);
+
+#define map_empty(map)	(__map_ety(map))
+u8		__map_ety(cmap map);
+
+#define	map_clear(map)	(__map_clr(map))
+void	__map_clr(map map);

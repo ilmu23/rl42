@@ -5,40 +5,31 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<clear_screen.c>>
 
-#pragma once
+#define __RL42_INTERNAL
+#include "function.h"
 
-#include "defs.h"
+#include "internal/_term.h"
+#include "internal/_utils.h"
+#include "internal/_display.h"
+#include "internal/_terminfo.h"
 
-#include "data.h"
+rl42_fn(clear_screen) {
+	const char	*seq;
+	i16			diff_x;
+	i16			diff_y;
 
-#define RL42_VERSION "3.0.25"
-
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
-
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	seq = term_get_seq(ti_clear);
+	if (seq != TI_ABS_STR) {
+		diff_x = line->root.row - line->prompt.root.row;
+		diff_y = line->root.col - line->prompt.root.col;
+		line->prompt.root.row = 1;
+		line->prompt.root.col = 1;
+		line->root.row = line->prompt.root.row + diff_x;
+		line->root.col = line->prompt.root.col + diff_y;
+		ti_tputs(seq, 1, __putchar);
+		term_display_line(line, 0);
+	}
+	return 1;
+}

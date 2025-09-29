@@ -1,205 +1,309 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/04/13 11:30:59 by ivalimak          #+#    #+#              #
-#    Updated: 2025/01/08 21:32:59 by ivalimak         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+## ███████╗████████╗     ██████╗ ██╗   ██╗████████╗ ██████╗██╗  ██╗ █████╗ ██████╗
+## ██╔════╝╚══██╔══╝     ██╔══██╗██║   ██║╚══██╔══╝██╔════╝██║  ██║██╔══██╗██╔══██╗
+## █████╗     ██║        ██████╔╝██║   ██║   ██║   ██║     ███████║███████║██████╔╝
+## ██╔══╝     ██║        ██╔═══╝ ██║   ██║   ██║   ██║     ██╔══██║██╔══██║██╔══██╗
+## ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
+## ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+##
+## <<Makefile>>
 
 NAME	=	librl42.a
-OUTDIR	=	$(dir $(NAME))
 
-BUILD	=	normal
+BUILD	=	fsan
 
-CC				=	cc
-cflags.common	=	-Wall -Wextra -Werror
-cflags.debug	=	-g
-cflags.debugm	=	$(cflags.debug) -D DEBUG_MSG=1
-cflags.asan		=	$(cflags.debug) -fsanitize=address
-cflags.normal	=	-Ofast
+## COMPILER FLAGS
+
+CC				=	gcc
+cflags.common	=	-Wall -Wextra -Werror -Wpedantic -std=gnu2x -pedantic-errors -I$(INCDIR)
+cflags.debug	=	-g -D__DEBUG_BUILD
+cflags.fsan		=	$(cflags.debug) -fsanitize=address,undefined
+cflags.normal	=	-s -O1
 cflags.extra	=	
 CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
 
-HIST_FILE	=	
+## DIRECTORIES
 
-ifneq ("$(HIST_FILE)", "")
-	CFLAGS +=	-D_FT_RL_HFILE+$(HIST_FILE)
-endif
-
+BINDIR	=	bin
 SRCDIR	=	src
 OBJDIR	=	obj
-LIBDIR	=	lib
 INCDIR	=	inc
+TESTDIR	=	tst
 
-ifeq ($(strip $(OUTDIR)), "./")
-	TI42	=	$(LIBDIR)/libti42.a
-else
-	TI42	=	$(OUTDIR)/libti42.a
-endif
-TI42DIR	=	$(LIBDIR)/ti42
+FUNCDIR	=	function
+HISTDIR	=	history
+KBINDIR	=	input
+KEYBDIR	=	keybinds
+TERMDIR	=	term
+UTILDIR	=	utils
 
-INC		=	-I$(INCDIR) -I$(TI42DIR)/$(INCDIR)
+### RL42 FUNCTION DIRS
 
-COMPDIR		=	comp
-FNDIR		=	fns
-HISTDIR		=	hist
-INITDIR		=	init
-INPUTDIR	=	input
-KEYDIR		=	keys
-SETTINGSDIR	=	settings
-TERMDIR		=	term
-LFTDIR		=	__lft
+RLFNDIR	=	fn
 
-COMPFILES	=	completion.c \
-				utils.c
+HSFNDIR	=	history
+TXFNDIR	=	text
+MVFNDIR	=	move
 
-FNFILES		=	move.c \
-				hist.c \
-				hlcolor.c \
-				text.c \
-				comp.c \
-				misc.c \
-				vi.c
+## SOURCE FILES
 
-HISTFILES	=	history.c \
-				historyfile.c \
-				search.c \
-				utils.c
+FUNCFILES	=	rl42_fn_info.c
 
-INITFILES	=	init.c \
-				initfile.c \
-				initfuncs.c
+HISTFILES	=	history.c
 
-INPUTFILES	=	add.c \
-				kill.c \
-				rm.c \
-				utils.c
+KBINFILES	=	listen.c
 
-KEYFILES	=	bind.c \
-				fn.c \
-				utils.c
-
-SETTINGSFILES	=	utils.c
+KEYBFILES	=	editing_mode.c \
+				keyseq.c \
+				rl42_bind.c
 
 TERMFILES	=	cursor.c \
-				utils.c
+				display.c \
+				settings.c
 
-LFTFILES	=	__alloc.c \
-				__calloc.c \
-				__cast.c \
-				__clean.c \
-				__dprintf.c \
-				__exit.c \
-				__expand.c \
-				__getblksize.c \
-				__lstadd_back.c \
-				__lstadd_front.c \
-				__lstfirst.c \
-				__lstlast.c \
-				__lstnew.c \
-				__lstpop.c \
-				__lstpopall.c \
-				__lstpush.c \
-				__lstpushall.c \
-				__lstrmnode.c \
-				__map_utils.c \
-				__mapadd.c \
-				__mapget.c \
-				__mapnew.c \
-				__mappop.c \
-				__maprm.c \
-				__mark.c \
-				__misc.c \
-				__obj.c \
-				__objmap.c \
-				__parse.c \
-				__pop.c \
-				__printf.c \
-				__push.c \
-				__pushtrap.c \
-				__put.c \
-				__return.c \
-				__sprintf.c \
-				__snprintf.c \
-				__str.c \
-				__sweep.c \
-				__utils.c \
-				__vm.c \
-				__vprintf.c \
-				__vdprintf.c \
-				__vsprintf.c \
-				__vsnprintf.c
+UTILFILES	=	cstr_utils.c \
+				list.c \
+				map.c \
+				message.c \
+				misc.c \
+				rl42_string.c \
+				strhash.c \
+				utf8.c \
+				terminfo.c \
+				vector.c
+
+RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
+				$(addprefix $(TXFNDIR)/, $(TXFNFILES)) \
+				$(addprefix $(MVFNDIR)/, $(MVFNFILES))
+
+HSFNFILES	=	accept_line.c \
+				backward_history.c \
+				beginning_of_history.c \
+				end_of_history.c \
+				forward_history.c \
+				operate_and_get_next.c
+
+TXFNFILES	=	backward_delete_char.c \
+				clear_display.c \
+				clear_screen.c \
+				delete_char.c \
+				end_of_file.c \
+				self_insert.c
+
+MVFNFILES	=	backward_char.c \
+				backward_word.c \
+				beginning_of_line.c \
+				end_of_line.c \
+				forward_char.c \
+				forward_word.c
 
 FILES	=	rl42.c \
-			color.c \
-			error.c \
-			kring.c \
-			utils.c \
-			$(addprefix $(COMPDIR)/, $(COMPFILES)) \
-			$(addprefix $(FNDIR)/, $(FNFILES)) \
+			init.c \
+			$(addprefix $(FUNCDIR)/, $(FUNCFILES)) \
 			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
-			$(addprefix $(INITDIR)/, $(INITFILES)) \
-			$(addprefix $(INPUTDIR)/, $(INPUTFILES)) \
-			$(addprefix $(KEYDIR)/, $(KEYFILES)) \
-			$(addprefix $(SETTINGSDIR)/, $(SETTINGSFILES)) \
+			$(addprefix $(KBINDIR)/, $(KBINFILES)) \
+			$(addprefix $(KEYBDIR)/, $(KEYBFILES)) \
 			$(addprefix $(TERMDIR)/, $(TERMFILES)) \
-			$(addprefix $(LFTDIR)/, $(LFTFILES))
+			$(addprefix $(UTILDIR)/, $(UTILFILES)) \
+			$(addprefix $(RLFNDIR)/, $(RLFNFILES))
 
 SRCS	=	$(addprefix $(SRCDIR)/, $(FILES))
 OBJS	=	$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
+## TESTS
+
+TCFLAGS	=	$(CFLAGS) -D__TEST_BUILD
+
+TESTBIN		=	$(TESTDIR)/$(BINDIR)
+
+### FUNCTION TESTS
+FUNCTION_TEST		=	$(TESTBIN)/function_test
+
+FUNCTION_TEST_FILES	=	$(TESTDIR)/$(FUNCDIR)/function_test.c \
+						$(SRCS)
+
+### HISTORY TESTS
+HISTORY_TEST		=	$(TESTBIN)/history_test
+
+HISTORY_TEST_FILES	=	$(TESTDIR)/$(HISTDIR)/history_test.c \
+						$(SRCS)
+
+### KEYBIND TESTS
+KEYBIND_TEST		=	$(TESTBIN)/keybind_test
+
+KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
+						$(SRCS)
+
+### UTIL TESTS
+STRLEN_UTF8_TEST		=	$(TESTBIN)/strlen_utf8_test
+RL42_STRING_TEST		=	$(TESTBIN)/rl42_string_test
+TERMINFO_TEST			=	$(TESTBIN)/terminfo_test
+VECTOR_TEST				=	$(TESTBIN)/vector_test
+LIST_TEST				=	$(TESTBIN)/list_test
+MAP_TEST				=	$(TESTBIN)/map_test
+
+STRLEN_UTF8_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/strlen_utf8.c \
+							$(SRCDIR)/$(UTILDIR)/rl42_string.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/utf8.c
+
+RL42_STRING_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/rl42_string.c \
+							$(SRCDIR)/$(UTILDIR)/rl42_string.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/utf8.c
+
+TERMINFO_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/terminfo.c \
+							$(SRCDIR)/$(UTILDIR)/terminfo.c \
+							$(SRCDIR)/$(UTILDIR)/cstr_utils.c \
+							$(SRCDIR)/$(UTILDIR)/map.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/strhash.c \
+							$(SRCDIR)/$(UTILDIR)/message.c
+
+VECTOR_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/message.c
+
+LIST_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/list.c \
+							$(SRCDIR)/$(UTILDIR)/list.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/message.c
+
+MAP_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/map.c \
+							$(SRCDIR)/$(UTILDIR)/map.c \
+							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/strhash.c \
+							$(SRCDIR)/$(UTILDIR)/message.c
+
+### INTERACTIVE TESTER
+INTERACTIVE_TESTER	=	$(TESTBIN)/interactive
+
+ITBUILD	=	fsan
+
+ITCFLAGS	=	$(cflags.common) $(cflags.$(ITBUILD)) $(cflags.extra)
+ITLDFLAGS	=	-L. -lrl42
+
 all: $(NAME)
 
-test: a.out
+tester: $(INTERACTIVE_TESTER)
 
-a.out: $(NAME)
-	@printf "\e[1;35mRL42 >\e[m Compiling test\n"
-	@$(CC) $(CFLAGS) $(INC) test.c -L. -L$(LIBDIR) -lrl42 -lti42 -lm -o $@
-	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
-
-$(NAME): $(TI42) $(OBJDIR) $(OBJS)
-	@printf "\e[1;35mRL42 >\e[m Creating %s\n" $@
+$(NAME): $(OBJDIR) $(OBJS)
+	@printf "\e[1;38;5;27mRL42 >\e[m Creating %s\n" $@
 	@ar -crs $(NAME) $(OBJS)
-	@printf "\e[1;35mRL42 >\e[m \e[1mDone!\e[m\n"
+	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
 
-$(TI42):
-	@git submodule init $(TI42DIR)
-	@git submodule update $(TI42DIR)
-	@make --no-print-directory -C $(TI42DIR) BUILD=$(BUILD) NAME=libti42.a
-	@mv $(TI42DIR)/libti42.a $(TI42)
+$(INTERACTIVE_TESTER): $(TESTBIN) $(SRCS) $(TESTDIR)/interactive/main.c
+	@make --no-print-directory clean all BUILD=$(ITBUILD)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(ITCFLAGS) $(TESTDIR)/interactive/main.c $(ITLDFLAGS) -o $@
+	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
+
+tests: $(TESTDIR)/$(BINDIR) functests histtests keybtests utiltests
+	@printf "\e[1;38;5;27mRL42 >\e[m All tests passed!\n"
+
+functests: $(FUNCTION_TEST)
+	@./run_test rl42_fn $(FUNCTION_TEST)
+	@printf "\e[1;38;5;27mRL42 >\e[m All function tests passed!\n"
+
+histtests: $(HISTORY_TEST)
+	@./run_test history $(HISTORY_TEST)
+	@printf "\e[1;38;5;27mRL42 >\e[m All history tests passed!\n"
+
+keybtests: $(KEYBIND_TEST)
+	@./run_test rl42_bind $(KEYBIND_TEST)
+	@printf "\e[1;38;5;27mRL42 >\e[m All keybind tests passed!\n"
+
+utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(TERMINFO_TEST) $(VECTOR_TEST) $(LIST_TEST) $(MAP_TEST)
+	@./run_test strlen_utf8 $(STRLEN_UTF8_TEST)
+	@./run_test rl42_string $(RL42_STRING_TEST)
+	@./run_test terminfo $(TERMINFO_TEST)
+	@./run_test vector $(VECTOR_TEST)
+	@./run_test list $(LIST_TEST)
+	@./run_test map $(MAP_TEST)
+	@printf "\e[1;38;5;27mRL42 >\e[m All util tests passed!\n"
+
+$(FUNCTION_TEST): $(FUNCTION_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+
+$(HISTORY_TEST): $(HISTORY_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+
+$(KEYBIND_TEST): $(KEYBIND_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+
+$(STRLEN_UTF8_TEST): $(STRLEN_UTF8_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+
+$(RL42_STRING_TEST): $(RL42_STRING_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+
+$(TERMINFO_TEST): $(TERMINFO_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+
+$(VECTOR_TEST): $(VECTOR_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+
+$(LIST_TEST): $(LIST_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+
+$(MAP_TEST): $(MAP_TEST_FILES)
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
 
 $(OBJDIR):
-	@printf "\e[1;35mRL42 >\e[m Creating objdirs\n"
-	@mkdir -p $(OBJDIR)/$(COMPDIR)
-	@mkdir -p $(OBJDIR)/$(FNDIR)
+	@printf "\e[1;38;5;27mRL42 >\e[m Creating objdirs\n"
+	@mkdir -p $(OBJDIR)/$(FUNCDIR)
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
-	@mkdir -p $(OBJDIR)/$(INITDIR)
-	@mkdir -p $(OBJDIR)/$(INPUTDIR)
-	@mkdir -p $(OBJDIR)/$(KEYDIR)
-	@mkdir -p $(OBJDIR)/$(SETTINGSDIR)
+	@mkdir -p $(OBJDIR)/$(KBINDIR)
+	@mkdir -p $(OBJDIR)/$(KEYBDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
-	@mkdir -p $(OBJDIR)/$(LFTDIR)
+	@mkdir -p $(OBJDIR)/$(UTILDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(HSFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(TXFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MVFNDIR)
+
+$(TESTBIN):
+	@printf "\e[1;38;5;27mRL42 >\e[m Creating test executable dir\n"
+	@mkdir -p $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@printf "\e[1;35mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-	@make --no-print-directory -C $(TI42DIR) clean NAME=libti42.a
 	@rm -f $(OBJS)
 
-fclean: clean
-	@make --no-print-directory -C $(TI42DIR) fclean NAME=libti42.a
+tclean:
+	@rm -f $(INTERACTIVE_TESTER)
+	@rm -f $(FUNCTION_TEST)
+	@rm -f $(HISTORY_TEST)
+	@rm -f $(KEYBIND_TEST)
+	@rm -f $(STRLEN_UTF8_TEST)
+	@rm -f $(RL42_STRING_TEST)
+	@rm -f $(TERMINFO_TEST)
+	@rm -f $(VECTOR_TEST)
+	@rm -f $(LIST_TEST)
+	@rm -f $(MAP_TEST)
+
+fclean: clean tclean
+	@rm -rf $(TESTBIN)
 	@rm -rf $(OBJDIR)
-	@rm -rf a.out.dSYM
-	@rm -f a.out
 	@rm -f $(NAME)
-	@rm -f $(TI42)
 
 re: fclean all
 
-.PHONY: all test clean fclean re 
+retest: tclean tests
+
+db:
+	@printf "\e[1;38;5;27mRL42 >\e[m Creating compilation command database\n"
+	@compiledb make --no-print-directory BUILD=$(BUILD) cflags.extra=$(cflags.extra) | sed -E '/^##.*\.\.\.$$|^[[:space:]]*$$/d'
+	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
+
+.PHONY: all tests utiltests clean tclean fclean re retest db

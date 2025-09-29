@@ -5,40 +5,36 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<_function.h>>
 
 #pragma once
 
-#include "defs.h"
+#ifndef __RL42_INTERNAL
+# define __RL42_INTERNAL
+#endif
 
-#include "data.h"
+#include "internal/_data.h"
 
-#define RL42_VERSION "3.0.25"
+#define FUNCTION_COUNT	64
 
-/** @brief Gets a line from the user with editing
+/** @brief Gets function info by name
  *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
+ * @param f Name of the function
+ * @returns @c <b>rl42_fn_info</b> Information about the function,
+ * NULL if no function with the specified nname is found
  */
-char	*ft_readline(const char *prompt);
+rl42_fn_info	*get_fn_info_name(const char *f);
 
-/** @brief Binds a key sequence to a function
+/** @brief Gets function info
  *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
+ * @param f Function to fetch information about
+ * @returns @c <b>rl42_fn_info</b> Information about the function,
+ * NULL if the function hasn't been registered
  */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
+rl42_fn_info	*get_fn_info_fn(rl42_fn f);
 
-/** @brief Unbinds a key sequence
+/** @brief Frees all function information
  *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
+ * Only to be used on exit as a cleanup function
  */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+void			clean_fns(void);

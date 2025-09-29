@@ -5,40 +5,46 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<cstr_utils.c>>
 
-#pragma once
+#include <string.h>
+#include <stdlib.h>
 
-#include "defs.h"
+#include "internal/_utils.h"
 
-#include "data.h"
+char	*cstr_join(const char *s1, const char *s2) {
+	size_t	size;
+	char	*out;
 
-#define RL42_VERSION "3.0.25"
+	if (!s1 && !s2)
+		return strdup("");
+	if (!s1)
+		return strdup(s2);
+	if (!s2)
+		return strdup(s1);
+	size = strlen(s1) + 1;
+	size += strlen(s2);
+	out = malloc(size * sizeof(*out));
+	return cstr_joinb(s1, s2, out, size);
+}
 
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
+char	*cstr_joinb(const char *s1, const char *s2, char *buf, const size_t size) {
+	size_t	len;
+	size_t	i;
 
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	if (!buf || !size)
+		return NULL;
+	if (s1) {
+		len = strlen(s1);
+		i = (len < size) ? len : size;
+		memcpy(buf, s1, i);
+	} else
+		i = 0;
+	if (s2) {
+		len = strlen(s2);
+		memcpy(&buf[i], s2, (len < size - i) ? len : size - i);
+		i += (len < size  - 1) ? len : size - i;
+	}
+	buf[size - i] = '\0';
+	return buf;
+}

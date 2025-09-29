@@ -5,40 +5,22 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<_rl42.h>>
 
 #pragma once
 
 #include "defs.h"
 
-#include "data.h"
+typedef _BitInt(2)	rl42_state;
 
-#define RL42_VERSION "3.0.25"
+#define STATE_INIT_IN_PROGRESS		0x1U
+#define STATE_SAVE_HIST_POSITION	0x2U
 
-/** @brief Gets a line from the user with editing
+extern rl42_state	state_flags;
+
+/* @brief Initializes all internal data structures for use
  *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
-
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+u8	rl42_init(void);

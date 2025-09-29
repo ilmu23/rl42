@@ -5,40 +5,33 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<data.h>>
 
 #pragma once
 
 #include "defs.h"
 
-#include "data.h"
+// Changes the behaviour of the rl42_bind function in the case that
+// the key sequence the user is trying to bind is already bound
+// WARN = Issue a warning to the user
+// QUIET = Silently fail
+// REMAP = Notify the user and remap the key sequence, it it isn't const bound
+// QREMAP = Silently remap the key sequence, if it isn't const bound
+typedef enum __bind_mode {
+	WARN = 0,
+	QUIET = 1,
+	REMAP = 2,
+	QREMAP = 3
+}	rl42_bind_mode;
 
-#define RL42_VERSION "3.0.25"
-
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
-
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+// Editing mode identifiers
+// EMACS = emacs editing mode
+// VI_CMD = vi command mode
+// VI_INS = vi insert mode
+// CURRENT = Currently active editing mode
+typedef enum __editing_mode {
+	EMACS = 0,
+	VI_CMD = 1,
+	VI_INS = 2,
+	CURRENT
+}	rl42_editing_mode;

@@ -5,40 +5,23 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<misc.c>>
 
-#pragma once
+#include <unistd.h>
 
-#include "defs.h"
+#include "internal/_data.h"
+#include "internal/_vector.h"
 
-#include "data.h"
+ssize_t	__putchar(const char c) {
+	return write(1, &c, sizeof(c));
+}
 
-#define RL42_VERSION "3.0.25"
+size_t	calculate_cursor_offset(const rl42_line *line) {
+	size_t	offset;
+	size_t	len;
+	size_t	i;
 
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
-
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	for (i = offset = 0, len = vector_size(line->line); i < line->i && i < len; i++)
+		offset += (*(u32 *)vector_get(line->line, i) < 0x20U) ? 2 : 1;
+	return offset;
+}

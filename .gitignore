@@ -1,8 +1,9 @@
 *.a
 *.o
+bin
 *.log
 *.out*
-*test*
+*.txt
 .cache
 .clangd
 compile_commands.json

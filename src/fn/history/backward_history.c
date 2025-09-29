@@ -5,40 +5,36 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<backward_history.c>>
 
-#pragma once
+#include <stdlib.h>
 
-#include "defs.h"
+#define __RL42_INTERNAL
+#include "function.h"
 
-#include "data.h"
+#include "internal/_utils.h"
+#include "internal/_vector.h"
+#include "internal/_display.h"
+#include "internal/_history.h"
 
-#define RL42_VERSION "3.0.25"
+extern rl42_hist_node	*current;
 
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
+rl42_fn(backward_history) {
+	rl42_hist_node	*next;
 
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	next = hist_get_next_node(current, BACKWARD);
+	if (next == current)
+		return 1;
+	if (current->edit)
+		free((void *)current->edit);
+	current->edit = rl42str_to_cstr(line->line);
+	if (!current->edit)
+		return 0;
+	current = next;
+	vector_delete(line->line);
+	line->line = cstr_to_rl42str((current->edit) ? current->edit : current->line);
+	if (!line)
+		return 0;
+	line->i = vector_size(line->line);
+	return term_display_line(line, 0);
+}
