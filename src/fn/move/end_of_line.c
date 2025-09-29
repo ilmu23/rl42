@@ -5,13 +5,12 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<move.h>>
+// <<end_of_line.c>>
 
-#pragma once
+#include "internal/_term.h"
+#include "internal/_vector.h"
 
-#include "function.h"
-
-rl42_fn(backward_char);
-rl42_fn(beginning_of_line);
-rl42_fn(end_of_line);
-rl42_fn(forward_char);
+u8	end_of_line(rl42_line *line) {
+	line->i = vector_size(line->line);
+	return term_cursor_move_to(line, line->root.row, line->root.col + line->i);
+}
