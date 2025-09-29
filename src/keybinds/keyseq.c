@@ -84,11 +84,13 @@ vector	expand_seq(const char *seq) {
 			if (!seq[i])
 				goto err;
 			tmp = _match_escape(&seq[j], i - j + 1);
-			if (tmp.str)
+			if (tmp.str) do {
 				tmp.ucp = utf8_decode(tmp.str);
-			else if (!tmp.ucp)
-				goto err;
-			if (!vector_push(out, tmp.ucp))
+				if (!vector_push(out, tmp.ucp))
+					goto err;
+				tmp.str += charsize_utf8(*tmp.str);
+			} while (*tmp.str);
+			else if (!tmp.ucp || !vector_push(out, tmp.ucp))
 				goto err;
 		} else {
 			tmp.ucp = utf8_decode(&seq[i]);

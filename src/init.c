@@ -80,13 +80,13 @@ static inline void	_init_binds(void) {
 	char	seq[2] = "!";
 	i8		c;
 
-	bind_all("<C-l>", "clear_screen");
-	bind_all("<M-C-l>", "clear_display");
+	bind_all("<C-l>", "clear-screen");
+	bind_all("<M-C-l>", "clear-display");
 	bind_all("<RET>", "accept-line");
 	bind_all("<C-c>", "discard-line");
 	bind_all("<C-d>", "end-of-file");
-	bind_all("<DOWN>", "next_history");
-	bind_all("<UP>", "previous_history");
+	bind_all("<DOWN>", "next-history");
+	bind_all("<UP>", "previous-history");
 	bind_all("<C-g>", "abort");
 	bind_all("<C-v>", "dump-variables");
 	bind_insert("<SPC>", "self-insert");
