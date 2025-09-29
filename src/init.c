@@ -224,6 +224,7 @@ static const struct {
 	__rl42_fn(accept_line, "accept-line"),
 	__rl42_fn(backward_char, "backward-char"),
 	__rl42_fn(backward_delete_char, "backward-delete-char"),
+	__rl42_fn(backward_word, "backward-word"),
 	__rl42_fn(beginning_of_line, "beginning-of-line"),
 	__rl42_fn(clear_display, "clear-display"),
 	__rl42_fn(clear_screen, "clear-screen"),
@@ -231,6 +232,7 @@ static const struct {
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(end_of_line, "end-of-line"),
 	__rl42_fn(forward_char, "forward-char"),
+	__rl42_fn(forward_word, "forward-word"),
 	__rl42_fn(self_insert, "self-insert"),
 };
 

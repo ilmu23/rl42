@@ -31,6 +31,8 @@
 #define SGR_PROTECT		0x080U
 #define SGR_ALTCHARSET	0x100U
 
+#define term_cursor_move_to_i(line)	(term_cursor_move_to(line, (line)->root.row, (line)->root.col + (line)->i))
+
 typedef struct termios	term_settings;
 
 typedef _BitInt(9)	sgr_opts;

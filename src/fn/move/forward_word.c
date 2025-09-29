@@ -5,17 +5,25 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<move.h>>
+// <<forward_word.c>>
 
-#pragma once
+#include <ctype.h>
 
 #include "function.h"
 
-rl42_fn(backward_char);
-rl42_fn(backward_word);
-rl42_fn(beginning_of_line);
-rl42_fn(clear_display);
-rl42_fn(clear_screen);
-rl42_fn(end_of_line);
-rl42_fn(forward_char);
-rl42_fn(forward_word);
+#include "internal/_term.h"
+#include "internal/_vector.h"
+
+rl42_fn(forward_word) {
+	size_t	len;
+
+	len = vector_size(line->line);
+	if (line->i == len)
+		return 1;
+	if (isspace(*(u32 *)vector_get(line->line, line->i))) do
+		line->i++;
+	while (line->i < len && isspace(*(u32 *)vector_get(line->line, line->i)));
+	while (line->i < len && !isspace(*(u32 *)vector_get(line->line, line->i)))
+		line->i++;
+	return term_cursor_move_to_i(line);
+}

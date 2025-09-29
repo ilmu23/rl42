@@ -85,9 +85,11 @@ TXFNFILES	=	backward_delete_char.c \
 				self_insert.c
 
 MVFNFILES	=	backward_char.c \
+				backward_word.c \
 				beginning_of_line.c \
 				end_of_line.c \
-				forward_char.c
+				forward_char.c \
+				forward_word.c
 
 FILES	=	rl42.c \
 			init.c \
