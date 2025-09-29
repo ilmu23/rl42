@@ -88,7 +88,7 @@ static inline void	_init_binds(void) {
 	bind_all("<DOWN>", "forward-history");
 	bind_all("<UP>", "backward-history");
 	bind_all("<C-g>", "abort");
-	bind_all("<C-v>", "dump-variables");
+	bind_all("<C-v>", "quoted-insert");
 	bind_insert("<SPC>", "self-insert");
 	bind_insert("\\<", "self-insert");
 	bind_insert("\\\\", "self-insert");
@@ -137,7 +137,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-B>", "copy-backward-word");
 	bind_emacs("<C-y>", "yank");
 	bind_emacs("<M-y>", "yank-pop");
-	bind_emacs("<C-t>", "transpose-characters");
+	bind_emacs("<C-t>", "transpose-chars");
 	bind_emacs("<M-t>", "transpose-words");
 	bind_emacs("<C-x><C-r>", "re-read-init-file");
 	bind_emacs("<M-0>", "digit-argument");
@@ -229,9 +229,11 @@ static const struct {
 	__rl42_fn(backward_word, "backward-word"),
 	__rl42_fn(beginning_of_history, "beginning-of-history"),
 	__rl42_fn(beginning_of_line, "beginning-of-line"),
+	__rl42_fn(capitalize_word, "capitalize-word"),
 	__rl42_fn(clear_display, "clear-display"),
 	__rl42_fn(clear_screen, "clear-screen"),
 	__rl42_fn(delete_char, "delete-char"),
+	__rl42_fn(downcase_word, "downcase-word"),
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(end_of_history, "end-of-history"),
 	__rl42_fn(end_of_line, "end-of-line"),
@@ -239,7 +241,11 @@ static const struct {
 	__rl42_fn(forward_history, "forward-history"),
 	__rl42_fn(forward_word, "forward-word"),
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
+	__rl42_fn(quoted_insert, "quoted-insert"),
 	__rl42_fn(self_insert, "self-insert"),
+	__rl42_fn(transpose_chars, "transpose-chars"),
+	__rl42_fn(transpose_words, "transpose-words"),
+	__rl42_fn(upcase_word, "upcase-word"),
 };
 
 static inline u8	_init_fns(void) {
