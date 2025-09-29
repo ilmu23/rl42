@@ -137,7 +137,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-B>", "copy-backward-word");
 	bind_emacs("<C-y>", "yank");
 	bind_emacs("<M-y>", "yank-pop");
-	bind_emacs("<C-t>", "transpose-characters");
+	bind_emacs("<C-t>", "transpose-chars");
 	bind_emacs("<M-t>", "transpose-words");
 	bind_emacs("<C-x><C-r>", "re-read-init-file");
 	bind_emacs("<M-0>", "digit-argument");
@@ -242,6 +242,8 @@ static const struct {
 	__rl42_fn(forward_word, "forward-word"),
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
 	__rl42_fn(self_insert, "self-insert"),
+	__rl42_fn(transpose_chars, "transpose-chars"),
+	__rl42_fn(transpose_words, "transpose-words"),
 	__rl42_fn(upcase_word, "upcase-word"),
 };
 

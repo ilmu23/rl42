@@ -90,6 +90,8 @@ TXFNFILES	=	backward_delete_char.c \
 				downcase_word.c \
 				end_of_file.c \
 				self_insert.c \
+				transpose_chars.c \
+				transpose_words.c \
 				upcase_word.c
 
 MVFNFILES	=	backward_char.c \
