@@ -28,7 +28,7 @@
 #include "internal/fn/text.h"
 #include "internal/fn/history.h"
 
-#ifndef __DEBUG_BUILD
+#if !defined __DEBUG_BUILD || defined __DEBUG_BIND_WARNINGS
 # define _BIND_MODE WARN
 #else
 # define _BIND_MODE QUIET
