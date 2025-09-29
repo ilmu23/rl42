@@ -78,9 +78,12 @@ vector	expand_seq(const char *seq) {
 		}
 		if (seq[i] == '<' && !esc) {
 			i++;
-			while (seq[i] && (seq[i] != '>' || esc))
+			while (seq[i] && (seq[i] != '>' || esc)) {
 				if (seq[i++] == '\\')
 					esc ^= 1;
+				else
+					esc = 0;
+			}
 			if (!seq[i])
 				goto err;
 			tmp = _match_escape(&seq[j], i - j + 1);
