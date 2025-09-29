@@ -64,9 +64,27 @@
  */
 rl42_kb_event	*kb_listen(const i32 timeout);
 
+/** @brief Listens for a keyboard event
+ *
+ * Functions just like kb_listen, except it only reads at most
+ * buf_size - 1 bytes into buf, instead of using an internal buffer
+ * @param timeout Listen timeout in milliseconds, -1 for no timeout
+ * @param buf Buffer to read into
+ * @param buf_size Size of buf
+ * @returns @c <b>rl42_fn_info</b> Keyboard event information
+ */
+rl42_kb_event	*kb_listen_buf(const i32 timeout, char *buf, const size_t buf_size);
+
 /** @brief Frees all keyboard listener data
  */
 void			clean_kb_listener(void);
+
+/** @brief Converts a rl42_kb_event into it's corresponding unicode code point
+ *
+ * @param event Event to convert
+ * @returns @c <b>u32</b> Unicode code point corrseponding to event
+ */
+u32				kb_event_to_ucp(const rl42_kb_event *event);
 
 /** @brief Initializes all keyboard listener data
  *
