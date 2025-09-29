@@ -399,7 +399,7 @@ static inline escape	_match_escape(const char *seq, size_t len) {
 		case KEY_M_DN_A_HASH:
 			return (escape){.str = "\x1b" "a"};
 		case KEY_M_DN_B_HASH:
-			return (escape){.str = "\x1b" "a"};
+			return (escape){.str = "\x1b" "b"};
 		case KEY_M_DN_C_HASH:
 			return (escape){.str = "\x1b" "c"};
 		case KEY_M_DN_D_HASH:
