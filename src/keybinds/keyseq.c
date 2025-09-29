@@ -481,7 +481,7 @@ static inline escape	_match_escape(const char *seq, size_t len) {
 		case KEY_F_12_HASH:
 			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F12};
 		case KEY_UP_HASH:
-			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_F1};
+			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_UP};
 		case KEY_DOWN_HASH:
 			return (escape){.str = NULL, .ucp = KB_KEY_LEGACY_DOWN};
 		case KEY_LEFT_HASH:
