@@ -20,7 +20,7 @@ vector	cstr_to_rl42str(const char *s) {
 	u32		ucp;
 
 	len = strlen(s);
-	out = vector(u32, (u32){strlen_utf8(s)}, NULL);
+	out = vector(u32, (size_t){strlen_utf8(s) + ((len == 0) ? 1 : 0)}, NULL);
 	if (out) for (i = 0; i < len; i++) {
 		ucp = utf8_decode(&s[i]);
 		if (!vector_push(out, ucp))
