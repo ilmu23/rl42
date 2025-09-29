@@ -40,8 +40,11 @@ rl42_kb_event	*kb_listen(const i32 timeout) {
 		buf[rv] = '\0';
 		return _parse_event(buf, &kb_event);
 	}
-	if (rv == -1)
+	if (rv == -1) {
+		if (errno == EINTR)
+			return (kb_listen(timeout));
 		error("rl42: kb_listen: %s", strerror(errno));
+	}
 	return NULL;
 }
 
