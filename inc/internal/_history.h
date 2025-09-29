@@ -36,6 +36,12 @@ rl42_hist_node	*hist_get_first_node(void);
  */
 rl42_hist_node	*hist_get_last_node(void);
 
+/** @brief Removes a node from history
+ *
+ * @param node Node to remove
+ */
+void			hist_remove_node(rl42_hist_node *node);
+
 /** @brief Add line to history
  *
  * @param line Line to add
@@ -51,3 +57,10 @@ u8				hist_add_line(const char *line);
  * 0 if not
  */
 u8				hist_load(const char *fname);
+
+/** @brief Saves new entries and frees all resources
+ *
+ * Saves any new entries to the history file and frees
+ * all resources used for storing the history
+ */
+void			hist_clean(void);

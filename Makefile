@@ -75,7 +75,12 @@ RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
 				$(addprefix $(TXFNDIR)/, $(TXFNFILES)) \
 				$(addprefix $(MVFNDIR)/, $(MVFNFILES))
 
-HSFNFILES	=	accept_line.c
+HSFNFILES	=	accept_line.c \
+				backward_history.c \
+				beginning_of_history.c \
+				end_of_history.c \
+				forward_history.c \
+				operate_and_get_next.c
 
 TXFNFILES	=	backward_delete_char.c \
 				clear_display.c \

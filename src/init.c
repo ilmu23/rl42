@@ -18,6 +18,7 @@
 #include "function.h"
 
 #include "internal/_kb.h"
+#include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_history.h"
 #include "internal/_function.h"
@@ -44,15 +45,14 @@ static inline void	_init_binds(void);
 static inline void	_rl42_exit(void);
 static inline u8	_init_fns(void);
 
-static u8	init_in_progress = 0;
 static u8	init = 0;
 
 u8	rl42_init(void) {
 	u8			rv;
 
 	rv = 1;
-	if (!init && !init_in_progress) {
-		init_in_progress = 1;
+	if (!init && ~state_flags & STATE_INIT_IN_PROGRESS) {
+		state_flags ^= STATE_INIT_IN_PROGRESS;
 		if (!init_key_trees())
 			rv = 0;
 		// MAYBE: init macro data
@@ -70,7 +70,7 @@ u8	rl42_init(void) {
 		hist_load(getenv("RL42_HISTORY"));
 		// TODO: read initfile
 		// MAYBE: init highlight color
-		init_in_progress = 0;
+		state_flags ^= STATE_INIT_IN_PROGRESS;
 		init = rv;
 	}
 	return rv;
@@ -85,8 +85,8 @@ static inline void	_init_binds(void) {
 	bind_all("<RET>", "accept-line");
 	bind_all("<C-c>", "discard-line");
 	bind_all("<C-d>", "end-of-file");
-	bind_all("<DOWN>", "next-history");
-	bind_all("<UP>", "previous-history");
+	bind_all("<DOWN>", "forward-history");
+	bind_all("<UP>", "backward-history");
 	bind_all("<C-g>", "abort");
 	bind_all("<C-v>", "dump-variables");
 	bind_insert("<SPC>", "self-insert");
@@ -112,8 +112,8 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-]>", "forward-find-character");
 	bind_emacs("<M-[>", "backward-find-character");
 	bind_emacs("<C-o>", "operate-and-get-next");
-	bind_emacs("<C-n>", "next-history");
-	bind_emacs("<C-p>", "previous-history");
+	bind_emacs("<C-n>", "forward-history");
+	bind_emacs("<C-p>", "backward-history");
 	bind_emacs("<M-\\>>", "end-of-history");
 	bind_emacs("<M-<>", "beginning-of-history");
 	bind_emacs("<M-h>", "forward-search-history");
@@ -182,8 +182,8 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("h", "backward-char");
 	bind_vi_cmd("i", "vi-insert");
 	bind_vi_cmd("I", "vi-insert-sol");
-	bind_vi_cmd("j", "next-history");
-	bind_vi_cmd("k", "previous-history");
+	bind_vi_cmd("j", "forward-history");
+	bind_vi_cmd("k", "backward-history");
 	bind_vi_cmd("l", "forward-char");
 	bind_vi_cmd("m", "set-mark");
 	bind_vi_cmd("M", "unset-mark");
@@ -210,6 +210,7 @@ static inline void	_rl42_exit(void) {
 		term_apply_settings(TERM_SETTINGS_DEFAULT);
 		clean_kb_listener();
 		clean_key_trees();
+		hist_clean();
 		clean_fns();
 		ti_unload();
 	}
@@ -224,15 +225,20 @@ static const struct {
 	__rl42_fn(accept_line, "accept-line"),
 	__rl42_fn(backward_char, "backward-char"),
 	__rl42_fn(backward_delete_char, "backward-delete-char"),
+	__rl42_fn(backward_history, "backward-history"),
 	__rl42_fn(backward_word, "backward-word"),
+	__rl42_fn(beginning_of_history, "beginning-of-history"),
 	__rl42_fn(beginning_of_line, "beginning-of-line"),
 	__rl42_fn(clear_display, "clear-display"),
 	__rl42_fn(clear_screen, "clear-screen"),
 	__rl42_fn(delete_char, "delete-char"),
 	__rl42_fn(end_of_file, "end-of-file"),
+	__rl42_fn(end_of_history, "end-of-history"),
 	__rl42_fn(end_of_line, "end-of-line"),
 	__rl42_fn(forward_char, "forward-char"),
+	__rl42_fn(forward_history, "forward-history"),
 	__rl42_fn(forward_word, "forward-word"),
+	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
 	__rl42_fn(self_insert, "self-insert"),
 };
 
