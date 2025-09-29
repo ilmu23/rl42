@@ -23,6 +23,9 @@
 
 static i32	efd;
 
+static u32	kbs;
+u32			kcbs;
+
 static inline rl42_kb_event	*_parse_event(const char buf[_BUF_SIZE], rl42_kb_event *event);
 
 rl42_kb_event	*kb_listen(const i32 timeout) {
@@ -49,7 +52,13 @@ void	clean_kb_listener(void) {
 
 u8	init_kb_listener(void) {
 	struct epoll_event	ev;
+	const char			*seq;
 
+	seq = term_get_seq(ti_kbs);
+	if (seq) {
+		kbs = *seq;
+		kcbs = (kbs == '\b') ? '\x7f' : '\b';
+	}
 	efd = epoll_create(1);
 	if (efd == -1)
 		return 0;
@@ -169,12 +178,10 @@ static inline rl42_kb_event	*_parse_event(const char buf[_BUF_SIZE], rl42_kb_eve
 	}
 	event->code = utf8_decode(buf);
 	// TODO: proper unicode case checks
-	if (event->code == '\b' || event->code == '\x7f') {
-		if (*term_get_seq(ti_kbs) != (char)event->code)
-			event->mods |= KB_MOD_CTRL;
-		event->code = '\b';
-	}
-	if (event->code < ' ') {
+	if (event->code == kcbs) {
+		event->mods |= KB_MOD_CTRL;
+		event->code = kbs;
+	} else if (event->code < ' ') {
 		event->mods |= KB_MOD_CTRL;
 		event->code |= 0x60;
 	} else if (event->code >= 'A' && event->code <= 'Z') {

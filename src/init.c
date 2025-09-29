@@ -94,8 +94,8 @@ static inline void	_init_binds(void) {
 	bind_insert("\\\\", "self-insert");
 	for (c = *seq; c++ <= '~'; *seq = (*seq == ';' || *seq == '[') ? ++c : c)
 		bind_insert(seq, "self-insert");
-	bind_insert("<DEL>", "remove-char");
-	bind_insert("<BCK>", "backward-remove-char");
+	bind_insert("<DEL>", "delete-char");
+	bind_insert("<BCK>", "backward-delete-char");
 	bind_insert("<END>", "end-of-line");
 	bind_insert("<HME>", "beginning-of-line");
 	bind_insert("<RIGHT>", "forward-char");
@@ -194,8 +194,8 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("S", "vi-substitute-line");
 	bind_vi_cmd("w", "forward-word");
 	bind_vi_cmd("W", "backward-word");
-	bind_vi_cmd("x", "remove-char");
-	bind_vi_cmd("X", "backward-remove-char");
+	bind_vi_cmd("x", "delete-char");
+	bind_vi_cmd("X", "backward-delete-char");
 	bind_vi_cmd("Z", "discard-line");
 	bind_vi_cmd("<ESC>", "abort");
 	bind_vi_ins("<C-r>", "inc-reverse-search-history");
@@ -223,6 +223,8 @@ static const struct {
 }	functions[] = {
 	__rl42_fn(accept_line, "accept-line"),
 	__rl42_fn(backward_char, "backward-char"),
+	__rl42_fn(backward_delete_char, "backward-delete-char"),
+	__rl42_fn(delete_char, "delete-char"),
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(forward_char, "forward-char"),
 	__rl42_fn(self_insert, "self-insert"),

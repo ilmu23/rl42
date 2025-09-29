@@ -57,6 +57,8 @@ static const char	*rs  = "\x1b\x1e";
 static const char	*us  = "\x1b\x1f";
 static const char	*bck = "\x1b\x7f";
 
+extern u32	kcbs;
+
 static inline escape	_match_escape(const char *seq, size_t len);
 
 vector	expand_seq(const char *seq) {
@@ -255,13 +257,13 @@ static inline escape	_match_escape(const char *seq, size_t len) {
 		case KEY_SPC_HASH:
 			return (escape){.str = " "};
 		case KEY_BCK_HASH:
-			if (*term_get_seq(ti_kbs) == '\x7f')
+			if (kcbs != '\x7f')
 				return (escape){.str = &bck[1]};
 			return (escape){.str = &bs[1]};
 		case KEY_M_SPC_HASH:
 			return (escape){.str = "\x1b "};
 		case KEY_M_BCK_HASH:
-			if (*term_get_seq(ti_kbs) == '\x7f')
+			if (kcbs != '\x7f')
 				return (escape){.str = bck};
 			return (escape){.str = bs};
 		case KEY_M_BANG_HASH:

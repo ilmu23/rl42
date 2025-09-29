@@ -28,6 +28,8 @@ typedef struct {
 
 #define __fn(f, r)	((__fn){.fn = f, .run = r})
 
+extern u32	kcbs;
+
 static inline __fn	_match_seq(rl42_line *line, rl42_key_tree *current, const rl42_kb_event *event);
 
 char	*ft_readline(const char *prompt) {
@@ -81,7 +83,7 @@ static inline __fn	_match_seq(rl42_line *line, rl42_key_tree *current, const rl4
 	// TODO: proper modifier parsing
 	if (event->mods & KB_MOD_SHIFT)
 		ucp &= ~0x20;
-	if (event->mods & KB_MOD_CTRL)
+	if (event->mods & KB_MOD_CTRL && event->code != kcbs)
 		ucp &= ~0x60;
 	if (event->mods & KB_MOD_ALT)
 		vector_push(line->keyseq, (u32){'\x1b'});

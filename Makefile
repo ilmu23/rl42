@@ -77,7 +77,9 @@ RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
 
 HSFNFILES	=	accept_line.c
 
-INFNFILES	=	end_of_file.c \
+TXFNFILES	=	backward_delete_char.c \
+				delete_char.c \
+				end_of_file.c \
 				self_insert.c
 
 MVFNFILES	=	backward_char.c \
