@@ -30,10 +30,10 @@ rl42_hist_node	*hist_get_next_node(const rl42_hist_node *node, const rl42_direct
 
 	switch (direction) {
 		case FORWARD:
-			lnode = list_nth(history, entries - (node->entry_n + 1));
+			lnode = (node->entry_n != list_size(history)) ? list_nth(history, entries - (node->entry_n + 1)) : NULL;
 			break ;
 		case BACKWARD:
-			lnode = list_nth(history, entries - (node->entry_n - 1));
+			lnode = (node->entry_n != 0) ? list_nth(history, entries - (node->entry_n - 1)) : NULL;
 			break ;
 		default:
 			lnode = NULL;
