@@ -131,12 +131,16 @@ u8	term_apply_settings(const u8 settings) {
 		case TERM_SETTINGS_DEFAULT:
 			rv = (tcsetattr(0, TCSANOW, &old) != -1) ? 1 : 0;
 			if (esc_seqs.rmkx != TI_ABS_STR)
-				rv = (write(1, esc_seqs.rmkx, strlen(esc_seqs.rmkx)) != -1) ? 1 : 0;
+				rv |= (ti_tputs(esc_seqs.rmkx, 1, __putchar)) ? 1 : 0;
+			if (esc_seqs.cnorm != TI_ABS_STR)
+				rv |= term_show_cursor();
 			break ;
 		case TERM_SETTINGS_RL42:
 			rv = (tcsetattr(0, TCSANOW, &new) != -1) ? 1 : 0;
 			if (esc_seqs.smkx != TI_ABS_STR)
-				rv = (write(1, esc_seqs.smkx, strlen(esc_seqs.smkx)) != -1) ? 1 : 0;
+				rv |= (ti_tputs(esc_seqs.smkx, 1, __putchar)) ? 1 : 0;
+			if (esc_seqs.civis != TI_ABS_STR)
+				rv |= term_hide_cursor();
 			break ;
 		default:
 			rv = 0;
@@ -310,6 +314,18 @@ u8	term_set_sgr(const sgr_opts opts) {
 	sgr_str = (opts) ? ti_tparm(esc_seqs.sgr, sgr_opt(1), sgr_opt(2), sgr_opt(3), sgr_opt(4), sgr_opt(5), sgr_opt(6), sgr_opt(7), sgr_opt(8), sgr_opt(9)) : esc_seqs.sgr0;
 	if (sgr_str)
 		return (ti_tputs(sgr_str, 1, __putchar) != -1) ? 1 : 0;
+	return 0;
+}
+
+u8	term_hide_cursor(void) {
+	if (esc_seqs.civis)
+		return (ti_tputs(esc_seqs.civis, 1, __putchar) != -1) ? 1 : 0;
+	return 0;
+}
+
+u8	term_show_cursor(void) {
+	if (esc_seqs.cnorm)
+		return (ti_tputs(esc_seqs.cnorm, 1, __putchar) != -1) ? 1 : 0;
 	return 0;
 }
 

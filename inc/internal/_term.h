@@ -92,6 +92,20 @@ u8			term_set_bg_color(const u8 color);
  */
 u8			term_set_sgr(const sgr_opts opts);
 
+/** @brief Hides the cursor
+ *
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8			term_hide_cursor(void);
+
+/** @brief Shows the cursor
+ *
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8			term_show_cursor(void);
+
 /** @brief Gets the current cursor position
  *
  * @param row Where to store the current row

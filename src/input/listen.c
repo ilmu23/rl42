@@ -34,7 +34,9 @@ rl42_kb_event	*kb_listen(const i32 timeout) {
 	ssize_t					rv;
 	char					buf[_BUF_SIZE];
 
+	term_show_cursor();
 	rv = epoll_wait(efd, &event, 1, timeout);
+	term_hide_cursor();
 	if (rv == 1) {
 		rv = read(0, buf, 16);
 		buf[rv] = '\0';
