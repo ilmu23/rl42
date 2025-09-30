@@ -25,6 +25,7 @@
 #include "internal/_keybinds.h"
 #include "internal/_terminfo.h"
 
+#include "internal/fn/kill.h"
 #include "internal/fn/move.h"
 #include "internal/fn/text.h"
 #include "internal/fn/history.h"
@@ -232,6 +233,7 @@ static const struct {
 	__rl42_fn(clear_display, "clear-display"),
 	__rl42_fn(clear_screen, "clear-screen"),
 	__rl42_fn(delete_char, "delete-char"),
+	__rl42_fn(discard_line, "discard-line"),
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(end_of_history, "end-of-history"),
 	__rl42_fn(end_of_line, "end-of-line"),

@@ -5,40 +5,39 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<discard_line.c>>
 
-#pragma once
+#include <stdlib.h>
 
-#include "defs.h"
+#define __RL42_INTERNAL
+#include "function.h"
 
-#include "data.h"
+#include "internal/_term.h"
+#include "internal/_vector.h"
+#include "internal/_display.h"
+#include "internal/_history.h"
 
-#define RL42_VERSION "3.1.1-kill"
+extern rl42_hist_node	*current;
 
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
+rl42_fn(discard_line) {
+	rl42_hist_node	*node;
+	rl42_hist_node	*prev;
 
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	node = hist_get_first_node();
+	current = node;
+	for (prev = NULL; node != prev; prev = node, node = hist_get_next_node(node, BACKWARD)) {
+		if (node->edit) {
+			free((void *)node->edit);
+			node->edit = NULL;
+		}
+	}
+	term_cursor_move_to(line, line->root.row, line->root.col + vector_size(line->line));
+	term_cursor_get_pos(&line->prompt.root.row, &line->prompt.root.col);
+	line->prompt.root.row++;
+	line->prompt.root.col = 1;
+	term_display_line(line, DISPLAY_PROMPT_ONLY);
+	term_cursor_get_pos(&line->root.row, &line->root.col);
+	vector_clear(line->line);
+	line->i = 0;
+	return 1;
+}
