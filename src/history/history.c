@@ -44,6 +44,33 @@ rl42_hist_node	*hist_get_next_node(const rl42_hist_node *node, const rl42_direct
 	return (lnode) ? (rl42_hist_node *)lnode->data : (rl42_hist_node *)node;
 }
 
+rl42_hist_node	*hist_get_nth_node(i64 n) {
+	rl42_hist_node	*out;
+	rl42_direction	direction;
+	i64				i;
+	u8				neg;
+
+	if (n < 0) {
+		neg = 1;
+		n = -n;
+	} else
+		neg = 0;
+	if (n < (i64)entries / 2) {
+		i = 1;
+		direction = (!neg) ? BACKWARD : FORWARD;
+		out = (!neg) ? hist_get_first_node() : hist_get_last_node();
+		while (i++ < n)
+			out = hist_get_next_node(out, direction);
+	} else {
+		i = (i64)entries;
+		direction = (!neg) ? FORWARD : BACKWARD;
+		out = (!neg) ? hist_get_last_node() : hist_get_first_node();
+		while (i-- > n)
+			out = hist_get_next_node(out, direction);
+	}
+	return out;
+}
+
 rl42_hist_node	*hist_get_first_node(void) {
 	return (rl42_hist_node *)list_first(history)->data;
 }

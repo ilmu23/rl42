@@ -14,6 +14,5 @@
 
 u8	accept_line(rl42_line *line) {
 	term_display_line(line, 0);
-	write(1, "\n", 1);
 	return 0;
 }

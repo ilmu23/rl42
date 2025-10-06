@@ -20,6 +20,7 @@
 #include "internal/_display.h"
 #include "internal/_history.h"
 #include "internal/_keybinds.h"
+#include "internal/_terminfo.h"
 
 #include "internal/fn/misc.h"
 
@@ -89,6 +90,7 @@ char	*ft_readline(const char *prompt) {
 			match.fn = NULL;
 		}
 	} while (rv);
+	ti_tputs("\n", 1, __putchar);
 	term_apply_settings(TERM_SETTINGS_DEFAULT);
 	out = (line.line) ? rl42str_to_cstr(line.line) : NULL;
 	vector_delete(line.prompt.sprompt);

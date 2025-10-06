@@ -117,6 +117,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<C-p>", "backward-history");
 	bind_emacs("<M-\\>>", "end-of-history");
 	bind_emacs("<M-<>", "beginning-of-history");
+	bind_emacs("<M-H>", "fetch-history");
 	bind_emacs("<M-h>", "forward-search-history");
 	bind_emacs("<M-r>", "backward-search-history");
 	bind_emacs("<C-h>", "inc-forward-search-history");
@@ -238,6 +239,7 @@ static const struct {
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(end_of_history, "end-of-history"),
 	__rl42_fn(end_of_line, "end-of-line"),
+	__rl42_fn(fetch_history, "fetch-history"),
 	__rl42_fn(forward_char, "forward-char"),
 	__rl42_fn(forward_history, "forward-history"),
 	__rl42_fn(forward_word, "forward-word"),

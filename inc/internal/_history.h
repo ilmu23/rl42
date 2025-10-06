@@ -24,6 +24,15 @@
  */
 rl42_hist_node	*hist_get_next_node(const rl42_hist_node *node, const rl42_direction direction);
 
+/** @brief Get nth history node
+ *
+ * @param n Node to get
+ * @returns @c <b>rl42_hist_node *</b> Nth node,
+ * First node if n < 1,
+ * Last node if n > hist_size
+ */
+rl42_hist_node	*hist_get_nth_node(i64 n);
+
 /** @brief Gets the first (newest) history entry
  *
  * @returns @c <b>rl42_hist_node *</b> First history entry
