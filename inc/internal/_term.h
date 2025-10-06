@@ -16,6 +16,8 @@
 #endif
 
 #include "internal/_data.h"
+#include "internal/_utils.h"
+#include "internal/_vector.h"
 
 #define TERM_SETTINGS_DEFAULT	0
 #define TERM_SETTINGS_RL42		1
@@ -31,7 +33,7 @@
 #define SGR_PROTECT		0x080U
 #define SGR_ALTCHARSET	0x100U
 
-#define term_cursor_move_to_i(line)	(term_cursor_move_to(line, (line)->root.row, (line)->root.col + (line)->i))
+#define term_cursor_move_to_i(line)	(term_cursor_move_to(line, (line)->root.row, (line)->root.col + calculate_cursor_offset(line) + ((line->prompt.sprompt) ? vector_size(line->prompt.sprompt) + 1 : 0)))
 
 typedef struct termios	term_settings;
 

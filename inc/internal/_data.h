@@ -114,6 +114,16 @@ typedef struct __kb_event {
 	u16	mods;
 }	rl42_kb_event;
 
+// Stores numeric argument info
+// val = value of the argument
+// neg = indicates whether val is negative
+// set = indicates whether an argument is set
+typedef struct __arg {
+	i64	val;
+	u8	neg;
+	u8	set;
+}	rl42_numeric_arg;
+
 // Placeholder for display options
 typedef u8	rl42_display_opts;
 #endif

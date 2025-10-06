@@ -30,8 +30,11 @@ u8	term_display_line(rl42_line *line, const rl42_display_opts opts) {
 	size_t		i;
 
 	i = 0;
-	if (line->prompt.sprompt && !_add_str_to_buf(line->prompt.sprompt, buf, &i))
-		return 0;
+	if (line->prompt.sprompt) {
+		if (!_add_str_to_buf(line->prompt.sprompt, buf, &i))
+			return 0;
+		buf[i++] = ' ';
+	}
 	if (!_add_str_to_buf(line->prompt.prompt, buf, &i))
 		return 0;
 	if (~opts & DISPLAY_PROMPT_ONLY && !_add_str_to_buf(line->line, buf, &i))
@@ -42,7 +45,7 @@ u8	term_display_line(rl42_line *line, const rl42_display_opts opts) {
 		return 0;
 	if (opts & DISPLAY_PROMPT_ONLY)
 		return 1;
-	return term_cursor_move_to(line, line->root.row, line->root.col + calculate_cursor_offset(line));
+	return term_cursor_move_to_i(line);
 }
 
 static inline u8	_add_str_to_buf(cvector s, char buf[_BUFFER_SIZE], size_t *i) {

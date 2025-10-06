@@ -43,6 +43,7 @@ RLFNDIR	=	fn
 HSFNDIR	=	history
 TXFNDIR	=	text
 MVFNDIR	=	move
+MCFNDIR	=	misc
 
 ## SOURCE FILES
 
@@ -73,7 +74,8 @@ UTILFILES	=	cstr_utils.c \
 
 RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
 				$(addprefix $(TXFNDIR)/, $(TXFNFILES)) \
-				$(addprefix $(MVFNDIR)/, $(MVFNFILES))
+				$(addprefix $(MVFNDIR)/, $(MVFNFILES)) \
+				$(addprefix $(MCFNDIR)/, $(MCFNFILES))
 
 HSFNFILES	=	accept_line.c \
 				backward_history.c \
@@ -101,6 +103,8 @@ MVFNFILES	=	backward_char.c \
 				end_of_line.c \
 				forward_char.c \
 				forward_word.c
+
+MCFNFILES	=	numeric_argument.c
 
 FILES	=	rl42.c \
 			init.c \
@@ -274,6 +278,7 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(HSFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(TXFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MVFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MCFNDIR)
 
 $(TESTBIN):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating test executable dir\n"

@@ -21,6 +21,8 @@
 #include "internal/_history.h"
 #include "internal/_keybinds.h"
 
+#include "internal/fn/misc.h"
+
 #define _AMBIGUOUS_TIMEOUT 0
 
 typedef struct {
@@ -29,6 +31,8 @@ typedef struct {
 }	__fn;
 
 #define __fn(f, r)	((__fn){.fn = f, .run = r})
+
+extern rl42_numeric_arg	n_arg;
 
 extern u32	kcbs;
 
@@ -76,11 +80,18 @@ char	*ft_readline(const char *prompt) {
 		if (match.fn && match.run) {
 			rv = match.fn->f(&line);
 			vector_clear(line.keyseq);
+			if (n_arg.set && match.fn->f != numeric_argument) {
+				vector_delete(line.prompt.sprompt);
+				line.prompt.sprompt = NULL;
+				term_display_line(&line, 0);
+				n_arg.set = 0;
+			}
 			match.fn = NULL;
 		}
 	} while (rv);
 	term_apply_settings(TERM_SETTINGS_DEFAULT);
 	out = (line.line) ? rl42str_to_cstr(line.line) : NULL;
+	vector_delete(line.prompt.sprompt);
 	vector_delete(line.prompt.prompt);
 	vector_delete(line.keyseq);
 	vector_delete(line.line);
