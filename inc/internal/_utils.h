@@ -127,6 +127,19 @@ ssize_t		__putchar(const char c);
  */
 size_t		calculate_cursor_offset(const rl42_line *line);
 
+/** @brief Repeats the given functions
+ *
+ * Repeats the given functions according to the current
+ * numeric argument. Assumes that an argument is set.
+ * Sets the state flag STATE_REPEAT for the duration
+ * of the call
+ * @param line Current line to pass to positive/negative
+ * @param positive Function to call if the numeric argument is positive
+ * @param negative Function to call if the numeric argument is negative
+ * @returns @c <b>u8</b> Return value of the called function
+ */
+u8			repeat(rl42_line *line, const rl42_fn positive, const rl42_fn negative);
+
 /** @brief Displays an error message
  *
  * @param fmt Format string for the message

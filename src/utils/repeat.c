@@ -5,24 +5,27 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<self_insert.c>>
+// <<repeat.c>>
 
+#define __RL42_INTERNAL
+#include "internal/_data.h"
 #include "internal/_rl42.h"
-#include "internal/_utils.h"
-#include "internal/_vector.h"
-#include "internal/_display.h"
 
-#undef vector_insert
-#define vector_insert(vec, i, val)	(__vec_ins(vec, i, val))
+extern rl42_numeric_arg	n_arg;
 
-u8	self_insert(rl42_line *line) {
-	if (NEED_REPEAT) {
-		if (!repeat(line, self_insert, NULL))
-			return 0;
-	} else {
-		if (!vector_insert(line->line, line->i, vector_get(line->keyseq, 0)))
-			return 0;
-		line->i++;
-	}
-	return (~state_flags & STATE_REPEAT) ? term_display_line(line, 0) : 1;
+u8	repeat(rl42_line *line, const rl42_fn positive, const rl42_fn negative) {
+	rl42_fn	f;
+	i64		n;
+	u8		rv;
+
+	n = n_arg.val;
+	f = (!n_arg.neg) ? positive : negative;
+	if (!f)
+		return 1;
+	state_flags |= STATE_REPEAT;
+	do {
+		rv = f(line);
+	} while (rv == 1 && --n);
+	state_flags &= ~STATE_REPEAT;
+	return rv;
 }

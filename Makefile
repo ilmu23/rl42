@@ -66,10 +66,11 @@ UTILFILES	=	cstr_utils.c \
 				map.c \
 				message.c \
 				misc.c \
+				repeat.c \
 				rl42_string.c \
 				strhash.c \
-				utf8.c \
 				terminfo.c \
+				utf8.c \
 				vector.c
 
 RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
