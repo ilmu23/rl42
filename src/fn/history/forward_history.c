@@ -33,7 +33,7 @@ rl42_fn(forward_history) {
 	current = next;
 	vector_delete(line->line);
 	line->line = cstr_to_rl42str((current->edit) ? current->edit : current->line);
-	if (!line)
+	if (!line->line)
 		return 0;
 	line->i = vector_size(line->line);
 	return term_display_line(line, 0);
