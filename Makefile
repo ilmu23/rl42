@@ -93,7 +93,8 @@ HSFNFILES	=	accept_line.c \
 				forward_search_history.c \
 				inc_backward_search_history.c \
 				inc_forward_search_history.c \
-				operate_and_get_next.c
+				operate_and_get_next.c \
+				yank_last_arg.c
 
 TXFNFILES	=	backward_delete_char.c \
 				capitalize_word.c \
