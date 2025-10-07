@@ -118,9 +118,9 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-\\>>", "end-of-history");
 	bind_emacs("<M-<>", "beginning-of-history");
 	bind_emacs("<M-H>", "fetch-history");
-	bind_emacs("<M-h>", "forward-search-history");
-	bind_emacs("<M-r>", "backward-search-history");
-	bind_emacs("<C-h>", "inc-forward-search-history");
+	bind_emacs("<M-n>", "forward-search-history");
+	bind_emacs("<M-p>", "backward-search-history");
+	bind_emacs("<C-s>", "inc-forward-search-history");
 	bind_emacs("<C-r>", "inc-backward-search-history");
 	bind_emacs("<M-C-y>", "yank-nth-arg");
 	bind_emacs("<M-.>", "yank-last-arg");
@@ -228,7 +228,11 @@ static const struct {
 	__rl42_fn(backward_char, "backward-char"),
 	__rl42_fn(backward_delete_char, "backward-delete-char"),
 	__rl42_fn(backward_history, "backward-history"),
+	__rl42_fn(backward_search_history, "backward-search-history"),
+	__rl42_fn(inc_backward_search_history, "inc-backward-search-history"),
 	__rl42_fn(backward_word, "backward-word"),
+	__rl42_fn(forward_search_history, "forward-search-history"),
+	__rl42_fn(inc_forward_search_history, "inc-forward-search-history"),
 	__rl42_fn(beginning_of_history, "beginning-of-history"),
 	__rl42_fn(beginning_of_line, "beginning-of-line"),
 	__rl42_fn(capitalize_word, "capitalize-word"),

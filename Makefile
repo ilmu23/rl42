@@ -82,10 +82,14 @@ RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
 
 HSFNFILES	=	accept_line.c \
 				backward_history.c \
+				backward_search_history.c \
 				beginning_of_history.c \
 				end_of_history.c \
 				fetch_history.c \
 				forward_history.c \
+				forward_search_history.c \
+				inc_backward_search_history.c \
+				inc_forward_search_history.c \
 				operate_and_get_next.c
 
 TXFNFILES	=	backward_delete_char.c \
