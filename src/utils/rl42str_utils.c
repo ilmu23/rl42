@@ -5,36 +5,29 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<end_of_history.c>>
-
-#include <stdlib.h>
-
-#define __RL42_INTERNAL
-#include "function.h"
+// <<rl42str_utils.c>>
 
 #include "internal/_utils.h"
 #include "internal/_vector.h"
-#include "internal/_display.h"
-#include "internal/_history.h"
 
-extern rl42_hist_node	*current;
+size_t	rl42str_find(cvector s, cvector substr) {
+	size_t	sslen;
+	size_t	slen;
+	size_t	i;
+	size_t	j;
 
-rl42_fn(end_of_history) {
-	rl42_hist_node	*first;
-
-	first = hist_get_first_node();
-	if (first == current)
-		return 1;
-	if (current->edit)
-		free((void *)current->edit);
-	current->edit = rl42str_to_cstr(line->line);
-	if (!current->edit)
-		return 0;
-	current = first;
-	vector_delete(line->line);
-	line->line = cstr_to_rl42str((current->edit) ? current->edit : current->line);
-	if (!line->line)
-		return 0;
-	line->i = vector_size(line->line);
-	return term_display_line(line, 0);
+	if (s && substr) {
+		slen = vector_size(s);
+		sslen = vector_size(substr);
+		if (sslen == 0)
+			return RL42STR_SUBSTR_NOT_FOUND;
+		for (i = 0; i + sslen <= slen; i++) {
+			for (j = 0; j < sslen; j++)
+				if (*(u32 *)vector_get(s, i + j) != *(u32 *)vector_get(substr, j))
+					break ;
+			if (j == sslen)
+				return i;
+		}
+	}
+	return RL42STR_SUBSTR_NOT_FOUND;
 }

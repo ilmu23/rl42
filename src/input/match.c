@@ -5,36 +5,37 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<end_of_history.c>>
+// <<match.c>>
 
-#include <stdlib.h>
-
-#define __RL42_INTERNAL
-#include "function.h"
-
-#include "internal/_utils.h"
+#include "internal/_kb.h"
+#include "internal/_map.h"
 #include "internal/_vector.h"
-#include "internal/_display.h"
-#include "internal/_history.h"
+#include "internal/_keybinds.h"
 
-extern rl42_hist_node	*current;
+#define __fn_match(f, r)	((rl42_fn_match){.fn = f, .run = r})
 
-rl42_fn(end_of_history) {
-	rl42_hist_node	*first;
+rl42_fn_match	kb_match_seq(rl42_line *line, rl42_key_tree *current, const rl42_kb_event *event) {
+	rl42_key_tree	**tmp;
+	rl42_key_tree	*binds;
+	size_t			len;
+	size_t			i;
+	u32				ucp;
 
-	first = hist_get_first_node();
-	if (first == current)
-		return 1;
-	if (current->edit)
-		free((void *)current->edit);
-	current->edit = rl42str_to_cstr(line->line);
-	if (!current->edit)
-		return 0;
-	current = first;
-	vector_delete(line->line);
-	line->line = cstr_to_rl42str((current->edit) ? current->edit : current->line);
-	if (!line->line)
-		return 0;
-	line->i = vector_size(line->line);
-	return term_display_line(line, 0);
+	if (!event)
+		return __fn_match(current, 1);
+	ucp = kb_event_to_ucp(event);
+	if (event->mods & KB_MOD_ALT)
+		vector_push(line->keyseq, (u32){'\x1b'});
+	vector_push(line->keyseq, ucp);
+	for (i = 0, tmp = NULL, len = vector_size(line->keyseq), binds = get_key_tree(CURRENT); i < len && binds->next; i++) {
+		tmp = map_get(binds->next, *(u32 *)vector_get(line->keyseq, i));
+		if (tmp == MAP_NOT_FOUND)
+			break ;
+		binds = *tmp;
+	}
+	if (i < len || tmp == MAP_NOT_FOUND) {
+		vector_clear(line->keyseq);
+		return __fn_match(NULL, 0);
+	}
+	return __fn_match(binds, (binds->f && (!binds->next || map_empty(binds->next))) ? 1 : 0);
 }

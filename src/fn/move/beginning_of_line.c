@@ -11,5 +11,5 @@
 
 u8	beginning_of_line(rl42_line *line) {
 	line->i = 0;
-	return term_cursor_move_to(line, line->root.row, line->root.col);
+	return term_cursor_move_to_i(line);
 }

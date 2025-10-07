@@ -17,9 +17,14 @@
 
 #include "internal/_data.h"
 
-typedef char	utf8_cbuf[5];
+#define RL42STR_SUBSTR_NOT_FOUND	SIZE_MAX
+
+#define max(x, y)	((x > y) ? x : y)
+#define min(x, y)	((x < y) ? x : y)
 
 #define in_range(x, min, max)	((x >= min && x <= max) ? 1 : 0)
+
+typedef char	utf8_cbuf[5];
 
 /** @brief Converts a C string to a rl42 string
  *
@@ -113,6 +118,51 @@ char		*cstr_join(const char *s1, const char *s2);
  */
 char		*cstr_joinb(const char *s1, const char *s2, char *buf, const size_t buf_size);
 
+/** @brief Makes a copy of a substring of s
+ *
+ * Allocates space for copying len characters
+ * from s, starting at start
+ * @param s String to copy from
+ * @param start Index to start copying from
+ * @param len Amount of characters to copy
+ * @returns @c <b>char *</b> The resulting substring,
+ * NULL if allocation failed
+ */
+char		*cstr_substr(const char *s, const size_t start, const size_t len);
+
+/** @brief Makes a copy of a substring of s
+ *
+ * Functions exactly like cstr_substr, except instead of
+ * allocating space for the result uses at most buf_size
+ * bytes from buf to store the result
+ * @param s String to copy from
+ * @param start Index to start copying from
+ * @param len Amount of characters to copy
+ * @param buf Buffer to store the result in
+ * @param buf_size Size of buf
+ * @returns @c <b>char *</b> The resulting substring,
+ * NULL if buf was NULL or buf_size was 0
+ */
+char		*cstr_substrb(const char *s, const size_t start, const size_t len, char *buf, const size_t buf_size);
+
+/** @brief Splits s into sections separated by c
+ *
+ * @param s String to split
+ * @param c Character to split on
+ * @returns @c <b>vector</b> Vector containing all split substrings,
+ * NULL on failure
+ */
+vector		cstr_split(const char *s, const char c);
+
+/** @brief Finds the start of substr in s
+ *
+ * @param s String to look for substr in
+ * @param substr String to look for
+ * @returns @c <b>size_t</b> Start of substr in s,
+ * RL42STR_SUBSTR_NOT_FOUND if substr is not found in s
+ */
+size_t		rl42str_find(cvector s, cvector substr);
+
 /** @brief Prints a single character to stdout
  *
  * @returns @c <b>ssize_t</b> Bytes written,
@@ -126,6 +176,19 @@ ssize_t		__putchar(const char c);
  * @returns @c <b>size_t</b> Cursor offset from line->cursor.input_col
  */
 size_t		calculate_cursor_offset(const rl42_line *line);
+
+/** @brief Repeats the given functions
+ *
+ * Repeats the given functions according to the current
+ * numeric argument. Assumes that an argument is set.
+ * Sets the state flag STATE_REPEAT for the duration
+ * of the call
+ * @param line Current line to pass to positive/negative
+ * @param positive Function to call if the numeric argument is positive
+ * @param negative Function to call if the numeric argument is negative
+ * @returns @c <b>u8</b> Return value of the called function
+ */
+u8			repeat(rl42_line *line, const rl42_fn positive, const rl42_fn negative);
 
 /** @brief Displays an error message
  *

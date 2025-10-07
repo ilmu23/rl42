@@ -33,6 +33,7 @@ FUNCDIR	=	function
 HISTDIR	=	history
 KBINDIR	=	input
 KEYBDIR	=	keybinds
+KILLDIR	=	kill
 TERMDIR	=	term
 UTILDIR	=	utils
 
@@ -43,6 +44,7 @@ RLFNDIR	=	fn
 HSFNDIR	=	history
 TXFNDIR	=	text
 MVFNDIR	=	move
+MCFNDIR	=	misc
 
 ## SOURCE FILES
 
@@ -50,11 +52,14 @@ FUNCFILES	=	rl42_fn_info.c
 
 HISTFILES	=	history.c
 
-KBINFILES	=	listen.c
+KBINFILES	=	listen.c \
+				match.c
 
 KEYBFILES	=	editing_mode.c \
 				keyseq.c \
 				rl42_bind.c
+
+KILLFILES	=	region.c
 
 TERMFILES	=	cursor.c \
 				display.c \
@@ -65,22 +70,32 @@ UTILFILES	=	cstr_utils.c \
 				map.c \
 				message.c \
 				misc.c \
+				repeat.c \
 				rl42_string.c \
+				rl42str_utils.c \
 				strhash.c \
-				utf8.c \
 				terminfo.c \
+				utf8.c \
 				vector.c
 
 RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
 				$(addprefix $(TXFNDIR)/, $(TXFNFILES)) \
-				$(addprefix $(MVFNDIR)/, $(MVFNFILES))
+				$(addprefix $(MVFNDIR)/, $(MVFNFILES)) \
+				$(addprefix $(MCFNDIR)/, $(MCFNFILES))
 
 HSFNFILES	=	accept_line.c \
 				backward_history.c \
+				backward_search_history.c \
 				beginning_of_history.c \
 				end_of_history.c \
+				fetch_history.c \
 				forward_history.c \
-				operate_and_get_next.c
+				forward_search_history.c \
+				inc_backward_search_history.c \
+				inc_forward_search_history.c \
+				operate_and_get_next.c \
+				yank_last_arg.c \
+				yank_nth_arg.c
 
 TXFNFILES	=	backward_delete_char.c \
 				capitalize_word.c \
@@ -102,12 +117,15 @@ MVFNFILES	=	backward_char.c \
 				forward_char.c \
 				forward_word.c
 
+MCFNFILES	=	numeric_argument.c
+
 FILES	=	rl42.c \
 			init.c \
 			$(addprefix $(FUNCDIR)/, $(FUNCFILES)) \
 			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
 			$(addprefix $(KBINDIR)/, $(KBINFILES)) \
 			$(addprefix $(KEYBDIR)/, $(KEYBFILES)) \
+			$(addprefix $(KILLDIR)/, $(KILLFILES)) \
 			$(addprefix $(TERMDIR)/, $(TERMFILES)) \
 			$(addprefix $(UTILDIR)/, $(UTILFILES)) \
 			$(addprefix $(RLFNDIR)/, $(RLFNFILES))
@@ -269,11 +287,13 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
 	@mkdir -p $(OBJDIR)/$(KBINDIR)
 	@mkdir -p $(OBJDIR)/$(KEYBDIR)
+	@mkdir -p $(OBJDIR)/$(KILLDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 	@mkdir -p $(OBJDIR)/$(UTILDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(HSFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(TXFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MVFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MCFNDIR)
 
 $(TESTBIN):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating test executable dir\n"

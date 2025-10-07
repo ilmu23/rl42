@@ -15,6 +15,8 @@
 
 #include "internal/_data.h"
 
+#define AMBIGUOUS_TIMEOUT 750
+
 #define KB_MOD_SHIFT	0x01U
 #define KB_MOD_ALT		0x02U
 #define KB_MOD_CTRL		0x04U
@@ -74,6 +76,15 @@ rl42_kb_event	*kb_listen(const i32 timeout);
  * @returns @c <b>rl42_fn_info</b> Keyboard event information
  */
 rl42_kb_event	*kb_listen_buf(const i32 timeout, char *buf, const size_t buf_size);
+
+/** @brief Tries to match the currently accumulating key sequence to a function
+ *
+ * @param line Current input line
+ * @param current Currently matched position
+ * @param event Keyboard event to parse and add to the key sequence
+ * @returns @c <b>rl42_fn_match</b> Match information
+ */
+rl42_fn_match	kb_match_seq(rl42_line *line, rl42_key_tree *current, const rl42_kb_event *event);
 
 /** @brief Frees all keyboard listener data
  */

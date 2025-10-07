@@ -24,6 +24,15 @@
  */
 rl42_hist_node	*hist_get_next_node(const rl42_hist_node *node, const rl42_direction direction);
 
+/** @brief Get nth history node
+ *
+ * @param n Node to get
+ * @returns @c <b>rl42_hist_node *</b> Nth node,
+ * First node if n < 1,
+ * Last node if n > hist_size
+ */
+rl42_hist_node	*hist_get_nth_node(i64 n);
+
 /** @brief Gets the first (newest) history entry
  *
  * @returns @c <b>rl42_hist_node *</b> First history entry
@@ -35,6 +44,26 @@ rl42_hist_node	*hist_get_first_node(void);
  * @returns @c <b>rl42_hist_node *</b> Last history entry
  */
 rl42_hist_node	*hist_get_last_node(void);
+
+/** @brief Searches the history for an entry matching user input
+ *
+ * @param line Current input line
+ * @param directiom Direction to search in
+ * @param incremental Whether to perform the search incrementally or not
+ * @returns @c <b>u8</b> Non-incremental: Non-zero on success, 0 on failure.
+ * Incremental: Return value of the next function, 0 on failure
+ */
+u8				hist_search(rl42_line *line, const rl42_direction direction, const u8 incremental);
+
+/** @brief Fetches the nth argument (word) from node and inserts it into line
+ *
+ * @param line Current input line
+ * @param node Node to yank from
+ * @param n Number of argument to yank
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8				hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n);
 
 /** @brief Removes a node from history
  *

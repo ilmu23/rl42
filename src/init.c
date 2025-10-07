@@ -25,6 +25,7 @@
 #include "internal/_keybinds.h"
 #include "internal/_terminfo.h"
 
+#include "internal/fn/misc.h"
 #include "internal/fn/move.h"
 #include "internal/fn/text.h"
 #include "internal/fn/history.h"
@@ -116,9 +117,10 @@ static inline void	_init_binds(void) {
 	bind_emacs("<C-p>", "backward-history");
 	bind_emacs("<M-\\>>", "end-of-history");
 	bind_emacs("<M-<>", "beginning-of-history");
-	bind_emacs("<M-h>", "forward-search-history");
-	bind_emacs("<M-r>", "backward-search-history");
-	bind_emacs("<C-h>", "inc-forward-search-history");
+	bind_emacs("<M-H>", "fetch-history");
+	bind_emacs("<M-n>", "forward-search-history");
+	bind_emacs("<M-p>", "backward-search-history");
+	bind_emacs("<C-s>", "inc-forward-search-history");
 	bind_emacs("<C-r>", "inc-backward-search-history");
 	bind_emacs("<M-C-y>", "yank-nth-arg");
 	bind_emacs("<M-.>", "yank-last-arg");
@@ -140,17 +142,17 @@ static inline void	_init_binds(void) {
 	bind_emacs("<C-t>", "transpose-chars");
 	bind_emacs("<M-t>", "transpose-words");
 	bind_emacs("<C-x><C-r>", "re-read-init-file");
-	bind_emacs("<M-0>", "digit-argument");
-	bind_emacs("<M-1>", "digit-argument");
-	bind_emacs("<M-2>", "digit-argument");
-	bind_emacs("<M-3>", "digit-argument");
-	bind_emacs("<M-4>", "digit-argument");
-	bind_emacs("<M-5>", "digit-argument");
-	bind_emacs("<M-6>", "digit-argument");
-	bind_emacs("<M-7>", "digit-argument");
-	bind_emacs("<M-8>", "digit-argument");
-	bind_emacs("<M-9>", "digit-argument");
-	bind_emacs("<M-->", "negative-digit-argument");
+	bind_emacs("<M-0>", "numeric-argument");
+	bind_emacs("<M-1>", "numeric-argument");
+	bind_emacs("<M-2>", "numeric-argument");
+	bind_emacs("<M-3>", "numeric-argument");
+	bind_emacs("<M-4>", "numeric-argument");
+	bind_emacs("<M-5>", "numeric-argument");
+	bind_emacs("<M-6>", "numeric-argument");
+	bind_emacs("<M-7>", "numeric-argument");
+	bind_emacs("<M-8>", "numeric-argument");
+	bind_emacs("<M-9>", "numeric-argument");
+	bind_emacs("<M-->", "numeric-argument");
 	bind_emacs("<M-x>", "set-mark");
 	bind_emacs("<M-X>", "unset-mark");
 	bind_emacs("<M-C-x>", "exchange-point-and-mark");
@@ -161,15 +163,15 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("<M-r>", "re-read-init-file");
 	bind_vi_cmd("$", "end-of-line");
 	bind_vi_cmd("0", "beginning-of-line");
-	bind_vi_cmd("1", "digit-argument");
-	bind_vi_cmd("2", "digit-argument");
-	bind_vi_cmd("3", "digit-argument");
-	bind_vi_cmd("4", "digit-argument");
-	bind_vi_cmd("5", "digit-argument");
-	bind_vi_cmd("6", "digit-argument");
-	bind_vi_cmd("7", "digit-argument");
-	bind_vi_cmd("8", "digit-argument");
-	bind_vi_cmd("9", "digit-argument");
+	bind_vi_cmd("1", "numeric-argument");
+	bind_vi_cmd("2", "numeric-argument");
+	bind_vi_cmd("3", "numeric-argument");
+	bind_vi_cmd("4", "numeric-argument");
+	bind_vi_cmd("5", "numeric-argument");
+	bind_vi_cmd("6", "numeric-argument");
+	bind_vi_cmd("7", "numeric-argument");
+	bind_vi_cmd("8", "numeric-argument");
+	bind_vi_cmd("9", "numeric-argument");
 	bind_vi_cmd(",", "exchange-point-and-mark");
 	bind_vi_cmd("/", "inc-forward-search-history");
 	bind_vi_cmd("?", "inc-reverse-search-history");
@@ -226,6 +228,7 @@ static const struct {
 	__rl42_fn(backward_char, "backward-char"),
 	__rl42_fn(backward_delete_char, "backward-delete-char"),
 	__rl42_fn(backward_history, "backward-history"),
+	__rl42_fn(backward_search_history, "backward-search-history"),
 	__rl42_fn(backward_word, "backward-word"),
 	__rl42_fn(beginning_of_history, "beginning-of-history"),
 	__rl42_fn(beginning_of_line, "beginning-of-line"),
@@ -237,15 +240,22 @@ static const struct {
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(end_of_history, "end-of-history"),
 	__rl42_fn(end_of_line, "end-of-line"),
+	__rl42_fn(fetch_history, "fetch-history"),
 	__rl42_fn(forward_char, "forward-char"),
 	__rl42_fn(forward_history, "forward-history"),
+	__rl42_fn(forward_search_history, "forward-search-history"),
 	__rl42_fn(forward_word, "forward-word"),
+	__rl42_fn(inc_backward_search_history, "inc-backward-search-history"),
+	__rl42_fn(inc_forward_search_history, "inc-forward-search-history"),
+	__rl42_fn(numeric_argument, "numeric-argument"),
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
 	__rl42_fn(quoted_insert, "quoted-insert"),
 	__rl42_fn(self_insert, "self-insert"),
 	__rl42_fn(transpose_chars, "transpose-chars"),
 	__rl42_fn(transpose_words, "transpose-words"),
 	__rl42_fn(upcase_word, "upcase-word"),
+	__rl42_fn(yank_last_arg, "yank-last-arg"),
+	__rl42_fn(yank_nth_arg, "yank-nth-arg"),
 };
 
 static inline u8	_init_fns(void) {

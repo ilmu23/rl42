@@ -5,36 +5,27 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<end_of_history.c>>
-
-#include <stdlib.h>
+// <<repeat.c>>
 
 #define __RL42_INTERNAL
-#include "function.h"
+#include "internal/_data.h"
+#include "internal/_rl42.h"
 
-#include "internal/_utils.h"
-#include "internal/_vector.h"
-#include "internal/_display.h"
-#include "internal/_history.h"
+extern rl42_numeric_arg	n_arg;
 
-extern rl42_hist_node	*current;
+u8	repeat(rl42_line *line, const rl42_fn positive, const rl42_fn negative) {
+	rl42_fn	f;
+	i64		n;
+	u8		rv;
 
-rl42_fn(end_of_history) {
-	rl42_hist_node	*first;
-
-	first = hist_get_first_node();
-	if (first == current)
+	n = n_arg.val;
+	f = (!n_arg.neg) ? positive : negative;
+	if (!f)
 		return 1;
-	if (current->edit)
-		free((void *)current->edit);
-	current->edit = rl42str_to_cstr(line->line);
-	if (!current->edit)
-		return 0;
-	current = first;
-	vector_delete(line->line);
-	line->line = cstr_to_rl42str((current->edit) ? current->edit : current->line);
-	if (!line->line)
-		return 0;
-	line->i = vector_size(line->line);
-	return term_display_line(line, 0);
+	state_flags |= STATE_REPEAT;
+	do {
+		rv = f(line);
+	} while (rv == 1 && --n);
+	state_flags &= ~STATE_REPEAT;
+	return rv;
 }
