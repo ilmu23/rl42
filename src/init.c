@@ -255,6 +255,7 @@ static const struct {
 	__rl42_fn(transpose_words, "transpose-words"),
 	__rl42_fn(upcase_word, "upcase-word"),
 	__rl42_fn(yank_last_arg, "yank-last-arg"),
+	__rl42_fn(yank_nth_arg, "yank-nth-arg"),
 };
 
 static inline u8	_init_fns(void) {
