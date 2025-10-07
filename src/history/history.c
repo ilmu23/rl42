@@ -12,19 +12,45 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "internal/_kb.h"
 #include "internal/_list.h"
+#include "internal/_term.h"
+#include "internal/_utils.h"
+#include "internal/_vector.h"
+#include "internal/_display.h"
 #include "internal/_history.h"
+#include "internal/_terminfo.h"
+
+#include "internal/fn/move.h"
+#include "internal/fn/text.h"
+
+#define _AMBIGUOUS_TIMEOUT	750
 
 #define _DEFAULT_HIST_FILE	".rl42_history"
 
+#define _SEARCH_PROMPT_FWD	"inc-fwd-search: "
+#define _SEARCH_PROMPT_BCK	"inc-bck-search: "
+
 #define hist_node(n, l, e)	((rl42_hist_node){.entry_n = n, .line = l, .edit = e})
 
+#define search_fn_is_allowed(f)	(f == self_insert || f == backward_char || f == forward_char || f == delete_char || f == backward_delete_char)
+
+extern rl42_hist_node	*current;
+
+static const char	*search_prompts[2][2] = {
+	{ &_SEARCH_PROMPT_FWD[4], _SEARCH_PROMPT_FWD },
+	{ &_SEARCH_PROMPT_BCK[4], _SEARCH_PROMPT_BCK }
+};
 
 static const char	*histfile_name;
 
 static size_t	first_new;
 static size_t	entries;
 static list		history;
+
+static inline const rl42_hist_node	*_search_get_match(const char *match_str, const rl42_direction direction);
+static inline u8					_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction);
+static inline u8					_search_get_query(rl42_line *query, rl42_fn *fn, const u8 incremental);
 
 static void	_free_hist_node(rl42_hist_node *node);
 
@@ -79,6 +105,67 @@ rl42_hist_node	*hist_get_last_node(void) {
 	return (rl42_hist_node *)list_last(history)->data;
 }
 
+u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 incremental) {
+	const rl42_hist_node	*match;
+	const char				*match_str;
+	rl42_line				query;
+	rl42_fn					fn;
+	size_t					old_i;
+	u8						rv;
+
+	query = (rl42_line){
+		.prompt.prompt = cstr_to_rl42str(search_prompts[direction][incremental]),
+		.keyseq = vector(u32, 8, NULL),
+		.line = vector(u32, 16, NULL),
+		.i = 0,
+	};
+	match = NULL;
+	match_str = NULL;
+	if (current->edit)
+		free((void *)current->edit);
+	current->edit = rl42str_to_cstr(line->line);
+	if (!current->edit)
+		goto _hist_search_error;
+	if (!query.prompt.prompt || !query.keyseq || !query.line)
+		goto _hist_search_error;
+	old_i = line->i;
+	line->i = vector_size(line->line);
+	term_cursor_move_to_i(line);
+	line->i = old_i;
+	ti_tputs("\n", 1, __putchar);
+	term_cursor_get_pos(&query.prompt.root.row, &query.prompt.root.col);
+	term_display_line(&query, DISPLAY_PROMPT_ONLY);
+	term_cursor_get_pos(&query.root.row, &query.root.col);
+	if (incremental) do {
+		if (vector_size(query.line) && !_search_process_query(line, query.line, &match, direction))
+			goto _hist_search_error;
+		if (!term_display_line(line, DISPLAY_HIGHLIGHT_SUBSTR, query.line))
+			goto _hist_search_error;
+		rv = _search_get_query(&query, &fn, incremental);
+	} while (rv == 1); else {
+		rv = _search_get_query(&query, &fn, incremental);
+		if (vector_size(query.line) && !_search_process_query(line, query.line, &match, direction))
+			goto _hist_search_error;
+	}
+	if (!rv)
+		goto _hist_search_error;
+	if (match)
+		current = (rl42_hist_node *)match;
+	if (!term_display_line(line, DISPLAY_HIGHLIGHT_SUBSTR, query.line))
+		goto _hist_search_error;
+	vector_delete(query.prompt.prompt);
+	vector_delete(query.keyseq);
+	vector_delete(query.line);
+	free((void *)match_str);
+	return (incremental) ? fn(line) : 1;
+_hist_search_error:
+	vector_delete(query.prompt.prompt);
+	vector_delete(query.keyseq);
+	vector_delete(query.line);
+	free((void *)match_str);
+	return 0;
+}
+
 void	hist_remove_node(rl42_hist_node *node) {
 	list_erase(history, list_nth(history, entries-- - node->entry_n));
 }
@@ -130,6 +217,61 @@ void	hist_clean(void) {
 	}
 	free((void *)histfile_name);
 	list_delete(history);
+}
+
+static inline const rl42_hist_node	*_search_get_match(const char *match_str, const rl42_direction direction) {
+	const rl42_hist_node	*prev;
+	const rl42_hist_node	*cur;
+
+	// TODO: Check if search-ignore-case is set
+	for (cur = current, prev = NULL; cur != prev; prev = cur, cur = hist_get_next_node(cur, direction))
+		if (strstr((cur->edit) ? cur->edit : cur->line, match_str))
+			break ;
+	return (cur != prev) ? cur : NULL;
+}
+
+static inline u8	_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction) {
+	const char	*query_str;
+	u8			rv;
+
+	query_str = rl42str_to_cstr(query);
+	if (!query_str)
+		return 0;
+	rv = 0;
+	(*match) = _search_get_match(query_str, direction);
+	if (*match) {
+		vector_delete(line->line);
+		line->line = cstr_to_rl42str(((*match)->edit) ? (*match)->edit : (*match)->line);
+		if (!line->line)
+			goto _search_process_query_ret;
+		line->i = vector_size(line->line);
+		rv = 1;
+	} else
+		rv = 1;
+_search_process_query_ret:
+	free((void *)query_str);
+	return rv;
+}
+
+static inline u8	_search_get_query(rl42_line *query, rl42_fn *fn, const u8 incremental) {
+	rl42_fn_match	match;
+	u8				rv;
+
+	rv = 1;
+	match.fn = NULL;
+	term_display_line(query, 0);
+	do {
+		match = kb_match_seq(query, match.fn, kb_listen((match.fn && match.fn->f) ? _AMBIGUOUS_TIMEOUT : -1));
+		if (match.fn && match.run) {
+			*fn = match.fn->f;
+			rv = (search_fn_is_allowed(*fn)) ? (*fn)(query) : 2;
+			vector_clear(query->keyseq);
+			if (incremental)
+				break ;
+			match.fn = NULL;
+		}
+	} while (rv == 1);
+	return rv;
 }
 
 static void	_free_hist_node(rl42_hist_node *node) {

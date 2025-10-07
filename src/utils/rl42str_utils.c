@@ -5,35 +5,29 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<_rl42.h>>
+// <<rl42str_utils.c>>
 
-#pragma once
+#include "internal/_utils.h"
+#include "internal/_vector.h"
 
-#include "defs.h"
+size_t	rl42str_find(cvector s, cvector substr) {
+	size_t	sslen;
+	size_t	slen;
+	size_t	i;
+	size_t	j;
 
-#ifndef __RL42_INTERNAL
-# define __RL42_INTERNAL
-#endif
-
-#include "internal/_data.h"
-
-typedef unsigned _BitInt(3)	rl42_state;
-
-#define STATE_INIT_IN_PROGRESS		0x1U
-#define STATE_SAVE_HIST_POSITION	0x2U
-#define STATE_REPEAT				0x4U
-
-#define NEED_REPEAT	(n_arg.set && ~state_flags & STATE_REPEAT)
-
-extern rl42_numeric_arg	n_arg;
-
-extern rl42_state	state_flags;
-
-extern rl42_fn	prev_fn;
-
-/* @brief Initializes all internal data structures for use
- *
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8	rl42_init(void);
+	if (s && substr) {
+		slen = vector_size(s);
+		sslen = vector_size(substr);
+		if (sslen == 0)
+			return RL42STR_SUBSTR_NOT_FOUND;
+		for (i = 0; i + sslen <= slen; i++) {
+			for (j = 0; j < sslen; j++)
+				if (*(u32 *)vector_get(s, i + j) != *(u32 *)vector_get(substr, j))
+					break ;
+			if (j == sslen)
+				return i;
+		}
+	}
+	return RL42STR_SUBSTR_NOT_FOUND;
+}

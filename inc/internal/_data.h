@@ -53,8 +53,8 @@ typedef u8	(*rl42_fn)(rl42_line *);
 
 #ifdef __RL42_INTERNAL
 typedef enum __direction {
-	FORWARD,
-	BACKWARD
+	FORWARD = 0,
+	BACKWARD = 1
 }	rl42_direction;
 
 // Generic map
@@ -85,6 +85,14 @@ typedef struct __key_tree {
 	map		next;
 	u8		c;
 }	rl42_key_tree;
+
+// Function match information
+// fn = Currently matched position in the key tree
+// run = Indicates whether the function found at fn should be run
+typedef struct __fn_match {
+	rl42_key_tree	*fn;
+	u8				run;
+}	rl42_fn_match;
 
 // Contains info about rl42 functions
 // f = pointer to the function
@@ -124,6 +132,6 @@ typedef struct __arg {
 	u8	set;
 }	rl42_numeric_arg;
 
-// Placeholder for display options
-typedef u8	rl42_display_opts;
+// Bit field for storing display options
+typedef unsigned _BitInt(2)	rl42_display_opts;
 #endif

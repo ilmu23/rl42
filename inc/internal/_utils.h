@@ -17,9 +17,11 @@
 
 #include "internal/_data.h"
 
-typedef char	utf8_cbuf[5];
+#define RL42STR_SUBSTR_NOT_FOUND	SIZE_MAX
 
 #define in_range(x, min, max)	((x >= min && x <= max) ? 1 : 0)
+
+typedef char	utf8_cbuf[5];
 
 /** @brief Converts a C string to a rl42 string
  *
@@ -112,6 +114,15 @@ char		*cstr_join(const char *s1, const char *s2);
  * NULL if buf was NULL or buf_size was 0
  */
 char		*cstr_joinb(const char *s1, const char *s2, char *buf, const size_t buf_size);
+
+/** @brief Finds the start of substr in s
+ *
+ * @param s String to look for substr in
+ * @param substr String to look for
+ * @returns @c <b>size_t</b> Start of substr in s,
+ * RL42STR_SUBSTR_NOT_FOUND if substr is not found in s
+ */
+size_t		rl42str_find(cvector s, cvector substr);
 
 /** @brief Prints a single character to stdout
  *

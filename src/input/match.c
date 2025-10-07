@@ -5,35 +5,37 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<_rl42.h>>
+// <<match.c>>
 
-#pragma once
+#include "internal/_kb.h"
+#include "internal/_map.h"
+#include "internal/_vector.h"
+#include "internal/_keybinds.h"
 
-#include "defs.h"
+#define __fn_match(f, r)	((rl42_fn_match){.fn = f, .run = r})
 
-#ifndef __RL42_INTERNAL
-# define __RL42_INTERNAL
-#endif
+rl42_fn_match	kb_match_seq(rl42_line *line, rl42_key_tree *current, const rl42_kb_event *event) {
+	rl42_key_tree	**tmp;
+	rl42_key_tree	*binds;
+	size_t			len;
+	size_t			i;
+	u32				ucp;
 
-#include "internal/_data.h"
-
-typedef unsigned _BitInt(3)	rl42_state;
-
-#define STATE_INIT_IN_PROGRESS		0x1U
-#define STATE_SAVE_HIST_POSITION	0x2U
-#define STATE_REPEAT				0x4U
-
-#define NEED_REPEAT	(n_arg.set && ~state_flags & STATE_REPEAT)
-
-extern rl42_numeric_arg	n_arg;
-
-extern rl42_state	state_flags;
-
-extern rl42_fn	prev_fn;
-
-/* @brief Initializes all internal data structures for use
- *
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8	rl42_init(void);
+	if (!event)
+		return __fn_match(current, 1);
+	ucp = kb_event_to_ucp(event);
+	if (event->mods & KB_MOD_ALT)
+		vector_push(line->keyseq, (u32){'\x1b'});
+	vector_push(line->keyseq, ucp);
+	for (i = 0, tmp = NULL, len = vector_size(line->keyseq), binds = get_key_tree(CURRENT); i < len && binds->next; i++) {
+		tmp = map_get(binds->next, *(u32 *)vector_get(line->keyseq, i));
+		if (tmp == MAP_NOT_FOUND)
+			break ;
+		binds = *tmp;
+	}
+	if (i < len || tmp == MAP_NOT_FOUND) {
+		vector_clear(line->keyseq);
+		return __fn_match(NULL, 0);
+	}
+	return __fn_match(binds, (binds->f && (!binds->next || map_empty(binds->next))) ? 1 : 0);
+}

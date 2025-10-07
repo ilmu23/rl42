@@ -37,7 +37,7 @@
 
 typedef struct termios	term_settings;
 
-typedef _BitInt(9)	sgr_opts;
+typedef unsigned _BitInt(9)	sgr_opts;
 
 /** @brief Initializes terminal related settings
  *
@@ -61,6 +61,12 @@ u8			term_apply_settings(const u8 settings);
  * NULL if not found
  */
 const char	*term_get_seq(const u16 name);
+
+/** @brief Gets the current highlight escape sequence
+ *
+ * @returns @c <b>const char *</b> Current highlight escape sequence
+ */
+const char	*term_get_hl_seq(void);
 
 /** @brief Matches a received key escape sequence
  *

@@ -45,6 +45,16 @@ rl42_hist_node	*hist_get_first_node(void);
  */
 rl42_hist_node	*hist_get_last_node(void);
 
+/** @brief Searches the history for an entry matching user input
+ *
+ * @param line Current input line
+ * @param directiom Direction to search in
+ * @param incremental Whether to perform the search incrementally or not
+ * @returns @c <b>u8</b> Non-incremental: Non-zero on success, 0 on failure.
+ * Incremental: Return value of the next function, 0 on failure
+ */
+u8				hist_search(rl42_line *line, const rl42_direction direction, const u8 incremental);
+
 /** @brief Removes a node from history
  *
  * @param node Node to remove

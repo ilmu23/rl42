@@ -51,7 +51,8 @@ FUNCFILES	=	rl42_fn_info.c
 
 HISTFILES	=	history.c
 
-KBINFILES	=	listen.c
+KBINFILES	=	listen.c \
+				match.c
 
 KEYBFILES	=	editing_mode.c \
 				keyseq.c \
@@ -68,6 +69,7 @@ UTILFILES	=	cstr_utils.c \
 				misc.c \
 				repeat.c \
 				rl42_string.c \
+				rl42str_utils.c \
 				strhash.c \
 				terminfo.c \
 				utf8.c \
