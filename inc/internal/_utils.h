@@ -118,6 +118,42 @@ char		*cstr_join(const char *s1, const char *s2);
  */
 char		*cstr_joinb(const char *s1, const char *s2, char *buf, const size_t buf_size);
 
+/** @brief Makes a copy of a substring of s
+ *
+ * Allocates space for copying len characters
+ * from s, starting at start
+ * @param s String to copy from
+ * @param start Index to start copying from
+ * @param len Amount of characters to copy
+ * @returns @c <b>char *</b> The resulting substring,
+ * NULL if allocation failed
+ */
+char		*cstr_substr(const char *s, const size_t start, const size_t len);
+
+/** @brief Makes a copy of a substring of s
+ *
+ * Functions exactly like cstr_substr, except instead of
+ * allocating space for the result uses at most buf_size
+ * bytes from buf to store the result
+ * @param s String to copy from
+ * @param start Index to start copying from
+ * @param len Amount of characters to copy
+ * @param buf Buffer to store the result in
+ * @param buf_size Size of buf
+ * @returns @c <b>char *</b> The resulting substring,
+ * NULL if buf was NULL or buf_size was 0
+ */
+char		*cstr_substrb(const char *s, const size_t start, const size_t len, char *buf, const size_t buf_size);
+
+/** @brief Splits s into sections separated by c
+ *
+ * @param s String to split
+ * @param c Character to split on
+ * @returns @c <b>vector</b> Vector containing all split substrings,
+ * NULL on failure
+ */
+vector		cstr_split(const char *s, const char c);
+
 /** @brief Finds the start of substr in s
  *
  * @param s String to look for substr in
