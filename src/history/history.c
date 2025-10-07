@@ -183,7 +183,7 @@ u8	hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n) {
 	if (!args)
 		return 0;
 	rv = 0;
-	word_i = (n > 0) ? min((size_t)n, vector_size(args)) : (size_t)max(0, (i64)vector_size(args) - 1 - -n);
+	word_i = (n > 0) ? min((size_t)n, vector_size(args)) : (size_t)max(1, (i64)vector_size(args) + 1 - -n);
 	word = cstr_to_rl42str(*(char **)vector_get(args, word_i - 1));
 	if (!word)
 		goto _hist_yank_arg_ret;
