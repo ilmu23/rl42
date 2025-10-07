@@ -33,6 +33,7 @@ FUNCDIR	=	function
 HISTDIR	=	history
 KBINDIR	=	input
 KEYBDIR	=	keybinds
+KILLDIR	=	kill
 TERMDIR	=	term
 UTILDIR	=	utils
 
@@ -57,6 +58,8 @@ KBINFILES	=	listen.c \
 KEYBFILES	=	editing_mode.c \
 				keyseq.c \
 				rl42_bind.c
+
+KILLFILES	=	region.c
 
 TERMFILES	=	cursor.c \
 				display.c \
@@ -120,6 +123,7 @@ FILES	=	rl42.c \
 			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
 			$(addprefix $(KBINDIR)/, $(KBINFILES)) \
 			$(addprefix $(KEYBDIR)/, $(KEYBFILES)) \
+			$(addprefix $(KILLDIR)/, $(KILLFILES)) \
 			$(addprefix $(TERMDIR)/, $(TERMFILES)) \
 			$(addprefix $(UTILDIR)/, $(UTILFILES)) \
 			$(addprefix $(RLFNDIR)/, $(RLFNFILES))
@@ -281,6 +285,7 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
 	@mkdir -p $(OBJDIR)/$(KBINDIR)
 	@mkdir -p $(OBJDIR)/$(KEYBDIR)
+	@mkdir -p $(OBJDIR)/$(KILLDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 	@mkdir -p $(OBJDIR)/$(UTILDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(HSFNDIR)

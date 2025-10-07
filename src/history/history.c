@@ -24,8 +24,6 @@
 #include "internal/fn/move.h"
 #include "internal/fn/text.h"
 
-#define _AMBIGUOUS_TIMEOUT	750
-
 #define _DEFAULT_HIST_FILE	".rl42_history"
 
 #define _SEARCH_PROMPT_FWD	"inc-fwd-search: "
@@ -36,6 +34,7 @@
 #define search_fn_is_allowed(f)	(f == self_insert || f == backward_char || f == forward_char || f == delete_char || f == backward_delete_char)
 
 extern rl42_hist_node	*current;
+extern rl42_fn			prev_fn;
 
 static const char	*search_prompts[2][2] = {
 	{ &_SEARCH_PROMPT_FWD[4], _SEARCH_PROMPT_FWD },
@@ -157,7 +156,11 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	vector_delete(query.keyseq);
 	vector_delete(query.line);
 	free((void *)match_str);
-	return (incremental) ? fn(line) : 1;
+	if (incremental) {
+		rv = fn(line);
+		prev_fn = fn;
+	}
+	return (incremental) ? rv : 1;
 _hist_search_error:
 	vector_delete(query.prompt.prompt);
 	vector_delete(query.keyseq);
@@ -261,10 +264,14 @@ static inline u8	_search_get_query(rl42_line *query, rl42_fn *fn, const u8 incre
 	match.fn = NULL;
 	term_display_line(query, 0);
 	do {
-		match = kb_match_seq(query, match.fn, kb_listen((match.fn && match.fn->f) ? _AMBIGUOUS_TIMEOUT : -1));
+		match = kb_match_seq(query, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
 		if (match.fn && match.run) {
 			*fn = match.fn->f;
-			rv = (search_fn_is_allowed(*fn)) ? (*fn)(query) : 2;
+			if (search_fn_is_allowed(*fn)) {
+				rv = (*fn)(query);
+				prev_fn = *fn;
+			} else
+				rv = 2;
 			vector_clear(query->keyseq);
 			if (incremental)
 				break ;

@@ -15,6 +15,8 @@
 
 #include "internal/_data.h"
 
+#define AMBIGUOUS_TIMEOUT 750
+
 #define KB_MOD_SHIFT	0x01U
 #define KB_MOD_ALT		0x02U
 #define KB_MOD_CTRL		0x04U

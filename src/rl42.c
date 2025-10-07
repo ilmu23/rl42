@@ -22,8 +22,6 @@
 
 #include "internal/fn/misc.h"
 
-#define _AMBIGUOUS_TIMEOUT 750
-
 extern rl42_numeric_arg	n_arg;
 
 extern u32	kcbs;
@@ -70,7 +68,7 @@ char	*ft_readline(const char *prompt) {
 	term_display_line(&line, 0);
 	rv = 1;
 	do {
-		match = kb_match_seq(&line, match.fn, kb_listen((match.fn && match.fn->f) ? _AMBIGUOUS_TIMEOUT : -1));
+		match = kb_match_seq(&line, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
 		if (match.fn && match.run) {
 			rv = match.fn->f(&line);
 			vector_clear(line.keyseq);

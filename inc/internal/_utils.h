@@ -19,6 +19,9 @@
 
 #define RL42STR_SUBSTR_NOT_FOUND	SIZE_MAX
 
+#define max(x, y)	((x > y) ? x : y)
+#define min(x, y)	((x < y) ? x : y)
+
 #define in_range(x, min, max)	((x >= min && x <= max) ? 1 : 0)
 
 typedef char	utf8_cbuf[5];
