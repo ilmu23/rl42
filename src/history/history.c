@@ -169,6 +169,34 @@ _hist_search_error:
 	return 0;
 }
 
+u8	hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n) {
+	cvector	args;
+	cvector	word;
+	size_t	word_i;
+	size_t	len;
+	size_t	i;
+	u8		rv;
+
+	if (n == 0)
+		return 1;
+	args = cstr_split((node->edit) ? node->edit : node->line, ' ');
+	if (!args)
+		return 0;
+	rv = 0;
+	word_i = (n > 0) ? min((size_t)n, vector_size(args)) : (size_t)max(0, (i64)vector_size(args) - 1 - -n);
+	word = cstr_to_rl42str(*(char **)vector_get(args, word_i - 1));
+	if (!word)
+		goto _hist_yank_arg_ret;
+	for (i = 0, len = vector_size(word); i < len; i++)
+		if (!__vec_ins(line->line, line->i++, vector_get(word, i)))
+			goto _hist_yank_arg_ret;
+	rv = 1;
+_hist_yank_arg_ret:
+	vector_delete((vector)word);
+	vector_delete((vector)args);
+	return rv;
+}
+
 void	hist_remove_node(rl42_hist_node *node) {
 	list_erase(history, list_nth(history, entries-- - node->entry_n));
 }

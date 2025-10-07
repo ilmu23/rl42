@@ -55,6 +55,16 @@ rl42_hist_node	*hist_get_last_node(void);
  */
 u8				hist_search(rl42_line *line, const rl42_direction direction, const u8 incremental);
 
+/** @brief Fetches the nth argument (word) from node and inserts it into line
+ *
+ * @param line Current input line
+ * @param node Node to yank from
+ * @param n Number of argument to yank
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8				hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n);
+
 /** @brief Removes a node from history
  *
  * @param node Node to remove
