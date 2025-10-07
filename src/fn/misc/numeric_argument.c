@@ -59,6 +59,11 @@ rl42_fn(numeric_argument) {
 			vector_push(line->prompt.sprompt, (u32){n_arg.val % 10 + '0'});
 	} else
 		return 1;
+	if (n_arg.val == 0 && !n_arg.neg) {
+		vector_delete(line->prompt.sprompt);
+		line->prompt.sprompt = NULL;
+		n_arg.set = 0;
+	}
 	term_display_line(line, 0);
 	return 1;
 }
