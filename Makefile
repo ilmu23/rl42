@@ -204,7 +204,12 @@ INTERACTIVE_TESTER	=	$(TESTBIN)/interactive
 ITBUILD	=	fsan
 
 ITCFLAGS	=	$(cflags.common) $(cflags.$(ITBUILD)) $(cflags.extra)
-ITLDFLAGS	=	-L. -lrl42
+ifeq ($(shell bash -c 'gcc -x c -<<< "#include <stdio.h> int main(void) { printf(\"%ld\n\", __STDC_VERSION__); }" && ./a.out && rm a.out'), 202301)
+	ITLDFLAGS	=	-L. -lrl42
+else
+	LDFLAGS		=	-lbsd
+	ITLDFLAGS	=	-L. -lrl42 $(LDFLAGS)
+endif
 
 all: $(NAME)
 
@@ -247,39 +252,39 @@ utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(TERMINFO_TEST) $(VECTOR_TES
 
 $(FUNCTION_TEST): $(FUNCTION_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(HISTORY_TEST): $(HISTORY_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(KEYBIND_TEST): $(KEYBIND_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(STRLEN_UTF8_TEST): $(STRLEN_UTF8_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(RL42_STRING_TEST): $(RL42_STRING_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(TERMINFO_TEST): $(TERMINFO_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(VECTOR_TEST): $(VECTOR_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(LIST_TEST): $(LIST_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(MAP_TEST): $(MAP_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(OBJDIR):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating objdirs\n"

@@ -21,6 +21,10 @@
 #include <sys/stat.h>
 #include <linux/limits.h>
 
+#if __STDC_VERION__ != 202301L
+#include <bsd/string.h>
+#endif
+
 #include "internal/_map.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
@@ -197,8 +201,6 @@ const char	*ti_tgoto(const char *seq, const i32 row, const i32 col) {
 }
 
 const char	*ti_tparm(const char *seq, ...) {
-	_BitInt(_TPM_PARAMS)	present_params;
-	_BitInt(3)			flags;
 	static uintptr_t	svars[_TPM_SVARS];
 	uintptr_t			dvars[_TPM_DVARS];
 	uintptr_t			params[_TPM_PARAMS];
@@ -209,7 +211,9 @@ const char	*ti_tparm(const char *seq, ...) {
 	size_t				seqlen;
 	size_t				i;
 	char				tmp[_BUFFER_SIZE + 1];
+	u16					present_params;
 	u8					param_count;
+	u8					flags;
 
 	if (seq == TI_ABS_STR || seq == TI_NOT_STR)
 		return NULL;
@@ -442,6 +446,7 @@ const char	*ti_tparm(const char *seq, ...) {
 		} else
 			seq_buf[i++] = *seq;
 _ti_tparm_continue:
+		;
 	}
 	vector_delete(stack);
 	seq_buf[i] = '\0';

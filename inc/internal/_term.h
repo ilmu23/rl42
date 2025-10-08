@@ -37,7 +37,7 @@
 
 typedef struct termios	term_settings;
 
-typedef unsigned _BitInt(9)	sgr_opts;
+typedef u16	sgr_opts;
 
 /** @brief Initializes terminal related settings
  *

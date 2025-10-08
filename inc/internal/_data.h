@@ -133,5 +133,5 @@ typedef struct __arg {
 }	rl42_numeric_arg;
 
 // Bit field for storing display options
-typedef unsigned _BitInt(2)	rl42_display_opts;
+typedef u8	rl42_display_opts;
 #endif

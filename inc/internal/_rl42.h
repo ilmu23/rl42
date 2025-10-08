@@ -17,7 +17,7 @@
 
 #include "internal/_data.h"
 
-typedef unsigned _BitInt(4)	rl42_state;
+typedef u8	rl42_state;
 
 #define STATE_INIT_IN_PROGRESS		0x1U
 #define STATE_SAVE_HIST_POSITION	0x2U
