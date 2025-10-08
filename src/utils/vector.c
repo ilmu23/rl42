@@ -122,7 +122,7 @@ u8	__vec_stf(vector vec) {
 }
 
 void	__vec_clr(vector vec) {
-	if (vec->free) {
+	if (vec->free && vec->elements) {
 		do
 			vec->free(index(vec, --vec->elements));
 		while (vec->elements);

@@ -97,11 +97,11 @@ rl42_hist_node	*hist_get_nth_node(i64 n) {
 }
 
 rl42_hist_node	*hist_get_first_node(void) {
-	return (rl42_hist_node *)list_first(history)->data;
+	return (entries) ? (rl42_hist_node *)list_first(history)->data : NULL;
 }
 
 rl42_hist_node	*hist_get_last_node(void) {
-	return (rl42_hist_node *)list_last(history)->data;
+	return (entries) ? (rl42_hist_node *)list_last(history)->data : NULL;
 }
 
 u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 incremental) {
