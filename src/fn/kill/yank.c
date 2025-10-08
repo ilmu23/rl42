@@ -5,41 +5,28 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<_rl42.h>>
+// <<yank.c>>
 
-#pragma once
+#define __RL42_INTERNAL
+#include "function.h"
 
-#include "defs.h"
+#include "internal/_kill.h"
+#include "internal/_rl42.h"
+#include "internal/_vector.h"
+#include "internal/_display.h"
 
-#ifndef __RL42_INTERNAL
-# define __RL42_INTERNAL
-#endif
+rl42_fn(yank) {
+	cvector	text;
+	size_t	len;
+	size_t	i;
 
-#include "internal/_data.h"
-
-typedef u8	rl42_state;
-
-#define STATE_INIT_IN_PROGRESS		0x01U
-#define STATE_SAVE_HIST_POSITION	0x02U
-#define STATE_REPEAT				0x04U
-#define STATE_KILL_DONT_UPDATE_RING	0x08U
-#define STATE_YANK_SET_KILL_POS		0x10U
-
-#define NEED_REPEAT	(n_arg.set && ~state_flags & STATE_REPEAT)
-
-#define add_mark(m, p)	(m.pos = p, m.set = 1)
-
-extern rl42_numeric_arg	n_arg;
-
-extern rl42_state	state_flags;
-
-extern rl42_mark	user;
-
-extern rl42_fn	prev_fn;
-
-/* @brief Initializes all internal data structures for use
- *
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8	rl42_init(void);
+	text = kill_get_top_of_ring();
+	if (!text)
+		return 1;
+	add_mark(kill_start, line->i);
+	for (i = 0, len = vector_size(text); i < len; i++)
+		if (!__vec_ins(line->line, line->i++, vector_get(text, i)))
+			return 0;
+	add_mark(kill_end, line->i);
+	return term_display_line(line, 0);
+}
