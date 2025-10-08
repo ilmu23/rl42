@@ -252,6 +252,7 @@ static const struct {
 	__rl42_fn(inc_backward_search_history, "inc-backward-search-history"),
 	__rl42_fn(inc_forward_search_history, "inc-forward-search-history"),
 	__rl42_fn(kill_line, "kill-line"),
+	__rl42_fn(kill_region, "kill-region"),
 	__rl42_fn(kill_whole_line, "kill-whole-line"),
 	__rl42_fn(numeric_argument, "numeric-argument"),
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
