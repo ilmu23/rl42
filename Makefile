@@ -60,7 +60,8 @@ KEYBFILES	=	editing_mode.c \
 				keyseq.c \
 				rl42_bind.c
 
-KILLFILES	=	region.c
+KILLFILES	=	region.c \
+				ring.c
 
 TERMFILES	=	cursor.c \
 				display.c \

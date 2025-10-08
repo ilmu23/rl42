@@ -5,40 +5,38 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<ring.c>>
 
-#pragma once
+#include "internal/_list.h"
+#include "internal/_vector.h"
 
-#include "defs.h"
+static list	ring;
 
-#include "data.h"
+static void	_free_text(cvector *text) {
+	vector_delete((vector)*text);
+}
 
-#define RL42_VERSION "3.3.9-kill"
+u8	kill_add_to_ring(cvector text) {
+	if (!ring) {
+		ring = list(cvector, 4, (void (*)(void *))_free_text);
+		if (!ring)
+			return 0;
+	}
+	return list_push_front(ring, text);
+}
 
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
+cvector	kill_get_top_of_ring(void) {
+	return (ring) ? *(cvector *)(list_first(ring)->data) : NULL;
+}
 
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
+u8	kill_rotate_ring(void) {
+	list_node	node;
 
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	if (ring) {
+		node = list_first(ring);
+		if (!list_push_back(ring, *(cvector *)(node->data)))
+			return 0;
+		list_pop_front(ring);
+	}
+	return 1;
+}

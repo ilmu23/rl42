@@ -24,4 +24,26 @@ extern rl42_mark	kill_end;
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8	kill_region_internal(rl42_line *line);
+u8		kill_region_internal(rl42_line *line);
+
+/** @brief Adds text to the kill ring
+ *
+ * @param text Text to add
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8		kill_add_to_ring(cvector text);
+
+/** @brief Gets the text on top of the kill ring
+ *
+ * @returns @c <b>cvector</b> The text on top of the kill ring,
+ * NULL if the kill ring is empty
+ */
+cvector	kill_get_top_of_ring(void);
+
+/** @brief Rotates the kill ring
+ *
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8		kill_rotate_ring(void);
