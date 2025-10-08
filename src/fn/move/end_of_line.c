@@ -12,5 +12,5 @@
 
 u8	end_of_line(rl42_line *line) {
 	line->i = vector_size(line->line);
-	return term_cursor_move_to(line, line->root.row, line->root.col + line->i);
+	return term_cursor_move_to_i(line);
 }

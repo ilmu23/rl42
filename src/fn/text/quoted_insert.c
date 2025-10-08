@@ -5,36 +5,37 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<end_of_history.c>>
-
-#include <stdlib.h>
+// <<quoted_insert.c>>
 
 #define __RL42_INTERNAL
 #include "function.h"
 
+#include "internal/_kb.h"
+#include "internal/_term.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 #include "internal/_display.h"
-#include "internal/_history.h"
+#include "internal/_terminfo.h"
 
-extern rl42_hist_node	*current;
+#define _BUF_SIZE	17
 
-rl42_fn(end_of_history) {
-	rl42_hist_node	*first;
+rl42_fn(quoted_insert) {
+	size_t	i;
+	char	buf[_BUF_SIZE];
+	u32		ucp;
+	i16		x;
+	i16		y;
 
-	first = hist_get_first_node();
-	if (first == current)
-		return 1;
-	if (current->edit)
-		free((void *)current->edit);
-	current->edit = rl42str_to_cstr(line->line);
-	if (!current->edit)
+	term_cursor_get_pos(&x, &y);
+	ti_tputs("^", 1, __putchar);
+	term_cursor_set_pos(x, y);
+	if (!kb_listen_buf(-1, buf, _BUF_SIZE))
 		return 0;
-	current = first;
-	vector_delete(line->line);
-	line->line = cstr_to_rl42str((current->edit) ? current->edit : current->line);
-	if (!line->line)
-		return 0;
-	line->i = vector_size(line->line);
+	for (i = 0; buf[i]; i += charsize_utf8(buf[i])) {
+		ucp = utf8_decode(&buf[i]);
+		if (!vector_push(line->line, ucp))
+			return 0;
+		line->i++;
+	}
 	return term_display_line(line, 0);
 }

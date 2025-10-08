@@ -26,21 +26,30 @@ static i32	efd;
 static u32	kbs;
 u32			kcbs;
 
-static inline rl42_kb_event	*_parse_event(const char buf[_BUF_SIZE], rl42_kb_event *event);
+static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size, rl42_kb_event *event);
 
 rl42_kb_event	*kb_listen(const i32 timeout) {
+	char	buf[_BUF_SIZE];
+
+	return kb_listen_buf(timeout, buf, _BUF_SIZE);
+}
+
+rl42_kb_event	*kb_listen_buf(const i32 timeout, char *buf, const size_t buf_size) {
 	static rl42_kb_event	kb_event;
 	struct epoll_event		event;
 	ssize_t					rv;
-	char					buf[_BUF_SIZE];
 
 	term_show_cursor();
 	rv = epoll_wait(efd, &event, 1, timeout);
 	term_hide_cursor();
 	if (rv == 1) {
-		rv = read(0, buf, 16);
+		rv = read(0, buf, buf_size - 1);
+		if (rv == -1) {
+			error("rl42: kb_listen: %s", strerror(errno));
+			return NULL;
+		}
 		buf[rv] = '\0';
-		return _parse_event(buf, &kb_event);
+		return _parse_event(buf, buf_size, &kb_event);
 	}
 	if (rv == -1) {
 		if (errno == EINTR)
@@ -53,6 +62,18 @@ rl42_kb_event	*kb_listen(const i32 timeout) {
 void	clean_kb_listener(void) {
 	epoll_ctl(efd, EPOLL_CTL_DEL, 0, NULL);
 	close(efd);
+}
+
+u32	kb_event_to_ucp(const rl42_kb_event *event) {
+	u32	ucp;
+
+	ucp = event->code;
+	// TODO: proper modifier parsing
+	if (event->mods & KB_MOD_SHIFT)
+		ucp = (ucp <= 0x7F) ? ucp & ~0x20U : ucp | ~0x10000000;
+	if (event->mods & KB_MOD_CTRL && event->code != kcbs)
+		ucp &= ~0x60;
+	return ucp;
 }
 
 u8	init_kb_listener(void) {
@@ -74,9 +95,9 @@ u8	init_kb_listener(void) {
 	return (epoll_ctl(efd, EPOLL_CTL_ADD, 0, &ev) != -1) ? 1 : 0;
 }
 
-static inline rl42_kb_event	*_parse_event(const char buf[_BUF_SIZE], rl42_kb_event *event) {
+static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size, rl42_kb_event *event) {
 	memset(event, 0, sizeof(*event));
-	if (strncmp(buf, "\x1b[", 2) == 0 || strncmp(buf, "\x1bO", 2) == 0) {
+	if (buf_size > 1 && (strncmp(buf, "\x1b[", 2) == 0 || strncmp(buf, "\x1bO", 2) == 0)) {
 		switch (term_match_key_seq(buf)) {
 			case ti_kf1:
 				*event = kb_event(KB_KEY_LEGACY_F1, 0, 0);
@@ -177,7 +198,7 @@ static inline rl42_kb_event	*_parse_event(const char buf[_BUF_SIZE], rl42_kb_eve
 		}
 		return NULL;
 	}
-	if (buf[0] == '\x1b' && buf[1]) {
+	if (buf_size > 1 && buf[0] == '\x1b' && buf[1]) {
 		event->mods |= KB_MOD_ALT;
 		buf++;
 	}

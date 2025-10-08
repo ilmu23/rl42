@@ -5,36 +5,30 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<end_of_history.c>>
+// <<upcase_word.c>>
 
-#include <stdlib.h>
+#include <ctype.h>
 
 #define __RL42_INTERNAL
 #include "function.h"
 
-#include "internal/_utils.h"
 #include "internal/_vector.h"
 #include "internal/_display.h"
-#include "internal/_history.h"
 
-extern rl42_hist_node	*current;
+rl42_fn(upcase_word) {
+	size_t	i;
+	size_t	len;
+	u32		*word;
 
-rl42_fn(end_of_history) {
-	rl42_hist_node	*first;
-
-	first = hist_get_first_node();
-	if (first == current)
+	i = line->i;
+	if (isspace(*(u32 *)vector_get(line->line, (i != 0) ? i - 1 : i)))
 		return 1;
-	if (current->edit)
-		free((void *)current->edit);
-	current->edit = rl42str_to_cstr(line->line);
-	if (!current->edit)
-		return 0;
-	current = first;
-	vector_delete(line->line);
-	line->line = cstr_to_rl42str((current->edit) ? current->edit : current->line);
-	if (!line->line)
-		return 0;
-	line->i = vector_size(line->line);
+	while (i > 0 && !isspace(*(u32 *)vector_get(line->line, i - 1)))
+		i--;
+	len = vector_size(line->line);
+	word = (u32 *)vector_get(line->line, i);
+	do
+		vector_set(line->line, i++, (u32){toupper(*word++)});
+	while (i < len && !isspace(*word));
 	return term_display_line(line, 0);
 }

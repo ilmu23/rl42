@@ -14,8 +14,6 @@
 rl42_fn(backward_char);
 rl42_fn(backward_word);
 rl42_fn(beginning_of_line);
-rl42_fn(clear_display);
-rl42_fn(clear_screen);
 rl42_fn(end_of_line);
 rl42_fn(forward_char);
 rl42_fn(forward_word);

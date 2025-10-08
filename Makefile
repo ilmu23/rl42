@@ -33,6 +33,7 @@ FUNCDIR	=	function
 HISTDIR	=	history
 KBINDIR	=	input
 KEYBDIR	=	keybinds
+KILLDIR	=	kill
 TERMDIR	=	term
 UTILDIR	=	utils
 
@@ -41,9 +42,10 @@ UTILDIR	=	utils
 RLFNDIR	=	fn
 
 HSFNDIR	=	history
-TXFNDIR	=	text
-MVFNDIR	=	move
 KLFNDIR	=	kill
+MCFNDIR	=	misc
+MVFNDIR	=	move
+TXFNDIR	=	text
 
 ## SOURCE FILES
 
@@ -51,11 +53,14 @@ FUNCFILES	=	rl42_fn_info.c
 
 HISTFILES	=	history.c
 
-KBINFILES	=	listen.c
+KBINFILES	=	listen.c \
+				match.c
 
 KEYBFILES	=	editing_mode.c \
 				keyseq.c \
 				rl42_bind.c
+
+KILLFILES	=	region.c
 
 TERMFILES	=	cursor.c \
 				display.c \
@@ -66,30 +71,48 @@ UTILFILES	=	cstr_utils.c \
 				map.c \
 				message.c \
 				misc.c \
+				repeat.c \
 				rl42_string.c \
+				rl42str_utils.c \
 				strhash.c \
-				utf8.c \
 				terminfo.c \
+				utf8.c \
 				vector.c
 
 RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
+				$(addprefix $(KLFNDIR)/, $(KLFNFILES)) \
 				$(addprefix $(TXFNDIR)/, $(TXFNFILES)) \
 				$(addprefix $(MVFNDIR)/, $(MVFNFILES)) \
-				$(addprefix $(KLFNDIR)/, $(KLFNFILES))
+				$(addprefix $(MCFNDIR)/, $(MCFNFILES))
 
 HSFNFILES	=	accept_line.c \
 				backward_history.c \
+				backward_search_history.c \
 				beginning_of_history.c \
 				end_of_history.c \
+				fetch_history.c \
 				forward_history.c \
-				operate_and_get_next.c
+				forward_search_history.c \
+				inc_backward_search_history.c \
+				inc_forward_search_history.c \
+				operate_and_get_next.c \
+				yank_last_arg.c \
+				yank_nth_arg.c
+
+KLFNFILES	=	discard_line.c
 
 TXFNFILES	=	backward_delete_char.c \
+				capitalize_word.c \
 				clear_display.c \
 				clear_screen.c \
 				delete_char.c \
+				downcase_word.c \
 				end_of_file.c \
-				self_insert.c
+				quoted_insert.c \
+				self_insert.c \
+				transpose_chars.c \
+				transpose_words.c \
+				upcase_word.c
 
 MVFNFILES	=	backward_char.c \
 				backward_word.c \
@@ -98,7 +121,7 @@ MVFNFILES	=	backward_char.c \
 				forward_char.c \
 				forward_word.c
 
-KLFNFILES	=	discard_line.c
+MCFNFILES	=	numeric_argument.c
 
 FILES	=	rl42.c \
 			init.c \
@@ -106,6 +129,7 @@ FILES	=	rl42.c \
 			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
 			$(addprefix $(KBINDIR)/, $(KBINFILES)) \
 			$(addprefix $(KEYBDIR)/, $(KEYBFILES)) \
+			$(addprefix $(KILLDIR)/, $(KILLFILES)) \
 			$(addprefix $(TERMDIR)/, $(TERMFILES)) \
 			$(addprefix $(UTILDIR)/, $(UTILFILES)) \
 			$(addprefix $(RLFNDIR)/, $(RLFNFILES))
@@ -184,7 +208,12 @@ INTERACTIVE_TESTER	=	$(TESTBIN)/interactive
 ITBUILD	=	fsan
 
 ITCFLAGS	=	$(cflags.common) $(cflags.$(ITBUILD)) $(cflags.extra)
-ITLDFLAGS	=	-L. -lrl42
+ifeq ($(shell bash -c 'gcc -x c -<<< "#include <stdio.h> int main(void) { printf(\"%ld\n\", __STDC_VERSION__); }" && ./a.out && rm a.out'), 202301)
+	ITLDFLAGS	=	-L. -lrl42
+else
+	LDFLAGS		=	-lbsd
+	ITLDFLAGS	=	-L. -lrl42 $(LDFLAGS)
+endif
 
 all: $(NAME)
 
@@ -227,39 +256,39 @@ utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(TERMINFO_TEST) $(VECTOR_TES
 
 $(FUNCTION_TEST): $(FUNCTION_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(HISTORY_TEST): $(HISTORY_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(KEYBIND_TEST): $(KEYBIND_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(STRLEN_UTF8_TEST): $(STRLEN_UTF8_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(RL42_STRING_TEST): $(RL42_STRING_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(TERMINFO_TEST): $(TERMINFO_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(VECTOR_TEST): $(VECTOR_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(LIST_TEST): $(LIST_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(MAP_TEST): $(MAP_TEST_FILES)
 	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(OBJDIR):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating objdirs\n"
@@ -267,12 +296,14 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
 	@mkdir -p $(OBJDIR)/$(KBINDIR)
 	@mkdir -p $(OBJDIR)/$(KEYBDIR)
+	@mkdir -p $(OBJDIR)/$(KILLDIR)
 	@mkdir -p $(OBJDIR)/$(TERMDIR)
 	@mkdir -p $(OBJDIR)/$(UTILDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(HSFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(KLFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(TXFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MVFNDIR)
-	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(KLFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MCFNDIR)
 
 $(TESTBIN):
 	@printf "\e[1;38;5;27mRL42 >\e[m Creating test executable dir\n"

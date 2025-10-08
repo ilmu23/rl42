@@ -5,36 +5,33 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<end_of_history.c>>
+// <<region.c>>
 
-#include <stdlib.h>
-
-#define __RL42_INTERNAL
-#include "function.h"
-
-#include "internal/_utils.h"
+#include "internal/_kill.h"
+#include "internal/_rl42.h"
 #include "internal/_vector.h"
-#include "internal/_display.h"
-#include "internal/_history.h"
 
-extern rl42_hist_node	*current;
+extern rl42_state	state_flags;
 
-rl42_fn(end_of_history) {
-	rl42_hist_node	*first;
+rl42_mark	kill_start;
+rl42_mark	kill_end;
 
-	first = hist_get_first_node();
-	if (first == current)
+u8	kill_region(rl42_line *line) {
+	vector	killed;
+	size_t	len;
+
+	if (!kill_start.set || !kill_end.set || kill_start.pos >= kill_end.pos)
 		return 1;
-	if (current->edit)
-		free((void *)current->edit);
-	current->edit = rl42str_to_cstr(line->line);
-	if (!current->edit)
-		return 0;
-	current = first;
-	vector_delete(line->line);
-	line->line = cstr_to_rl42str((current->edit) ? current->edit : current->line);
-	if (!line->line)
-		return 0;
-	line->i = vector_size(line->line);
-	return term_display_line(line, 0);
+	len = kill_end.pos - kill_start.pos;
+	if (~state_flags & STATE_KILL_DONT_UPDATE_RING) {
+		killed = vector(u32, len, NULL);
+		if (!killed)
+			return 0;
+	}
+	while (len--)
+		vector_erase(line->line, kill_start.pos);
+	len = vector_size(line->line);
+	if (~state_flags & STATE_KILL_DONT_UPDATE_RING)
+		vector_delete(killed); // TODO: Add killed to kill ring
+	return 1;
 }
