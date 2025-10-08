@@ -32,6 +32,8 @@ extern rl42_numeric_arg	n_arg;
 
 extern rl42_state	state_flags;
 
+extern rl42_mark	user;
+
 extern rl42_fn	prev_fn;
 
 /* @brief Initializes all internal data structures for use

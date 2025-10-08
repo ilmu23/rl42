@@ -124,7 +124,10 @@ MVFNFILES	=	backward_char.c \
 				forward_char.c \
 				forward_word.c
 
-MCFNFILES	=	numeric_argument.c
+MCFNFILES	=	exchange_point_and_mark.c \
+				numeric_argument.c \
+				set_mark.c \
+				unset_mark.c
 
 FILES	=	rl42.c \
 			init.c \

@@ -5,13 +5,19 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<misc.h>>
+// <<exchange_point_and_mark.c>>
 
-#pragma once
-
+#define __RL42_INTERNAL
 #include "function.h"
 
-rl42_fn(exchange_point_and_mark);
-rl42_fn(numeric_argument);
-rl42_fn(set_mark);
-rl42_fn(unset_mark);
+#include "internal/_rl42.h"
+#include "internal/_display.h"
+
+rl42_fn(exchange_point_and_mark) {
+	if (!user.set)
+		return 1;
+	user.pos ^= line->i;
+	line->i ^= user.pos;
+	user.pos ^= line->i;
+	return term_display_line(line, 0);
+}

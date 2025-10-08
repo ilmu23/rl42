@@ -22,13 +22,11 @@
 
 #include "internal/fn/misc.h"
 
-extern rl42_numeric_arg	n_arg;
-
-extern u32	kcbs;
-
 rl42_hist_node	*current;
 
 rl42_state	state_flags;
+
+rl42_mark	user;
 
 rl42_fn	prev_fn;
 
@@ -50,6 +48,7 @@ char	*ft_readline(const char *prompt) {
 	};
 	if (!line.prompt.prompt || !line.keyseq)
 		goto _rl42_malloc_fail;
+	user.set = 0;
 	prev_fn = NULL;
 	match.fn = NULL;
 	term_apply_settings(TERM_SETTINGS_RL42);

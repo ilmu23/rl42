@@ -21,20 +21,26 @@
 
 #define _SGR_RESET		escapes[0]
 #define _SGR_REV_VIDEO	escapes[1]
-#define _TERM_CLEAR_END	escapes[2]
+#define _SGR_UNDERLINE	escapes[2]
+#define _TERM_CLEAR_END	escapes[3]
 
 #define clear()	((ti_tputs(_TERM_CLEAR_END.seq, 1, __putchar) != -1) ? 1 : 0)
 #define fetch(esc, name)	(esc.seq = term_get_seq(name), esc.len = (esc.seq) ? strlen(esc.seq) : 0, esc.fetched = 1)
+
+extern rl42_mark	user;
 
 static struct {
 	const char	*seq;
 	size_t		len;
 	u8			fetched;
-}	escapes[3] = {
+}	escapes[4] = {
+	{ .seq = NULL, .len = 0, .fetched = 0},
 	{ .seq = NULL, .len = 0, .fetched = 0},
 	{ .seq = NULL, .len = 0, .fetched = 0},
 	{ .seq = NULL, .len = 0, .fetched = 0},
 };
+
+static u8	hl_user_mark;
 
 static inline u8	_add_str_to_buf(cvector s, cvector hl, char buf[_BUFFER_SIZE], size_t *i);
 
@@ -44,6 +50,7 @@ u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 	size_t		i;
 
 	i = 0;
+	hl_user_mark = 0;
 	if (opts & DISPLAY_HIGHLIGHT_SUBSTR)
 		va_start(args, opts);
 	if (line->prompt.sprompt) {
@@ -53,6 +60,7 @@ u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 	}
 	if (!_add_str_to_buf(line->prompt.prompt, NULL, buf, &i))
 		goto _term_display_line_error;
+	hl_user_mark = user.set;
 	if (~opts & DISPLAY_PROMPT_ONLY && !_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(args, cvector) : NULL, buf, &i))
 		goto _term_display_line_error;
 	if (!term_cursor_set_pos(line->prompt.root.row, line->prompt.root.col))
@@ -82,6 +90,21 @@ static inline u8	_add_str_to_buf(cvector s, cvector hl, char buf[_BUFFER_SIZE], 
 	hl_end = (hl_start != RL42STR_SUBSTR_NOT_FOUND) ? hl_start + vector_size(hl) : hl_start;
 	for (_i = 0, size = vector_size(s); *i < _BUFFER_SIZE && _i < size; _i++) {
 		ucp = *(u32 *)vector_get(s, _i);
+		if (_i == user.pos && hl_user_mark) {
+			if (!_SGR_UNDERLINE.fetched)
+				fetch(_SGR_UNDERLINE, ti_smul);
+			if (*i + _SGR_UNDERLINE.len >= _BUFFER_SIZE)
+				return 0;
+			memcpy(&buf[*i], _SGR_UNDERLINE.seq, _SGR_UNDERLINE.len);
+			*i += _SGR_UNDERLINE.len;
+		} else if (_i == user.pos + 1 && hl_user_mark) {
+			if (!_SGR_RESET.fetched)
+				fetch(_SGR_RESET, ti_sgr0);
+			if (*i + _SGR_RESET.len >= _BUFFER_SIZE)
+				return 0;
+			memcpy(&buf[*i], _SGR_RESET.seq, _SGR_RESET.len);
+			*i += _SGR_RESET.len;
+		}
 		if (_i == hl_start) {
 			hl_seq = term_get_hl_seq();
 			len = strlen(hl_seq);
@@ -120,6 +143,26 @@ static inline u8	_add_str_to_buf(cvector s, cvector hl, char buf[_BUFFER_SIZE], 
 		}
 	}
 	if (_i == hl_end) {
+		if (!_SGR_RESET.fetched)
+			fetch(_SGR_RESET, ti_sgr0);
+		if (*i + _SGR_RESET.len >= _BUFFER_SIZE)
+			return 0;
+		memcpy(&buf[*i], _SGR_RESET.seq, _SGR_RESET.len);
+		*i += _SGR_RESET.len;
+	}
+	if (_i <= user.pos && hl_user_mark) {
+		if (!_SGR_UNDERLINE.fetched)
+			fetch(_SGR_UNDERLINE, ti_smul);
+		if (!_SGR_RESET.fetched)
+			fetch(_SGR_RESET, ti_sgr0);
+		if (*i + _SGR_UNDERLINE.len + _SGR_RESET.len + 1 >= _BUFFER_SIZE)
+			return 0;
+		memcpy(&buf[*i], _SGR_UNDERLINE.seq, _SGR_UNDERLINE.len);
+		*i += _SGR_UNDERLINE.len;
+		buf[(*i)++] = ' ';
+		memcpy(&buf[*i], _SGR_RESET.seq, _SGR_RESET.len);
+		*i += _SGR_RESET.len;
+	} else if (_i == user.pos + 1 && hl_user_mark) {
 		if (!_SGR_RESET.fetched)
 			fetch(_SGR_RESET, ti_sgr0);
 		if (*i + _SGR_RESET.len >= _BUFFER_SIZE)
