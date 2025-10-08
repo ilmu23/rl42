@@ -220,10 +220,10 @@ u8	hist_load(const char *fname) {
 		snprintf(buf, 4096, "%s/" _DEFAULT_HIST_FILE, getenv("HOME"));
 	} else
 		snprintf(buf, 4096, "%s", fname);
+	histfile_name = strdup(buf);
 	file = fopen(buf, "r");
 	if (!file)
 		return 0;
-	histfile_name = strdup(buf);
 	for (rv = 1, line = fgets(buf, 4096, file); rv && line; line = fgets(buf, 4096, file))
 		if (!hist_add_line(strndup(line, strlen(line) - 1)))
 			rv = 0;
@@ -238,7 +238,7 @@ void	hist_clean(void) {
 
 	if (first_new != entries) {
 		file = fopen(histfile_name, "a");
-		for (node = hist_get_first_node(); node->entry_n > first_new; node = hist_get_next_node(node, BACKWARD))
+		if (first_new != 0) for (node = hist_get_first_node(); node->entry_n > first_new; node = hist_get_next_node(node, BACKWARD))
 			;
 		do {
 			node = hist_get_next_node(node, FORWARD);

@@ -5,13 +5,17 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<misc.h>>
+// <<unset_mark.c>>
 
-#pragma once
-
+#define __RL42_INTERNAL
 #include "function.h"
 
-rl42_fn(exchange_point_and_mark);
-rl42_fn(numeric_argument);
-rl42_fn(set_mark);
-rl42_fn(unset_mark);
+#include "internal/_rl42.h"
+#include "internal/_display.h"
+
+rl42_fn(unset_mark) {
+	if (!user.set)
+		return 1;
+	user.set = 0;
+	return term_display_line(line, 0);
+}

@@ -16,7 +16,7 @@ extern rl42_state	state_flags;
 rl42_mark	kill_start;
 rl42_mark	kill_end;
 
-u8	kill_region(rl42_line *line) {
+u8	kill_region_internal(rl42_line *line) {
 	vector	killed;
 	size_t	len;
 
@@ -27,11 +27,16 @@ u8	kill_region(rl42_line *line) {
 		killed = vector(u32, len, NULL);
 		if (!killed)
 			return 0;
+		if (!kill_add_to_ring(killed)) {
+			vector_delete(killed);
+			return 0;
+		}
 	}
-	while (len--)
+	if (~state_flags & STATE_KILL_DONT_UPDATE_RING) do {
+		__vec_psh(killed, vector_get(line->line, kill_start.pos));
 		vector_erase(line->line, kill_start.pos);
-	len = vector_size(line->line);
-	if (~state_flags & STATE_KILL_DONT_UPDATE_RING)
-		vector_delete(killed); // TODO: Add killed to kill ring
+	} while (--len); else do
+		vector_erase(line->line, kill_start.pos);
+	while (--len);
 	return 1;
 }

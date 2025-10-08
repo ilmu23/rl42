@@ -25,6 +25,7 @@
 #include "internal/_keybinds.h"
 #include "internal/_terminfo.h"
 
+#include "internal/fn/kill.h"
 #include "internal/fn/misc.h"
 #include "internal/fn/move.h"
 #include "internal/fn/text.h"
@@ -127,7 +128,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-u>", "upcase-word");
 	bind_emacs("<M-l>", "downcase-word");
 	bind_emacs("<M-c>", "capitalize-word");
-	bind_emacs("<C-k>", "forward-kill-line");
+	bind_emacs("<C-k>", "kill-line");
 	bind_emacs("<M-k>", "backward-kill-line");
 	bind_emacs("<M-K>", "kill-whole-line");
 	bind_emacs("<C-k>w", "forward-kill-word");
@@ -210,9 +211,9 @@ static inline void	_init_binds(void) {
 static inline void	_rl42_exit(void) {
 	if (init) {
 		term_apply_settings(TERM_SETTINGS_DEFAULT);
+		hist_clean();
 		clean_kb_listener();
 		clean_key_trees();
-		hist_clean();
 		clean_fns();
 		ti_unload();
 	}
@@ -228,6 +229,7 @@ static const struct {
 	__rl42_fn(backward_char, "backward-char"),
 	__rl42_fn(backward_delete_char, "backward-delete-char"),
 	__rl42_fn(backward_history, "backward-history"),
+	__rl42_fn(backward_kill_line, "backward-kill-line"),
 	__rl42_fn(backward_search_history, "backward-search-history"),
 	__rl42_fn(backward_word, "backward-word"),
 	__rl42_fn(beginning_of_history, "beginning-of-history"),
@@ -236,10 +238,12 @@ static const struct {
 	__rl42_fn(clear_display, "clear-display"),
 	__rl42_fn(clear_screen, "clear-screen"),
 	__rl42_fn(delete_char, "delete-char"),
+	__rl42_fn(discard_line, "discard-line"),
 	__rl42_fn(downcase_word, "downcase-word"),
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(end_of_history, "end-of-history"),
 	__rl42_fn(end_of_line, "end-of-line"),
+	__rl42_fn(exchange_point_and_mark, "exchange-point-and-mark"),
 	__rl42_fn(fetch_history, "fetch-history"),
 	__rl42_fn(forward_char, "forward-char"),
 	__rl42_fn(forward_history, "forward-history"),
@@ -247,15 +251,22 @@ static const struct {
 	__rl42_fn(forward_word, "forward-word"),
 	__rl42_fn(inc_backward_search_history, "inc-backward-search-history"),
 	__rl42_fn(inc_forward_search_history, "inc-forward-search-history"),
+	__rl42_fn(kill_line, "kill-line"),
+	__rl42_fn(kill_region, "kill-region"),
+	__rl42_fn(kill_whole_line, "kill-whole-line"),
 	__rl42_fn(numeric_argument, "numeric-argument"),
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
 	__rl42_fn(quoted_insert, "quoted-insert"),
 	__rl42_fn(self_insert, "self-insert"),
+	__rl42_fn(set_mark, "set-mark"),
 	__rl42_fn(transpose_chars, "transpose-chars"),
 	__rl42_fn(transpose_words, "transpose-words"),
+	__rl42_fn(unset_mark, "unset-mark"),
 	__rl42_fn(upcase_word, "upcase-word"),
+	__rl42_fn(yank, "yank"),
 	__rl42_fn(yank_last_arg, "yank-last-arg"),
 	__rl42_fn(yank_nth_arg, "yank-nth-arg"),
+	__rl42_fn(yank_pop, "yank-pop"),
 };
 
 static inline u8	_init_fns(void) {

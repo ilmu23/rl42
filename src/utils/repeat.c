@@ -19,6 +19,8 @@ u8	repeat(rl42_line *line, const rl42_fn positive, const rl42_fn negative) {
 	u8		rv;
 
 	n = n_arg.val;
+	if (n == 0)
+		return 1;
 	f = (!n_arg.neg) ? positive : negative;
 	if (!f)
 		return 1;
