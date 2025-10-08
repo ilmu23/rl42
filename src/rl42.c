@@ -75,7 +75,8 @@ char	*ft_readline(const char *prompt) {
 			if (n_arg.set && match.fn->f != numeric_argument) {
 				vector_delete(line.prompt.sprompt);
 				line.prompt.sprompt = NULL;
-				term_display_line(&line, 0);
+				if (line.line)
+					term_display_line(&line, 0);
 				n_arg.set = 0;
 			}
 			prev_fn = match.fn->f;

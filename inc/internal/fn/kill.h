@@ -13,11 +13,8 @@
 
 rl42_fn(backward_kill_line);
 rl42_fn(discard_line);
-rl42_fn(exchange_mark);
 rl42_fn(kill_line);
 rl42_fn(kill_region);
 rl42_fn(kill_whole_line);
-rl42_fn(set_mark);
-rl42_fn(unset_mark);
 rl42_fn(yank);
 rl42_fn(yank_pop);

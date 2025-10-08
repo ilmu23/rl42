@@ -30,7 +30,7 @@ rl42_fn(numeric_argument) {
 		line->prompt.sprompt = vector(u32, 21, NULL);
 		if (!line->prompt.sprompt)
 			return 0;
-		n_arg.set = 1;
+		n_arg.set = 2;
 		n_arg.neg = 0;
 		n_arg.val = 0;
 	}
@@ -43,11 +43,19 @@ rl42_fn(numeric_argument) {
 		return 0;
 	if ((i32)n == '-') {
 		n_arg.neg ^= 1;
+		if (n_arg.set == 2)
+			vector_push(line->prompt.sprompt, (u32){'0'});
 		if (n_arg.neg)
 			vector_insert(line->prompt.sprompt, 0, (u32){'-'});
 		else
 			vector_erase(line->prompt.sprompt, 0);
+		n_arg.set = 1;
 	} else if (n_arg.val != NUMERIC_ARG_MAX) {
+		if (n_arg.val == 0 && n_arg.set != 2) {
+			if (n - '0' == 0)
+				return 1;
+			vector_pop(line->prompt.sprompt);
+		}
 		n_arg.val = n_arg.val * 10 + n - '0';
 		if (n_arg.val > NUMERIC_ARG_MAX) {
 			n_arg.val = NUMERIC_ARG_MAX;
@@ -58,13 +66,9 @@ rl42_fn(numeric_argument) {
 				vector_insert(line->prompt.sprompt, n_arg.neg, (u32){n % 10 + '0'});
 		} else
 			vector_push(line->prompt.sprompt, (u32){n_arg.val % 10 + '0'});
+		n_arg.set = 1;
 	} else
 		return 1;
-	if (n_arg.val == 0 && !n_arg.neg) {
-		vector_delete(line->prompt.sprompt);
-		line->prompt.sprompt = NULL;
-		n_arg.set = 0;
-	}
 	term_display_line(line, 0);
 	return 1;
 }

@@ -276,7 +276,7 @@ const char	*term_get_seq(const u16 name) {
 
 const char	*term_get_hl_seq(void) {
 	// TODO: Use actual hl color according to the highlight-color setting
-	return "\x1b[1;38;5;27m";
+	return "\x1b[1;38;5;39m";
 }
 
 u16	term_match_key_seq(const char *seq) {

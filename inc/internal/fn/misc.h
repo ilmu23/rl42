@@ -11,4 +11,7 @@
 
 #include "function.h"
 
+rl42_fn(exchange_mark);
 rl42_fn(numeric_argument);
+rl42_fn(set_mark);
+rl42_fn(unset_mark);

@@ -223,30 +223,30 @@ all: $(NAME)
 tester: $(INTERACTIVE_TESTER)
 
 $(NAME): $(OBJDIR) $(OBJS)
-	@printf "\e[1;38;5;27mRL42 >\e[m Creating %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Creating %s\n" $@
 	@ar -crs $(NAME) $(OBJS)
-	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
 
 $(INTERACTIVE_TESTER): $(TESTBIN) $(SRCS) $(TESTDIR)/interactive/main.c
 	@make --no-print-directory clean all BUILD=$(ITBUILD)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(ITCFLAGS) $(TESTDIR)/interactive/main.c $(ITLDFLAGS) -o $@
-	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
 
 tests: $(TESTDIR)/$(BINDIR) functests histtests keybtests utiltests
-	@printf "\e[1;38;5;27mRL42 >\e[m All tests passed!\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m All tests passed!\n"
 
 functests: $(FUNCTION_TEST)
 	@./run_test rl42_fn $(FUNCTION_TEST)
-	@printf "\e[1;38;5;27mRL42 >\e[m All function tests passed!\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m All function tests passed!\n"
 
 histtests: $(HISTORY_TEST)
 	@./run_test history $(HISTORY_TEST)
-	@printf "\e[1;38;5;27mRL42 >\e[m All history tests passed!\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m All history tests passed!\n"
 
 keybtests: $(KEYBIND_TEST)
 	@./run_test rl42_bind $(KEYBIND_TEST)
-	@printf "\e[1;38;5;27mRL42 >\e[m All keybind tests passed!\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m All keybind tests passed!\n"
 
 utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(TERMINFO_TEST) $(VECTOR_TEST) $(LIST_TEST) $(MAP_TEST)
 	@./run_test strlen_utf8 $(STRLEN_UTF8_TEST)
@@ -255,46 +255,46 @@ utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(TERMINFO_TEST) $(VECTOR_TES
 	@./run_test vector $(VECTOR_TEST)
 	@./run_test list $(LIST_TEST)
 	@./run_test map $(MAP_TEST)
-	@printf "\e[1;38;5;27mRL42 >\e[m All util tests passed!\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m All util tests passed!\n"
 
 $(FUNCTION_TEST): $(FUNCTION_TEST_FILES)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(HISTORY_TEST): $(HISTORY_TEST_FILES)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(KEYBIND_TEST): $(KEYBIND_TEST_FILES)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(STRLEN_UTF8_TEST): $(STRLEN_UTF8_TEST_FILES)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(RL42_STRING_TEST): $(RL42_STRING_TEST_FILES)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(TERMINFO_TEST): $(TERMINFO_TEST_FILES)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(VECTOR_TEST): $(VECTOR_TEST_FILES)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(LIST_TEST): $(LIST_TEST_FILES)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(MAP_TEST): $(MAP_TEST_FILES)
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
 
 $(OBJDIR):
-	@printf "\e[1;38;5;27mRL42 >\e[m Creating objdirs\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m Creating objdirs\n"
 	@mkdir -p $(OBJDIR)/$(FUNCDIR)
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
 	@mkdir -p $(OBJDIR)/$(KBINDIR)
@@ -309,11 +309,11 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MCFNDIR)
 
 $(TESTBIN):
-	@printf "\e[1;38;5;27mRL42 >\e[m Creating test executable dir\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m Creating test executable dir\n"
 	@mkdir -p $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@printf "\e[1;38;5;27mRL42 >\e[m Compiling %s\n" $@
+	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
@@ -341,8 +341,8 @@ re: fclean all
 retest: tclean tests
 
 db:
-	@printf "\e[1;38;5;27mRL42 >\e[m Creating compilation command database\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m Creating compilation command database\n"
 	@compiledb make --no-print-directory BUILD=$(BUILD) cflags.extra=$(cflags.extra) | sed -E '/^##.*\.\.\.$$|^[[:space:]]*$$/d'
-	@printf "\e[1;38;5;27mRL42 >\e[m \e[1mDone!\e[m\n"
+	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
 
 .PHONY: all tests utiltests clean tclean fclean re retest db
