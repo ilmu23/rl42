@@ -26,7 +26,7 @@ typedef u8	rl42_state;
 
 #define NEED_REPEAT	(n_arg.set && ~state_flags & STATE_REPEAT)
 
-#define set_mark(m, p)	(m.pos = p, m.set = 1)
+#define add_mark(m, p)	(m.pos = p, m.set = 1)
 
 extern rl42_numeric_arg	n_arg;
 

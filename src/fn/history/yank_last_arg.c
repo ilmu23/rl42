@@ -42,10 +42,10 @@ rl42_fn(yank_last_arg)	{
 	if (current == next)
 		return 1;
 	rv = 0;
-	set_mark(kill_start, line->i);
+	add_mark(kill_start, line->i);
 	if (!hist_yank_arg(line, next, n) || !term_display_line(line, 0))
 		goto _yank_last_arg_ret;
-	set_mark(kill_end, line->i);
+	add_mark(kill_end, line->i);
 	rv = 1;
 	match.fn = NULL;
 	vector_clear(line->keyseq);
@@ -69,7 +69,7 @@ rl42_fn(yank_last_arg)	{
 				line->i -= kill_end.pos - kill_start.pos;
 				rv &= hist_yank_arg(line, next, n);
 				rv &= term_display_line(line, 0);
-				set_mark(kill_end, line->i);
+				add_mark(kill_end, line->i);
 			} else if (match.fn->f == numeric_argument) {
 				rv = numeric_argument(line);
 			} else

@@ -13,3 +13,7 @@
 #define SGR_INFO	"\x1b[1;38;5;190m"
 #define SGR_WARN	"\x1b[1;38;5;202m"
 #define SGR_ERROR	"\x1b[1;38;5;196m"
+
+#ifndef NUMERIC_ARG_MAX
+# define NUMERIC_ARG_MAX	1000000
+#endif

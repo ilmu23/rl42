@@ -11,8 +11,4 @@
 
 #include "function.h"
 
-#ifndef NUMERIC_ARG_MAX
-# define NUMERIC_ARG_MAX	1000000
-#endif
-
 rl42_fn(numeric_argument);

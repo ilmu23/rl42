@@ -211,9 +211,9 @@ static inline void	_init_binds(void) {
 static inline void	_rl42_exit(void) {
 	if (init) {
 		term_apply_settings(TERM_SETTINGS_DEFAULT);
+		hist_clean();
 		clean_kb_listener();
 		clean_key_trees();
-		hist_clean();
 		clean_fns();
 		ti_unload();
 	}

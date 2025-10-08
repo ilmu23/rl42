@@ -30,7 +30,6 @@ u8	kill_region(rl42_line *line) {
 	}
 	while (len--)
 		vector_erase(line->line, kill_start.pos);
-	len = vector_size(line->line);
 	if (~state_flags & STATE_KILL_DONT_UPDATE_RING)
 		vector_delete(killed); // TODO: Add killed to kill ring
 	return 1;
