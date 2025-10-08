@@ -65,7 +65,7 @@ rl42_fn(yank_last_arg)	{
 				next = hist_get_next_node(next, direction);
 				if (next == prev)
 					continue ;
-				rv &= kill_region(line);
+				rv &= kill_region_internal(line);
 				line->i -= kill_end.pos - kill_start.pos;
 				rv &= hist_yank_arg(line, next, n);
 				rv &= term_display_line(line, 0);

@@ -19,7 +19,7 @@ rl42_fn(backward_kill_line) {
 		return kill_line(line);
 	add_mark(kill_start, 0);
 	add_mark(kill_end, line->i);
-	if (!kill_region(line))
+	if (!kill_region_internal(line))
 		return 0;
 	kill_start.set = 0;
 	kill_end.set = 0;

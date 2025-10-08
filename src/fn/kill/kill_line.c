@@ -20,7 +20,7 @@ rl42_fn(kill_line) {
 		return backward_kill_line(line);
 	add_mark(kill_start, line->i);
 	add_mark(kill_end, vector_size(line->line));
-	if (!kill_region(line))
+	if (!kill_region_internal(line))
 		return 0;
 	kill_start.set = 0;
 	kill_end.set = 0;

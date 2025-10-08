@@ -24,4 +24,4 @@ extern rl42_mark	kill_end;
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8	kill_region(rl42_line *line);
+u8	kill_region_internal(rl42_line *line);

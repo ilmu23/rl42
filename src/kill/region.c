@@ -16,7 +16,7 @@ extern rl42_state	state_flags;
 rl42_mark	kill_start;
 rl42_mark	kill_end;
 
-u8	kill_region(rl42_line *line) {
+u8	kill_region_internal(rl42_line *line) {
 	vector	killed;
 	size_t	len;
 
