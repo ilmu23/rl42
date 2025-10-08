@@ -99,7 +99,9 @@ HSFNFILES	=	accept_line.c \
 				yank_last_arg.c \
 				yank_nth_arg.c
 
-KLFNFILES	=	discard_line.c
+KLFNFILES	=	backward_kill_line.c \
+				discard_line.c \
+				kill_line.c
 
 TXFNFILES	=	backward_delete_char.c \
 				capitalize_word.c \
