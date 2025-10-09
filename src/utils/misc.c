@@ -7,6 +7,7 @@
 //
 // <<misc.c>>
 
+#include <ctype.h>
 #include <unistd.h>
 
 #define __RL42_INTERNAL
@@ -39,6 +40,31 @@ i64	get_numeric_arg(rl42_line *line) {
 	line->prompt.sprompt = NULL;
 	n_arg.set = 0;
 	return (!n_arg.neg) ? n_arg.val : (n_arg.val) ?  -n_arg.val : -NUMERIC_ARG_MAX - 1;
+}
+
+u8	move_to_start_of_word(rl42_line *line) {
+	if (line->i == 0)
+		return 0;
+	if (isspace(*(u32 *)vector_get(line->line, line->i - 1))) do
+		line->i--;
+	while (line->i > 0 && isspace(*(u32 *)vector_get(line->line, line->i)));
+	while (line->i > 0 && !isspace(*(u32 *)vector_get(line->line, line->i - 1)))
+		line->i--;
+	return 1;
+}
+
+u8	move_to_end_of_word(rl42_line *line) {
+	size_t	len;
+
+	len = vector_size(line->line);
+	if (line->i == len)
+		return 0;
+	if (isspace(*(u32 *)vector_get(line->line, line->i))) do
+		line->i++;
+	while (line->i < len && isspace(*(u32 *)vector_get(line->line, line->i)));
+	while (line->i < len && !isspace(*(u32 *)vector_get(line->line, line->i)))
+		line->i++;
+	return 1;
 }
 
 static inline u8	isprint_uc(const u32 ucp) {
