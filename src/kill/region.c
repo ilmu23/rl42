@@ -40,3 +40,23 @@ u8	kill_region_internal(rl42_line *line) {
 	while (--len);
 	return 1;
 }
+
+u8	kill_copy_region(rl42_line *line) {
+	vector	copy;
+	size_t	len;
+	size_t	i;
+
+	if (!kill_start.set || !kill_end.set || kill_start.pos >= kill_end.pos)
+		return 1;
+	len = kill_end.pos - kill_start.pos;
+	copy = vector(u32, len, NULL);
+	if (!copy)
+		return 0;
+	if (!kill_add_to_ring(copy)) {
+		vector_delete(copy);
+		return 0;
+	}
+	for (i = 0; len--; i++)
+		__vec_psh(copy, vector_get(line->line, kill_start.pos + i));
+	return 1;
+}
