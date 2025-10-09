@@ -33,5 +33,5 @@ rl42_fn(backward_kill_word) {
 	}
 	kill_start.set = 0;
 	kill_end.set = 0;
-	return (rv) ? term_display_line(line, 0) : 0;
+	return (rv && ~state_flags & STATE_REPEAT) ? term_display_line(line, 0) : 0;
 }
