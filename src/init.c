@@ -131,7 +131,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<C-k>", "kill-line");
 	bind_emacs("<M-k>", "backward-kill-line");
 	bind_emacs("<M-K>", "kill-whole-line");
-	bind_emacs("<C-k>w", "forward-kill-word");
+	bind_emacs("<C-k>w", "kill-word");
 	bind_emacs("<M-k>w", "backward-kill-word");
 	bind_emacs("<C-k>r", "kill-region");
 	bind_emacs("<M-\\\\>", "delete-horizontal-space");
@@ -230,6 +230,7 @@ static const struct {
 	__rl42_fn(backward_delete_char, "backward-delete-char"),
 	__rl42_fn(backward_history, "backward-history"),
 	__rl42_fn(backward_kill_line, "backward-kill-line"),
+	__rl42_fn(backward_kill_word, "backward-kill-word"),
 	__rl42_fn(backward_search_history, "backward-search-history"),
 	__rl42_fn(backward_word, "backward-word"),
 	__rl42_fn(beginning_of_history, "beginning-of-history"),
@@ -254,6 +255,7 @@ static const struct {
 	__rl42_fn(kill_line, "kill-line"),
 	__rl42_fn(kill_region, "kill-region"),
 	__rl42_fn(kill_whole_line, "kill-whole-line"),
+	__rl42_fn(kill_word, "kill-word"),
 	__rl42_fn(numeric_argument, "numeric-argument"),
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
 	__rl42_fn(quoted_insert, "quoted-insert"),

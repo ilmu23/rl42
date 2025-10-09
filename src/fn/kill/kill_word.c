@@ -5,40 +5,34 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<kill_word.c>>
 
-#pragma once
+#include "internal/_defs.h"
+#include "internal/_kill.h"
+#include "internal/_rl42.h"
+#include "internal/_utils.h"
+#include "internal/_display.h"
 
-#include "defs.h"
+#include "internal/fn/kill.h"
 
-#include "data.h"
+rl42_fn(kill_word) {
+	u8	rv;
 
-#define RL42_VERSION "3.4.3-kill"
-
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
-
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	rv = 1;
+	if (NEED_REPEAT) {
+		if (!repeat(line, kill_word, backward_kill_word))
+			return 0;
+	} else {
+		add_mark(kill_start, line->i);
+		if (!move_to_end_of_word(line)) {
+			kill_start.set = 0;
+			return 2;
+		}
+		add_mark(kill_end, line->i);
+		rv = kill_region_internal(line);
+		line->i = kill_start.pos;
+	}
+	kill_start.set = 0;
+	kill_end.set = 0;
+	return (rv) ? term_display_line(line, 0) : 0;
+}
