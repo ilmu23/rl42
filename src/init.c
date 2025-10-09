@@ -18,6 +18,7 @@
 #include "function.h"
 
 #include "internal/_kb.h"
+#include "internal/_kill.h"
 #include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_history.h"
@@ -215,6 +216,7 @@ static inline void	_rl42_exit(void) {
 		hist_clean();
 		clean_kb_listener();
 		clean_key_trees();
+		kill_clear_ring();
 		clean_fns();
 		ti_unload();
 	}

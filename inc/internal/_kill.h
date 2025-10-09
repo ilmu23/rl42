@@ -60,3 +60,7 @@ cvector	kill_get_top_of_ring(void);
  * 0 on failure
  */
 u8		kill_rotate_ring(void);
+
+/** @brief Clears the kill ring
+ */
+void	kill_clear_ring(void);

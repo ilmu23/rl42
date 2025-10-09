@@ -30,13 +30,12 @@ cvector	kill_get_top_of_ring(void) {
 }
 
 u8	kill_rotate_ring(void) {
-	list_node	node;
-
-	if (ring) {
-		node = list_first(ring);
-		if (!list_push_back(ring, *(cvector *)(node->data)))
-			return 0;
-		list_pop_front(ring);
-	}
+	if (ring && list_size(ring) > 1)
+		list_move_after(ring, list_last(ring), list_first(ring));
 	return 1;
+}
+
+void	kill_clear_ring(void) {
+	list_delete(ring);
+	ring = NULL;
 }
