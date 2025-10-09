@@ -50,11 +50,17 @@ list_node  	__lst_nxt(clist list, const list_node node);
 #define		list_prev(list, node)	(__lst_prv(list, node))
 list_node	__lst_prv(clist list, const list_node node);
 
-#define		list_insert_after(list, node, value)	(__lst_ins_a(list, node, (const void *)&value))
-u8	   		__lst_ins_a(list list, const list_node node, const void *val);
+#define		list_insert_after(list, ref, value)	(__lst_ins_a(list, ref, (const void *)&value))
+u8	   		__lst_ins_a(list list, const list_node ref, const void *val);
 
-#define		list_insert_before(list, node, value)	(__lst_ins_b(list, node, (const void *)&value))
-u8	   		__lst_ins_b(list list, const list_node node, const void *val);
+#define		list_insert_before(list, ref, value)	(__lst_ins_b(list, ref, (const void *)&value))
+u8	   		__lst_ins_b(list list, const list_node ref, const void *val);
+
+#define		list_move_after(list, ref, node)	(__lst_mve_a(list, ref, node))
+void		__lst_mve_a(list list, const list_node ref, const list_node node);
+
+#define		list_move_before(list, ref, node)	(__lst_mve_b(list, ref, node))
+void		__lst_mve_b(list list, const list_node ref, const list_node node);
 
 #define		list_erase(list, node)	(__lst_ers(list, node))
 void   		__lst_ers(list list, const list_node node);
