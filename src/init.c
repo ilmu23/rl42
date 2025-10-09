@@ -135,7 +135,8 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-k>w", "backward-kill-word");
 	bind_emacs("<C-k>r", "kill-region");
 	bind_emacs("<M-\\\\>", "delete-horizontal-space");
-	bind_emacs("<M-C>", "copy-region");
+	bind_emacs("<M-C>w", "copy-word");
+	bind_emacs("<M-C>r", "copy-region");
 	bind_emacs("<M-F>", "forward-copy-word");
 	bind_emacs("<M-B>", "backward-copy-word");
 	bind_emacs("<C-y>", "yank");
@@ -239,6 +240,8 @@ static const struct {
 	__rl42_fn(capitalize_word, "capitalize-word"),
 	__rl42_fn(clear_display, "clear-display"),
 	__rl42_fn(clear_screen, "clear-screen"),
+	__rl42_fn(copy_region, "copy-region"),
+	__rl42_fn(copy_word, "copy-word"),
 	__rl42_fn(delete_char, "delete-char"),
 	__rl42_fn(discard_line, "discard-line"),
 	__rl42_fn(downcase_word, "downcase-word"),

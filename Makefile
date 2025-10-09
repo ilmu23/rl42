@@ -103,6 +103,8 @@ HSFNFILES	=	accept_line.c \
 KLFNFILES	=	backward_copy_word.c \
 				backward_kill_line.c \
 				backward_kill_word.c \
+				copy_region.c \
+				copy_word.c \
 				discard_line.c \
 				forward_copy_word.c \
 				kill_line.c \
