@@ -135,9 +135,9 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-k>w", "backward-kill-word");
 	bind_emacs("<C-k>r", "kill-region");
 	bind_emacs("<M-\\\\>", "delete-horizontal-space");
-	bind_emacs("<M-C>", "copy-region-as-kill");
-	bind_emacs("<M-F>", "copy-forward-word");
-	bind_emacs("<M-B>", "copy-backward-word");
+	bind_emacs("<M-C>", "copy-region");
+	bind_emacs("<M-F>", "forward-copy-word");
+	bind_emacs("<M-B>", "backward-copy-word");
 	bind_emacs("<C-y>", "yank");
 	bind_emacs("<M-y>", "yank-pop");
 	bind_emacs("<C-t>", "transpose-chars");
@@ -227,6 +227,7 @@ static const struct {
 }	functions[] = {
 	__rl42_fn(accept_line, "accept-line"),
 	__rl42_fn(backward_char, "backward-char"),
+	__rl42_fn(backward_copy_word, "backward-copy-word"),
 	__rl42_fn(backward_delete_char, "backward-delete-char"),
 	__rl42_fn(backward_history, "backward-history"),
 	__rl42_fn(backward_kill_line, "backward-kill-line"),
@@ -247,6 +248,7 @@ static const struct {
 	__rl42_fn(exchange_point_and_mark, "exchange-point-and-mark"),
 	__rl42_fn(fetch_history, "fetch-history"),
 	__rl42_fn(forward_char, "forward-char"),
+	__rl42_fn(forward_copy_word, "forward-copy-word"),
 	__rl42_fn(forward_history, "forward-history"),
 	__rl42_fn(forward_search_history, "forward-search-history"),
 	__rl42_fn(forward_word, "forward-word"),
