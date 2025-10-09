@@ -97,6 +97,8 @@ static inline u8	_on_first_word(const rl42_line *line) {
 	size_t	i;
 
 	len = vector_size(line->line);
+	if (len == 0)
+		return 1;
 	i = (line->i < len) ? line->i : line->i - 1;
 	if (isspace(*(u32 *)vector_get(line->line, i)))
 		return 0;

@@ -20,12 +20,14 @@ rl42_fn(capitalize_word) {
 	size_t	len;
 	u32		*word;
 
+	len = vector_size(line->line);
+	if (len == 0)
+		return 1;
 	i = line->i;
 	if (isspace(*(u32 *)vector_get(line->line, (i != 0) ? i - 1 : i)))
 		return 1;
 	while (i > 0 && !isspace(*(u32 *)vector_get(line->line, i - 1)))
 		i--;
-	len = vector_size(line->line);
 	word = (u32 *)vector_get(line->line, i);
 	vector_set(line->line, i++, (u32){toupper(*word++)});
 	if (i < len && !isspace(*word)) do
