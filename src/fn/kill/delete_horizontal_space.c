@@ -5,58 +5,38 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<region.c>>
+// <<delete_horizontal_space.c>>
 
+#include <ctype.h>
+
+#define __RL42_INTERNAL
+#include "function.h"
+
+#include "internal/_defs.h"
 #include "internal/_kill.h"
 #include "internal/_rl42.h"
 #include "internal/_vector.h"
+#include "internal/_display.h"
 
-extern rl42_state	state_flags;
-
-rl42_mark	kill_start;
-rl42_mark	kill_end;
-
-u8	kill_region_internal(rl42_line *line) {
-	vector	killed;
+rl42_fn(delete_horizontal_space) {
 	size_t	len;
+	u8		rv;
 
-	if (!kill_start.set || !kill_end.set || kill_start.pos >= kill_end.pos)
+	len = vector_size(line->line);
+	if (line->i != len && !isspace(*(u32 *)vector_get(line->line, line->i)))
 		return 1;
-	len = kill_end.pos - kill_start.pos;
-	if (~state_flags & STATE_KILL_DONT_UPDATE_RING) {
-		killed = vector(u32, len, NULL);
-		if (!killed)
-			return 0;
-		if (!kill_add_to_ring(killed)) {
-			vector_delete(killed);
-			return 0;
-		}
-	}
-	if (~state_flags & STATE_KILL_DONT_UPDATE_RING) do {
-		__vec_psh(killed, vector_get(line->line, kill_start.pos));
-		vector_erase(line->line, kill_start.pos);
-	} while (--len); else do
-		vector_erase(line->line, kill_start.pos);
-	while (--len);
-	return 1;
-}
-
-u8	kill_copy_region(rl42_line *line) {
-	vector	copy;
-	size_t	len;
-	size_t	i;
-
-	if (!kill_start.set || !kill_end.set || kill_start.pos >= kill_end.pos)
-		return 1;
-	len = kill_end.pos - kill_start.pos;
-	copy = vector(u32, len, NULL);
-	if (!copy)
-		return 0;
-	if (!kill_add_to_ring(copy)) {
-		vector_delete(copy);
-		return 0;
-	}
-	for (i = 0; len--; i++)
-		__vec_psh(copy, vector_get(line->line, kill_start.pos + i));
-	return 1;
+	if (line->i > 0 && isspace(*(u32 *)vector_get(line->line, line->i - 1))) do
+		line->i--;
+	while (line->i > 0 && isspace(*(u32 *)vector_get(line->line, line->i - 1)));
+	add_mark(kill_start, line->i);
+	while (line->i < len && isspace(*(u32 *)vector_get(line->line, line->i)))
+		line->i++;
+	add_mark(kill_end, line->i);
+	state_flags |= STATE_KILL_DONT_UPDATE_RING;
+	rv = kill_region_internal(line);
+	state_flags &= ~STATE_KILL_DONT_UPDATE_RING;
+	line->i = kill_start.pos;
+	kill_start.set = 0;
+	kill_end.set = 0;
+	return (rv) ? term_display_line(line, 0) : 0;
 }

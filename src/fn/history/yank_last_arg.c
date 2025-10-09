@@ -8,6 +8,7 @@
 // <<yank_last_arg.c>>
 
 #include "internal/_kb.h"
+#include "internal/_defs.h"
 #include "internal/_kill.h"
 #include "internal/_rl42.h"
 #include "internal/_vector.h"

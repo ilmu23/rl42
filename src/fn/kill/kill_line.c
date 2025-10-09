@@ -7,8 +7,8 @@
 //
 // <<kill_line.c>>
 
+#include "internal/_defs.h"
 #include "internal/_kill.h"
-#include "internal/_rl42.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 #include "internal/_display.h"

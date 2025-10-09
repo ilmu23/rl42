@@ -100,11 +100,18 @@ HSFNFILES	=	accept_line.c \
 				yank_last_arg.c \
 				yank_nth_arg.c
 
-KLFNFILES	=	backward_kill_line.c \
+KLFNFILES	=	backward_copy_word.c \
+				backward_kill_line.c \
+				backward_kill_word.c \
+				copy_region.c \
+				copy_word.c \
+				delete_horizontal_space.c \
 				discard_line.c \
+				forward_copy_word.c \
 				kill_line.c \
 				kill_region.c \
 				kill_whole_line.c \
+				kill_word.c \
 				yank.c \
 				yank_pop.c
 

@@ -5,58 +5,36 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<region.c>>
+// <<copy_word.c>>
 
+#include <ctype.h>
+
+#define __RL42_INTERNAL
+#include "function.h"
+
+#include "internal/_defs.h"
 #include "internal/_kill.h"
-#include "internal/_rl42.h"
+#include "internal/_utils.h"
 #include "internal/_vector.h"
+#include "internal/_display.h"
 
-extern rl42_state	state_flags;
-
-rl42_mark	kill_start;
-rl42_mark	kill_end;
-
-u8	kill_region_internal(rl42_line *line) {
-	vector	killed;
-	size_t	len;
-
-	if (!kill_start.set || !kill_end.set || kill_start.pos >= kill_end.pos)
-		return 1;
-	len = kill_end.pos - kill_start.pos;
-	if (~state_flags & STATE_KILL_DONT_UPDATE_RING) {
-		killed = vector(u32, len, NULL);
-		if (!killed)
-			return 0;
-		if (!kill_add_to_ring(killed)) {
-			vector_delete(killed);
-			return 0;
-		}
-	}
-	if (~state_flags & STATE_KILL_DONT_UPDATE_RING) do {
-		__vec_psh(killed, vector_get(line->line, kill_start.pos));
-		vector_erase(line->line, kill_start.pos);
-	} while (--len); else do
-		vector_erase(line->line, kill_start.pos);
-	while (--len);
-	return 1;
-}
-
-u8	kill_copy_region(rl42_line *line) {
-	vector	copy;
-	size_t	len;
+rl42_fn(copy_word) {
 	size_t	i;
+	u8		rv;
 
-	if (!kill_start.set || !kill_end.set || kill_start.pos >= kill_end.pos)
+	if (line->i == vector_size(line->line) || isspace(*(u32 *)vector_get(line->line, line->i)))
 		return 1;
-	len = kill_end.pos - kill_start.pos;
-	copy = vector(u32, len, NULL);
-	if (!copy)
-		return 0;
-	if (!kill_add_to_ring(copy)) {
-		vector_delete(copy);
-		return 0;
+	i = line->i;
+	move_to_start_of_word(line);
+	add_mark(kill_start, line->i);
+	if (!move_to_end_of_word(line)) {
+		kill_start.set = 0;
+		return 1;
 	}
-	for (i = 0; len--; i++)
-		__vec_psh(copy, vector_get(line->line, kill_start.pos + i));
-	return 1;
+	add_mark(kill_end, line->i);
+	rv = kill_copy_region(line);
+	kill_start.set = 0;
+	kill_end.set = 0;
+	line->i = i;
+	return (rv) ? term_display_line(line, 0) : 0;
 }

@@ -5,24 +5,28 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<backward_kill_line.c>>
+// <<forward_copy_word.c>>
+
+#define __RL42_INTERNAL
+#include "function.h"
 
 #include "internal/_defs.h"
 #include "internal/_kill.h"
 #include "internal/_utils.h"
 #include "internal/_display.h"
 
-#include "internal/fn/kill.h"
+rl42_fn(forward_copy_word) {
+	u8	rv;
 
-rl42_fn(backward_kill_line) {
-	if (get_numeric_arg(line) < 0)
-		return kill_line(line);
-	add_mark(kill_start, 0);
+	add_mark(kill_start, line->i);
+	if (!move_to_end_of_word(line)) {
+		kill_start.set = 0;
+		return 1;
+	}
 	add_mark(kill_end, line->i);
-	if (!kill_region_internal(line))
-		return 0;
+	rv = kill_copy_region(line);
+	line->i = kill_start.pos;
 	kill_start.set = 0;
 	kill_end.set = 0;
-	line->i = 0;
-	return term_display_line(line, 0);
+	return (rv) ? term_display_line(line, 0) : 0;
 }

@@ -199,6 +199,20 @@ i64			get_numeric_arg(rl42_line *line);
  */
 u8			repeat(rl42_line *line, const rl42_fn positive, const rl42_fn negative);
 
+/** @Moves the cursor index to the start of the current or previous word
+ *
+ * @returns @c <b>u8</b> Non-zero if the cursor index was changed,
+ * 0 if not
+ */
+u8			move_to_start_of_word(rl42_line *line);
+
+/** @Moves the cursor index to the end of the current or next word
+ *
+ * @returns @c <b>u8</b> Non-zero if the cursor index was changed,
+ * 0 if not
+ */
+u8			move_to_end_of_word(rl42_line *line);
+
 /** @brief Displays an error message
  *
  * @param fmt Format string for the message

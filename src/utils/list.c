@@ -223,7 +223,7 @@ list_node	__lst_prv(clist list, const list_node node) {
 	return &((__list_node__ *)vector_get(list->data, get_node(node)->prev))->node;
 }
 
-u8	__lst_ins_a(list list, const list_node node, const void *val) {
+u8	__lst_ins_a(list list, const list_node ref, const void *val) {
 	__list_node__	*prev;
 	__list_node__	new;
 	u8				rv;
@@ -235,7 +235,7 @@ u8	__lst_ins_a(list list, const list_node node, const void *val) {
 	};
 	if (!new.node.data)
 		return 0;
-	prev = get_node(node);
+	prev = get_node(ref);
 	memcpy(new.node.data, val, list->element_size);
 	new.prev = prev->index;
 	new.next = prev->next;
@@ -255,7 +255,7 @@ u8	__lst_ins_a(list list, const list_node node, const void *val) {
 	return rv;
 }
 
-u8	__lst_ins_b(list list, const list_node node, const void *val) {
+u8	__lst_ins_b(list list, const list_node ref, const void *val) {
 	__list_node__	*next;
 	__list_node__	new;
 	u8				rv;
@@ -267,7 +267,7 @@ u8	__lst_ins_b(list list, const list_node node, const void *val) {
 	};
 	if (!new.node.data)
 		return 0;
-	next = get_node(node);
+	next = get_node(ref);
 	memcpy(new.node.data, val, list->element_size);
 	new.next = next->index;
 	new.prev = next->prev;
@@ -285,6 +285,66 @@ u8	__lst_ins_b(list list, const list_node node, const void *val) {
 	} else
 		free(new.node.data);
 	return rv;
+}
+
+void	__lst_mve_a(list list, const list_node ref, const list_node node) {
+	__list_node__	*_node;
+	__list_node__	*_ref;
+	__list_node__	*prev;
+	__list_node__	*next;
+
+	if (ref == node)
+		return ;
+	_ref = get_node(ref);
+	_node = get_node(node);
+	if (_node->prev == _ref->index)
+		return ;
+	prev = (_node->prev != _INDEX_NONE) ? vector_get(list->data, _node->prev) : NULL;
+	next = (_node->next != _INDEX_NONE) ? vector_get(list->data, _node->next) : NULL;
+	if (prev)
+		prev->next = _node->next;
+	else
+		list->first = _node->next;
+	if (next)
+		next->prev = _node->prev;
+	next = (_ref->next != _INDEX_NONE) ? vector_get(list->data, _ref->next) : NULL;
+	if (next)
+		next->prev = _node->index;
+	else
+		list->last = _node->index;
+	_node->prev = _ref->index;
+	_node->next = _ref->next;
+	_ref->next = _node->index;
+	_ref->prev = (_node->prev != _ref->index) ? _node->prev : _INDEX_NONE;
+}
+
+void	__lst_mve_b(list list, const list_node ref, const list_node node) {
+	__list_node__	*_node;
+	__list_node__	*_ref;
+	__list_node__	*prev;
+	__list_node__	*next;
+
+	if (ref == node)
+		return ;
+	_ref = get_node(ref);
+	_node = get_node(node);
+	if (_node->next == _ref->index)
+		return ;
+	prev = (_node->prev != _INDEX_NONE) ? vector_get(list->data, _node->prev) : NULL;
+	next = (_node->next != _INDEX_NONE) ? vector_get(list->data, _node->next) : NULL;
+	if (prev)
+		prev->next = _node->next;
+	else
+		list->first = _node->next;
+	if (next)
+		next->prev = _node->prev;
+	prev = (_ref->prev != _INDEX_NONE) ? vector_get(list->data, _ref->prev) : NULL;
+	if (prev)
+		prev->next = _node->index;
+	_node->next = _ref->index;
+	_node->prev = _ref->prev;
+	_ref->prev = _node->index;
+	_ref->next = (_node->next != _ref->index) ? _node->next : _INDEX_NONE;
 }
 
 void	__lst_ers(list list, const list_node node) {

@@ -1,16 +1,16 @@
 #!/bin/bash
 
-printf "\e[1;38;5;27mRL42 >\e[m Running %s test\n" $1
+printf "\e[1;38;5;39mRL42 >\e[m Running %s test\n" $1
 
 $2 2> .$1.err.log
 
 RV=$?
 
 if [ $RV == 0 ]; then
-	printf "\e[1;38;5;27mRL42 >\e[m %s test passed!\n" $1
+	printf "\e[1;38;5;39mRL42 >\e[m %s test passed!\n" $1
 else
 	cat .$1.err.log
-	printf "\e[1;38;5;27mRL42 >\e[m %s test failed!\n" $1
+	printf "\e[1;38;5;39mRL42 >\e[m %s test failed!\n" $1
 fi
 
 rm .$1.err.log
