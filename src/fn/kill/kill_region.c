@@ -10,6 +10,7 @@
 #define __RL42_INTERNAL
 #include "function.h"
 
+#include "internal/_defs.h"
 #include "internal/_kill.h"
 #include "internal/_rl42.h"
 #include "internal/_display.h"

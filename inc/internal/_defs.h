@@ -17,3 +17,5 @@
 #ifndef NUMERIC_ARG_MAX
 # define NUMERIC_ARG_MAX	1000000
 #endif
+
+#define add_mark(m, p)	(m.pos = p, m.set = 1)
