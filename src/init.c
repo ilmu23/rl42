@@ -162,6 +162,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-C-e>", "vi-editing-mode");
 	bind_emacs("<C-q>", "prefix-meta");
 	bind_emacs("<M-C-r>", "revert-line");
+	bind_emacs("<M-T>", "tilde-expand");
 	bind_vi_cmd("<C-e>", "emacs-editing-mode");
 	bind_vi_cmd("<C-t>", "tranpose-characters");
 	bind_vi_cmd("<SPC>", "forward-char");
@@ -274,6 +275,7 @@ static const struct {
 	__rl42_fn(rl42_abort, "abort"),
 	__rl42_fn(self_insert, "self-insert"),
 	__rl42_fn(set_mark, "set-mark"),
+	__rl42_fn(tilde_expand, "tilde-expand"),
 	__rl42_fn(transpose_chars, "transpose-chars"),
 	__rl42_fn(transpose_words, "transpose-words"),
 	__rl42_fn(unset_mark, "unset-mark"),

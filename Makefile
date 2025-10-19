@@ -141,6 +141,7 @@ MCFNFILES	=	abort.c \
 				prefix_meta.c \
 				revert_line.c \
 				set_mark.c \
+				tilde_expand.c \
 				unset_mark.c
 
 FILES	=	rl42.c \
