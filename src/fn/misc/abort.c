@@ -5,40 +5,20 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<abort.c>>
 
-#pragma once
+#define __RL42_INTERNAL
+#include "function.h"
 
-#include "defs.h"
+#include "internal/_rl42.h"
+#include "internal/_utils.h"
+#include "internal/_terminfo.h"
 
-#include "data.h"
+#define _BEL	"\a"
 
-#define RL42_VERSION "3.5.4-misc"
-
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
-
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+rl42_fn(rl42_abort) {
+	(void)line;
+	// TODO: Check value of bell-style and use the correct type of bell
+	state_flags |= STATE_ABORT;
+	return (ti_tputs(_BEL, 1, __putchar) != -1) ? 1 : 0;
+}

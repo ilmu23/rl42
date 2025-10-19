@@ -271,6 +271,7 @@ static const struct {
 	__rl42_fn(prefix_meta, "prefix-meta"),
 	__rl42_fn(quoted_insert, "quoted-insert"),
 	__rl42_fn(revert_line, "revert-line"),
+	__rl42_fn(rl42_abort, "abort"),
 	__rl42_fn(self_insert, "self-insert"),
 	__rl42_fn(set_mark, "set-mark"),
 	__rl42_fn(transpose_chars, "transpose-chars"),

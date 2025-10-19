@@ -135,7 +135,8 @@ MVFNFILES	=	backward_char.c \
 				forward_char.c \
 				forward_word.c
 
-MCFNFILES	=	exchange_point_and_mark.c \
+MCFNFILES	=	abort.c \
+				exchange_point_and_mark.c \
 				numeric_argument.c \
 				prefix_meta.c \
 				revert_line.c \
