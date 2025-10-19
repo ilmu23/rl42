@@ -160,6 +160,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-X>", "unset-mark");
 	bind_emacs("<M-C-x>", "exchange-point-and-mark");
 	bind_emacs("<M-C-e>", "vi-editing-mode");
+	bind_emacs("<C-q>", "prefix-meta");
 	bind_vi_cmd("<C-e>", "emacs-editing-mode");
 	bind_vi_cmd("<C-t>", "tranpose-characters");
 	bind_vi_cmd("<SPC>", "forward-char");
@@ -266,6 +267,7 @@ static const struct {
 	__rl42_fn(kill_word, "kill-word"),
 	__rl42_fn(numeric_argument, "numeric-argument"),
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
+	__rl42_fn(prefix_meta, "prefix-meta"),
 	__rl42_fn(quoted_insert, "quoted-insert"),
 	__rl42_fn(self_insert, "self-insert"),
 	__rl42_fn(set_mark, "set-mark"),

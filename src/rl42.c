@@ -70,7 +70,10 @@ char	*ft_readline(const char *prompt) {
 		match = kb_match_seq(&line, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
 		if (match.fn && match.run) {
 			rv = match.fn->f(&line);
-			vector_clear(line.keyseq);
+			if (~state_flags & STATE_DONT_CLEAR_KEYSEQ)
+				vector_clear(line.keyseq);
+			else
+				state_flags &= ~STATE_DONT_CLEAR_KEYSEQ;
 			if (n_arg.set && match.fn->f != numeric_argument) {
 				vector_delete(line.prompt.sprompt);
 				line.prompt.sprompt = NULL;
