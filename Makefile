@@ -138,6 +138,7 @@ MVFNFILES	=	backward_char.c \
 MCFNFILES	=	exchange_point_and_mark.c \
 				numeric_argument.c \
 				prefix_meta.c \
+				revert_line.c \
 				set_mark.c \
 				unset_mark.c
 
