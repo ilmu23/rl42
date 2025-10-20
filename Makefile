@@ -136,7 +136,9 @@ MVFNFILES	=	backward_char.c \
 				forward_word.c
 
 MCFNFILES	=	abort.c \
+				backward_char_search.c \
 				exchange_point_and_mark.c \
+				forward_char_search.c \
 				numeric_argument.c \
 				prefix_meta.c \
 				revert_line.c \

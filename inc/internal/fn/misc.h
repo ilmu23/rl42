@@ -11,9 +11,9 @@
 
 #include "function.h"
 
-rl42_fn(backward_search_char);
+rl42_fn(backward_char_search);
 rl42_fn(exchange_point_and_mark);
-rl42_fn(forward_search_char);
+rl42_fn(forward_char_search);
 rl42_fn(numeric_argument);
 rl42_fn(prefix_meta);
 rl42_fn(revert_line);

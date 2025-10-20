@@ -5,40 +5,30 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<rl42.h>>
+// <<forward_char_search.c>>
 
-#pragma once
+#include "internal/_kb.h"
+#include "internal/_term.h"
+#include "internal/_vector.h"
 
-#include "defs.h"
+#include "internal/fn/misc.h"
 
-#include "data.h"
+rl42_fn(forward_char_search) {
+	size_t	len;
+	size_t	i;
+	u32		c;
 
-#define RL42_VERSION "3.5.8-misc"
-
-/** @brief Gets a line from the user with editing
- *
- * @param prompt Prompt to be displayed
- * @returns @c <b>char *</b> Line entered by the user
- * NULL if EOF is reached with an empty line
- */
-char	*ft_readline(const char *prompt);
-
-/** @brief Binds a key sequence to a function
- *
- * @param seq Sequence to bind
- * @param f Function to bind
- * @param bmode Binding mode
- * @param emode Editing mode to apply the bind to
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-
-/** @brief Unbinds a key sequence
- *
- * @param seq Sequence to unbind
- * @param emode Editing mode in which to look for the bind in
- * @returns @c <b>u8</b> Non-zero on success,
- * 0 on failure
- */
-u8		rl42_unbind(const char *seq, const rl42_editing_mode emode);
+	if (get_numeric_arg(line, 1) < 0)
+		return backward_char_search(line);
+	len = vector_size(line->line);
+	if (line->i >= len - 1)
+		return 1;
+	c = kb_event_to_ucp(kb_listen(-1));
+	for (i = line->i + 1; i < len; i++)
+		if (c == *(u32 *)vector_get(line->line, i))
+			break ;
+	if (i == len)
+		return 1;
+	line->i = i;
+	return term_cursor_move_to_i(line);
+}
