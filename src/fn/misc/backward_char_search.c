@@ -5,24 +5,29 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<backward_kill_line.c>>
+// <<backward_char_search.c>>
 
-#include "internal/_defs.h"
-#include "internal/_kill.h"
-#include "internal/_utils.h"
-#include "internal/_display.h"
+#include "internal/_kb.h"
+#include "internal/_term.h"
+#include "internal//_vector.h"
 
-#include "internal/fn/kill.h"
+#include "internal/fn/misc.h"
 
-rl42_fn(backward_kill_line) {
-	if (get_numeric_arg(line, 0) < 0)
-		return kill_line(line);
-	add_mark(kill_start, 0);
-	add_mark(kill_end, line->i);
-	if (!kill_region_internal(line))
-		return 0;
-	kill_start.set = 0;
-	kill_end.set = 0;
-	line->i = 0;
-	return term_display_line(line, 0);
+rl42_fn(backward_char_search) {
+	size_t	i;
+	u32		c;
+
+	if (get_numeric_arg(line, 1) < 0)
+		return forward_char_search(line);
+	if (line->i == 0)
+		return 1;
+	c = kb_event_to_ucp(kb_listen(-1));
+	i = line->i;
+	while (i > 0)
+		if (c == *(u32 *)vector_get(line->line, --i))
+			break ;
+	if (i == (size_t)-1)
+		return 1;
+	line->i = i;
+	return term_cursor_move_to_i(line);
 }

@@ -5,24 +5,28 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<backward_kill_line.c>>
+// <<revert_line.c>>
 
-#include "internal/_defs.h"
-#include "internal/_kill.h"
+#include <stdlib.h>
+
+#define __RL42_INTERNAL
+#include "function.h"
+
 #include "internal/_utils.h"
+#include "internal/_vector.h"
 #include "internal/_display.h"
 
-#include "internal/fn/kill.h"
+extern rl42_hist_node	*current;
 
-rl42_fn(backward_kill_line) {
-	if (get_numeric_arg(line, 0) < 0)
-		return kill_line(line);
-	add_mark(kill_start, 0);
-	add_mark(kill_end, line->i);
-	if (!kill_region_internal(line))
+rl42_fn(revert_line) {
+	if (current->edit) {
+		free((void *)current->edit);
+		current->edit = NULL;
+	}
+	vector_delete(line->line);
+	line->line = cstr_to_rl42str(current->line);
+	if (!line->line)
 		return 0;
-	kill_start.set = 0;
-	kill_end.set = 0;
-	line->i = 0;
+	line->i = vector_size(line->line);
 	return term_display_line(line, 0);
 }

@@ -112,8 +112,8 @@ static inline void	_init_binds(void) {
 	bind_emacs("<S-LEFT>", "start-of-word");
 	bind_emacs("<M-f>", "forward-word");
 	bind_emacs("<M-b>", "backward-word");
-	bind_emacs("<M-]>", "forward-find-character");
-	bind_emacs("<M-[>", "backward-find-character");
+	bind_emacs("<M-]>", "forward-char-search");
+	bind_emacs("<M-[>", "backward-char-search");
 	bind_emacs("<C-o>", "operate-and-get-next");
 	bind_emacs("<C-n>", "forward-history");
 	bind_emacs("<C-p>", "backward-history");
@@ -160,6 +160,9 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-X>", "unset-mark");
 	bind_emacs("<M-C-x>", "exchange-point-and-mark");
 	bind_emacs("<M-C-e>", "vi-editing-mode");
+	bind_emacs("<C-q>", "prefix-meta");
+	bind_emacs("<M-C-r>", "revert-line");
+	bind_emacs("<M-T>", "tilde-expand");
 	bind_vi_cmd("<C-e>", "emacs-editing-mode");
 	bind_vi_cmd("<C-t>", "tranpose-characters");
 	bind_vi_cmd("<SPC>", "forward-char");
@@ -182,8 +185,8 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("A", "vi-append-eol");
 	bind_vi_cmd("b", "backward-word");
 	bind_vi_cmd("d", "vi-delete");
-	bind_vi_cmd("f", "forward-find-character");
-	bind_vi_cmd("F", "backward-find-character");
+	bind_vi_cmd("f", "forward-char-search");
+	bind_vi_cmd("F", "backward-char-search");
 	bind_vi_cmd("h", "backward-char");
 	bind_vi_cmd("i", "vi-insert");
 	bind_vi_cmd("I", "vi-insert-sol");
@@ -230,6 +233,7 @@ static const struct {
 }	functions[] = {
 	__rl42_fn(accept_line, "accept-line"),
 	__rl42_fn(backward_char, "backward-char"),
+	__rl42_fn(backward_char_search, "backward-char-search"),
 	__rl42_fn(backward_copy_word, "backward-copy-word"),
 	__rl42_fn(backward_delete_char, "backward-delete-char"),
 	__rl42_fn(backward_history, "backward-history"),
@@ -254,6 +258,7 @@ static const struct {
 	__rl42_fn(exchange_point_and_mark, "exchange-point-and-mark"),
 	__rl42_fn(fetch_history, "fetch-history"),
 	__rl42_fn(forward_char, "forward-char"),
+	__rl42_fn(forward_char_search, "forward-char-search"),
 	__rl42_fn(forward_copy_word, "forward-copy-word"),
 	__rl42_fn(forward_history, "forward-history"),
 	__rl42_fn(forward_search_history, "forward-search-history"),
@@ -266,9 +271,13 @@ static const struct {
 	__rl42_fn(kill_word, "kill-word"),
 	__rl42_fn(numeric_argument, "numeric-argument"),
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
+	__rl42_fn(prefix_meta, "prefix-meta"),
 	__rl42_fn(quoted_insert, "quoted-insert"),
+	__rl42_fn(revert_line, "revert-line"),
+	__rl42_fn(rl42_abort, "abort"),
 	__rl42_fn(self_insert, "self-insert"),
 	__rl42_fn(set_mark, "set-mark"),
+	__rl42_fn(tilde_expand, "tilde-expand"),
 	__rl42_fn(transpose_chars, "transpose-chars"),
 	__rl42_fn(transpose_words, "transpose-words"),
 	__rl42_fn(unset_mark, "unset-mark"),

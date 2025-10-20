@@ -97,7 +97,7 @@ u8	init_kb_listener(void) {
 
 static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size, rl42_kb_event *event) {
 	memset(event, 0, sizeof(*event));
-	if (buf_size > 1 && (strncmp(buf, "\x1b[", 2) == 0 || strncmp(buf, "\x1bO", 2) == 0)) {
+	if (buf_size > 1 && strlen(buf) > 2 && (strncmp(buf, "\x1b[", 2) == 0 || strncmp(buf, "\x1bO", 2) == 0)) {
 		switch (term_match_key_seq(buf)) {
 			case ti_kf1:
 				*event = kb_event(KB_KEY_LEGACY_F1, 0, 0);

@@ -16,7 +16,7 @@
 #include "internal/fn/kill.h"
 
 rl42_fn(kill_line) {
-	if (get_numeric_arg(line) < 0)
+	if (get_numeric_arg(line, 0) < 0)
 		return backward_kill_line(line);
 	add_mark(kill_start, line->i);
 	add_mark(kill_end, vector_size(line->line));

@@ -24,6 +24,8 @@ typedef u8	rl42_state;
 #define STATE_REPEAT				0x04U
 #define STATE_KILL_DONT_UPDATE_RING	0x08U
 #define STATE_YANK_SET_KILL_POS		0x10U
+#define STATE_DONT_CLEAR_KEYSEQ		0x20U
+#define STATE_ABORT					0x40U
 
 #define NEED_REPEAT	(n_arg.set && ~state_flags & STATE_REPEAT)
 
