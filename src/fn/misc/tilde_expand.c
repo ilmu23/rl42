@@ -32,8 +32,8 @@ rl42_fn(tilde_expand) {
 	c = '\0';
 	i = line->i;
 	home = NULL;
-	if (line->i == len || (line->i != 0 && isspace(*(u32 *)vector_get(line->line, line->i))))
-		line->i--;
+	if (line->i == len || isspace(*(u32 *)vector_get(line->line, line->i)))
+		line->i -= (line->i != 0) ? 1 : 0;
 	if (isspace(*(u32 *)vector_get(line->line, line->i)))
 		goto _tilde_expand_err_reset_i;
 	if (line->i != 0) for (c = *(u32 *)vector_get(line->line, line->i - 1); !isspace(c) && c != '~'; c = *(u32 *)vector_get(line->line, line->i))
