@@ -180,11 +180,12 @@ size_t		calculate_cursor_offset(const rl42_line *line);
 /** @brief Gets the currently set numeric argument
  *
  * @param line Current input line
+ * @param redisplay Whether to redisplay line
  * @returns @c <b>i64</b> Value of the argument,
  * -numeric-arg-max - 1 if the argument is -0,
  * 0 if no argument was set
  */
-i64			get_numeric_arg(rl42_line *line);
+i64			get_numeric_arg(rl42_line *line, const u8 redisplay);
 
 /** @brief Repeats the given functions
  *

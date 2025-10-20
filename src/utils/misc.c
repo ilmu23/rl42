@@ -10,10 +10,9 @@
 #include <ctype.h>
 #include <unistd.h>
 
-#define __RL42_INTERNAL
-#include "internal/_data.h"
 #include "internal/_defs.h"
 #include "internal/_vector.h"
+#include "internal/_display.h"
 
 extern rl42_numeric_arg	n_arg;
 
@@ -33,12 +32,14 @@ size_t	calculate_cursor_offset(const rl42_line *line) {
 	return offset;
 }
 
-i64	get_numeric_arg(rl42_line *line) {
+i64	get_numeric_arg(rl42_line *line, const u8 redisplay) {
 	if (!n_arg.set)
 		return 0;
 	vector_delete(line->prompt.sprompt);
 	line->prompt.sprompt = NULL;
 	n_arg.set = 0;
+	if (redisplay)
+		term_display_line(line, 0);
 	return (!n_arg.neg) ? n_arg.val : (n_arg.val) ?  -n_arg.val : -NUMERIC_ARG_MAX - 1;
 }
 
