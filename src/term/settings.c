@@ -7,12 +7,15 @@
 //
 // <<settings.c>>
 
+#include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <termios.h>
 #include <sys/ioctl.h>
+
+#include "rl42.h"
 
 #include "internal/_kb.h"
 #include "internal/_term.h"
@@ -274,9 +277,18 @@ const char	*term_get_seq(const u16 name) {
 	return NULL;
 }
 
+#define _BUFFER_SIZE	1023
+
 const char	*term_get_hl_seq(void) {
-	// TODO: Use actual hl color according to the highlight-color setting
-	return "\x1b[1;38;5;39m";
+	rl42_hl_color	hl;
+	static char		buf[_BUFFER_SIZE + 1];
+
+	hl = rl42_get(RL42_HIGHLIGHT_COLOR).hlc;
+	if (hl.type == RL42_HL_INDEX)
+		strlcpy(buf, ti_tparm(esc_seqs.setaf, hl.val.index), _BUFFER_SIZE + 1);
+	else
+		snprintf(buf, _BUFFER_SIZE, "\x1b[38;2;%hhu;%hhu;%hhum", hl.val.rgb.r, hl.val.rgb.g, hl.val.rgb.b);
+	return buf;
 }
 
 u16	term_match_key_seq(const char *seq) {
