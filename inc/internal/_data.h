@@ -52,6 +52,9 @@ typedef struct __line {
 typedef u8	(*rl42_fn)(rl42_line *);
 
 #ifdef __RL42_INTERNAL
+
+#include "data.h"
+
 typedef enum __direction {
 	FORWARD = 0,
 	BACKWARD = 1
@@ -131,6 +134,43 @@ typedef struct __arg {
 	u8	neg;
 	u8	set;
 }	rl42_numeric_arg;
+
+// Stores config file bind information
+// keyseq = keyseq to bind to
+// type = type of binding to make
+// val = binding to make
+// mode = mode to bind in
+typedef struct __cfg_bind {
+	const char			*keyseq;
+	enum {
+		CMD,
+		MACRO
+	}					type;
+	const char			*val;
+	rl42_editing_mode	mode;
+}	rl42_cfg_bind;
+
+// Stores config file setting information
+// var = name of the setting
+// val = value of the setting
+typedef struct __cfg_setting {
+	rl42_setting		var;
+	rl42_setting_val	val;
+}	rl42_cfg_setting;
+
+// Stores a config file line
+// type = type of the config line
+// line = config line information
+typedef struct __cfg_line {
+	enum {
+		BIND,
+		SETTING
+	}	type;
+	union {
+		rl42_cfg_bind		bind;
+		rl42_cfg_setting	setting;
+	}	line;
+}	rl42_cfg_line;
 
 // Bit field for storing display options
 typedef u8	rl42_display_opts;

@@ -15,6 +15,7 @@
 
 #define __RL42_INTERNAL
 #include "rl42.h"
+#include "config.h"
 #include "function.h"
 
 #include "internal/_kb.h"
@@ -71,8 +72,7 @@ u8	rl42_init(void) {
 			rv = 0;
 		_init_binds();
 		hist_load(getenv("RL42_HISTORY"));
-		// TODO: read initfile
-		// MAYBE: init highlight color
+		rl42_load_config(getenv("RL42RC"));
 		state_flags ^= STATE_INIT_IN_PROGRESS;
 		init = rv;
 	}
