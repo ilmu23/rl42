@@ -10,12 +10,10 @@
 #include <string.h>
 
 #include "internal/_kb.h"
-#include "internal/_term.h"
 #include "internal/_utils.h"
 #include "internal/_hashes.h"
 #include "internal/_vector.h"
 #include "internal/_keybinds.h"
-#include "internal/_terminfo_caps.h"
 
 #define _INVALID_ESCAPE	UINT32_MAX
 
