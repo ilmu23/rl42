@@ -8,7 +8,6 @@
 // <<load.c>>
 
 #include <ctype.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -152,10 +151,13 @@ static inline const char	*_convert_spaces(char *s) {
 }
 
 static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
+	struct {
+		i64	i64;
+		u64	u64;
+	}				n;
 	rl42_cfg_line	_line;
 	const char		*s;
 	size_t			elements;
-	u32				n;
 
 	s = *(const char **)vector_get(line, 0);
 	if (*s == '#') {
@@ -244,23 +246,23 @@ static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
 			case RL42_HIGHLIGHT_COLOR:
 				s = *(const char **)vector_get(line, 2);
 				if (_is_uint(s)) {
-					n = strtoul(s, NULL, 10);
-					if (n > 255) {
+					n.u64 = strtoul(s, NULL, 10);
+					if (n.u64 > 255) {
 						warn("rl42: rl42_load_config: highlight color index out of range on line #%zu: %s\n", line_n, s);
 						vector_delete((vector)line);
 						return 1;
 					}
 					_line.line.setting.val.hlc = (rl42_hl_color){
 						.type = RL42_HL_INDEX,
-						.val.index = n
+						.val.index = n.u64
 					};
 				} else if (_is_rgb(s)) {
-					n = strtoul((const char *)((uintptr_t)s + 1), NULL, 16);
+					n.u64 = strtoul((const char *)((uintptr_t)s + 1), NULL, 16);
 					_line.line.setting.val.hlc = (rl42_hl_color){
 						.type = RL42_HL_RGB,
-						.val.rgb.r = (n >> 16) & 0xFFU,
-						.val.rgb.g = (n >> 8) & 0xFFU,
-						.val.rgb.b = n & 0xFFU
+						.val.rgb.r = (n.u64 >> 16) & 0xFFU,
+						.val.rgb.g = (n.u64 >> 8) & 0xFFU,
+						.val.rgb.b = n.u64 & 0xFFU
 					};
 				} else {
 					warn("rl42: rl42_load_config: invalid highlight color on line #%zu: %s\n", line_n, s);
@@ -301,6 +303,8 @@ static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
 					vector_delete((vector)line);
 					return 1;
 				}
+				n.i64 = strtol(s, NULL, 10);
+				_line.line.setting.val.i64 = (n.i64 >= 0) ? n.i64 : -1;
 				break ;
 			case RL42_COMPLETION_QUERY_ITEMS:
 				s = *(const char **)vector_get(line, 2);
@@ -309,6 +313,7 @@ static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
 					vector_delete((vector)line);
 					return 1;
 				}
+				_line.line.setting.val.u64 = strtoul(s, NULL, 10);
 		}
 	}
 	vector_delete((vector)line);
