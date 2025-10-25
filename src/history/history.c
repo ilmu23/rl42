@@ -29,7 +29,7 @@
 #define _SEARCH_PROMPT_FWD	"inc-fwd-search: "
 #define _SEARCH_PROMPT_BCK	"inc-bck-search: "
 
-#define hist_node(n, l, e)	((rl42_hist_node){.entry_n = n, .line = l, .edit = e})
+#define hist_node(n, l, e)	((rl42_hist_node){.entry_n = n, .line = l, .edit = e, .new = load_done})
 
 #define search_fn_is_allowed(f)	(f == self_insert || f == backward_char || f == forward_char || f == delete_char || f == backward_delete_char)
 
@@ -43,9 +43,9 @@ static const char	*search_prompts[2][2] = {
 
 static const char	*histfile_name;
 
-static size_t	first_new;
 static size_t	entries;
 static list		history;
+static u8		load_done;
 
 static inline const rl42_hist_node	*_search_get_match(const char *match_str, const rl42_direction direction);
 static inline u8					_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction);
@@ -197,12 +197,48 @@ _hist_yank_arg_ret:
 	return rv;
 }
 
+void	hist_remove_extra_nodes(void) {
+	rl42_hist_node	*node;
+	rl42_hist_node	*tmp;
+	size_t			i;
+	FILE			*file;
+	i64				max_size;
+
+	max_size = rl42_get(RL42_HISTORY_SIZE).i64;
+	if (max_size == -1 || entries <= (size_t)max_size)
+		return ;
+	for (i = 0, node = hist_get_last_node(); i < entries - (size_t)max_size; i++) {
+		if (node->new)
+			break ;
+		node = hist_get_next_node(node, FORWARD);
+	}
+	if (i < entries - (size_t)max_size) {
+		i = entries - (size_t)max_size;
+		file = fopen(histfile_name, "a");
+		while (i--) {
+			fprintf(file, "%s\n", node->line);
+			node = hist_get_next_node(node, FORWARD);
+		}
+		fclose(file);
+	}
+	for (i = 0, node = hist_get_first_node(); i < (size_t)max_size; i++) {
+		tmp = node;
+		node = hist_get_next_node(node, BACKWARD);
+		tmp->entry_n = max_size - i;
+	}
+	list_resize(history, max_size);
+	entries = (size_t)max_size;
+}
+
 void	hist_remove_node(rl42_hist_node *node) {
 	list_erase(history, list_nth(history, entries-- - node->entry_n));
 }
 
 u8	hist_add_line(const char *line) {
-	return list_push_front(history, hist_node(++entries, line, NULL));
+	if (!list_push_front(history, hist_node(++entries, line, NULL)))
+		return 0;
+	hist_remove_extra_nodes();
+	return 1;
 }
 
 u8	hist_load(const char *fname) {
@@ -227,23 +263,27 @@ u8	hist_load(const char *fname) {
 	for (rv = 1, line = fgets(buf, 4096, file); rv && line; line = fgets(buf, 4096, file))
 		if (!hist_add_line(strndup(line, strlen(line) - 1)))
 			rv = 0;
+	load_done = 1;
 	fclose(file);
-	first_new = entries;
 	return rv;
 }
 
 void	hist_clean(void) {
 	rl42_hist_node	*node;
+	rl42_hist_node	*prev;
 	FILE			*file;
 
-	if (first_new != entries) {
+	node = hist_get_first_node();
+	if (node->new) {
 		file = fopen(histfile_name, "a");
-		if (first_new != 0) for (node = hist_get_first_node(); node->entry_n > first_new; node = hist_get_next_node(node, BACKWARD))
-			;
+		for (node = hist_get_last_node(), prev = NULL; node != prev; prev = node, node = hist_get_next_node(node, FORWARD))
+			if (node->new)
+				break ;
 		do {
+			prev = node;
 			node = hist_get_next_node(node, FORWARD);
-			fprintf(file, "%s\n", node->line);
-		} while (node->entry_n != entries);
+			fprintf(file, "%s\n", prev->line);
+		} while (prev != node);
 		fclose(file);
 	}
 	free((void *)histfile_name);

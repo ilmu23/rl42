@@ -70,13 +70,16 @@ typedef const struct __lst *	clist;
 
 // History node containing the original line and
 // the potentially edited version
-// entry_n = Entry number, starting from 1 for the first entry
 // line = stored line
 // edit = temporarily edited line
+// new = indicates whether this line was loaded from a file (0) or
+// entered in the current session (1)
+// entry_n = Entry number, starting from 1 for the first entry
 typedef struct __hist_node {
-	const size_t	entry_n;
-	const char		*line;
-	const char		*edit;
+	const char	*line;
+	const char	*edit;
+	const u8	new;
+	size_t		entry_n;
 }	rl42_hist_node;
 
 // Node in a key sequence tree
