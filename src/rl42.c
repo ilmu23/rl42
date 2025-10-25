@@ -18,6 +18,7 @@
 #include "internal/_vector.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
+#include "internal/_keybinds.h"
 #include "internal/_terminfo.h"
 
 #include "internal/fn/misc.h"
@@ -66,6 +67,8 @@ char	*ft_readline(const char *prompt) {
 	line.i = vector_size(line.line);
 	term_display_line(&line, 0);
 	rv = 1;
+	if (get_editing_mode() == VI_CMD)
+		set_editing_mode(VI_INS);
 	do {
 		match = kb_match_seq(&line, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
 		if (match.fn && match.run) {

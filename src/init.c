@@ -73,6 +73,7 @@ u8	rl42_init(void) {
 		_init_binds();
 		hist_load(getenv("RL42_HISTORY"));
 		rl42_load_config(getenv("RL42RC"));
+		set_editing_mode(rl42_get(RL42_EDITING_MODE).u64);
 		state_flags ^= STATE_INIT_IN_PROGRESS;
 		init = rv;
 	}
