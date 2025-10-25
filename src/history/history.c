@@ -253,10 +253,11 @@ void	hist_clean(void) {
 static inline const rl42_hist_node	*_search_get_match(const char *match_str, const rl42_direction direction) {
 	const rl42_hist_node	*prev;
 	const rl42_hist_node	*cur;
+	char					*(*cmp_fn)(const char *, const char *);
 
-	// TODO: Check if search-ignore-case is set
+	cmp_fn = (rl42_get(RL42_SEARCH_IGNORE_CASE).u64 == 0) ? strstr : strcasestr;
 	for (cur = current, prev = NULL; cur != prev; prev = cur, cur = hist_get_next_node(cur, direction))
-		if (strstr((cur->edit) ? cur->edit : cur->line, match_str))
+		if (cmp_fn((cur->edit) ? cur->edit : cur->line, match_str))
 			break ;
 	return (cur != prev) ? cur : NULL;
 }
