@@ -15,8 +15,9 @@
 
 #include "internal/_data.h"
 
-#define DISPLAY_PROMPT_ONLY			0x1U
-#define DISPLAY_HIGHLIGHT_SUBSTR	0x2U
+#define DISPLAY_PROMPT_ONLY				0x1U
+#define DISPLAY_HIGHLIGHT_SUBSTR		0x2U
+#define DISPLAY_HIGHLIGHT_IGNORE_CASE	0x4U
 
 /** @brief Displays a line
  *

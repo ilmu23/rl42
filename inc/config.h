@@ -5,27 +5,16 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<abort.c>>
+// <<config.h>>
 
-#define __RL42_INTERNAL
-#include "rl42.h"
-#include "function.h"
+#pragma once
 
-#include "internal/_rl42.h"
-#include "internal/_utils.h"
-#include "internal/_terminfo.h"
+#include "defs.h"
 
-#define _BEL	"\a"
-
-rl42_fn(rl42_abort) {
-	state_flags |= STATE_ABORT;
-	switch (rl42_get(RL42_BELL_STYLE).u64) {
-		default:
-		case RL42_BELL_NONE:
-			return 1;
-		case RL42_BELL_AUDIBLE:
-			return (ti_tputs(_BEL, 1, __putchar) != -1) ? 1 : 0;
-		case RL42_BELL_VISIBLE:
-			return (ti_tputs(ti_getstr(ti_flash), 1, __putchar) != -1) ? 1 : 0;
-	}
-}
+/** @brief Loads configuration from a file
+ *
+ * @param fname Name of the file to load
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8	rl42_load_config(const char *fname);

@@ -52,6 +52,9 @@ typedef struct __line {
 typedef u8	(*rl42_fn)(rl42_line *);
 
 #ifdef __RL42_INTERNAL
+
+#include "data.h"
+
 typedef enum __direction {
 	FORWARD = 0,
 	BACKWARD = 1
@@ -67,13 +70,16 @@ typedef const struct __lst *	clist;
 
 // History node containing the original line and
 // the potentially edited version
-// entry_n = Entry number, starting from 1 for the first entry
 // line = stored line
 // edit = temporarily edited line
+// new = indicates whether this line was loaded from a file (0) or
+// entered in the current session (1)
+// entry_n = Entry number, starting from 1 for the first entry
 typedef struct __hist_node {
-	const size_t	entry_n;
-	const char		*line;
-	const char		*edit;
+	const char	*line;
+	const char	*edit;
+	const u8	new;
+	size_t		entry_n;
 }	rl42_hist_node;
 
 // Node in a key sequence tree
@@ -131,6 +137,43 @@ typedef struct __arg {
 	u8	neg;
 	u8	set;
 }	rl42_numeric_arg;
+
+// Stores config file bind information
+// keyseq = keyseq to bind to
+// type = type of binding to make
+// val = binding to make
+// mode = mode to bind in
+typedef struct __cfg_bind {
+	const char			*keyseq;
+	enum {
+		CMD,
+		MACRO
+	}					type;
+	const char			*val;
+	rl42_editing_mode	mode;
+}	rl42_cfg_bind;
+
+// Stores config file setting information
+// var = name of the setting
+// val = value of the setting
+typedef struct __cfg_setting {
+	rl42_setting		var;
+	rl42_setting_val	val;
+}	rl42_cfg_setting;
+
+// Stores a config file line
+// type = type of the config line
+// line = config line information
+typedef struct __cfg_line {
+	enum {
+		BIND,
+		SETTING
+	}	type;
+	union {
+		rl42_cfg_bind		bind;
+		rl42_cfg_setting	setting;
+	}	line;
+}	rl42_cfg_line;
 
 // Bit field for storing display options
 typedef u8	rl42_display_opts;

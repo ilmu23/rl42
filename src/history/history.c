@@ -29,9 +29,14 @@
 #define _SEARCH_PROMPT_FWD	"inc-fwd-search: "
 #define _SEARCH_PROMPT_BCK	"inc-bck-search: "
 
-#define hist_node(n, l, e)	((rl42_hist_node){.entry_n = n, .line = l, .edit = e})
+#define hist_node(n, l, e)	((rl42_hist_node){.entry_n = n, .line = l, .edit = e, .new = load_done})
 
 #define search_fn_is_allowed(f)	(f == self_insert || f == backward_char || f == forward_char || f == delete_char || f == backward_delete_char)
+
+typedef struct {
+	const rl42_hist_node	*node;
+	size_t					i;
+}	_match;
 
 extern rl42_hist_node	*current;
 extern rl42_fn			prev_fn;
@@ -43,13 +48,13 @@ static const char	*search_prompts[2][2] = {
 
 static const char	*histfile_name;
 
-static size_t	first_new;
 static size_t	entries;
 static list		history;
+static u8		load_done;
 
-static inline const rl42_hist_node	*_search_get_match(const char *match_str, const rl42_direction direction);
-static inline u8					_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction);
-static inline u8					_search_get_query(rl42_line *query, rl42_fn *fn, const u8 incremental);
+static inline _match	_search_get_match(const char *match_str, const rl42_direction direction);
+static inline u8		_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction);
+static inline u8		_search_get_query(rl42_line *query, rl42_fn *fn, const u8 incremental);
 
 static void	_free_hist_node(rl42_hist_node *node);
 
@@ -138,7 +143,7 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	if (incremental) do {
 		if (vector_size(query.line) && !_search_process_query(line, query.line, &match, direction))
 			goto _hist_search_error;
-		if (!term_display_line(line, DISPLAY_HIGHLIGHT_SUBSTR, query.line))
+		if (!term_display_line(line, DISPLAY_HIGHLIGHT_SUBSTR | ((rl42_get(RL42_SEARCH_IGNORE_CASE).u64) ? DISPLAY_HIGHLIGHT_IGNORE_CASE : 0), query.line))
 			goto _hist_search_error;
 		rv = _search_get_query(&query, &fn, incremental);
 	} while (rv == 1); else {
@@ -197,12 +202,48 @@ _hist_yank_arg_ret:
 	return rv;
 }
 
+void	hist_remove_extra_nodes(void) {
+	rl42_hist_node	*node;
+	rl42_hist_node	*tmp;
+	size_t			i;
+	FILE			*file;
+	i64				max_size;
+
+	max_size = rl42_get(RL42_HISTORY_SIZE).i64;
+	if (max_size == -1 || entries <= (size_t)max_size)
+		return ;
+	for (i = 0, node = hist_get_last_node(); i < entries - (size_t)max_size; i++) {
+		if (node->new)
+			break ;
+		node = hist_get_next_node(node, FORWARD);
+	}
+	if (i < entries - (size_t)max_size) {
+		i = entries - (size_t)max_size;
+		file = fopen(histfile_name, "a");
+		while (i--) {
+			fprintf(file, "%s\n", node->line);
+			node = hist_get_next_node(node, FORWARD);
+		}
+		fclose(file);
+	}
+	for (i = 0, node = hist_get_first_node(); i < (size_t)max_size; i++) {
+		tmp = node;
+		node = hist_get_next_node(node, BACKWARD);
+		tmp->entry_n = max_size - i;
+	}
+	list_resize(history, max_size);
+	entries = (size_t)max_size;
+}
+
 void	hist_remove_node(rl42_hist_node *node) {
 	list_erase(history, list_nth(history, entries-- - node->entry_n));
 }
 
 u8	hist_add_line(const char *line) {
-	return list_push_front(history, hist_node(++entries, line, NULL));
+	if (!list_push_front(history, hist_node(++entries, line, NULL)))
+		return 0;
+	hist_remove_extra_nodes();
+	return 1;
 }
 
 u8	hist_load(const char *fname) {
@@ -227,55 +268,65 @@ u8	hist_load(const char *fname) {
 	for (rv = 1, line = fgets(buf, 4096, file); rv && line; line = fgets(buf, 4096, file))
 		if (!hist_add_line(strndup(line, strlen(line) - 1)))
 			rv = 0;
+	load_done = 1;
 	fclose(file);
-	first_new = entries;
 	return rv;
 }
 
 void	hist_clean(void) {
 	rl42_hist_node	*node;
+	rl42_hist_node	*prev;
 	FILE			*file;
 
-	if (first_new != entries) {
+	node = hist_get_first_node();
+	if (node->new) {
 		file = fopen(histfile_name, "a");
-		if (first_new != 0) for (node = hist_get_first_node(); node->entry_n > first_new; node = hist_get_next_node(node, BACKWARD))
-			;
+		for (node = hist_get_last_node(), prev = NULL; node != prev; prev = node, node = hist_get_next_node(node, FORWARD))
+			if (node->new)
+				break ;
 		do {
+			prev = node;
 			node = hist_get_next_node(node, FORWARD);
-			fprintf(file, "%s\n", node->line);
-		} while (node->entry_n != entries);
+			fprintf(file, "%s\n", prev->line);
+		} while (prev != node);
 		fclose(file);
 	}
 	free((void *)histfile_name);
 	list_delete(history);
 }
 
-static inline const rl42_hist_node	*_search_get_match(const char *match_str, const rl42_direction direction) {
+static inline _match _search_get_match(const char *match_str, const rl42_direction direction) {
 	const rl42_hist_node	*prev;
 	const rl42_hist_node	*cur;
+	const char				*start;
+	char					*(*cmp_fn)(const char *, const char *);
 
-	// TODO: Check if search-ignore-case is set
-	for (cur = current, prev = NULL; cur != prev; prev = cur, cur = hist_get_next_node(cur, direction))
-		if (strstr((cur->edit) ? cur->edit : cur->line, match_str))
-			break ;
-	return (cur != prev) ? cur : NULL;
+	cmp_fn = (rl42_get(RL42_SEARCH_IGNORE_CASE).u64 == 0) ? strstr : strcasestr;
+	for (cur = current, prev = NULL; cur != prev; prev = cur, cur = hist_get_next_node(cur, direction)) {
+		start = cmp_fn((cur->edit) ? cur->edit : cur->line, match_str);
+		if (start)
+			return (_match){ .node = cur, .i = (size_t)((uintptr_t)start - ((cur->edit) ? (uintptr_t)cur->edit: (uintptr_t)cur->line)) };
+	}
+	return (_match){ .node = NULL, .i = 0 };
 }
 
 static inline u8	_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction) {
 	const char	*query_str;
+	_match		_match;
 	u8			rv;
 
 	query_str = rl42str_to_cstr(query);
 	if (!query_str)
 		return 0;
 	rv = 0;
-	(*match) = _search_get_match(query_str, direction);
+	_match = _search_get_match(query_str, direction);
+	(*match) = _match.node;
 	if (*match) {
 		vector_delete(line->line);
 		line->line = cstr_to_rl42str(((*match)->edit) ? (*match)->edit : (*match)->line);
 		if (!line->line)
 			goto _search_process_query_ret;
-		line->i = vector_size(line->line);
+		line->i = (!rl42_get(RL42_HORIZONTAL_SCROLL_MODE).u64) ? vector_size(line->line) : _match.i;
 		rv = 1;
 	} else
 		rv = 1;

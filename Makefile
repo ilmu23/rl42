@@ -29,6 +29,7 @@ OBJDIR	=	obj
 INCDIR	=	inc
 TESTDIR	=	tst
 
+CONFDIR	=	config
 FUNCDIR	=	function
 HISTDIR	=	history
 KBINDIR	=	input
@@ -48,6 +49,9 @@ MVFNDIR	=	move
 TXFNDIR	=	text
 
 ## SOURCE FILES
+
+CONFFILES	=	load.c \
+				settings.c
 
 FUNCFILES	=	rl42_fn_info.c
 
@@ -148,6 +152,7 @@ MCFNFILES	=	abort.c \
 
 FILES	=	rl42.c \
 			init.c \
+			$(addprefix $(CONFDIR)/, $(CONFFILES)) \
 			$(addprefix $(FUNCDIR)/, $(FUNCFILES)) \
 			$(addprefix $(HISTDIR)/, $(HISTFILES)) \
 			$(addprefix $(KBINDIR)/, $(KBINFILES)) \
@@ -315,6 +320,7 @@ $(MAP_TEST): $(MAP_TEST_FILES)
 
 $(OBJDIR):
 	@printf "\e[1;38;5;39mRL42 >\e[m Creating objdirs\n"
+	@mkdir -p $(OBJDIR)/$(CONFDIR)
 	@mkdir -p $(OBJDIR)/$(FUNCDIR)
 	@mkdir -p $(OBJDIR)/$(HISTDIR)
 	@mkdir -p $(OBJDIR)/$(KBINDIR)

@@ -65,6 +65,11 @@ u8				hist_search(rl42_line *line, const rl42_direction direction, const u8 incr
  */
 u8				hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n);
 
+/** @brief Removes extra nodes to keep the history size within the
+ *  limit specified in history-size
+ */
+void			hist_remove_extra_nodes(void);
+
 /** @brief Removes a node from history
  *
  * @param node Node to remove

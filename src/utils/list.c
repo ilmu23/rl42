@@ -369,8 +369,8 @@ void	__lst_ers(list list, const list_node node) {
 	} while (_node->delete);
 }
 
-size_t	__lst_sze(clist list) {
-	return list->elements;
+size_t	__lst_sze(clist list, const u8 real) {
+	return (real) ? vector_size(list->data) : list->elements;
 }
 
 size_t	__lst_cap(clist list) {
@@ -393,17 +393,14 @@ u8	__lst_rsz(list list, const size_t size) {
 		for (i = 0, node = vector_get(list->data, list->first); i < vec_size; node = vector_get(list->data, node->next))
 			tmp[i++] = *node;
 		for (i = 0; i < vec_size; i++) {
-			if (i < size) {
-				tmp[i].next = (i + 1 < size) ? i + 1 : _INDEX_NONE;
-				tmp[i].prev = (i != 0) ? i - 1 : _INDEX_NONE;
-			}
+			tmp[i].next = (i + 1 < size) ? i + 1 : _INDEX_NONE;
+			tmp[i].prev = (i != 0) ? i - 1 : _INDEX_NONE;
+			tmp[i].index = i;
 			vector_set(list->data, i, tmp[i]);
 		}
-		if (tmp_size > _alloca_size.max)
-			free(tmp);
-		list->highest_index = size;
+		list->highest_index = size - 1;
 		list->elements = size;
-		list->last = size;
+		list->last = size - 1;
 		list->first = 0;
 	}
 	return vector_resize(list->data, size);

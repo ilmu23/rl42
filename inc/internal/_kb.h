@@ -13,9 +13,11 @@
 # define __RL42_INTERNAL
 #endif
 
+#include "rl42.h"
+
 #include "internal/_data.h"
 
-#define AMBIGUOUS_TIMEOUT 750
+#define AMBIGUOUS_TIMEOUT rl42_get(RL42_KEYSEQ_TIMEOUT).i64
 
 #define KB_MOD_SHIFT	0x01U
 #define KB_MOD_ALT		0x02U

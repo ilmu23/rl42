@@ -7,6 +7,10 @@
 //
 // <<forward_char_search.c>>
 
+#include <ctype.h>
+
+#include "rl42.h"
+
 #include "internal/_kb.h"
 #include "internal/_term.h"
 #include "internal/_vector.h"
@@ -24,9 +28,16 @@ rl42_fn(forward_char_search) {
 	if (line->i >= len - 1)
 		return 1;
 	c = kb_event_to_ucp(kb_listen(-1));
-	for (i = line->i + 1; i < len; i++)
-		if (c == *(u32 *)vector_get(line->line, i))
-			break ;
+	if (rl42_get(RL42_SEARCH_IGNORE_CASE).u64 == 0) {
+		for (i = line->i + 1; i < len; i++)
+			if (c == *(u32 *)vector_get(line->line, i))
+				break ;
+	} else {
+		c = (u32)toupper(c);
+		for (i = line->i + 1; i < len; i++)
+			if (c == (u32)toupper(*(u32 *)vector_get(line->line, i)))
+				break ;
+	}
 	if (i == len)
 		return 1;
 	line->i = i;
