@@ -283,6 +283,8 @@ const char	*term_get_hl_seq(void) {
 	rl42_hl_color	hl;
 	static char		buf[_BUFFER_SIZE + 1];
 
+	if (!rl42_get(RL42_ENABLE_HIGHLIGHT).u64)
+		return "";
 	hl = rl42_get(RL42_HIGHLIGHT_COLOR).hlc;
 	if (hl.type == RL42_HL_INDEX)
 		strlcpy(buf, ti_tparm(esc_seqs.setaf, hl.val.index), _BUFFER_SIZE + 1);
