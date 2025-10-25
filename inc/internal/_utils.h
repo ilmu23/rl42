@@ -163,6 +163,15 @@ vector		cstr_split(const char *s, const char c);
  */
 size_t		rl42str_find(cvector s, cvector substr);
 
+/** @brief Finds the start of substr in s, ignoring case
+ *
+ * @param s String to look for substr in
+ * @param substr String to look for
+ * @returns @c <b>size_t</b> Start of substr in s,
+ * RL42STR_SUBSTR_NOT_FOUND if substr is not found in s
+ */
+size_t		rl42str_find_case(cvector s, cvector substr);
+
 /** @brief Prints a single character to stdout
  *
  * @returns @c <b>ssize_t</b> Bytes written,

@@ -42,7 +42,7 @@ static struct {
 
 static u8	hl_user_mark;
 
-static inline u8	_add_str_to_buf(cvector s, cvector hl, char buf[_BUFFER_SIZE], size_t *i);
+static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts opts, char buf[_BUFFER_SIZE], size_t *i);
 
 u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 	static char	buf[_BUFFER_SIZE];
@@ -54,14 +54,14 @@ u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 	if (opts & DISPLAY_HIGHLIGHT_SUBSTR)
 		va_start(args, opts);
 	if (line->prompt.sprompt) {
-		if (!_add_str_to_buf(line->prompt.sprompt, NULL, buf, &i))
+		if (!_add_str_to_buf(line->prompt.sprompt, NULL, opts, buf, &i))
 			goto _term_display_line_error;
 		buf[i++] = ' ';
 	}
-	if (!_add_str_to_buf(line->prompt.prompt, NULL, buf, &i))
+	if (!_add_str_to_buf(line->prompt.prompt, NULL, opts, buf, &i))
 		goto _term_display_line_error;
 	hl_user_mark = user.set;
-	if (~opts & DISPLAY_PROMPT_ONLY && !_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(args, cvector) : NULL, buf, &i))
+	if (~opts & DISPLAY_PROMPT_ONLY && !_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(args, cvector) : NULL, opts, buf, &i))
 		goto _term_display_line_error;
 	if (!term_cursor_set_pos(line->prompt.root.row, line->prompt.root.col))
 		goto _term_display_line_error;
@@ -76,7 +76,7 @@ _term_display_line_error:
 	return 0;
 }
 
-static inline u8	_add_str_to_buf(cvector s, cvector hl, char buf[_BUFFER_SIZE], size_t *i) {
+static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts opts, char buf[_BUFFER_SIZE], size_t *i) {
 	const char	*hl_seq;
 	utf8_cbuf	encoded;
 	size_t		hl_start;
@@ -86,7 +86,7 @@ static inline u8	_add_str_to_buf(cvector s, cvector hl, char buf[_BUFFER_SIZE], 
 	size_t		_i;
 	u32			ucp;
 
-	hl_start = rl42str_find(s, hl);
+	hl_start = ((opts & DISPLAY_HIGHLIGHT_IGNORE_CASE) == 0) ? rl42str_find(s, hl) : rl42str_find_case(s, hl);
 	hl_end = (hl_start != RL42STR_SUBSTR_NOT_FOUND) ? hl_start + vector_size(hl) : hl_start;
 	for (_i = 0, size = vector_size(s); *i < _BUFFER_SIZE && _i < size; _i++) {
 		ucp = *(u32 *)vector_get(s, _i);

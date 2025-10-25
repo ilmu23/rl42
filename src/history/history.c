@@ -138,7 +138,7 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	if (incremental) do {
 		if (vector_size(query.line) && !_search_process_query(line, query.line, &match, direction))
 			goto _hist_search_error;
-		if (!term_display_line(line, DISPLAY_HIGHLIGHT_SUBSTR, query.line))
+		if (!term_display_line(line, DISPLAY_HIGHLIGHT_SUBSTR | ((rl42_get(RL42_SEARCH_IGNORE_CASE).u64) ? DISPLAY_HIGHLIGHT_IGNORE_CASE : 0), query.line))
 			goto _hist_search_error;
 		rv = _search_get_query(&query, &fn, incremental);
 	} while (rv == 1); else {
