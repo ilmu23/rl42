@@ -65,8 +65,9 @@ void		__lst_mve_b(list list, const list_node ref, const list_node node);
 #define		list_erase(list, node)	(__lst_ers(list, node))
 void   		__lst_ers(list list, const list_node node);
 
-#define		list_size(list)	(__lst_sze(list))
-size_t 		__lst_sze(clist list);
+#define		list_size(list)			(__lst_sze(list, 0))
+#define		list_real_size(list)	(__lst_sze(list, 1))
+size_t 		__lst_sze(clist list, const u8 real);
 
 #define		list_capacity(list)	(__lst_cap)
 size_t 		__lst_cap(clist list);
