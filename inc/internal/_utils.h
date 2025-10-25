@@ -186,6 +186,13 @@ ssize_t		__putchar(const char c);
  */
 size_t		calculate_cursor_offset(const rl42_line *line);
 
+/** @brief Calculates the amount of space available for horizontal scrolling
+ *
+ * @param line Current input line
+ * @returns @c <b>size_t</b> Number of columns available for scrolling
+ */
+size_t		calculate_scroll_space(const rl42_line *line);
+
 /** @brief Gets the currently set numeric argument
  *
  * @param line Current input line

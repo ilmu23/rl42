@@ -33,6 +33,11 @@
 
 #define search_fn_is_allowed(f)	(f == self_insert || f == backward_char || f == forward_char || f == delete_char || f == backward_delete_char)
 
+typedef struct {
+	const rl42_hist_node	*node;
+	size_t					i;
+}	_match;
+
 extern rl42_hist_node	*current;
 extern rl42_fn			prev_fn;
 
@@ -47,9 +52,9 @@ static size_t	entries;
 static list		history;
 static u8		load_done;
 
-static inline const rl42_hist_node	*_search_get_match(const char *match_str, const rl42_direction direction);
-static inline u8					_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction);
-static inline u8					_search_get_query(rl42_line *query, rl42_fn *fn, const u8 incremental);
+static inline _match	_search_get_match(const char *match_str, const rl42_direction direction);
+static inline u8		_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction);
+static inline u8		_search_get_query(rl42_line *query, rl42_fn *fn, const u8 incremental);
 
 static void	_free_hist_node(rl42_hist_node *node);
 
@@ -290,33 +295,38 @@ void	hist_clean(void) {
 	list_delete(history);
 }
 
-static inline const rl42_hist_node	*_search_get_match(const char *match_str, const rl42_direction direction) {
+static inline _match _search_get_match(const char *match_str, const rl42_direction direction) {
 	const rl42_hist_node	*prev;
 	const rl42_hist_node	*cur;
+	const char				*start;
 	char					*(*cmp_fn)(const char *, const char *);
 
 	cmp_fn = (rl42_get(RL42_SEARCH_IGNORE_CASE).u64 == 0) ? strstr : strcasestr;
-	for (cur = current, prev = NULL; cur != prev; prev = cur, cur = hist_get_next_node(cur, direction))
-		if (cmp_fn((cur->edit) ? cur->edit : cur->line, match_str))
-			break ;
-	return (cur != prev) ? cur : NULL;
+	for (cur = current, prev = NULL; cur != prev; prev = cur, cur = hist_get_next_node(cur, direction)) {
+		start = cmp_fn((cur->edit) ? cur->edit : cur->line, match_str);
+		if (start)
+			return (_match){ .node = cur, .i = (size_t)((uintptr_t)start - ((cur->edit) ? (uintptr_t)cur->edit: (uintptr_t)cur->line)) };
+	}
+	return (_match){ .node = NULL, .i = 0 };
 }
 
 static inline u8	_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction) {
 	const char	*query_str;
+	_match		_match;
 	u8			rv;
 
 	query_str = rl42str_to_cstr(query);
 	if (!query_str)
 		return 0;
 	rv = 0;
-	(*match) = _search_get_match(query_str, direction);
+	_match = _search_get_match(query_str, direction);
+	(*match) = _match.node;
 	if (*match) {
 		vector_delete(line->line);
 		line->line = cstr_to_rl42str(((*match)->edit) ? (*match)->edit : (*match)->line);
 		if (!line->line)
 			goto _search_process_query_ret;
-		line->i = vector_size(line->line);
+		line->i = (!rl42_get(RL42_HORIZONTAL_SCROLL_MODE).u64) ? vector_size(line->line) : _match.i;
 		rv = 1;
 	} else
 		rv = 1;
