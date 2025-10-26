@@ -196,8 +196,8 @@ static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
 			vector_delete((vector)line);
 			return 1;
 		}
-		_line.line.bind.keyseq = strdup(vector_get(line, 1));
-		_line.line.bind.val = strdup(vector_get(line, 2));
+		_line.line.bind.keyseq = strdup(*(const char **)vector_get(line, 1));
+		_line.line.bind.val = strdup(*(const char **)vector_get(line, 2));
 		_line.line.bind.type = (*_line.line.bind.val == '\'' || *_line.line.bind.val == '"') ? MACRO : CMD;
 	} else {
 		switch (vector_size(line)) {
