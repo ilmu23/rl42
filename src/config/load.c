@@ -327,12 +327,9 @@ static inline u8	_exec_lines(cvector lines) {
 
 	for (i = 0, size = vector_size(lines); i < size; i++) {
 		line = vector_get(lines, i);
-		if (line->type == BIND) {
-			if (line->line.bind.type == CMD)
-				rl42_bind(line->line.bind.keyseq, line->line.bind.val, QREMAP, line->line.bind.mode);
-			else
-				{}; // rl42_macro(keyseq, val, QREMAP, mode);)
-		} else
+		if (line->type == BIND)
+			rl42_bind(line->line.bind.keyseq, line->line.bind.val, REMAP, line->line.bind.mode);
+		else
 			rl42_set(line->line.setting.var, line->line.setting.val);
 	}
 	return 1;

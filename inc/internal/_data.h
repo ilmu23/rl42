@@ -104,10 +104,12 @@ typedef struct __fn_match {
 // f = pointer to the function
 // fname = name of the function
 // binds = all sequences bound to the function, separated by editing mode
+// macro = indicates whether f is a macro caller
 typedef struct __fn_info {
 	rl42_fn		f;
 	const char	*fname;
 	vector		binds[3];
+	u8			macro;
 }	rl42_fn_info;
 
 // Stores a rl42 mark position

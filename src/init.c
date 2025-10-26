@@ -59,7 +59,6 @@ u8	rl42_init(void) {
 		state_flags ^= STATE_INIT_IN_PROGRESS;
 		if (!init_key_trees())
 			rv = 0;
-		// MAYBE: init macro data
 		if (atexit(_rl42_exit) != 0)
 			rv = 0;
 #ifdef __TEST_BUILD
@@ -298,6 +297,7 @@ static inline u8	_init_fns(void) {
 	size_t	fn_count;
 	size_t	i;
 
+	init_caller();
 	for (i = 0, fn_count = sizeof(functions) / sizeof(*functions); i < fn_count; i++)
 		if (!rl42_register_function(functions[i].address, functions[i].name))
 			break ;

@@ -8,6 +8,7 @@
 // <<rl42: rl42_bind.c>>
 
 #include <errno.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "internal/_map.h"
@@ -16,6 +17,8 @@
 #include "internal/_vector.h"
 #include "internal/_function.h"
 #include "internal/_keybinds.h"
+
+#define is_macro(f)	(*f == '\'' || *f == '"')
 
 static inline u8	_unbind(const char *seq, rl42_key_tree *node, const rl42_editing_mode emode);
 static inline u8	_rebind(const char *seq, const char *f, rl42_key_tree *node, rl42_fn_info *fninfo, const rl42_bind_mode bmode, const rl42_editing_mode emode);
@@ -33,12 +36,25 @@ u8 rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const r
 		error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
 		return 0;
 	}
-	fninfo = get_fn_info_name(f);
-	if (!fninfo)
-		return (!(bmode & 1)) ? warn("rl42: rl42_bind(%s, %s): function not found\n", seq, f) : 0;
 	expanded_seq = expand_seq(seq);
 	if (!expanded_seq || expanded_seq == EXPAND_INVALID_SEQ)
 		return error("rl42: rl42_bind(%s, %s): %s\n", seq, f, (expanded_seq == NULL) ? strerror(errno) : "invalid key sequence");
+	if (!is_macro(f)) {
+		fninfo = get_fn_info_name(f);
+		if (!fninfo) {
+			vector_delete(expanded_seq);
+			return (!(bmode & 1)) ? warn("rl42: rl42_bind(%s, %s): function not found\n", seq, f) : 0;
+		}
+	} else {
+		fninfo = get_fn_info_keyseq(expanded_seq, emode);
+		if (!fninfo) {
+			fninfo = create_macro(get_next_macro_id(emode), f, emode);
+			if (!fninfo) {
+				vector_delete(expanded_seq);
+				return error("rl42: rl42_bind(%s, %s): %s\n", seq, f, (errno) ? strerror(errno) : "unknown error");
+			}
+		}
+	}
 	for (i = 0, len = vector_size(expanded_seq), binds = get_key_tree(emode); i < len; i++) {
 		tmp = map_get(binds->next, *(u32 *)vector_get(expanded_seq, i));
 		if (tmp == MAP_NOT_FOUND) {
@@ -112,11 +128,11 @@ static inline u8	_rebind(const char *seq, const char *f, rl42_key_tree *node, rl
 		case QUIET:
 			return 0;
 		case REMAP:
-			info("rl42: rl42_bind(%s, %s): remapping key sequence\n", seq, f);
-			[[fallthrough]];
 		case QREMAP:
 			break ;
 	}
+	if (fninfo->macro)
+		return edit_macro(fninfo, f);
 	return (_unbind(seq, node, emode)) ? _bind(seq, node, fninfo, emode) : 0;
 }
 
@@ -124,9 +140,6 @@ static inline u8	_bind(const char *seq, rl42_key_tree *node, rl42_fn_info *fninf
 	const char	*_seq;
 
 	node->f = fninfo->f;
-//	TODO: Macro implementation
-//	if (fninfo->f == __macro)
-//		return _macro(seq, f);
 	_seq = strdup(seq);
 	vector_push(fninfo->binds[(emode != CURRENT) ? emode : get_editing_mode()], _seq);
 	return 1;

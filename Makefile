@@ -53,7 +53,8 @@ TXFNDIR	=	text
 CONFFILES	=	load.c \
 				settings.c
 
-FUNCFILES	=	rl42_fn_info.c
+FUNCFILES	=	macro.c \
+				rl42_fn_info.c
 
 HISTFILES	=	history.c
 
