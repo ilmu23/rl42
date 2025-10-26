@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "rl42.h"
+
 #include "internal/_defs.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
