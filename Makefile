@@ -126,6 +126,7 @@ MCFNFILES	=	abort.c \
 				forward_char_search.c \
 				numeric_argument.c \
 				prefix_meta.c \
+				reload_config_file.c \
 				revert_line.c \
 				set_mark.c \
 				tilde_expand.c \

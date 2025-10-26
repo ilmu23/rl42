@@ -145,7 +145,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-y>", "yank-pop");
 	bind_emacs("<C-t>", "transpose-chars");
 	bind_emacs("<M-t>", "transpose-words");
-	bind_emacs("<C-x><C-r>", "re-read-init-file");
+	bind_emacs("<C-x><C-r>", "reload-config-file");
 	bind_emacs("<M-0>", "numeric-argument");
 	bind_emacs("<M-1>", "numeric-argument");
 	bind_emacs("<M-2>", "numeric-argument");
@@ -167,7 +167,7 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("<C-e>", "emacs-editing-mode");
 	bind_vi_cmd("<C-t>", "tranpose-characters");
 	bind_vi_cmd("<SPC>", "forward-char");
-	bind_vi_cmd("<M-r>", "re-read-init-file");
+	bind_vi_cmd("<M-r>", "reload-config-file");
 	bind_vi_cmd("$", "end-of-line");
 	bind_vi_cmd("0", "beginning-of-line");
 	bind_vi_cmd("1", "numeric-argument");
@@ -275,6 +275,7 @@ static const struct {
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
 	__rl42_fn(prefix_meta, "prefix-meta"),
 	__rl42_fn(quoted_insert, "quoted-insert"),
+	__rl42_fn(reload_config_file, "reload-config-file"),
 	__rl42_fn(revert_line, "revert-line"),
 	__rl42_fn(rl42_abort, "abort"),
 	__rl42_fn(self_insert, "self-insert"),
