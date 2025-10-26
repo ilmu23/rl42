@@ -33,6 +33,12 @@ rl42_fn_info	*get_fn_info_name(const char *f);
  */
 rl42_fn_info	*get_fn_info_fn(rl42_fn f);
 
+/** @brief Gets a list of all registered functions
+ *
+ * @returns @c <b>cvector</b> List of all registered functions
+ */
+cvector			get_fn_list(void);
+
 /** @brief Frees all function information
  *
  * Only to be used on exit as a cleanup function

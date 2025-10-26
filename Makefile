@@ -121,6 +121,8 @@ KLFNFILES	=	backward_copy_word.c \
 
 MCFNFILES	=	abort.c \
 				backward_char_search.c \
+				dump_functions.c \
+				dump_variables.c \
 				emacs_editing_mode.c \
 				exchange_point_and_mark.c \
 				forward_char_search.c \

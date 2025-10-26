@@ -11,6 +11,13 @@
 
 #include "function.h"
 
+#ifdef __DUMP_FN
+#define DUMP_BUFFER_SIZE	4096
+
+ssize_t	add_to_dump_buf(const char *fmt, ...);
+ssize_t	flush_dump_buf(void);
+#endif
+
 rl42_fn(backward_char_search);
 rl42_fn(dump_functions);
 rl42_fn(dump_macros);

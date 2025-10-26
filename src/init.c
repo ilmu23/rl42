@@ -253,6 +253,8 @@ static const struct {
 	__rl42_fn(delete_horizontal_space, "delete-horizontal-space"),
 	__rl42_fn(discard_line, "discard-line"),
 	__rl42_fn(downcase_word, "downcase-word"),
+	__rl42_fn(dump_functions, "dump-functions"),
+	__rl42_fn(dump_variables, "dump-variables"),
 	__rl42_fn(emacs_editing_mode, "emacs-editing-mode"),
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(end_of_history, "end-of-history"),

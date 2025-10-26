@@ -46,6 +46,10 @@ rl42_fn_info	*get_fn_info_fn(rl42_fn f) {
 	return NULL;
 }
 
+cvector	get_fn_list(void) {
+	return functions;
+}
+
 void	clean_fns(void) {
 	vector_delete(functions);
 }

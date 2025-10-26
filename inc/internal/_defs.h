@@ -18,4 +18,6 @@
 # define NUMERIC_ARG_MAX	1000000
 #endif
 
+#define NUMERIC_ARG_NOT_SET	NUMERIC_ARG_MAX + 1
+
 #define add_mark(m, p)	(m.pos = p, m.set = 1)

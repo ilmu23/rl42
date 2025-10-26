@@ -43,7 +43,7 @@ size_t	calculate_scroll_space(const rl42_line *line) {
 
 i64	get_numeric_arg(rl42_line *line, const u8 redisplay) {
 	if (!n_arg.set)
-		return 0;
+		return NUMERIC_ARG_NOT_SET;
 	vector_delete(line->prompt.sprompt);
 	line->prompt.sprompt = NULL;
 	n_arg.set = 0;
