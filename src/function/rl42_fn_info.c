@@ -11,14 +11,30 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "internal/_map.h"
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 #include "internal/_function.h"
+#include "internal/_keybinds.h"
 
 static vector	functions;
 
 static void	_clean_fn_info(rl42_fn_info *f);
+
+rl42_fn_info	*get_fn_info_keyseq(cvector expanded_seq, const rl42_editing_mode emode) {
+	rl42_key_tree	*binds;
+	size_t			len;
+	size_t			i;
+
+	for (i = 0, len = vector_size(expanded_seq), binds = get_key_tree(emode); i < len; i++) {
+		binds = map_get(binds->next, *(u32 *)vector_get(expanded_seq, i));
+		if (binds == MAP_NOT_FOUND)
+			return NULL;
+		binds = *(rl42_key_tree **)binds;
+	}
+	return get_fn_info_fn(binds->f);
+}
 
 rl42_fn_info	*get_fn_info_name(const char *f) {
 	const rl42_fn_info	*fns;
@@ -46,7 +62,12 @@ rl42_fn_info	*get_fn_info_fn(rl42_fn f) {
 	return NULL;
 }
 
+cvector	get_fn_list(void) {
+	return functions;
+}
+
 void	clean_fns(void) {
+	delete_macros();
 	vector_delete(functions);
 }
 
@@ -72,6 +93,7 @@ u8	rl42_register_function(rl42_fn f, const char *fname) {
 	new = (rl42_fn_info){
 		.f = f,
 		.fname = strdup(fname),
+		.macro = (state_flags & STATE_REGISTER_MACRO) ? 1 : 0,
 		.binds[0] = vector(char *, 1, free),
 		.binds[1] = vector(char *, 1, free),
 		.binds[2] = vector(char *, 1, free)

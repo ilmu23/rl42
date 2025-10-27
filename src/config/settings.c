@@ -8,29 +8,30 @@
 // <<settings.c>>
 
 #include "rl42.h"
+#include "config.h"
 
 #define _is_valid(s)	(s >= 0 && s < RL42_SETTING_NONE)
 
 static rl42_setting_val	settings[RL42_SETTING_NONE] = {
-	{ .u64 = RL42_BELL_NONE },	// bell-style
-	{ .u64 = 1 },				// colored-completion-prefix
+	{ .i64 = RL42_BELL_NONE },	// bell-style
+	{ .u64 = rl42_conf_on },	// colored-completion-prefix
 	{ .i64 = -1 },				// completion-display-width
-	{ .u64 = 0 },				// completion-ignore-case
-	{ .u64 = 0 },				// completion-map-case
-	{ .i64 = 100 },				// completion-query-items
-	{ .u64 = 0 },				// disable-completion
-	{ .u64 = EMACS },			// editing-mode
-	{ .u64 = 1 },				// enable-highlight
-	{ .u64 = 0 },				// expand-tilde
+	{ .u64 = rl42_conf_off },	// completion-ignore-case
+	{ .u64 = rl42_conf_off },	// completion-map-case
+	{ .u64 = 100 },				// completion-query-items
+	{ .u64 = rl42_conf_off },	// disable-completion
+	{ .i64 = EMACS },			// editing-mode
+	{ .u64 = rl42_conf_on },	// enable-highlight
+	{ .u64 = rl42_conf_off },	// expand-tilde
 	{ .i64 = -1 },				// history-size
-	{ .u64 = 0 },				// horizontal-scroll-mode
+	{ .u64 = rl42_conf_off },	// horizontal-scroll-mode
 	{ .i64 = 500 },				// keyseq-timeout
-	{ .u64 = 1 },				// mark-directories
-	{ .u64 = 0 },				// mark-symlinked directories
-	{ .u64 = 0 },				// match-hidden-files
-	{ .u64 = 1 },				// page-completions
-	{ .u64 = 0 },				// search-ignore-case
-	{ .u64 = 0 },				// visible-stats
+	{ .u64 = rl42_conf_on },	// mark-directories
+	{ .u64 = rl42_conf_off },	// mark-symlinked directories
+	{ .u64 = rl42_conf_off },	// match-hidden-files
+	{ .u64 = rl42_conf_on },	// page-completions
+	{ .u64 = rl42_conf_off },	// search-ignore-case
+	{ .u64 = rl42_conf_off },	// visible-stats
 	{ .hlc = { .type = RL42_HL_INDEX, .val.index = 39 }} // highlight-color
 };
 

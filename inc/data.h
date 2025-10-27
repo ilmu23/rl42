@@ -33,7 +33,7 @@ typedef enum __editing_mode {
 	EMACS = 0,
 	VI_CMD = 1,
 	VI_INS = 2,
-	CURRENT
+	CURRENT = 3
 }	rl42_editing_mode;
 
 // Terminal bell style

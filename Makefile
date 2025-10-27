@@ -53,7 +53,8 @@ TXFNDIR	=	text
 CONFFILES	=	load.c \
 				settings.c
 
-FUNCFILES	=	rl42_fn_info.c
+FUNCFILES	=	macro.c \
+				rl42_fn_info.c
 
 HISTFILES	=	history.c
 
@@ -86,9 +87,9 @@ UTILFILES	=	cstr_utils.c \
 
 RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
 				$(addprefix $(KLFNDIR)/, $(KLFNFILES)) \
-				$(addprefix $(TXFNDIR)/, $(TXFNFILES)) \
+				$(addprefix $(MCFNDIR)/, $(MCFNFILES)) \
 				$(addprefix $(MVFNDIR)/, $(MVFNFILES)) \
-				$(addprefix $(MCFNDIR)/, $(MCFNFILES))
+				$(addprefix $(TXFNDIR)/, $(TXFNFILES))
 
 HSFNFILES	=	accept_line.c \
 				backward_history.c \
@@ -119,6 +120,30 @@ KLFNFILES	=	backward_copy_word.c \
 				yank.c \
 				yank_pop.c
 
+MCFNFILES	=	abort.c \
+				backward_char_search.c \
+				dump_functions.c \
+				dump_macros.c \
+				dump_variables.c \
+				emacs_editing_mode.c \
+				exchange_point_and_mark.c \
+				forward_char_search.c \
+				numeric_argument.c \
+				prefix_meta.c \
+				reload_config_file.c \
+				revert_line.c \
+				set_mark.c \
+				tilde_expand.c \
+				unset_mark.c \
+				vi_editing_mode.c
+
+MVFNFILES	=	backward_char.c \
+				backward_word.c \
+				beginning_of_line.c \
+				end_of_line.c \
+				forward_char.c \
+				forward_word.c
+
 TXFNFILES	=	backward_delete_char.c \
 				capitalize_word.c \
 				clear_display.c \
@@ -131,24 +156,6 @@ TXFNFILES	=	backward_delete_char.c \
 				transpose_chars.c \
 				transpose_words.c \
 				upcase_word.c
-
-MVFNFILES	=	backward_char.c \
-				backward_word.c \
-				beginning_of_line.c \
-				end_of_line.c \
-				forward_char.c \
-				forward_word.c
-
-MCFNFILES	=	abort.c \
-				backward_char_search.c \
-				exchange_point_and_mark.c \
-				forward_char_search.c \
-				numeric_argument.c \
-				prefix_meta.c \
-				revert_line.c \
-				set_mark.c \
-				tilde_expand.c \
-				unset_mark.c
 
 FILES	=	rl42.c \
 			init.c \

@@ -59,7 +59,6 @@ u8	rl42_init(void) {
 		state_flags ^= STATE_INIT_IN_PROGRESS;
 		if (!init_key_trees())
 			rv = 0;
-		// MAYBE: init macro data
 		if (atexit(_rl42_exit) != 0)
 			rv = 0;
 #ifdef __TEST_BUILD
@@ -145,7 +144,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-y>", "yank-pop");
 	bind_emacs("<C-t>", "transpose-chars");
 	bind_emacs("<M-t>", "transpose-words");
-	bind_emacs("<C-x><C-r>", "re-read-init-file");
+	bind_emacs("<C-x><C-r>", "reload-config-file");
 	bind_emacs("<M-0>", "numeric-argument");
 	bind_emacs("<M-1>", "numeric-argument");
 	bind_emacs("<M-2>", "numeric-argument");
@@ -167,7 +166,7 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("<C-e>", "emacs-editing-mode");
 	bind_vi_cmd("<C-t>", "tranpose-characters");
 	bind_vi_cmd("<SPC>", "forward-char");
-	bind_vi_cmd("<M-r>", "re-read-init-file");
+	bind_vi_cmd("<M-r>", "reload-config-file");
 	bind_vi_cmd("$", "end-of-line");
 	bind_vi_cmd("0", "beginning-of-line");
 	bind_vi_cmd("1", "numeric-argument");
@@ -253,6 +252,10 @@ static const struct {
 	__rl42_fn(delete_horizontal_space, "delete-horizontal-space"),
 	__rl42_fn(discard_line, "discard-line"),
 	__rl42_fn(downcase_word, "downcase-word"),
+	__rl42_fn(dump_functions, "dump-functions"),
+	__rl42_fn(dump_macros, "dump-macros"),
+	__rl42_fn(dump_variables, "dump-variables"),
+	__rl42_fn(emacs_editing_mode, "emacs-editing-mode"),
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(end_of_history, "end-of-history"),
 	__rl42_fn(end_of_line, "end-of-line"),
@@ -274,6 +277,7 @@ static const struct {
 	__rl42_fn(operate_and_get_next, "operate-and-get-next"),
 	__rl42_fn(prefix_meta, "prefix-meta"),
 	__rl42_fn(quoted_insert, "quoted-insert"),
+	__rl42_fn(reload_config_file, "reload-config-file"),
 	__rl42_fn(revert_line, "revert-line"),
 	__rl42_fn(rl42_abort, "abort"),
 	__rl42_fn(self_insert, "self-insert"),
@@ -283,6 +287,7 @@ static const struct {
 	__rl42_fn(transpose_words, "transpose-words"),
 	__rl42_fn(unset_mark, "unset-mark"),
 	__rl42_fn(upcase_word, "upcase-word"),
+	__rl42_fn(vi_editing_mode, "vi-editing-mode"),
 	__rl42_fn(yank, "yank"),
 	__rl42_fn(yank_last_arg, "yank-last-arg"),
 	__rl42_fn(yank_nth_arg, "yank-nth-arg"),
@@ -293,6 +298,7 @@ static inline u8	_init_fns(void) {
 	size_t	fn_count;
 	size_t	i;
 
+	init_caller();
 	for (i = 0, fn_count = sizeof(functions) / sizeof(*functions); i < fn_count; i++)
 		if (!rl42_register_function(functions[i].address, functions[i].name))
 			break ;
