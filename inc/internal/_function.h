@@ -61,6 +61,13 @@ rl42_fn_info	*create_macro(const size_t id, const char *content, const rl42_edit
  */
 u8				edit_macro(rl42_fn_info *macro, const char *content);
 
+/** @brief Gets the content of macro
+ *
+ * @param macro Macro to get the content of
+ * @returns @c <b>const char *</b> Content of macro
+ */
+const char		*get_macro_content(const rl42_fn macro);
+
 /** @brief Gets a list of all registered functions
  *
  * @returns @c <b>cvector</b> List of all registered functions

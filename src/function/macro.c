@@ -139,6 +139,10 @@ u8	edit_macro(rl42_fn_info *macro, const char *content) {
 	return 0;
 }
 
+const char	*get_macro_content(const rl42_fn macro) {
+	return _get_ptr(&(*(caller_segment *)(uintptr_t)macro)[_CALLER_CONTENT_PTR_OFFSET]);
+}
+
 size_t	get_next_macro_id(const rl42_editing_mode emode) {
 	return macro_counts[emode] + 1;
 }
