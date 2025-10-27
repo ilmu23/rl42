@@ -147,6 +147,9 @@ void	delete_macros(void) {
 	map_delete(macros[EMACS]);
 	map_delete(macros[VI_CMD]);
 	map_delete(macros[VI_INS]);
+	macros[EMACS] = NULL;
+	macros[VI_CMD] = NULL;
+	macros[VI_INS] = NULL;
 }
 
 void	delete_macro_name(const size_t id, const rl42_editing_mode emode) {
