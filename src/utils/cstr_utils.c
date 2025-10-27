@@ -13,6 +13,8 @@
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 
+#define _SPLIT_IGN_UNSET	'\xff'
+
 char	*cstr_join(const char *s1, const char *s2) {
 	size_t	size;
 	char	*out;
@@ -73,10 +75,12 @@ char	*cstr_substrb(const char *s, const size_t start, const size_t len, char *bu
 	return buf;
 }
 
-vector	cstr_split(const char *s, const char c) {
-	vector	out;
-	size_t	i;
-	size_t	j;
+vector	cstr_split(const char *s, const char c, const char *ignore_within) {
+	const char	*tmp;
+	vector		out;
+	size_t		i;
+	size_t		j;
+	char		ign;
 
 	out = vector(char *, 1, free);
 	if (!out)
@@ -85,8 +89,8 @@ vector	cstr_split(const char *s, const char c) {
 		vector_push(out, (const char *){strdup(s)});
 		return out;
 	}
-	for (i = j = 0; s[i]; i++) {
-		if (s[i] == c) {
+	for (i = j = 0, ign = _SPLIT_IGN_UNSET; s[i]; i++) {
+		if (s[i] == c && ign == _SPLIT_IGN_UNSET) {
 			if (i == j) do {
 				i++;
 				j++;
@@ -96,6 +100,17 @@ vector	cstr_split(const char *s, const char c) {
 					return NULL;
 				}
 				j = i + 1;
+			}
+			tmp = strchr(ignore_within, s[j]);
+			if (tmp)
+				ign = *tmp;
+		} else if (ignore_within) {
+			tmp = strchr(ignore_within, s[i]);
+			if (tmp) {
+				if (ign == _SPLIT_IGN_UNSET)
+					ign = *tmp;
+				else if (ign == *tmp)
+					ign = _SPLIT_IGN_UNSET;
 			}
 		}
 	}

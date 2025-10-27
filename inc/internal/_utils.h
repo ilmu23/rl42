@@ -149,10 +149,11 @@ char		*cstr_substrb(const char *s, const size_t start, const size_t len, char *b
  *
  * @param s String to split
  * @param c Character to split on
+ * @param ignore_within String of characters, if given, to not split within
  * @returns @c <b>vector</b> Vector containing all split substrings,
  * NULL on failure
  */
-vector		cstr_split(const char *s, const char c);
+vector		cstr_split(const char *s, const char c, const char *ignore_within);
 
 /** @brief Finds the start of substr in s
  *

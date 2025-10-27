@@ -72,7 +72,7 @@ u8	rl42_load_config(const char *fname) {
 	if (!file)
 		goto _cfg_load_del_lines;
 	for (line_n = 1, line = fgets(buf, 4096, file); line; line_n++, line = fgets(buf, 4096, file))
-		if (strlen(line) > 1 && !_parse_line(lines, cstr_split(_convert_spaces(line), ' '), line_n))
+		if (strlen(line) > 1 && !_parse_line(lines, cstr_split(_convert_spaces(line), ' ', "'\""), line_n))
 			goto _cfg_load_close_file;
 	rv = _exec_lines(lines);
 _cfg_load_close_file:

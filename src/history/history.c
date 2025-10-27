@@ -184,7 +184,7 @@ u8	hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n) {
 
 	if (n == 0)
 		return 1;
-	args = cstr_split((node->edit) ? node->edit : node->line, ' ');
+	args = cstr_split((node->edit) ? node->edit : node->line, ' ', "'\"");
 	if (!args)
 		return 0;
 	rv = 0;
