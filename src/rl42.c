@@ -53,9 +53,13 @@ char	*ft_readline(const char *prompt) {
 	prev_fn = NULL;
 	match.fn = NULL;
 	term_apply_settings(TERM_SETTINGS_RL42);
-	term_cursor_get_pos(&line.prompt.root.row, &line.prompt.root.col);
+	line.prompt.root = term_cursor_new_anchor();
+	if (!line.prompt.root)
+		goto _rl42_malloc_fail;
 	term_display_line(&line, DISPLAY_PROMPT_ONLY);
-	term_cursor_get_pos(&line.root.row, &line.root.col);
+	line.root = term_cursor_new_anchor();
+	if (!line.root)
+		goto _rl42_malloc_fail;
 	hist_add_line(strdup(""));
 	if (!current) {
 		current = hist_get_first_node();
@@ -92,6 +96,8 @@ char	*ft_readline(const char *prompt) {
 	ti_tputs("\n", 1, __putchar);
 	term_apply_settings(TERM_SETTINGS_DEFAULT);
 	out = (line.line) ? rl42str_to_cstr(line.line) : NULL;
+	term_cursor_delete_anchor(line.prompt.root);
+	term_cursor_delete_anchor(line.root);
 	vector_delete(line.prompt.sprompt);
 	vector_delete(line.prompt.prompt);
 	vector_delete(line.keyseq);
@@ -100,6 +106,10 @@ char	*ft_readline(const char *prompt) {
 	return out;
 _rl42_malloc_fail:
 	error("rl42: unable to allocate memory: %s", (errno) ? strerror(errno) : "unknown error");
+	term_cursor_delete_anchor(line.prompt.root);
+	term_cursor_delete_anchor(line.root);
+	vector_delete(line.prompt.prompt);
+	vector_delete(line.keyseq);
 	return NULL;
 }
 

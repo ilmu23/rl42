@@ -138,11 +138,11 @@ static inline u8	_dump_config(rl42_line *line) {
 			return 0;
 	if (flush_dump_buf() == -1)
 		return 0;
-	row_diff = line->root.row - line->prompt.root.row;
-	col_diff = line->root.col - line->prompt.root.col;
-	term_cursor_get_pos(&line->prompt.root.row, &line->prompt.root.col);
-	line->root.row = line->prompt.root.row + row_diff;
-	line->root.col = line->prompt.root.col + col_diff;
+	row_diff = line->root->row - line->prompt.root->row;
+	col_diff = line->root->col - line->prompt.root->col;
+	term_cursor_get_pos((i16 *)&line->prompt.root->row, (i16 *)&line->prompt.root->col);
+	((rl42_cursor_pos *)line->root)->row = line->prompt.root->row + row_diff;
+	((rl42_cursor_pos *)line->root)->col = line->prompt.root->col + col_diff;
 	return term_display_line(line, 0);
 }
 
@@ -190,10 +190,10 @@ static inline u8	_dump_human(rl42_line *line) {
 			return 0;
 	if (flush_dump_buf() == -1)
 		return 0;
-	row_diff = line->root.row - line->prompt.root.row;
-	col_diff = line->root.col - line->prompt.root.col;
-	term_cursor_get_pos(&line->prompt.root.row, &line->prompt.root.col);
-	line->root.row = line->prompt.root.row + row_diff;
-	line->root.col = line->prompt.root.col + col_diff;
+	row_diff = line->root->row - line->prompt.root->row;
+	col_diff = line->root->col - line->prompt.root->col;
+	term_cursor_get_pos((i16 *)&line->prompt.root->row, (i16 *)&line->prompt.root->col);
+	((rl42_cursor_pos *)line->root)->row = line->prompt.root->row + row_diff;
+	((rl42_cursor_pos *)line->root)->col = line->prompt.root->col + col_diff;
 	return term_display_line(line, 0);
 }

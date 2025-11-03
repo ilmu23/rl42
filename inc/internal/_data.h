@@ -30,9 +30,9 @@ typedef struct __cursor_pos {
 // sprompt = current special prompt, for example the current digit-argument
 // prompt = user provided prompt
 typedef struct __prompt {
-	rl42_cursor_pos	root;
-	vector			sprompt;
-	vector			prompt;
+	const rl42_cursor_pos	*root;
+	vector					sprompt;
+	vector					prompt;
 }	rl42_prompt;
 
 // Stores the current input environment
@@ -40,13 +40,15 @@ typedef struct __prompt {
 // prompt = current prompt
 // keyseq = keyseq that is currently being executed
 // line = current input line
+// rows = amount of rows taken up
 // i = cursor index in the input line
 typedef struct __line {
-	rl42_cursor_pos	root;
-	rl42_prompt		prompt;
-	vector			keyseq;
-	vector			line;
-	size_t			i;
+	const rl42_cursor_pos	*root;
+	rl42_prompt				prompt;
+	vector					keyseq;
+	vector					line;
+	size_t					rows;
+	size_t					i;
 }	rl42_line;
 
 typedef u8	(*rl42_fn)(rl42_line *);

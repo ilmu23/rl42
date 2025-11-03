@@ -80,7 +80,7 @@ u8	__map_set(map map, uintptr_t key, const void *val) {
 	i = key % map->capacity;
 	while (map->data[i] && map->data[i] != _DELETED)
 		i = (i < map->capacity - 1) ? i + 1 : 0;
-	if (!map->data[i]) {
+	if (!map->data[i] || map->data[i] == _DELETED) {
 		map->data[i] = malloc(sizeof(*map->data[i]) + map->element_size);
 		if (!map->data[i])
 			return 0;
@@ -111,6 +111,15 @@ size_t	__map_sze(cmap map) {
 
 u8	__map_ety(cmap map) {
 	return (map->elements == 0) ? 1 : 0;
+}
+
+void	__map_fea(map map, void (*fn)(void *)) {
+	size_t	i;
+
+	for (i = 0; i < map->capacity; i++) {
+		if (map->data[i] && map->data[i] != _DELETED)
+			fn(&map->data[i]->val);
+	}
 }
 
 void	__map_clr(map map) {

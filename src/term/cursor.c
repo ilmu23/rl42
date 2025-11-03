@@ -14,6 +14,7 @@
 
 #include "rl42.h"
 
+#include "internal/_map.h"
 #include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
@@ -21,11 +22,30 @@
 
 #define _TERM_CURS_POS	"\x1b[6n"
 
-#define _TERM_SCROLL_UP		"\x1b[S"
-#define _TERM_SCROLL_DOWN	"\x1b[T"
-
 extern u16	term_width;
 extern u16	term_height;
+
+map	anchors;
+
+const rl42_cursor_pos	*term_cursor_new_anchor(void) {
+	rl42_cursor_pos	*anchor;
+
+	if (!anchors) {
+		anchors = map(rl42_cursor_pos *, 8, INTEGER, free);
+		if (!anchors)
+			return NULL;
+	}
+	anchor = malloc(sizeof(*anchor));
+	if (anchor && (!term_cursor_get_pos(&anchor->row, &anchor->col) || !map_set(anchors, anchor, anchor))) {
+		free(anchor);
+		return NULL;
+	}
+	return anchor;
+}
+
+void	term_cursor_delete_anchor(const rl42_cursor_pos *anchor) {
+	map_erase(anchors, anchor);
+}
 
 u8	term_cursor_get_pos(i16 *row, i16 *col) {
 	ssize_t	rv;
@@ -93,14 +113,15 @@ u8	term_cursor_move_to(rl42_line *line, i16 row, i16 col) {
 			down++;
 		}
 	}
-	line->prompt.root.row += up - down;
-	line->root.row += up - down;
-	if (up) do {
-		if (write(1, _TERM_SCROLL_UP, sizeof(_TERM_SCROLL_UP) - 1) != (ssize_t)sizeof(_TERM_SCROLL_UP) - 1)
-			return 0;
-	} while (--up); else if (down) do {
-		if (write(1, _TERM_SCROLL_DOWN, sizeof(_TERM_SCROLL_DOWN) - 1) != (ssize_t)sizeof(_TERM_SCROLL_DOWN) - 1)
-			return 0;
-	} while (--down);
+	if (!term_scroll_display(up, down))
+		return 0;
 	return term_cursor_set_pos(row, col);
+}
+
+u8	term_cursor_next_line(void) {
+	rl42_cursor_pos	pos;
+
+	if (!term_cursor_get_pos(&pos.row, &pos.col))
+		return 0;
+	return term_cursor_move_to(NULL, pos.row + 1, 1);
 }

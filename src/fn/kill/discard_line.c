@@ -32,12 +32,12 @@ rl42_fn(discard_line) {
 			node->edit = NULL;
 		}
 	}
-	term_cursor_move_to(line, line->root.row, line->root.col + vector_size(line->line));
-	term_cursor_get_pos(&line->prompt.root.row, &line->prompt.root.col);
-	line->prompt.root.row++;
-	line->prompt.root.col = 1;
+	term_cursor_move_to(line, line->root->row, line->root->col + vector_size(line->line));
+	term_cursor_get_pos((i16 *)&line->prompt.root->row, (i16 *)&line->prompt.root->col);
+	((rl42_cursor_pos *)line->prompt.root)->col = 1;
+	((rl42_cursor_pos *)line->prompt.root)->row++;
 	term_display_line(line, DISPLAY_PROMPT_ONLY);
-	term_cursor_get_pos(&line->root.row, &line->root.col);
+	term_cursor_get_pos((i16 *)&line->root->row, (i16 *)&line->root->col);
 	vector_clear(line->line);
 	user.set = 0;
 	line->i = 0;

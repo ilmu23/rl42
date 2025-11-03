@@ -70,7 +70,8 @@ KILLFILES	=	region.c \
 
 TERMFILES	=	cursor.c \
 				display.c \
-				settings.c
+				settings.c \
+				utils.c
 
 UTILFILES	=	cstr_utils.c \
 				list.c \
