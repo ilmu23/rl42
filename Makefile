@@ -243,7 +243,7 @@ INTERACTIVE_TESTER	=	$(TESTBIN)/interactive
 ITBUILD	=	fsan
 
 ITCFLAGS	=	$(cflags.common) $(cflags.$(ITBUILD)) $(cflags.extra)
-ifeq ($(shell bash -c 'gcc -x c -<<< "#include <stdio.h> int main(void) { printf(\"%ld\n\", __STDC_VERSION__); }" && ./a.out && rm a.out'), 202301)
+ifeq ($(shell bash -c 'gcc -x c -<<< "#include <stdio.h> int main(void) { printf(\"%ld\n\", __STDC_VERSION__); }" && ./a.out && rm a.out'), 202311)
 	ITLDFLAGS	=	-L. -lrl42
 else
 	LDFLAGS		=	-lbsd

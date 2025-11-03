@@ -37,7 +37,11 @@
 
 typedef struct termios	term_settings;
 
+#if __STDC_VERSION__ >= 202311L
+typedef unsigned _BitInt(9)	sgr_opts;
+#else
 typedef u16	sgr_opts;
+#endif
 
 /** @brief Initializes terminal related settings
  *

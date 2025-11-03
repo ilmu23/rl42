@@ -17,7 +17,11 @@
 
 #include "internal/_data.h"
 
+#if __STDC_VERSION__ >= 202311L
+typedef unsigned _BitInt(10)	rl42_state;
+#else
 typedef u16	rl42_state;
+#endif
 
 #define STATE_INIT_IN_PROGRESS		0x001U
 #define STATE_SAVE_HIST_POSITION	0x002U

@@ -21,7 +21,7 @@
 #include <sys/stat.h>
 #include <linux/limits.h>
 
-#if __STDC_VERION__ != 202301L
+#if __STDC_VERSION__ < 202311L
 #include <bsd/string.h>
 #endif
 
