@@ -37,7 +37,7 @@ size_t	calculate_cursor_offset(const rl42_line *line) {
 size_t	calculate_scroll_space(const rl42_line *line) {
 	size_t	prompt_length;
 
-	prompt_length = line->root.col + ((line->prompt.sprompt) ? vector_size(line->prompt.sprompt) : 0);
+	prompt_length = line->root->col + ((line->prompt.sprompt) ? vector_size(line->prompt.sprompt) : 0);
 	return (prompt_length > (size_t)term_width - 1) ? term_width : term_width - prompt_length - 1;
 }
 

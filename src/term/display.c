@@ -69,9 +69,13 @@ u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 	if (!_add_str_to_buf(line->prompt.prompt, NULL, opts, &i, 0, SIZE_MAX))
 		goto _term_display_line_error;
 	hl_user_mark = user.set;
-	if (~opts & DISPLAY_PROMPT_ONLY && !_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(args, cvector) : NULL, opts, &i, 0, SIZE_MAX))
-		goto _term_display_line_error;
-	if (!term_cursor_set_pos(line->prompt.root.row, line->prompt.root.col))
+	if (~opts & DISPLAY_PROMPT_ONLY) {
+		if (!_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(args, cvector) : NULL, opts, &i, 0, SIZE_MAX))
+			goto _term_display_line_error;
+		if (!term_calculate_required_rows(line, 1))
+			goto _term_display_line_error;
+	}
+	if (!term_cursor_set_pos(line->prompt.root->row, line->prompt.root->col))
 		goto _term_display_line_error;
 	if (!_TERM_CLEAR_END.fetched)
 		fetch(_TERM_CLEAR_END, ti_ed);
@@ -122,7 +126,9 @@ static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_op
 	}
 	if (~opts & DISPLAY_PROMPT_ONLY && !_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(*args, cvector) : NULL, opts, &i, start, space))
 		goto __horizontal_display_line_error;
-	if (!term_cursor_set_pos(line->prompt.root.row, line->prompt.root.col))
+	if (!term_cursor_move_to(line, line->prompt.root->row, line->prompt.root->col + i))
+		goto __horizontal_display_line_error;
+	if (!term_cursor_set_pos(line->prompt.root->row, line->prompt.root->col))
 		goto __horizontal_display_line_error;
 	if (!_TERM_CLEAR_END.fetched)
 		fetch(_TERM_CLEAR_END, ti_ed);
@@ -132,7 +138,7 @@ static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_op
 		va_end(*args);
 	if (opts && DISPLAY_PROMPT_ONLY)
 		return 1;
-	rv = term_cursor_move_to(line, line->root.row, term_width - space + offset);
+	rv = term_cursor_move_to(line, line->root->row, term_width - space + offset);
 	state_flags &= ~STATE_H_SCROLLING;
 	return rv;
 __horizontal_display_line_error:

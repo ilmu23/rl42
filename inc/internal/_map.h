@@ -45,5 +45,8 @@ size_t	__map_sze(cmap map);
 #define map_empty(map)	(__map_ety(map))
 u8		__map_ety(cmap map);
 
+#define map_foreach(map, fn)	(__map_fea(map, fn))
+void	__map_fea(map map, void (*fn)(void *));
+
 #define	map_clear(map)	(__map_clr(map))
 void	__map_clr(map map);

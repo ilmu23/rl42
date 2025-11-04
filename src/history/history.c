@@ -19,7 +19,6 @@
 #include "internal/_vector.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
-#include "internal/_terminfo.h"
 
 #include "internal/fn/move.h"
 #include "internal/fn/text.h"
@@ -39,7 +38,10 @@ typedef struct {
 }	_match;
 
 extern rl42_hist_node	*current;
-extern rl42_fn			prev_fn;
+
+extern rl42_fn	prev_fn;
+
+extern u16	term_height;
 
 static const char	*search_prompts[2][2] = {
 	{ &_SEARCH_PROMPT_FWD[4], _SEARCH_PROMPT_FWD },
@@ -136,15 +138,23 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	line->i = vector_size(line->line);
 	term_cursor_move_to_i(line);
 	line->i = old_i;
-	ti_tputs("\n", 1, __putchar);
-	term_cursor_get_pos(&query.prompt.root.row, &query.prompt.root.col);
+	term_cursor_next_line();
+	query.prompt.root = term_cursor_new_anchor();
+	if (!query.prompt.root)
+		goto _hist_search_error;
 	term_display_line(&query, DISPLAY_PROMPT_ONLY);
-	term_cursor_get_pos(&query.root.row, &query.root.col);
+	query.root = term_cursor_new_anchor();
+	if (!query.root)
+		goto _hist_search_error;
 	if (incremental) do {
 		if (vector_size(query.line) && !_search_process_query(line, query.line, &match, direction))
 			goto _hist_search_error;
 		if (!term_display_line(line, DISPLAY_HIGHLIGHT_SUBSTR | ((rl42_get(RL42_SEARCH_IGNORE_CASE).u64) ? DISPLAY_HIGHLIGHT_IGNORE_CASE : 0), query.line))
 			goto _hist_search_error;
+		((rl42_cursor_pos *)query.prompt.root)->row = line->root->row + line->rows;
+		((rl42_cursor_pos *)query.root)->row = line->root->row + line->rows;
+		if (query.root->row > term_height)
+			term_scroll_display(1, 0);
 		rv = _search_get_query(&query, &fn, incremental);
 	} while (rv == 1); else {
 		rv = _search_get_query(&query, &fn, incremental);
@@ -157,6 +167,8 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 		current = (rl42_hist_node *)match;
 	if (!term_display_line(line, DISPLAY_HIGHLIGHT_SUBSTR, query.line))
 		goto _hist_search_error;
+	term_cursor_delete_anchor(query.prompt.root);
+	term_cursor_delete_anchor(query.root);
 	vector_delete(query.prompt.prompt);
 	vector_delete(query.keyseq);
 	vector_delete(query.line);
@@ -167,6 +179,8 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	}
 	return (incremental) ? rv : 1;
 _hist_search_error:
+	term_cursor_delete_anchor(query.prompt.root);
+	term_cursor_delete_anchor(query.root);
 	vector_delete(query.prompt.prompt);
 	vector_delete(query.keyseq);
 	vector_delete(query.line);
