@@ -73,7 +73,8 @@ TERMFILES	=	cursor.c \
 				settings.c \
 				utils.c
 
-UTILFILES	=	cstr_utils.c \
+UTILFILES	=	completion.c \
+				cstr_utils.c \
 				list.c \
 				map.c \
 				message.c \

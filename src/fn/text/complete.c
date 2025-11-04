@@ -33,6 +33,8 @@ typedef struct {
 	cvector		context;
 }	_cmp_info;
 
+extern rl42_completion_fn	cmp_fn;
+
 static inline const char	*_substr(cvector s, const size_t start, size_t len);
 static inline _cmp_info		_get_target(rl42_line *line);
 
@@ -40,14 +42,30 @@ static inline _cmp_info		_get_target(rl42_line *line);
 
 rl42_fn(complete) {
 	_cmp_info	target;
+	cvector		completions;
 	size_t		size;
 	size_t		i;
+	u8			rv;
 
+	rv = 0;
 	target = (vector_size(line->line) != 0) ? _get_target(line) : (_cmp_info){ .pattern = strdup("") };
-	info("\nrl42: complete: pattern: '%s'\n", target.pattern);
-	if (target.context) for (i = 0, size = vector_size(target.context); i < size; i++)
-		info("rl42: complete: context[%zu]: '%s'\n", i, *(const char **)vector_get(target.context, i));
-	return 1;
+	if (!target.pattern)
+		goto _complete_ret_cleanup;
+	completions = cmp_get_common(cmp_fn(target.pattern, target.context));
+	if (completions) {
+		rv = 1;
+		fputc('\n', stderr);
+		for (i = 0, size = vector_size(completions); i < size; i++)
+			info("rl42: complete: completions[%zu]: '%s'\n", i, *(const char **)vector_get(completions, i));
+	} else
+		rv = 0;
+_complete_ret_cleanup:
+	state_flags &= ~STATE_KILL_DONT_UPDATE_RING;
+	vector_delete((vector)target.context);
+	free((void *)target.pattern);
+	kill_start.set = 0;
+	kill_end.set = 0;
+	return rv;
 }
 
 static inline const char	*_substr(cvector s, const size_t start, size_t len) {
