@@ -149,6 +149,7 @@ TXFNFILES	=	backward_delete_char.c \
 				capitalize_word.c \
 				clear_display.c \
 				clear_screen.c \
+				complete.c \
 				delete_char.c \
 				downcase_word.c \
 				end_of_file.c \

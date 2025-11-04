@@ -20,6 +20,10 @@
 #define vector(type, count, free)	(__vec_new(sizeof(type), count, free))
 vector	__vec_new(const size_t size, const size_t count, void (*free)(void *));
 
+#define vector_copy(vector, cpy)					(__vec_cpy(vector, 0, SIZE_MAX, cpy))
+#define vector_copy_range(vector, start, end, cpy)	(__vec_cpy(vector, start, end, cpy))
+vector	__vec_cpy(cvector vec, const size_t start, const size_t end, void *(*cpy)(void *));
+
 #define	vector_delete(vector)	(__vec_del(vector))
 void	__vec_del(vector);
 
