@@ -101,6 +101,8 @@ vector	cstr_split(const char *s, const char c, const char *ignore_within) {
 				}
 				j = i + 1;
 			}
+			if (!s[i])
+				break ;
 			tmp = strchr(ignore_within, s[j]);
 			if (tmp)
 				ign = *tmp;
