@@ -123,9 +123,9 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 		for (i = j = n = 0; i < count; i++) {
 			completion = *(const char **)vector_get(completions, i);
 			if (i != cur)
-				rv = snprintf(&buf[j], _BUF_SIZE - j, "%*s", (i32)widest, completion);
+				rv = snprintf(&buf[j], _BUF_SIZE - j, "%-*s", (i32)widest, completion);
 			else
-				rv = snprintf(&buf[j], _BUF_SIZE - j, "%s%*s%s", term_get_hl_seq(), (i32)widest, completion, _get_sgr0());
+				rv = snprintf(&buf[j], _BUF_SIZE - j, "%s%-*s%s", term_get_hl_seq(), (i32)widest, completion, _get_sgr0());
 			if (rv == -1)
 				return 0;
 			j += (size_t)rv;
