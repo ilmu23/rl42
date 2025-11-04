@@ -38,25 +38,23 @@ extern rl42_completion_fn	cmp_fn;
 static inline const char	*_substr(cvector s, const size_t start, size_t len);
 static inline _cmp_info		_get_target(rl42_line *line);
 
-#include <stdio.h>
-
 rl42_fn(complete) {
 	_cmp_info	target;
 	cvector		completions;
-	size_t		size;
-	size_t		i;
 	u8			rv;
 
 	rv = 0;
-	target = (vector_size(line->line) != 0) ? _get_target(line) : (_cmp_info){ .pattern = strdup("") };
+	if (vector_size(line->line) == 0) {
+		target.pattern = strdup("");
+		add_mark(kill_start, 0);
+	} else
+		target = _get_target(line);
 	if (!target.pattern)
 		goto _complete_ret_cleanup;
 	completions = cmp_get_common(cmp_fn(target.pattern, target.context));
 	if (completions) {
-		rv = 1;
-		fputc('\n', stderr);
-		for (i = 0, size = vector_size(completions); i < size; i++)
-			info("rl42: complete: completions[%zu]: '%s'\n", i, *(const char **)vector_get(completions, i));
+		state_flags |= STATE_KILL_DONT_UPDATE_RING;
+		rv = (vector_size(completions) == 1) ? cmp_insert(line, *(const char **)vector_get(completions, 0)) : cmp_display(line, completions);
 	} else
 		rv = 0;
 _complete_ret_cleanup:
