@@ -293,7 +293,7 @@ void	hist_clean(void) {
 	FILE			*file;
 
 	node = hist_get_first_node();
-	if (node->new) {
+	if (node && node->new) {
 		file = fopen(histfile_name, "a");
 		for (node = hist_get_last_node(), prev = NULL; node != prev; prev = node, node = hist_get_next_node(node, FORWARD))
 			if (node->new)
