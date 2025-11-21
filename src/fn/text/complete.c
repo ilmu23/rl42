@@ -57,6 +57,7 @@ rl42_fn(complete) {
 		rv = (vector_size(completions) == 1) ? cmp_insert(line, *(const char **)vector_get(completions, 0)) : cmp_display(line, completions);
 	} else
 		rv = 0;
+	vector_delete((vector)completions);
 _complete_ret_cleanup:
 	state_flags &= ~STATE_KILL_DONT_UPDATE_RING;
 	vector_delete((vector)target.context);
