@@ -113,6 +113,17 @@ static inline _cmp_info	_get_target(rl42_line *line) {
 	}
 	if (!target.pattern)
 		goto __get_target_error;
+	if (rl42_get(RL42_EXPAND_TILDE).u64 == rl42_conf_on && *target.pattern == '~') {
+		_tmp = getenv("HOME");
+		if (_tmp) {
+			_tmp = cstr_join(_tmp, &target.pattern[1]);
+			if (!_tmp)
+				goto __get_target_error;
+			free((void *)target.pattern);
+			target.pattern = _tmp;
+		}
+		_tmp = NULL;
+	}
 	tmp = vector_copy_range(line->line, 0, kill_start.pos, NULL);
 	if (!tmp)
 		goto __get_target_error;
