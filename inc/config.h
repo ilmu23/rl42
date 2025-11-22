@@ -11,9 +11,6 @@
 
 #include "defs.h"
 
-#define rl42_conf_on	1U
-#define rl42_conf_off	0U
-
 /** @brief Loads configuration from a file
  *
  * @param fname Name of the file to load

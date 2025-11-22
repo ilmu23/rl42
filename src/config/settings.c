@@ -8,7 +8,6 @@
 // <<settings.c>>
 
 #include "rl42.h"
-#include "config.h"
 
 #define _is_valid(s)	(s >= 0 && s < RL42_SETTING_NONE)
 
@@ -18,7 +17,7 @@ static rl42_setting_val	settings[RL42_SETTING_NONE] = {
 	{ .i64 = -1 },				// completion-display-width
 	{ .u64 = rl42_conf_off },	// completion-ignore-case
 	{ .u64 = rl42_conf_off },	// completion-map-case
-	{ .u64 = 100 },				// completion-query-items
+	{ .i64 = 100 },				// completion-query-items
 	{ .u64 = rl42_conf_off },	// disable-completion
 	{ .i64 = EMACS },			// editing-mode
 	{ .u64 = rl42_conf_on },	// enable-highlight

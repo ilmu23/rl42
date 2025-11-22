@@ -13,11 +13,11 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
 
 #define __RL42_INTERNAL
 #include "rl42.h"
-#include "config.h"
 #include "complete.h"
 
 #include "internal/_kb.h"
@@ -34,11 +34,26 @@
 
 #define _BUF_SIZE	16384
 
+#ifndef __DEBUG_PAGE_AFTER_ROWS
+# define __DEBUG_PAGE_AFTER_ROWS	4
+#endif
+
 typedef enum {
-	NORMAL = 0,
-	IGN_CASE = 1,
-	MAP_CASE = 2
+	CT_NORMAL = 0,
+	CT_IGN_CASE = 1,
+	CT_MAP_CASE = 2
 }	cmp_type;
+
+typedef enum {
+	ST_DIR = 0,
+	ST_EXEC = 1,
+	ST_SYMLINK = 2,
+	ST_CHAR_DEV = 3,
+	ST_BLOCK_DEV = 4,
+	ST_SOCKET = 5,
+	ST_FIFO = 6,
+	ST_REGULAR
+}	stat_type;
 
 static inline rl42_completion_fn(_complete_files);
 
@@ -46,6 +61,7 @@ extern u16	term_height;
 extern u16	term_width;
 
 rl42_completion_fn	cmp_fn = _complete_files;
+static const char	*stat_chars[ST_FIFO + 1] = { "/", "*", "@", "%", "#", "=", "|" };
 
 // cmp_get_common
 static inline size_t	_find_longest(cvector completions);
@@ -53,8 +69,10 @@ static inline size_t	_find_longest(cvector completions);
 // cmp_display
 static inline const char	*_get_sgr0(void);
 static inline u8			_select_next(rl42_line *line, rl42_fn *next);
+static inline u8			_query(rl42_line *line, const size_t completions);
 
 // _complete_files
+static inline stat_type	_get_file_type(const char *path);
 static inline vector	_match_files(const char *pattern, DIR *dir);
 static inline vector	_build_path(vector completions, const char *path);
 static inline u8		_cmp_fname(const char *fname, const char *pattern, const size_t n, const cmp_type type);
@@ -109,15 +127,21 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 	size_t		count;
 	size_t		cur;
 	size_t		cpr;
+	size_t		cpp;
 	size_t		rows;
 	size_t		len;
 	size_t		i;
 	size_t		j;
 	size_t		n;
+	size_t		page;
 	char		buf[_BUF_SIZE];
 	i64			dwidth;
+	u8			paging;
 
-	for (i = widest = 0, count = vector_size(completions); i < count; i++) {
+	count = vector_size(completions);
+	if ((i64)count >= rl42_get(RL42_COMPLETION_QUERY_ITEMS).i64 && !_query(line, count))
+		return 1;
+	for (i = widest = 0; i < count; i++) {
 		len = strlen(*(const char **)vector_get(completions, i));
 		if (len > widest)
 			widest = len;
@@ -128,32 +152,64 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 		if (dwidth == -1 || dwidth > term_width)
 			dwidth = term_width;
 		cpr = max(dwidth / (widest + 1), 1);
-		rows = count / cpr + 1;
-		if (line->root->row + line->rows + rows > term_height) {
-			scroll = line->root->row + line->rows + rows - term_height;
-			if (scroll > term_height - line->rows)
-				return 1; // TODO: page completions
-			term_scroll_display(scroll, 0);
+		rows = (cpr > 1) ? count / cpr + 1 : count;
+#ifdef __DEBUG_FORCE_CMP_PAGING
+		if (rows >= __DEBUG_PAGE_AFTER_ROWS) {
+			cpp = cpr * __DEBUG_PAGE_AFTER_ROWS;
+			page = (cur != SIZE_MAX) ? cur / cpp : 0;
+			paging = 1;
 		}
-		for (i = j = n = 0; i < count; i++) {
-			completion = *(const char **)vector_get(completions, i);
-			if (i != cur)
-				rv = snprintf(&buf[j], _BUF_SIZE - j, "%-*s", (i32)widest, completion);
-			else
-				rv = snprintf(&buf[j], _BUF_SIZE - j, "%s%-*s%s", term_get_hl_seq(), (i32)widest, completion, _get_sgr0());
+#endif
+		if (line->rows < term_height) {
+			if (line->prompt.root->row + line->rows - 1 + rows > term_height) {
+				scroll = line->root->row + line->rows + rows - term_height;
+				if (scroll > line->rows) {
+					term_scroll_display(line->prompt.root->row - 1, 0);
+					if (rl42_get(RL42_PAGE_COMPLETIONS).u64 == rl42_conf_on) {
+						cpp = cpr * (term_height - line->rows);
+						page = (cur != SIZE_MAX) ? cur / cpp : 0;
+						paging = 1;
+					} else
+						rows = term_height - line->rows;
+				} else
+					term_scroll_display(scroll, 0);
+			}
+			if (paging) for (i = j = n = 0; j < page; i++) {
+				if (++n == cpp) {
+					n = 0;
+					j++;
+				}
+			} else
+				i = 0;
+			rv = snprintf(buf, _BUF_SIZE, "%s", term_get_seq(ti_ed));
 			if (rv == -1)
 				return 0;
-			j += (size_t)rv;
-			if (++n == cpr) {
-				buf[j++] = '\n';
-				n = 0;
-			} else
-				buf[j++] = ' ';
+			j = (size_t)rv;
+			for (n = 0; i < count; i++) {
+				completion = *(const char **)vector_get(completions, i);
+				if (i != cur)
+					rv = snprintf(&buf[j], _BUF_SIZE - j, "%-*s", (i32)widest, completion);
+				else
+					rv = snprintf(&buf[j], _BUF_SIZE - j, "%s%-*s%s", term_get_hl_seq(), (i32)widest, completion, _get_sgr0());
+				if (rv == -1)
+					return 0;
+				j += (size_t)rv;
+				if (paging && --cpp == 0)
+					break ;
+				if (++n == cpr) {
+					if (--rows == 0)
+						break ;
+					buf[j++] = '\n';
+					n = 0;
+				} else
+					buf[j++] = ' ';
+			}
+			buf[j] = '\0';
+			term_cursor_set_pos(line->root->row + line->rows, 1);
+			if (ti_tputs(buf, 1, __putchar) == -1)
+				return 0;
+			term_cursor_move_to_i(line);
 		}
-		term_cursor_set_pos(line->root->row + line->rows, 1);
-		if (ti_tputs(buf, 1, __putchar) == -1)
-			return 0;
-		term_cursor_move_to_i(line);
 		if (!_select_next(line, &next))
 			break ;
 		if (++cur == count)
@@ -215,6 +271,35 @@ static inline u8	_select_next(rl42_line *line, rl42_fn *next) {
 	return (match.fn->f == complete) ? 1 : 0;
 }
 
+static inline u8	_query(rl42_line *line, const size_t completions) {
+	rl42_fn_match	match;
+	rl42_line		dummy;
+	size_t			i;
+	char			buf[64];
+
+	dummy.keyseq = vector(u32, 8, NULL);
+	if (!dummy.keyseq)
+		return 0;
+	i = line->i;
+	line->i = vector_size(line->line);
+	if (!term_cursor_move_to_i(line) || !term_cursor_next_line()) {
+		line->i = i;
+		return 0;
+	}
+	line->i = i;
+	if (snprintf(buf, 64, "rl42: display all %zu completions? ", completions) == -1)
+		return 0;
+	if (!ti_tputs(buf, 1, __putchar))
+		return 0;
+	match.fn = NULL;
+__query_match_seq:
+	match = kb_match_seq(&dummy, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
+	if (match.fn && !match.run)
+		goto __query_match_seq;
+	vector_delete(dummy.keyseq);
+	return (match.fn && match.fn->f == complete) ? 1 : 0;
+}
+
 static inline rl42_completion_fn(_complete_files) {
 	const char	*tmp;
 	const char	*path;
@@ -234,6 +319,28 @@ static inline rl42_completion_fn(_complete_files) {
 	return completions;
 }
 
+static inline stat_type	_get_file_type(const char *path) {
+	struct stat	file;
+
+	if (lstat(path, &file) == -1)
+		return ST_REGULAR;
+	switch (file.st_mode & S_IFMT) {
+		case S_IFDIR:
+			return ST_DIR;
+		case S_IFLNK:
+			return ST_SYMLINK;
+		case S_IFCHR:
+			return ST_CHAR_DEV;
+		case S_IFBLK:
+			return ST_BLOCK_DEV;
+		case S_IFSOCK:
+			return ST_SOCKET;
+		case S_IFIFO:
+			return ST_FIFO;
+	}
+	return (access(path, X_OK) == 0) ? ST_EXEC : ST_REGULAR;
+}
+
 static inline vector	_match_files(const char *pattern, DIR *dir) {
 	struct dirent	*data;
 	const char		*tmp;
@@ -246,13 +353,13 @@ static inline vector	_match_files(const char *pattern, DIR *dir) {
 	if (matches) {
 		if (!dir)
 			return matches;
-		type = (rl42_get(RL42_COMPLETION_IGNORE_CASE).u64) ? IGN_CASE : NORMAL;
-		if (type == IGN_CASE && rl42_get(RL42_COMPLETION_MAP_CASE).u64)
-			type = MAP_CASE;
+		type = (rl42_get(RL42_COMPLETION_IGNORE_CASE).u64) ? CT_IGN_CASE : CT_NORMAL;
+		if (type == CT_IGN_CASE && rl42_get(RL42_COMPLETION_MAP_CASE).u64)
+			type = CT_MAP_CASE;
 		pattern_len = strlen(pattern);
 		match_hidden = (rl42_get(RL42_MATCH_HIDDEN_FILES).u64 == rl42_conf_on) ? 1 : 0;
 		for (data = readdir(dir); data; data = readdir(dir)) {
-			if (strl_equals(data->d_name, ".") || strl_equals(data->d_name, "..") || (*data->d_name == '.' && !match_hidden))
+			if (strl_equals(data->d_name, ".") || strl_equals(data->d_name, "..") || (*data->d_name == '.' && !match_hidden && *pattern != '.'))
 				continue ;
 			if (_cmp_fname(data->d_name, pattern, pattern_len, type)) {
 				tmp = strdup(data->d_name);
@@ -270,6 +377,7 @@ static inline vector	_match_files(const char *pattern, DIR *dir) {
 
 static inline vector	_build_path(vector completions, const char *path) {
 	const char	*tmp;
+	stat_type	type;
 	size_t		i;
 	size_t		count;
 	u8			(*is_dir)(const char *);
@@ -289,16 +397,29 @@ static inline vector	_build_path(vector completions, const char *path) {
 				vector_replace(completions, i, tmp);
 			}
 		}
-		if (rl42_get(RL42_MARK_DIRECTORIES).u64 == rl42_conf_on) {
-			is_dir = (rl42_get(RL42_MARK_SYMLINKED_DIRECTORIES).u64 == rl42_conf_on) ? _is_sldir : _is_dir;
-			for (i = 0; i < count; i++) {
-				if (is_dir(*(const char **)vector_get(completions, i))) {
-					tmp = cstr_join(*(const char **)vector_get(completions, i), "/");
-					if (!tmp)
-						goto __build_path_err;
-					vector_replace(completions, i, tmp);
+		switch (rl42_get(RL42_MARK_DIRECTORIES).u64 << 1 | rl42_get(RL42_VISIBLE_STATS).u64) {
+			case rl42_conf_on:
+			case rl42_conf_on << 1 | rl42_conf_on:
+				for (i = 0; i < count; i++) {
+					type = _get_file_type(*(const char **)vector_get(completions, i));
+					if (type != ST_REGULAR) {
+						tmp = cstr_join(*(const char **)vector_get(completions, i), stat_chars[type]);
+						if (!tmp)
+							goto __build_path_err;
+						vector_replace(completions, i, tmp);
+					}
 				}
-			}
+				break ;
+			case rl42_conf_on << 1:
+				is_dir = (rl42_get(RL42_MARK_SYMLINKED_DIRECTORIES).u64 == rl42_conf_on) ? _is_sldir : _is_dir;
+				for (i = 0; i < count; i++) {
+					if (is_dir(*(const char **)vector_get(completions, i))) {
+						tmp = cstr_join(*(const char **)vector_get(completions, i), stat_chars[ST_DIR]);
+						if (!tmp)
+							goto __build_path_err;
+						vector_replace(completions, i, tmp);
+					}
+				}
 		}
 	}
 	return completions;
@@ -319,14 +440,16 @@ static inline u8	_cmp_fname(const char *fname, const char *pattern, const size_t
 static inline u8		_is_sldir(const char *path) {
 	struct stat	file;
 
-	stat(path, &file);
+	if (stat(path, &file) == -1)
+		return 0;
 	return (S_ISDIR(file.st_mode)) ? 1 : 0;
 }
 
 static inline u8		_is_dir(const char *path) {
 	struct stat	file;
 
-	lstat(path, &file);
+	if (lstat(path, &file) == -1)
+		return 0;
 	return (S_ISDIR(file.st_mode)) ? 1 : 0;
 }
 
