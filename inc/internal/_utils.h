@@ -118,6 +118,34 @@ char		*cstr_join(const char *s1, const char *s2);
  */
 char		*cstr_joinb(const char *s1, const char *s2, char *buf, const size_t buf_size);
 
+/** @brief Appends s2 to the end of s1 after a separator
+ *
+ * Functions exactly like cstr_join,
+ * except for adding sep between s1 and s2
+ * @param s1 String to append to
+ * @param s2 String to append
+ * @param sep Character to add between s1 and s2
+ * @returns @c <b>char *</b> s1 + sep + s2,
+ * NULL if allocation failed
+ */
+char		*cstr_joins(const char *s1, const char *s2, const char sep);
+
+/** @brief Appends s2 to the end of s1 after a separator
+ *
+ * Functions exactly like cstr_joins, except instead of
+ * allocating space for the result uses at most buf_size
+ * bytes from buf to store the result. A buf_size of less than
+ * strlen(s1) + strlen(s2) + 2 will result in truncation
+ * @param s1 String to append to
+ * @param s2 String to append
+ * @param sep Character to add between s1 and s2
+ * @param buf Buffer to store the result in
+ * @param buf_size Size of buf
+ * @returns @c <b>char *</b> s1 + sep + s2,
+ * NULL if buf was NULL or buf_size was 0
+ */
+char		*cstr_joinsb(const char *s1, const char *s2, const char sep, char *buf, const size_t buf_size);
+
 /** @brief Makes a copy of a substring of s
  *
  * Allocates space for copying len characters

@@ -48,7 +48,45 @@ char	*cstr_joinb(const char *s1, const char *s2, char *buf, const size_t size) {
 		memcpy(&buf[i], s2, (len < size - i) ? len : size - i);
 		i += (len < size  - 1) ? len : size - i;
 	}
-	buf[size - i] = '\0';
+	buf[size - (size - i)] = '\0';
+	return buf;
+}
+
+char	*cstr_joins(const char *s1, const char *s2, const char sep) {
+	size_t	size;
+	char	*out;
+
+	if (!s1 && !s2)
+		return cstr_joins("", "", sep);
+	if (!s1)
+		return cstr_joins(s1, "", sep);
+	if (!s2)
+		return cstr_joins("", s2, sep);
+	size = strlen(s1) + 2;
+	size += strlen(s2);
+	out = malloc(size * sizeof(*out));
+	return cstr_joinsb(s1, s2, sep, out, size);
+}
+
+char	*cstr_joinsb(const char *s1, const char *s2, const char sep, char *buf, const size_t size) {
+	size_t	len;
+	size_t	i;
+
+	if (!buf || !size)
+		return NULL;
+	if (s1) {
+		len = strlen(s1);
+		i = (len < size) ? len : size;
+		memcpy(buf, s1, i);
+	} else
+		i = 0;
+	buf[i++] = sep;
+	if (s2) {
+		len = strlen(s2);
+		memcpy(&buf[i], s2, (len < size - i) ? len : size - i);
+		i += (len < size  - 1) ? len : size - i;
+	}
+	buf[size - (size - i)] = '\0';
 	return buf;
 }
 
