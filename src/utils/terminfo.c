@@ -26,6 +26,7 @@
 #endif
 
 #include "internal/_map.h"
+#include "internal/_defs.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 #include "internal/_terminfo.h"
@@ -455,8 +456,6 @@ _ti_tparm_err_ret:
 	vector_delete(stack);
 	return NULL;
 }
-
-#define str_equals(s1, s2)	(s1 == s2 || (s1 && s2 && strcmp(s1, s2) == 0))
 
 #define _TPS_SPEEDCOUNT	31
 

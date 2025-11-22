@@ -21,3 +21,9 @@
 #define NUMERIC_ARG_NOT_SET	NUMERIC_ARG_MAX + 1
 
 #define add_mark(m, p)	(m.pos = p, m.set = 1)
+
+// Checks whether s1 equals s2
+#define str_equals(s1, s2)	(s1 == s2 || (s1 && s2 && strcmp(s1, s2) == 0))
+
+// Checks whether s1 equals the string literal s2
+#define strl_equals(s1, s2)	(s1 && strcmp(s1, s2) == 0)
