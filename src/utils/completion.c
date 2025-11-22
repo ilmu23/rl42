@@ -287,7 +287,7 @@ static inline vector	_match_files(const char *pattern, DIR *dir) {
 		pattern_len = strlen(pattern);
 		match_hidden = (rl42_get(RL42_MATCH_HIDDEN_FILES).u64 == rl42_conf_on) ? 1 : 0;
 		for (data = readdir(dir); data; data = readdir(dir)) {
-			if (strl_equals(data->d_name, ".") || strl_equals(data->d_name, "..") || (*data->d_name == '.' && !match_hidden))
+			if (strl_equals(data->d_name, ".") || strl_equals(data->d_name, "..") || (*data->d_name == '.' && !match_hidden && *pattern != '.'))
 				continue ;
 			if (_cmp_fname(data->d_name, pattern, pattern_len, type)) {
 				tmp = strdup(data->d_name);
