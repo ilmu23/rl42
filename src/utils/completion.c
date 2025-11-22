@@ -42,6 +42,10 @@ extern u16	term_width;
 
 rl42_completion_fn	cmp_fn = _complete_files;
 
+// cmp_get_common
+static inline size_t	_find_longest(cvector completions);
+
+// cmp_display
 static inline const char	*_get_sgr0(void);
 static inline u8			_select_next(rl42_line *line, rl42_fn *next);
 
@@ -165,6 +169,20 @@ u8	cmp_insert(rl42_line *line, const char *completion) {
 		completion += charsize_utf8(*completion);
 	}
 	return term_display_line(line, 0);
+}
+
+static inline size_t	_find_longest(cvector completions) {
+	size_t	longest;
+	size_t	count;
+	size_t	len;
+	size_t	i;
+
+	for (i = longest = 0, count = vector_size(completions); i < count; i++) {
+		len = strlen(*(const char **)vector_get(completions, i));
+		if (len > longest)
+			longest = len;
+	}
+	return longest;
 }
 
 static inline const char	*_get_sgr0(void) {
