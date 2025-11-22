@@ -323,9 +323,7 @@ static inline u8	_cmp_fname(const char *fname, const char *pattern, const size_t
 static inline u8		_is_sldir(const char *path) {
 	struct stat	file;
 
-	lstat(path, &file);
-	if (S_ISLNK(file.st_mode))
-		stat(path, &file);
+	stat(path, &file);
 	return (S_ISDIR(file.st_mode)) ? 1 : 0;
 }
 
