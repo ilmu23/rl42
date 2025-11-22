@@ -14,11 +14,12 @@
 /** @brief Returns the common part of the completions, if one is found
  *
  * @param completions Completions to analyze
+ * @param pattern_len Length of the completed pattern
  * @returns @c <b>cvector</b> Common part of the completions,
  * completions if no common part was found or if there were no completions,
  * NULL if completions was NULL
  */
-cvector	cmp_get_common(cvector completions);
+cvector	cmp_get_common(cvector completions, const size_t pattern_len);
 
 /** @brief Displays all completions
  *

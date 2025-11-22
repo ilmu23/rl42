@@ -29,7 +29,13 @@
 
 #define _BUF_SIZE	16384
 
-static rl42_completion_fn(_complete_files);
+typedef enum {
+	NORMAL = 0,
+	IGN_CASE = 1,
+	MAP_CASE = 2
+}	cmp_type;
+
+static inline rl42_completion_fn(_complete_files);
 
 extern u16	term_height;
 extern u16	term_width;
@@ -49,14 +55,10 @@ void	set_completion_fn(rl42_completion_fn f) {
 	cmp_fn = (f) ? f : _complete_files;
 }
 
-cvector	cmp_get_common(cvector completions) {
-	enum {
-		NORMAL = 0,
-		IGN_CASE = 1,
-		MAP_CASE = 2
-	}			cmp_type;
+cvector	cmp_get_common(cvector completions, const size_t pattern_len) {
 	const char	*s1;
 	const char	*tmp;
+	cmp_type	type;
 	size_t		count;
 	size_t		len;
 	size_t		i;
@@ -65,19 +67,19 @@ cvector	cmp_get_common(cvector completions) {
 	if (completions && vector_size(completions) > 1) {
 		count = vector_size(completions);
 		s1 = *(const char **)vector_get(completions, 0);
-		cmp_type = (rl42_get(RL42_COMPLETION_IGNORE_CASE).u64) ? IGN_CASE : NORMAL;
-		if (cmp_type == IGN_CASE && rl42_get(RL42_COMPLETION_MAP_CASE).u64)
-			cmp_type = MAP_CASE;
-		for (i = 0, len = strlen(s1); i < len; i++) {
+		type = (rl42_get(RL42_COMPLETION_IGNORE_CASE).u64) ? IGN_CASE : NORMAL;
+		if (type == IGN_CASE && rl42_get(RL42_COMPLETION_MAP_CASE).u64)
+			type = MAP_CASE;
+		for (i = pattern_len, len = _find_longest(completions); i < len; i++) {
 			for (j = 1; j < count; j++) {
 				tmp = *(const char **)vector_get(completions, j);
-				if (!compare[cmp_type](s1[i], tmp[i]))
+				if (!compare[type](s1[i], tmp[i]))
 					break ;
 			}
 			if (j != count)
 				break ;
 		}
-		if (i > 0) {
+		if (i != pattern_len) {
 			vector_resize((vector)completions, 1);
 			((char *)s1)[i] = '\0';
 		}
