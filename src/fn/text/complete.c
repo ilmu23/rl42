@@ -16,6 +16,7 @@
 #endif
 
 #define __RL42_INTERNAL
+#include "rl42.h"
 #include "function.h"
 
 #include "internal/_defs.h"
@@ -43,6 +44,8 @@ rl42_fn(complete) {
 	cvector		completions;
 	u8			rv;
 
+	if (rl42_get(RL42_DISABLE_COMPLETION).u64 == rl42_conf_on)
+		return 1;
 	rv = 0;
 	if (vector_size(line->line) == 0) {
 		target.pattern = strdup("");
