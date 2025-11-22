@@ -75,7 +75,6 @@ void	set_completion_fn(rl42_completion_fn f) {
 cvector	cmp_get_common(cvector completions, const size_t pattern_len) {
 	const char	*s1;
 	const char	*tmp;
-	cmp_type	type;
 	size_t		count;
 	size_t		len;
 	size_t		i;
@@ -84,19 +83,16 @@ cvector	cmp_get_common(cvector completions, const size_t pattern_len) {
 	if (completions && vector_size(completions) > 1) {
 		count = vector_size(completions);
 		s1 = *(const char **)vector_get(completions, 0);
-		type = (rl42_get(RL42_COMPLETION_IGNORE_CASE).u64) ? IGN_CASE : NORMAL;
-		if (type == IGN_CASE && rl42_get(RL42_COMPLETION_MAP_CASE).u64)
-			type = MAP_CASE;
-		for (i = pattern_len, len = _find_longest(completions); i < len; i++) {
+		for (i = 0, len = _find_longest(completions); i < len; i++) {
 			for (j = 1; j < count; j++) {
 				tmp = *(const char **)vector_get(completions, j);
-				if (!compare[type](s1[i], tmp[i]))
+				if (s1[i] != tmp[i])
 					break ;
 			}
 			if (j != count)
 				break ;
 		}
-		if (i != pattern_len) {
+		if (i > 0 && i != pattern_len) {
 			vector_resize((vector)completions, 1);
 			((char *)s1)[i] = '\0';
 		}

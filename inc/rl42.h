@@ -13,7 +13,7 @@
 
 #include "data.h"
 
-#define RL42_VERSION "3.8.18-comp"
+#define RL42_VERSION "3.8.19-comp"
 
 /** @brief Gets a line from the user with editing
  *
