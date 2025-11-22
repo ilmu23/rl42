@@ -65,6 +65,7 @@ static inline size_t	_find_longest(cvector completions);
 // cmp_display
 static inline const char	*_get_sgr0(void);
 static inline u8			_select_next(rl42_line *line, rl42_fn *next);
+static inline u8			_query(rl42_line *line, const size_t completions);
 
 // _complete_files
 static inline stat_type	_get_file_type(const char *path);
@@ -130,7 +131,10 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 	char		buf[_BUF_SIZE];
 	i64			dwidth;
 
-	for (i = widest = 0, count = vector_size(completions); i < count; i++) {
+	count = vector_size(completions);
+	if ((i64)count >= rl42_get(RL42_COMPLETION_QUERY_ITEMS).i64 && !_query(line, count))
+		return 1;
+	for (i = widest = 0; i < count; i++) {
 		len = strlen(*(const char **)vector_get(completions, i));
 		if (len > widest)
 			widest = len;
@@ -148,7 +152,11 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 				return 1; // TODO: page completions
 			term_scroll_display(scroll, 0);
 		}
-		for (i = j = n = 0; i < count; i++) {
+		rv = snprintf(buf, _BUF_SIZE, "%s", term_get_seq(ti_ed));
+		if (rv == -1)
+			return 0;
+		j = (size_t)rv;
+		for (i = n = 0; i < count; i++) {
 			completion = *(const char **)vector_get(completions, i);
 			if (i != cur)
 				rv = snprintf(&buf[j], _BUF_SIZE - j, "%-*s", (i32)widest, completion);
@@ -226,6 +234,35 @@ static inline u8	_select_next(rl42_line *line, rl42_fn *next) {
 	while (!match.fn || !match.run);
 	*next = match.fn->f;
 	return (match.fn->f == complete) ? 1 : 0;
+}
+
+static inline u8	_query(rl42_line *line, const size_t completions) {
+	rl42_fn_match	match;
+	rl42_line		dummy;
+	size_t			i;
+	char			buf[64];
+
+	dummy.keyseq = vector(u32, 8, NULL);
+	if (!dummy.keyseq)
+		return 0;
+	i = line->i;
+	line->i = vector_size(line->line);
+	if (!term_cursor_move_to_i(line) || !term_cursor_next_line()) {
+		line->i = i;
+		return 0;
+	}
+	line->i = i;
+	if (snprintf(buf, 64, "rl42: display all %zu completions? ", completions) == -1)
+		return 0;
+	if (!ti_tputs(buf, 1, __putchar))
+		return 0;
+	match.fn = NULL;
+__query_match_seq:
+	match = kb_match_seq(&dummy, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
+	if (match.fn && !match.run)
+		goto __query_match_seq;
+	vector_delete(dummy.keyseq);
+	return (match.fn && match.fn->f == complete) ? 1 : 0;
 }
 
 static inline rl42_completion_fn(_complete_files) {
