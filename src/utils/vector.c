@@ -47,6 +47,31 @@ vector	__vec_new(const size_t size, const size_t count, void (*_free)(void *)) {
 	return out;
 }
 
+vector	__vec_cpy(cvector vec, const size_t start, const size_t end, void *(*cpy)(void *)) {
+	vector	out;
+
+	out = malloc(sizeof(*out));
+	if (out) {
+		out->capacity = (end >= start) ? end - start : 0;
+		out->data = malloc(vec->element_size * ((out->capacity) ? out->capacity : 1));
+		if (!out->data) {
+			free(out);
+			return NULL;
+		}
+		out->elements = (cpy) ? 0 : out->capacity;
+		out->element_size = vec->element_size;
+		out->free = vec->free;
+		if (cpy) while (out->elements < out->capacity) {
+			_set_element(out, out->elements, cpy(index(vec, start + out->elements)));
+			out->elements++;
+		} else
+			memcpy(out->data, vec->data, out->element_size * out->capacity);
+		if (out->capacity == 0)
+			out->capacity = 1;
+	}
+	return out;
+}
+
 void	__vec_del(vector vec) {
 	if (vec) {
 		if (vec->elements)
@@ -67,7 +92,7 @@ void	__vec_pop(vector vec) {
 	if (vec->elements) {
 		vec->elements--;
 		if (vec->free)
-			vec->free (index(vec, vec->elements));
+			vec->free(index(vec, vec->elements));
 	}
 }
 
@@ -75,9 +100,11 @@ void	*__vec_get(cvector vec, const size_t i) {
 	return (i < vec->elements) ? index(vec, i) : (i == (size_t)-1 && vec->elements) ? index(vec, vec->elements -1) : VECTOR_OUT_OF_BOUNDS;
 }
 
-u8	__vec_set(vector vec, const size_t i, const void *val) {
+u8	__vec_set(vector vec, const size_t i, const void *val, const u8 free) {
 	if (i >= vec->elements)
 		return 0;
+	if (free && vec->free)
+		vec->free(index(vec, i));
 	_set_element(vec, i, val);
 	return 1;
 }

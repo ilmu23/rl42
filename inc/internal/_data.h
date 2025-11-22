@@ -51,6 +51,12 @@ typedef struct __line {
 	size_t					i;
 }	rl42_line;
 
+// Function for getting completions
+// 1st arg = pattern to complete
+// 2nd arg = vector of space separated strings before the pattern, NULL if nothing before pattern
+// Returns vector containing all possible completions or NULL if no completions were found
+typedef cvector	(*rl42_completion_fn)(const char *, cvector);
+
 typedef u8	(*rl42_fn)(rl42_line *);
 
 #ifdef __RL42_INTERNAL

@@ -246,6 +246,7 @@ static const struct {
 	__rl42_fn(capitalize_word, "capitalize-word"),
 	__rl42_fn(clear_display, "clear-display"),
 	__rl42_fn(clear_screen, "clear-screen"),
+	__rl42_fn(complete, "complete"),
 	__rl42_fn(copy_region, "copy-region"),
 	__rl42_fn(copy_word, "copy-word"),
 	__rl42_fn(delete_char, "delete-char"),

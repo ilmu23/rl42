@@ -5,25 +5,36 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<_defs.h>>
+// <<_complete.h>>
 
 #pragma once
 
-#define SGR0		"\x1b[m"
-#define SGR_INFO	"\x1b[1;38;5;190m"
-#define SGR_WARN	"\x1b[1;38;5;202m"
-#define SGR_ERROR	"\x1b[1;38;5;196m"
+#include "internal/_data.h"
 
-#ifndef NUMERIC_ARG_MAX
-# define NUMERIC_ARG_MAX	1000000
-#endif
+/** @brief Returns the common part of the completions, if one is found
+ *
+ * @param completions Completions to analyze
+ * @param pattern_len Length of the completed pattern
+ * @returns @c <b>cvector</b> Common part of the completions,
+ * completions if no common part was found or if there were no completions,
+ * NULL if completions was NULL
+ */
+cvector	cmp_get_common(cvector completions, const size_t pattern_len);
 
-#define NUMERIC_ARG_NOT_SET	NUMERIC_ARG_MAX + 1
+/** @brief Displays all completions
+ *
+ * @param line Line being completed
+ * @param completions Completions to display
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8		cmp_display(rl42_line *line, cvector completions);
 
-#define add_mark(m, p)	(m.pos = p, m.set = 1)
-
-// Checks whether s1 equals s2
-#define str_equals(s1, s2)	(s1 == s2 || (s1 && s2 && strcmp(s1, s2) == 0))
-
-// Checks whether s1 equals the string literal s2
-#define strl_equals(s1, s2)	(s1 && strcmp(s1, s2) == 0)
+/** @brief Inserts a completion into line
+ *
+ * @param line Line to insert completion into
+ * @param completion Completion to insert
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8		cmp_insert(rl42_line *line, const char *completion);

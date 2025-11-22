@@ -20,6 +20,10 @@
 #define vector(type, count, free)	(__vec_new(sizeof(type), count, free))
 vector	__vec_new(const size_t size, const size_t count, void (*free)(void *));
 
+#define vector_copy(vector, cpy)					(__vec_cpy(vector, 0, SIZE_MAX, cpy))
+#define vector_copy_range(vector, start, end, cpy)	(__vec_cpy(vector, start, end, cpy))
+vector	__vec_cpy(cvector vec, const size_t start, const size_t end, void *(*cpy)(void *));
+
 #define	vector_delete(vector)	(__vec_del(vector))
 void	__vec_del(vector);
 
@@ -34,8 +38,9 @@ void	__vec_pop(vector vec);
 #define	vector_get(vector, i)	(__vec_get(vector, i))
 void	*__vec_get(cvector vec, const size_t i);
 
-#define	vector_set(vector, i, value)	(__vec_set(vector, i, (const void *)&value))
-u8		__vec_set(vector vec, const size_t i, const void *val);
+#define	vector_set(vector, i, value)		(__vec_set(vector, i, (const void *)&value, 0))
+#define vector_replace(vector, i, value)	(__vec_set(vector, i, (const void *)&value, 1))
+u8		__vec_set(vector vec, const size_t i, const void *val, const u8 free);
 
 #define vector_swap(vector, i1, i2, swapper)	(__vec_swp(vector, i1, i2, swapper))
 u8		__vec_swp(vector vec, const size_t i1, const size_t i2, u8 (*swap)(void *, void *));

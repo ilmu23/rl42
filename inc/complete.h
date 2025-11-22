@@ -5,25 +5,19 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<_defs.h>>
+// <<complete.h>>
 
 #pragma once
 
-#define SGR0		"\x1b[m"
-#define SGR_INFO	"\x1b[1;38;5;190m"
-#define SGR_WARN	"\x1b[1;38;5;202m"
-#define SGR_ERROR	"\x1b[1;38;5;196m"
+#include "internal/_data.h"
 
-#ifndef NUMERIC_ARG_MAX
-# define NUMERIC_ARG_MAX	1000000
-#endif
+#define rl42_completion_fn(name)	cvector	name(const char *pattern, [[maybe_unused]] cvector context)
 
-#define NUMERIC_ARG_NOT_SET	NUMERIC_ARG_MAX + 1
-
-#define add_mark(m, p)	(m.pos = p, m.set = 1)
-
-// Checks whether s1 equals s2
-#define str_equals(s1, s2)	(s1 == s2 || (s1 && s2 && strcmp(s1, s2) == 0))
-
-// Checks whether s1 equals the string literal s2
-#define strl_equals(s1, s2)	(s1 && strcmp(s1, s2) == 0)
+/** @brief Sets the function used for performing completions
+ *
+ * Sets the function used by the 'complete' command to get
+ * completions. If f is NULL, restores the default
+ * completion function
+ * @param f Function to use for completions
+ */
+void	set_completion_fn(rl42_completion_fn f);
