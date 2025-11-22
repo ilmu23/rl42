@@ -54,7 +54,16 @@ rl42_fn(complete) {
 	completions = cmp_get_common(cmp_fn(target.pattern, target.context), strlen(target.pattern));
 	if (completions) {
 		state_flags |= STATE_KILL_DONT_UPDATE_RING;
-		rv = (vector_size(completions) == 1) ? cmp_insert(line, *(const char **)vector_get(completions, 0)) : cmp_display(line, completions);
+		switch (vector_size(completions)) {
+			case 0:
+				rv = 1;
+				break ;
+			case 1:
+				rv = cmp_insert(line, *(const char **)vector_get(completions, 0));
+				break ;
+			default:
+				rv = cmp_display(line, completions);
+		}
 	} else
 		rv = 0;
 	vector_delete((vector)completions);
