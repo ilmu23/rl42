@@ -18,7 +18,6 @@
 
 #define __RL42_INTERNAL
 #include "rl42.h"
-#include "config.h"
 #include "complete.h"
 
 #include "internal/_kb.h"
