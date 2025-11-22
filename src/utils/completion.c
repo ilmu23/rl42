@@ -68,6 +68,9 @@ static inline size_t	_find_longest(cvector completions);
 
 // cmp_display
 static inline const char	*_get_sgr0(void);
+
+static inline size_t		_path_len(const char *path);
+static inline u8			_is_path(const char *s);
 static inline u8			_select_next(rl42_line *line, rl42_fn *next);
 static inline u8			_query(rl42_line *line, const size_t completions);
 
@@ -122,6 +125,7 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 	const char	*completion;
 	rl42_fn		next;
 	ssize_t		rv;
+	vector		starts;
 	size_t		widest;
 	size_t		scroll;
 	size_t		count;
@@ -137,12 +141,21 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 	char		buf[_BUF_SIZE];
 	i64			dwidth;
 	u8			paging;
+	u8			pathed;
 
 	count = vector_size(completions);
 	if ((i64)count >= rl42_get(RL42_COMPLETION_QUERY_ITEMS).i64 && !_query(line, count))
 		return 1;
+	pathed = _is_path(*(const char **)vector_get(completions, 0));
+	starts = vector(size_t, count, NULL);
 	for (i = widest = 0; i < count; i++) {
-		len = strlen(*(const char **)vector_get(completions, i));
+		completion = *(const char **)vector_get(completions, i);
+		if (pathed) {
+			vector_push(starts, (size_t){_path_len(completion)});
+			completion = &completion[*(size_t *)vector_get(starts, i)];
+		} else
+			vector_push(starts, (size_t){0});
+		len = strlen(completion);
 		if (len > widest)
 			widest = len;
 	}
@@ -182,17 +195,21 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 			} else
 				i = 0;
 			rv = snprintf(buf, _BUF_SIZE, "%s", term_get_seq(ti_ed));
-			if (rv == -1)
+			if (rv == -1) {
+				vector_delete(starts);
 				return 0;
+			}
 			j = (size_t)rv;
 			for (n = 0; i < count; i++) {
 				completion = *(const char **)vector_get(completions, i);
 				if (i != cur)
-					rv = snprintf(&buf[j], _BUF_SIZE - j, "%-*s", (i32)widest, completion);
+					rv = snprintf(&buf[j], _BUF_SIZE - j, "%-*s", (i32)widest, &completion[*(size_t *)vector_get(starts, i)]);
 				else
-					rv = snprintf(&buf[j], _BUF_SIZE - j, "%s%-*s%s", term_get_hl_seq(), (i32)widest, completion, _get_sgr0());
-				if (rv == -1)
+					rv = snprintf(&buf[j], _BUF_SIZE - j, "%s%-*s%s", term_get_hl_seq(), (i32)widest, &completion[*(size_t *)vector_get(starts, i)], _get_sgr0());
+				if (rv == -1) {
+					vector_delete(starts);
 					return 0;
+				}
 				j += (size_t)rv;
 				if (paging && --cpp == 0)
 					break ;
@@ -206,18 +223,23 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 			}
 			buf[j] = '\0';
 			term_cursor_set_pos(line->root->row + line->rows, 1);
-			if (ti_tputs(buf, 1, __putchar) == -1)
+			if (ti_tputs(buf, 1, __putchar) == -1) {
+				vector_delete(starts);
 				return 0;
+			}
 			term_cursor_move_to_i(line);
 		}
 		if (!_select_next(line, &next))
 			break ;
 		if (++cur == count)
 			cur = 0;
-		if (!cmp_insert(line, *(const char **)vector_get(completions, cur)))
+		if (!cmp_insert(line, *(const char **)vector_get(completions, cur))) {
+			vector_delete(starts);
 			return 0;
+		}
 		add_mark(kill_end, line->i);
 	}
+	vector_delete(starts);
 	return (next && term_display_line(line, 0)) ? next(line) : 0;
 }
 
@@ -257,6 +279,27 @@ static inline const char	*_get_sgr0(void) {
 	if (seq == TI_ABS_STR)
 		seq = "\x1b[m";
 	return seq;
+}
+
+static inline size_t	_path_len(const char *path) {
+	const char	*slash;
+
+	slash = strrchr(path, '/');
+	if (slash[1] == '\0') do 
+		slash--;
+	while (*slash != '/');
+	return (size_t)((uintptr_t)slash - (uintptr_t)path) + 1;
+}
+
+static inline u8	_is_path(const char *s) {
+	const char	*first;
+	const char	*last;
+
+	first = strchr(s, '/');
+	if (!first)
+		return 0;
+	last = strrchr(s, '/');
+	return (first != last || last[1] != '\0') ? 1 : 0;
 }
 
 static inline u8	_select_next(rl42_line *line, rl42_fn *next) {
