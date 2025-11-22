@@ -7,12 +7,17 @@
 //
 // <<completion.c>>
 
+#include "data.h"
 #include <ctype.h>
 #include <stdio.h>
+#include <dirent.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #define __RL42_INTERNAL
 #include "rl42.h"
+#include "config.h"
 #include "complete.h"
 
 #include "internal/_kb.h"
@@ -49,6 +54,14 @@ static inline size_t	_find_longest(cvector completions);
 static inline const char	*_get_sgr0(void);
 static inline u8			_select_next(rl42_line *line, rl42_fn *next);
 
+// _complete_files
+static inline vector	_match_files(const char *pattern, DIR *dir);
+static inline vector	_build_path(vector completions, const char *path);
+static inline u8		_cmp_fname(const char *fname, const char *pattern, const size_t n, const cmp_type type);
+static inline u8		_is_sldir(const char *path);
+static inline u8		_is_dir(const char *path);
+
+// comparison modes
 static inline u8	_cmp(const char c1, const char c2);
 static inline u8	_cmp_ign_case(const char c1, const char c2);
 static inline u8	_cmp_map_case(const char c1, const char c2);
@@ -206,6 +219,122 @@ static inline u8	_select_next(rl42_line *line, rl42_fn *next) {
 	return (match.fn->f == complete) ? 1 : 0;
 }
 
+static inline rl42_completion_fn(_complete_files) {
+	const char	*tmp;
+	const char	*path;
+	vector		completions;
+
+	tmp = strrchr(pattern, '/');
+	if (tmp) {
+		path = (tmp != pattern) ? cstr_substr(pattern, 0, (uintptr_t)tmp - (uintptr_t)pattern) : strdup("/");
+		if (!path)
+			return NULL;
+		pattern = (const char *)((uintptr_t)tmp + 1);
+	} else
+		path = ".";
+	completions = _build_path(_match_files(pattern, opendir(path)), path);
+	if (!strl_equals(path, "."))
+		free((void *)path);
+	return completions;
+}
+
+static inline vector	_match_files(const char *pattern, DIR *dir) {
+	struct dirent	*data;
+	const char		*tmp;
+	cmp_type		type;
+	vector			matches;
+	size_t			pattern_len;
+	u8				match_hidden;
+
+	matches = vector(const char *, 16, free);
+	if (matches) {
+		if (!dir)
+			return matches;
+		type = (rl42_get(RL42_COMPLETION_IGNORE_CASE).u64) ? IGN_CASE : NORMAL;
+		if (type == IGN_CASE && rl42_get(RL42_COMPLETION_MAP_CASE).u64)
+			type = MAP_CASE;
+		pattern_len = strlen(pattern);
+		match_hidden = (rl42_get(RL42_MATCH_HIDDEN_FILES).u64 == rl42_conf_on) ? 1 : 0;
+		for (data = readdir(dir); data; data = readdir(dir)) {
+			if (strl_equals(data->d_name, ".") || strl_equals(data->d_name, "..") || (*data->d_name == '.' && !match_hidden))
+				continue ;
+			if (_cmp_fname(data->d_name, pattern, pattern_len, type)) {
+				tmp = strdup(data->d_name);
+				if (!tmp || !vector_push(matches, tmp)) {
+					vector_delete(matches);
+					closedir(dir);
+					return NULL;
+				}
+			}
+		}
+	}
+	closedir(dir);
+	return matches;
+}
+
+static inline vector	_build_path(vector completions, const char *path) {
+	const char	*tmp;
+	size_t		i;
+	size_t		count;
+	u8			(*is_dir)(const char *);
+
+	if (completions) {
+		count = vector_size(completions);
+		if (!strl_equals(path, ".")) {
+			if (path[strlen(path) - 1] == '/') for (i = 0; i < count; i++) {
+				tmp = cstr_join(path, *(const char **)vector_get(completions, i));
+				if (!tmp)
+					goto __build_path_err;
+				vector_replace(completions, i, tmp);
+			} else for (i = 0; i < count; i++) {
+				tmp = cstr_joins(path, *(const char **)vector_get(completions, i), '/');
+				if (!tmp)
+					goto __build_path_err;
+				vector_replace(completions, i, tmp);
+			}
+		}
+		if (rl42_get(RL42_MARK_DIRECTORIES).u64 == rl42_conf_on) {
+			is_dir = (rl42_get(RL42_MARK_SYMLINKED_DIRECTORIES).u64 == rl42_conf_on) ? _is_sldir : _is_dir;
+			for (i = 0; i < count; i++) {
+				if (is_dir(*(const char **)vector_get(completions, i))) {
+					tmp = cstr_join(*(const char **)vector_get(completions, i), "/");
+					if (!tmp)
+						goto __build_path_err;
+					vector_replace(completions, i, tmp);
+				}
+			}
+		}
+	}
+	return completions;
+__build_path_err:
+	vector_delete(completions);
+	return NULL;
+}
+
+static inline u8	_cmp_fname(const char *fname, const char *pattern, const size_t n, const cmp_type type) {
+	size_t	i;
+
+	for (i = 0; i < n; i++)
+		if (!compare[type](fname[i], pattern[i]))
+			return 0;
+	return 1;
+}
+
+static inline u8		_is_sldir(const char *path) {
+	struct stat	file;
+
+	lstat(path, &file);
+	if (S_ISLNK(file.st_mode))
+		stat(path, &file);
+	return (S_ISDIR(file.st_mode)) ? 1 : 0;
+}
+
+static inline u8		_is_dir(const char *path) {
+	struct stat	file;
+
+	lstat(path, &file);
+	return (S_ISDIR(file.st_mode)) ? 1 : 0;
+}
 
 static inline u8	_cmp(const char c1, const char c2) {
 	return (c1 == c2) ? 1 : 0;
@@ -217,36 +346,4 @@ static inline u8	_cmp_ign_case(const char c1, const char c2) {
 
 static inline u8	_cmp_map_case(const char c1, const char c2) {
 	return (_cmp_ign_case(c1, c2) || (c1 == '-' && c2 == '_') || (c1 == '_' && c2 == '-')) ? 1 : 0;
-}
-
-#include <stdlib.h>
-#include "internal/test/defs.h"
-
-static rl42_completion_fn(_complete_files) {
-	vector	out;
-
-	(void)pattern;
-	out = vector(const char *, 3, free);
-	if (out) switch (rand_range(0, 2)) {
-		case 0:
-			if (!vector_push(out, (const char *){strdup("ayy")}))
-				return NULL;
-			if (!vector_push(out, (const char *){strdup("ayylmao")}))
-				return NULL;
-			if (!vector_push(out, (const char *){strdup("ayy lmao")}))
-				return NULL;
-			break ;
-		case 1:
-			if (!vector_push(out, (const char *){strdup("ayy lmao")}))
-				return NULL;
-			if (!vector_push(out, (const char *){strdup("lolmao")}))
-				return NULL;
-			if (!vector_push(out, (const char *){strdup("lul")}))
-				return NULL;
-			break ;
-		case 2:
-			if (!vector_push(out, (const char *){strdup("lul")}))
-				return NULL;
-	}
-	return out;
 }
