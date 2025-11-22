@@ -38,8 +38,9 @@ void	__vec_pop(vector vec);
 #define	vector_get(vector, i)	(__vec_get(vector, i))
 void	*__vec_get(cvector vec, const size_t i);
 
-#define	vector_set(vector, i, value)	(__vec_set(vector, i, (const void *)&value))
-u8		__vec_set(vector vec, const size_t i, const void *val);
+#define	vector_set(vector, i, value)		(__vec_set(vector, i, (const void *)&value, 0))
+#define vector_replace(vector, i, value)	(__vec_set(vector, i, (const void *)&value, 1))
+u8		__vec_set(vector vec, const size_t i, const void *val, const u8 free);
 
 #define vector_swap(vector, i1, i2, swapper)	(__vec_swp(vector, i1, i2, swapper))
 u8		__vec_swp(vector vec, const size_t i1, const size_t i2, u8 (*swap)(void *, void *));

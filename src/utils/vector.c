@@ -100,10 +100,10 @@ void	*__vec_get(cvector vec, const size_t i) {
 	return (i < vec->elements) ? index(vec, i) : (i == (size_t)-1 && vec->elements) ? index(vec, vec->elements -1) : VECTOR_OUT_OF_BOUNDS;
 }
 
-u8	__vec_set(vector vec, const size_t i, const void *val) {
+u8	__vec_set(vector vec, const size_t i, const void *val, const u8 free) {
 	if (i >= vec->elements)
 		return 0;
-	if (vec->free)
+	if (free && vec->free)
 		vec->free(index(vec, i));
 	_set_element(vec, i, val);
 	return 1;
