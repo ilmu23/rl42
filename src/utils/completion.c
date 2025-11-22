@@ -34,6 +34,10 @@
 
 #define _BUF_SIZE	16384
 
+#ifndef __DEBUG_PAGE_AFTER_ROWS
+# define __DEBUG_PAGE_AFTER_ROWS	4
+#endif
+
 typedef enum {
 	CT_NORMAL = 0,
 	CT_IGN_CASE = 1,
@@ -123,13 +127,16 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 	size_t		count;
 	size_t		cur;
 	size_t		cpr;
+	size_t		cpp;
 	size_t		rows;
 	size_t		len;
 	size_t		i;
 	size_t		j;
 	size_t		n;
+	size_t		page;
 	char		buf[_BUF_SIZE];
 	i64			dwidth;
+	u8			paging;
 
 	count = vector_size(completions);
 	if ((i64)count >= rl42_get(RL42_COMPLETION_QUERY_ITEMS).i64 && !_query(line, count))
@@ -145,36 +152,64 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 		if (dwidth == -1 || dwidth > term_width)
 			dwidth = term_width;
 		cpr = max(dwidth / (widest + 1), 1);
-		rows = count / cpr + 1;
-		if (line->root->row + line->rows + rows > term_height) {
-			scroll = line->root->row + line->rows + rows - term_height;
-			if (scroll > term_height - line->rows)
-				return 1; // TODO: page completions
-			term_scroll_display(scroll, 0);
+		rows = (cpr > 1) ? count / cpr + 1 : count;
+#ifdef __DEBUG_FORCE_CMP_PAGING
+		if (rows >= __DEBUG_PAGE_AFTER_ROWS) {
+			cpp = cpr * __DEBUG_PAGE_AFTER_ROWS;
+			page = (cur != SIZE_MAX) ? cur / cpp : 0;
+			paging = 1;
 		}
-		rv = snprintf(buf, _BUF_SIZE, "%s", term_get_seq(ti_ed));
-		if (rv == -1)
-			return 0;
-		j = (size_t)rv;
-		for (i = n = 0; i < count; i++) {
-			completion = *(const char **)vector_get(completions, i);
-			if (i != cur)
-				rv = snprintf(&buf[j], _BUF_SIZE - j, "%-*s", (i32)widest, completion);
-			else
-				rv = snprintf(&buf[j], _BUF_SIZE - j, "%s%-*s%s", term_get_hl_seq(), (i32)widest, completion, _get_sgr0());
+#endif
+		if (line->rows < term_height) {
+			if (line->prompt.root->row + line->rows - 1 + rows > term_height) {
+				scroll = line->root->row + line->rows + rows - term_height;
+				if (scroll > line->rows) {
+					term_scroll_display(line->prompt.root->row - 1, 0);
+					if (rl42_get(RL42_PAGE_COMPLETIONS).u64 == rl42_conf_on) {
+						cpp = cpr * (term_height - line->rows);
+						page = (cur != SIZE_MAX) ? cur / cpp : 0;
+						paging = 1;
+					} else
+						rows = term_height - line->rows;
+				} else
+					term_scroll_display(scroll, 0);
+			}
+			if (paging) for (i = j = n = 0; j < page; i++) {
+				if (++n == cpp) {
+					n = 0;
+					j++;
+				}
+			} else
+				i = 0;
+			rv = snprintf(buf, _BUF_SIZE, "%s", term_get_seq(ti_ed));
 			if (rv == -1)
 				return 0;
-			j += (size_t)rv;
-			if (++n == cpr) {
-				buf[j++] = '\n';
-				n = 0;
-			} else
-				buf[j++] = ' ';
+			j = (size_t)rv;
+			for (n = 0; i < count; i++) {
+				completion = *(const char **)vector_get(completions, i);
+				if (i != cur)
+					rv = snprintf(&buf[j], _BUF_SIZE - j, "%-*s", (i32)widest, completion);
+				else
+					rv = snprintf(&buf[j], _BUF_SIZE - j, "%s%-*s%s", term_get_hl_seq(), (i32)widest, completion, _get_sgr0());
+				if (rv == -1)
+					return 0;
+				j += (size_t)rv;
+				if (paging && --cpp == 0)
+					break ;
+				if (++n == cpr) {
+					if (--rows == 0)
+						break ;
+					buf[j++] = '\n';
+					n = 0;
+				} else
+					buf[j++] = ' ';
+			}
+			buf[j] = '\0';
+			term_cursor_set_pos(line->root->row + line->rows, 1);
+			if (ti_tputs(buf, 1, __putchar) == -1)
+				return 0;
+			term_cursor_move_to_i(line);
 		}
-		term_cursor_set_pos(line->root->row + line->rows, 1);
-		if (ti_tputs(buf, 1, __putchar) == -1)
-			return 0;
-		term_cursor_move_to_i(line);
 		if (!_select_next(line, &next))
 			break ;
 		if (++cur == count)
