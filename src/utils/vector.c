@@ -92,7 +92,7 @@ void	__vec_pop(vector vec) {
 	if (vec->elements) {
 		vec->elements--;
 		if (vec->free)
-			vec->free (index(vec, vec->elements));
+			vec->free(index(vec, vec->elements));
 	}
 }
 
@@ -103,6 +103,8 @@ void	*__vec_get(cvector vec, const size_t i) {
 u8	__vec_set(vector vec, const size_t i, const void *val) {
 	if (i >= vec->elements)
 		return 0;
+	if (vec->free)
+		vec->free(index(vec, i));
 	_set_element(vec, i, val);
 	return 1;
 }
