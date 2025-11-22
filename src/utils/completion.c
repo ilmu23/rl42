@@ -13,6 +13,7 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
 
 #define __RL42_INTERNAL
@@ -35,10 +36,21 @@
 #define _BUF_SIZE	16384
 
 typedef enum {
-	NORMAL = 0,
-	IGN_CASE = 1,
-	MAP_CASE = 2
+	CT_NORMAL = 0,
+	CT_IGN_CASE = 1,
+	CT_MAP_CASE = 2
 }	cmp_type;
+
+typedef enum {
+	ST_DIR = 0,
+	ST_EXEC = 1,
+	ST_SYMLINK = 2,
+	ST_CHAR_DEV = 3,
+	ST_BLOCK_DEV = 4,
+	ST_SOCKET = 5,
+	ST_FIFO = 6,
+	ST_REGULAR
+}	stat_type;
 
 static inline rl42_completion_fn(_complete_files);
 
@@ -46,6 +58,7 @@ extern u16	term_height;
 extern u16	term_width;
 
 rl42_completion_fn	cmp_fn = _complete_files;
+static const char	*stat_chars[ST_FIFO + 1] = { "/", "*", "@", "%", "#", "=", "|" };
 
 // cmp_get_common
 static inline size_t	_find_longest(cvector completions);
@@ -55,6 +68,7 @@ static inline const char	*_get_sgr0(void);
 static inline u8			_select_next(rl42_line *line, rl42_fn *next);
 
 // _complete_files
+static inline stat_type	_get_file_type(const char *path);
 static inline vector	_match_files(const char *pattern, DIR *dir);
 static inline vector	_build_path(vector completions, const char *path);
 static inline u8		_cmp_fname(const char *fname, const char *pattern, const size_t n, const cmp_type type);
@@ -234,6 +248,28 @@ static inline rl42_completion_fn(_complete_files) {
 	return completions;
 }
 
+static inline stat_type	_get_file_type(const char *path) {
+	struct stat	file;
+
+	if (lstat(path, &file) == -1)
+		return ST_REGULAR;
+	switch (file.st_mode & S_IFMT) {
+		case S_IFDIR:
+			return ST_DIR;
+		case S_IFLNK:
+			return ST_SYMLINK;
+		case S_IFCHR:
+			return ST_CHAR_DEV;
+		case S_IFBLK:
+			return ST_BLOCK_DEV;
+		case S_IFSOCK:
+			return ST_SOCKET;
+		case S_IFIFO:
+			return ST_FIFO;
+	}
+	return (access(path, X_OK) == 0) ? ST_EXEC : ST_REGULAR;
+}
+
 static inline vector	_match_files(const char *pattern, DIR *dir) {
 	struct dirent	*data;
 	const char		*tmp;
@@ -246,9 +282,9 @@ static inline vector	_match_files(const char *pattern, DIR *dir) {
 	if (matches) {
 		if (!dir)
 			return matches;
-		type = (rl42_get(RL42_COMPLETION_IGNORE_CASE).u64) ? IGN_CASE : NORMAL;
-		if (type == IGN_CASE && rl42_get(RL42_COMPLETION_MAP_CASE).u64)
-			type = MAP_CASE;
+		type = (rl42_get(RL42_COMPLETION_IGNORE_CASE).u64) ? CT_IGN_CASE : CT_NORMAL;
+		if (type == CT_IGN_CASE && rl42_get(RL42_COMPLETION_MAP_CASE).u64)
+			type = CT_MAP_CASE;
 		pattern_len = strlen(pattern);
 		match_hidden = (rl42_get(RL42_MATCH_HIDDEN_FILES).u64 == rl42_conf_on) ? 1 : 0;
 		for (data = readdir(dir); data; data = readdir(dir)) {
@@ -270,6 +306,7 @@ static inline vector	_match_files(const char *pattern, DIR *dir) {
 
 static inline vector	_build_path(vector completions, const char *path) {
 	const char	*tmp;
+	stat_type	type;
 	size_t		i;
 	size_t		count;
 	u8			(*is_dir)(const char *);
@@ -289,16 +326,29 @@ static inline vector	_build_path(vector completions, const char *path) {
 				vector_replace(completions, i, tmp);
 			}
 		}
-		if (rl42_get(RL42_MARK_DIRECTORIES).u64 == rl42_conf_on) {
-			is_dir = (rl42_get(RL42_MARK_SYMLINKED_DIRECTORIES).u64 == rl42_conf_on) ? _is_sldir : _is_dir;
-			for (i = 0; i < count; i++) {
-				if (is_dir(*(const char **)vector_get(completions, i))) {
-					tmp = cstr_join(*(const char **)vector_get(completions, i), "/");
-					if (!tmp)
-						goto __build_path_err;
-					vector_replace(completions, i, tmp);
+		switch (rl42_get(RL42_MARK_DIRECTORIES).u64 << 1 | rl42_get(RL42_VISIBLE_STATS).u64) {
+			case rl42_conf_on:
+			case rl42_conf_on << 1 | rl42_conf_on:
+				for (i = 0; i < count; i++) {
+					type = _get_file_type(*(const char **)vector_get(completions, i));
+					if (type != ST_REGULAR) {
+						tmp = cstr_join(*(const char **)vector_get(completions, i), stat_chars[type]);
+						if (!tmp)
+							goto __build_path_err;
+						vector_replace(completions, i, tmp);
+					}
 				}
-			}
+				break ;
+			case rl42_conf_on << 1:
+				is_dir = (rl42_get(RL42_MARK_SYMLINKED_DIRECTORIES).u64 == rl42_conf_on) ? _is_sldir : _is_dir;
+				for (i = 0; i < count; i++) {
+					if (is_dir(*(const char **)vector_get(completions, i))) {
+						tmp = cstr_join(*(const char **)vector_get(completions, i), stat_chars[ST_DIR]);
+						if (!tmp)
+							goto __build_path_err;
+						vector_replace(completions, i, tmp);
+					}
+				}
 		}
 	}
 	return completions;
@@ -319,14 +369,16 @@ static inline u8	_cmp_fname(const char *fname, const char *pattern, const size_t
 static inline u8		_is_sldir(const char *path) {
 	struct stat	file;
 
-	stat(path, &file);
+	if (stat(path, &file) == -1)
+		return 0;
 	return (S_ISDIR(file.st_mode)) ? 1 : 0;
 }
 
 static inline u8		_is_dir(const char *path) {
 	struct stat	file;
 
-	lstat(path, &file);
+	if (lstat(path, &file) == -1)
+		return 0;
 	return (S_ISDIR(file.st_mode)) ? 1 : 0;
 }
 
