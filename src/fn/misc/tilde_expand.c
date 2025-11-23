@@ -21,7 +21,6 @@ rl42_fn(tilde_expand) {
 	cvector		home;
 	size_t		len;
 	size_t		i;
-	size_t		j;
 	u32			c;
 	u8			rv;
 
@@ -49,9 +48,10 @@ rl42_fn(tilde_expand) {
 	if (!home)
 		goto _tilde_expand_err_reset_i;
 	vector_erase(line->line, line->i);
-	for (j = 0, len = vector_size(home); j < len; j++, line->i++)
-		if (!__vec_ins(line->line, line->i, vector_get(home, j)))
-			goto _tilde_expand_err;
+	len = vector_size(home);
+	if (!vector_insert_n(line->line, line->i, len, vector_start(home)))
+		goto _tilde_expand_err;
+	line->i += len;
 	if (!term_display_line(line, 0))
 		goto _tilde_expand_err;
 	vector_delete((vector)home);

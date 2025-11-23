@@ -45,18 +45,25 @@
 #define bind_insert(seq, f)	(bind_emacs(seq, f), bind_vi_ins(seq, f))
 #define bind_all(seq, f)	(bind_emacs(seq, f), bind_vi_cmd(seq, f), bind_vi_ins(seq, f))
 
+extern vector	input_buf;
+
+static u8	init = 0;
+
 static inline void	_init_binds(void);
 static inline void	_rl42_exit(void);
 static inline u8	_init_fns(void);
 
-static u8	init = 0;
-
 u8	rl42_init(void) {
-	u8			rv;
+	u8	rv;
 
 	rv = 1;
 	if (!init && ~state_flags & STATE_INIT_IN_PROGRESS) {
 		state_flags ^= STATE_INIT_IN_PROGRESS;
+		if (!input_buf) {
+			input_buf = vector(char, 64, NULL);
+			if (!input_buf)
+				rv = 0;
+		}
 		if (!init_key_trees())
 			rv = 0;
 		if (atexit(_rl42_exit) != 0)
@@ -214,6 +221,7 @@ static inline void	_init_binds(void) {
 
 static inline void	_rl42_exit(void) {
 	if (init) {
+		vector_delete(input_buf);
 		term_apply_settings(TERM_SETTINGS_DEFAULT);
 		hist_clean();
 		clean_kb_listener();

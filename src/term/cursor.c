@@ -10,6 +10,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "rl42.h"
@@ -18,9 +19,14 @@
 #include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
+#include "internal/_vector.h"
 #include "internal/_display.h"
 
-#define _TERM_CURS_POS	"\x1b[6n"
+#define _BUF_SIZE	64
+
+#define _CSI_DSR	"\x1b[6n" // Device Status Report / Report Cursor Position
+
+extern vector	input_buf;
 
 extern u16	term_width;
 extern u16	term_height;
@@ -48,32 +54,45 @@ void	term_cursor_delete_anchor(const rl42_cursor_pos *anchor) {
 }
 
 u8	term_cursor_get_pos(i16 *row, i16 *col) {
-	ssize_t	rv;
-	size_t	i;
-	char	*end;
-	char	buf[64];
+	csi_match	cpr;
+	ssize_t		rv;
+	size_t		i;
+	char		*end;
+	char		buf[_BUF_SIZE];
 
-	write(1, _TERM_CURS_POS, sizeof(_TERM_CURS_POS) - 1);
-	rv = read(0, buf, 64);
+	write(1, _CSI_DSR, sizeof(_CSI_DSR) - 1);
+	i = 0;
+_term_cursor_get_pos_read:
+	rv = read(0, &buf[i], _BUF_SIZE - i);
 	if (rv == -1)
 		return 0;
-	// TODO: check that we actually got the response instead of
-	// some user input that was buffered before it
-	for (i = 0; i < (size_t)rv; i++)
-		if (isdigit(buf[i]))
-			break ;
-	if (i == (size_t)rv)
-		return 0;
-	*row = (u16)strtol(&buf[i], &end, 10);
-	i += (uintptr_t)end - ((uintptr_t)buf + i);
-	while (i < (size_t)rv) {
-		if (isdigit(buf[i]))
-			break ;
-		i++;
+	cpr = term_find_csi(buf, rv + i, CSI_CPR);
+	if (!cpr.start) {
+		if (!vector_insert_n(input_buf, -1, rv + i, buf))
+			return 0;
+		i = 0;
+		goto _term_cursor_get_pos_read;
 	}
-	if (i == (size_t)rv)
+	if (cpr.start != buf) {
+		i = (size_t)((uintptr_t)cpr.start - (uintptr_t)buf);
+		if (!vector_insert_n(input_buf, -1, i, buf))
+			return 0;
+		memmove(buf, &buf[i], _BUF_SIZE - i);
+		memset(&buf[_BUF_SIZE - i], 0, i);
+		if (!cpr.complete)
+			goto _term_cursor_get_pos_read;
+		rv -= i;
+	}
+	i = 0;
+	do i++;
+	while (!isdigit(buf[i]));
+	*row = (u16)strtoul(&buf[i], &end, 10);
+	i += (uintptr_t)end - ((uintptr_t)buf + i);
+	do i++;
+	while (!isdigit(buf[i]));
+	*col = (u16)strtoul(&buf[i], &end, 10);
+	if (*(++end) && !vector_insert_n(input_buf, -1, rv - i, end))
 		return 0;
-	*col = (u16)strtol(&buf[i], NULL, 10);
 	return 1;
 }
 

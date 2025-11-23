@@ -26,7 +26,10 @@ static i32	efd;
 static u32	kbs;
 u32			kcbs;
 
+vector	input_buf;
+
 static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size, rl42_kb_event *event);
+static inline const char	*_fill_buf(char *buf, const size_t buf_size);
 
 rl42_kb_event	*kb_listen(const i32 timeout) {
 	char	buf[_BUF_SIZE];
@@ -39,6 +42,8 @@ rl42_kb_event	*kb_listen_buf(const i32 timeout, char *buf, const size_t buf_size
 	struct epoll_event		event;
 	ssize_t					rv;
 
+	if (vector_size(input_buf) > 0)
+		return (_parse_event(_fill_buf(buf, buf_size), buf_size, &kb_event));
 	term_show_cursor();
 	rv = epoll_wait(efd, &event, 1, timeout);
 	term_hide_cursor();
@@ -96,113 +101,183 @@ u8	init_kb_listener(void) {
 }
 
 static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size, rl42_kb_event *event) {
+	size_t	buf_len;
+	size_t	seq_len;
+
+	buf_len = strlen(buf);
 	memset(event, 0, sizeof(*event));
 	if (buf_size > 1 && strlen(buf) > 2 && (strncmp(buf, "\x1b[", 2) == 0 || strncmp(buf, "\x1bO", 2) == 0)) {
 		switch (term_match_key_seq(buf)) {
 			case ti_kf1:
 				*event = kb_event(KB_KEY_LEGACY_F1, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf1));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf2:
 				*event = kb_event(KB_KEY_LEGACY_F2, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf2));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf3:
 				*event = kb_event(KB_KEY_LEGACY_F3, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf3));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf4:
 				*event = kb_event(KB_KEY_LEGACY_F4, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf4));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf5:
 				*event = kb_event(KB_KEY_LEGACY_F5, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf5));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf6:
 				*event = kb_event(KB_KEY_LEGACY_F6, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf6));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf7:
 				*event = kb_event(KB_KEY_LEGACY_F7, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf7));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf8:
 				*event = kb_event(KB_KEY_LEGACY_F8, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf8));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf9:
 				*event = kb_event(KB_KEY_LEGACY_F9, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf9));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf10:
 				*event = kb_event(KB_KEY_LEGACY_F10, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf10));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf11:
 				*event = kb_event(KB_KEY_LEGACY_F11, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf11));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf12:
 				*event = kb_event(KB_KEY_LEGACY_F12, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kf12));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kcuu1:
 				*event = kb_event(KB_KEY_LEGACY_UP, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kcuu1));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kcud1:
 				*event = kb_event(KB_KEY_LEGACY_DOWN, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kcud1));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kcub1:
 				*event = kb_event(KB_KEY_LEGACY_LEFT, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kcub1));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kcuf1:
 				*event = kb_event(KB_KEY_LEGACY_RIGHT, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kcuf1));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kich1:
 				*event = kb_event(KB_KEY_LEGACY_INSERT, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kich1));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_khome:
 				*event = kb_event(KB_KEY_LEGACY_HOME, 0, 0);
+				seq_len = strlen(term_get_seq(ti_khome));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_knp:
 				*event = kb_event(KB_KEY_LEGACY_PAGE_UP, 0, 0);
+				seq_len = strlen(term_get_seq(ti_knp));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kdch1:
 				*event = kb_event(KB_KEY_LEGACY_DELETE, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kdch1));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kend:
 				*event = kb_event(KB_KEY_LEGACY_END, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kend));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kpp:
 				*event = kb_event(KB_KEY_LEGACY_PAGE_DOWN, 0, 0);
+				seq_len = strlen(term_get_seq(ti_kpp));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kri:
 				*event = kb_event(KB_KEY_LEGACY_UP, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kri));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kind:
 				*event = kb_event(KB_KEY_LEGACY_DOWN, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kind));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kLFT:
 				*event = kb_event(KB_KEY_LEGACY_LEFT, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kLFT));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kRIT:
 				*event = kb_event(KB_KEY_LEGACY_RIGHT, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kRIT));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kIC:
 				*event = kb_event(KB_KEY_LEGACY_INSERT, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kIC));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kHOM:
 				*event = kb_event(KB_KEY_LEGACY_HOME, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kHOM));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kNXT:
 				*event = kb_event(KB_KEY_LEGACY_PAGE_UP, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kNXT));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kDC:
 				*event = kb_event(KB_KEY_LEGACY_DELETE, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kDC));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kEND:
 				*event = kb_event(KB_KEY_LEGACY_END, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kEND));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kPRV:
 				*event = kb_event(KB_KEY_LEGACY_PAGE_DOWN, 0, KB_MOD_SHIFT);
+				seq_len = strlen(term_get_seq(ti_kPRV));
+				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 		}
 		return NULL;
 	}
+	seq_len = 0;
 	if (buf_size > 1 && buf[0] == '\x1b' && buf[1]) {
 		event->mods |= KB_MOD_ALT;
-		buf++;
+		seq_len++;
 	}
-	event->code = utf8_decode(buf);
+	event->code = utf8_decode(&buf[seq_len]);
+	seq_len += charsize_utf8(buf[seq_len]);
 	// TODO: proper unicode case checks
 	if (event->code == kcbs) {
 		event->mods |= KB_MOD_CTRL;
@@ -214,6 +289,22 @@ static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size
 		event->mods |= KB_MOD_SHIFT;
 		event->code |= 0x20;
 	}
+	vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 	event->text = event->code;
 	return event;
+}
+
+static inline const char	*_fill_buf(char *buf, const size_t buf_size) {
+	size_t	inbuf_size;
+
+	inbuf_size = vector_size(input_buf);
+	if (inbuf_size > buf_size - 1)
+		inbuf_size = buf_size - 1;
+	memcpy(buf, vector_start(input_buf), inbuf_size * sizeof(*buf));
+	buf[inbuf_size] = '\0';
+	if (inbuf_size != vector_size(input_buf))
+		vector_erase_n(input_buf, 0, inbuf_size);
+	else
+		vector_clear(input_buf);
+	return buf;
 }

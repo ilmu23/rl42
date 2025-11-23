@@ -20,6 +20,7 @@ static inline char	*_strdup(const char *s);
 static inline i32	_test1(void);
 static inline i32	_test2(void);
 static inline i32	_test3(void);
+static inline i32	_test4(void);
 
 i32	main(void) {
 	i32	rv;
@@ -30,6 +31,8 @@ i32	main(void) {
 	if (!_test2())
 		rv = 1;
 	if (!_test3())
+		rv = 1;
+	if (!_test4())
 		rv = 1;
 	return rv;
 }
@@ -158,6 +161,45 @@ static inline i32	_test3(void) {
 			continue ;
 		}
 		if (*tmp != expected[i])
+			rv = 0;
+		fprintf(stderr, "%svector[%zu]: %u" ENDL, hl(*tmp == expected[i]), i, *tmp);
+	}
+	vector_delete(vector);
+	return rv;
+}
+
+static inline i32	_test4(void) {
+	const u32	*tmp;
+	vector		vector;
+	size_t		i;
+	u32			vals[10] = {42, 21, 1, 23, 814, 92, 0, 2912, 1, 2198};
+	u32			expected[8] = {42, 21, 1, 23, 0, 2912, 1, 2198};
+	i32			chk;
+	i32			rv;
+
+	rv = 1;
+	info("Test 4 ---- insert_n / erase_n\n");
+	vector = vector(u32, 1, NULL);
+	if (!vector)
+		return error("Failed to create a vector of size 1\n");
+	if (!vector_insert_n(vector, 0, 5, &vals[5]))
+		return error("Failed to insert elements 6 - 10\n");
+	if (!vector_insert_n(vector, 0, 5, vals))
+		return error("Failed to insert elements 1 - 5\n");
+	if (!vector_erase_n(vector, 4, 2))
+		return error("Failed to remove 2 elements starting from index 4\n");
+	tmp = vector_get(vector, 0);
+	chk = (vector_size(vector) == 8) ? memcmp(tmp, expected, sizeof(expected)) : 1;
+	if (chk != 0)
+		rv = 0;
+	fprintf(stderr, "%sraw data comparison %s" ENDL, hl(chk == 0), (chk == 0) ? "OK" : "KO");
+	for (i = 0; i < 10; i++) {
+		tmp = vector_get(vector, i);
+		if (tmp == VECTOR_OUT_OF_BOUNDS) {
+			fprintf(stderr, "%svector[%zu]: access out of bounds" ENDL, hl(i >= 8), i);
+			continue ;
+		}
+		if (i >= 8 || *tmp != expected[i])
 			rv = 0;
 		fprintf(stderr, "%svector[%zu]: %u" ENDL, hl(*tmp == expected[i]), i, *tmp);
 	}

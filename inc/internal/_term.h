@@ -19,8 +19,16 @@
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 
+typedef struct {
+	const char	*start;
+	u8			complete;
+}	csi_match;
+
 #define TERM_SETTINGS_DEFAULT	0
 #define TERM_SETTINGS_RL42		1
+
+// CSI sequence identifiers
+#define CSI_CPR	'R'	// Cursor position report
 
 // SGR option bit masks
 #define SGR_STANDOUT	0x001U
@@ -58,19 +66,27 @@ u8						term_init(void);
  */
 u8						term_apply_settings(const u8 settings);
 
+/** @brief Looks for the start of a given CSI sequence in buf
+ *
+ * @param buf Buffer to search in
+ * @param buf_size Size of buf
+ * @param ident
+ */
+csi_match				term_find_csi(const char *buf, const size_t buf_size, const char ident);
+
 /** @brief Gets the escape sequence corresponding to name
  *
  * @param name Name of the escape sequnce to get
  * @returns @c <b>const char *</b> Escape sequence for name,
  * NULL if not found
  */
-const char	*term_get_seq(const u16 name);
+const char				*term_get_seq(const u16 name);
 
 /** @brief Gets the current highlight escape sequence
  *
  * @returns @c <b>const char *</b> Current highlight escape sequence
  */
-const char	*term_get_hl_seq(void);
+const char				*term_get_hl_seq(void);
 
 /** @brief Matches a received key escape sequence
  *

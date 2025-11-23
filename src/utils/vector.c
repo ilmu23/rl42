@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "internal/_utils.h"
 #include "internal/_vector.h"
 
 struct __vec {
@@ -157,31 +158,40 @@ void	__vec_clr(vector vec) {
 	vec->elements = 0;
 }
 
-u8	__vec_ins(vector vec, const size_t i, const void *val) {
+u8	__vec_ins(vector vec, const size_t i, const size_t n, const void *vals) {
 	size_t	_i;
 
-	if (i >= vec->elements)
-		return __vec_psh(vec, val);
-	if (vec->elements == vec->capacity && !__vec_rsz(vec, vec->capacity * 2))
-		return 0;
-	for (_i = vec->elements; _i > i; _i--)
-		_set_element(vec, _i, __vec_get(vec, _i - 1));
-	_set_element(vec, i, val);
-	vec->elements++;
+	if (n == 0)
+		return 1;
+	if (vec->elements + n > vec->capacity) {
+		do
+			vec->capacity *= 2;
+		while (vec->elements + n > vec->capacity);
+		if (!__vec_rsz(vec, vec->capacity))
+			return 0;
+	}
+	_i = min(i, vec->elements);
+	if (_i != vec->elements)
+		memmove(index(vec, _i + n), index(vec, _i), (vec->elements - _i) * vec->element_size);
+	memcpy(index(vec, _i), vals, n * vec->element_size);
+	vec->elements += n;
 	return 1;
 }
 
-u8	__vec_ers(vector vec, const size_t i) {
-	size_t	_i;
+u8	__vec_ers(vector vec, const size_t i, const size_t n) {
+	size_t	_n;
 
+	if (n == 0)
+		return 1;
 	if (i >= vec->elements)
 		return 0;
 	if (i != vec->elements - 1) {
-		if (vec->free)
+		if (vec->free) for (_n = 0; _n < n && i + _n < vec->elements; _n++)
 			vec->free(index(vec, i));
-		for (_i = i; _i < vec->elements - 1; _i++)
-			_set_element(vec, _i, __vec_get(vec, _i + 1));
-		vec->elements--;
+		else
+			_n = min(n, vec->elements - i);
+		memmove(index(vec, i), index(vec, i + _n), (vec->elements - i - _n) * vec->element_size);
+		vec->elements -= _n;
 	} else
 		__vec_pop(vec);
 	return 1;

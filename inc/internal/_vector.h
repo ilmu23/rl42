@@ -34,7 +34,9 @@ u8		__vec_psh(vector vec, const void *val);
 void	__vec_pop(vector vec);
 
 #define vector_first(vector)	(__vec_get(vector, 0))
+#define vector_start(vector)	(vector_first(vector))
 #define vector_last(vector)		(__vec_get(vector, (size_t)-1))
+#define vector_end(vector)		(vector_last(vector))
 #define	vector_get(vector, i)	(__vec_get(vector, i))
 void	*__vec_get(cvector vec, const size_t i);
 
@@ -60,8 +62,10 @@ u8		__vec_stf(vector vec);
 #define vector_clear(vector)	(__vec_clr(vector))
 void	__vec_clr(vector vec);
 
-#define vector_insert(vector, i, value)	(__vec_ins(vector, i, (const void *)&value))
-u8		__vec_ins(vector vec, const size_t i, const void *val);
+#define vector_insert(vector, i, value)				(__vec_ins(vector, i, 1, (const void *)&value))
+#define vector_insert_n(vector, start, n, values)	(__vec_ins(vector, start, n, (const void *)values))
+u8		__vec_ins(vector vec, const size_t i, const size_t n, const void *vals);
 
-#define vector_erase(vector, i)	(__vec_ers(vector, i))
-u8		__vec_ers(vector vec, const size_t i);
+#define vector_erase(vector, i)				(__vec_ers(vector, i, 1))
+#define vector_erase_n(vector, start, n)	(__vec_ers(vector, start, n))
+u8		__vec_ers(vector vec, const size_t i, const size_t n);

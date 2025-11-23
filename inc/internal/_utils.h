@@ -183,6 +183,16 @@ char		*cstr_substrb(const char *s, const size_t start, const size_t len, char *b
  */
 vector		cstr_split(const char *s, const char c, const char *ignore_within);
 
+/** @brief Finds the first occurence of c in s, checking at most n bytes
+ *
+ * @param s String to search in
+ * @param n Amount of bytes to check
+ * @param c Character to look for
+ * @returns @c <b>const char *</b> First occurence of c in s,
+ * NULL if c was not found within the first n bytes of s
+ */
+const char	*cstr_find_char(const char *s, const size_t n, const char c);
+
 /** @brief Finds the start of substr in s
  *
  * @param s String to look for substr in

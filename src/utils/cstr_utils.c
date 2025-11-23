@@ -160,3 +160,12 @@ vector	cstr_split(const char *s, const char c, const char *ignore_within) {
 	}
 	return out;
 }
+
+const char	*cstr_find_char(const char *s, const size_t n, const char c) {
+	size_t	i;
+
+	for (i = 0; i < n; i++)
+		if (s[i] == c)
+			break ;
+	return (i != n) ? &s[i] : NULL;
+}

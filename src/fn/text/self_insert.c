@@ -13,7 +13,7 @@
 #include "internal/_display.h"
 
 #undef vector_insert
-#define vector_insert(vec, i, val)	(__vec_ins(vec, i, val))
+#define vector_insert(vec, i, val)	(__vec_ins(vec, i, 1, val))
 
 u8	self_insert(rl42_line *line) {
 	if (NEED_REPEAT) {

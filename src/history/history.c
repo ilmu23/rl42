@@ -193,7 +193,6 @@ u8	hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n) {
 	cvector	word;
 	size_t	word_i;
 	size_t	len;
-	size_t	i;
 	u8		rv;
 
 	if (n == 0)
@@ -206,9 +205,10 @@ u8	hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n) {
 	word = cstr_to_rl42str(*(char **)vector_get(args, word_i - 1));
 	if (!word)
 		goto _hist_yank_arg_ret;
-	for (i = 0, len = vector_size(word); i < len; i++)
-		if (!__vec_ins(line->line, line->i++, vector_get(word, i)))
-			goto _hist_yank_arg_ret;
+	len = vector_size(word);
+	if (!vector_insert_n(line->line, line->i, len, vector_start(word)))
+		goto _hist_yank_arg_ret;
+	line->i += len;
 	rv = 1;
 _hist_yank_arg_ret:
 	vector_delete((vector)word);

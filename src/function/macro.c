@@ -195,16 +195,16 @@ static inline void	_copy_ptr(u8 buf[8], const void *ptr) {
 static inline u8	_exec_macro(rl42_line *line, const char *content) {
 	cvector	_content;
 	size_t	len;
-	size_t	i;
 
 	_content = cstr_to_rl42str(content);
 	if (!_content)
 		return 0;
-	for (i = 0, len = vector_size(_content); i < len; i++)
-		if (!__vec_ins(line->line, line->i++, vector_get(_content, i)))
-			break ;
+	len = vector_size(_content);
+	if (!vector_insert_n(line->line, line->i, len, vector_start(_content)))
+		return 0;
+	line->i += len;
 	vector_delete((vector)_content);
-	return (i == len) ? term_display_line(line, 0) : 0;
+	return term_display_line(line, 0);
 }
 
 static void	_delete_macro(caller_segment **macro) {
