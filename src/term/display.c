@@ -105,27 +105,29 @@ static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_op
 	}
 	if (!_add_str_to_buf(line->prompt.prompt, NULL, opts, &i, 0, SIZE_MAX))
 		goto __horizontal_display_line_error;
-	hl_user_mark = user.set;
-	space = calculate_scroll_space(line);
-	if (space >= term_width && ~opts & DISPLAY_PROMPT_ONLY) {
-		space = term_width - 1;
-		i = 0;
+	if (~opts & DISPLAY_PROMPT_ONLY) {
+		hl_user_mark = user.set;
+		space = calculate_scroll_space(line);
+		if (space >= term_width && ~opts & DISPLAY_PROMPT_ONLY) {
+			space = term_width - 1;
+			i = 0;
+		}
+		if (!space)
+			space = 1;
+		start = line->i;
+		if (start < space / 2 || vector_size(line->line) <= space) {
+			offset = start - 1;
+			start = 0;
+		} else if (vector_size(line->line) - start < space / 2) {
+			offset = space - (vector_size(line->line) - start) - 1;
+			start = vector_size(line->line) - space;
+		} else {
+			offset = space / 2 - 1;
+			start = line->i - space / 2;
+		}
+		if (!_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(*args, cvector) : NULL, opts, &i, start, space))
+			goto __horizontal_display_line_error;
 	}
-	if (!space)
-		space = 1;
-	start = line->i;
-	if (start < space / 2) {
-		offset = start - 1;
-		start = 0;
-	} else if (vector_size(line->line) - start < space / 2) {
-		offset = space - (vector_size(line->line) - start) - 1;
-		start = vector_size(line->line) - space;
-	} else {
-		offset = space / 2 - 1;
-		start = line->i - space / 2;
-	}
-	if (~opts & DISPLAY_PROMPT_ONLY && !_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(*args, cvector) : NULL, opts, &i, start, space))
-		goto __horizontal_display_line_error;
 	if (!term_cursor_move_to(line, line->prompt.root->row, line->prompt.root->col + i))
 		goto __horizontal_display_line_error;
 	if (!term_cursor_set_pos(line->prompt.root->row, line->prompt.root->col))
