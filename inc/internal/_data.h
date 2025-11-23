@@ -187,7 +187,7 @@ typedef struct __cfg_line {
 
 // Bit field for storing display options
 #if __STDC_VERSION__ >= 202311L
-typedef unsigned _BitInt(3)	rl42_display_opts;
+typedef unsigned _BitInt(4)	rl42_display_opts;
 #else
 typedef u8	rl42_display_opts;
 #endif

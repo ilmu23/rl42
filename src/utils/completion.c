@@ -222,7 +222,10 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 					buf[j++] = ' ';
 			}
 			buf[j] = '\0';
-			term_cursor_set_pos(line->root->row + line->rows, 1);
+			if (rl42_get(RL42_HORIZONTAL_SCROLL_MODE).u64 == rl42_conf_off)
+				term_cursor_set_pos(line->root->row + line->rows, 1);
+			else
+				term_cursor_set_pos(line->root->row + 1, 1);
 			if (ti_tputs(buf, 1, __putchar) == -1) {
 				vector_delete(starts);
 				return 0;
@@ -240,7 +243,7 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 		add_mark(kill_end, line->i);
 	}
 	vector_delete(starts);
-	return (next && term_display_line(line, 0)) ? next(line) : 0;
+	return (next && term_display_line(line, DISPLAY_FORCE_SCREEN_CLEAR)) ? next(line) : 0;
 }
 
 u8	cmp_insert(rl42_line *line, const char *completion) {

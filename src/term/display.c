@@ -22,12 +22,14 @@
 
 #define _BUFFER_SIZE	4096
 
-#define _SGR_RESET		escapes[0]
-#define _SGR_REV_VIDEO	escapes[1]
-#define _SGR_UNDERLINE	escapes[2]
-#define _TERM_CLEAR_END	escapes[3]
+#define _SGR_RESET			escapes[0]
+#define _SGR_REV_VIDEO		escapes[1]
+#define _SGR_UNDERLINE		escapes[2]
+#define _TERM_CLEAR_END_SCR	escapes[3]
+#define _TERM_CLEAR_END_LNE	escapes[4]
 
-#define clear()	((ti_tputs(_TERM_CLEAR_END.seq, 1, __putchar) != -1) ? 1 : 0)
+#define clear_screen()	((ti_tputs(_TERM_CLEAR_END_SCR.seq, 1, __putchar) != -1) ? 1 : 0)
+#define clear_line()	((ti_tputs(_TERM_CLEAR_END_LNE.seq, 1, __putchar) != -1) ? 1 : 0)
 #define fetch(esc, name)	(esc.seq = term_get_seq(name), esc.len = (esc.seq) ? strlen(esc.seq) : 0, esc.fetched = 1)
 
 extern rl42_mark	user;
@@ -38,7 +40,8 @@ static struct {
 	const char	*seq;
 	size_t		len;
 	u8			fetched;
-}	escapes[4] = {
+}	escapes[5] = {
+	{ .seq = NULL, .len = 0, .fetched = 0},
 	{ .seq = NULL, .len = 0, .fetched = 0},
 	{ .seq = NULL, .len = 0, .fetched = 0},
 	{ .seq = NULL, .len = 0, .fetched = 0},
@@ -77,9 +80,9 @@ u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 	}
 	if (!term_cursor_set_pos(line->prompt.root->row, line->prompt.root->col))
 		goto _term_display_line_error;
-	if (!_TERM_CLEAR_END.fetched)
-		fetch(_TERM_CLEAR_END, ti_ed);
-	if (!clear() || write(1, buf, i) != (ssize_t)i)
+	if (!_TERM_CLEAR_END_SCR.fetched)
+		fetch(_TERM_CLEAR_END_SCR, ti_ed);
+	if (!clear_screen() || write(1, buf, i) != (ssize_t)i)
 		goto _term_display_line_error;
 	return (~opts & DISPLAY_PROMPT_ONLY) ? term_cursor_move_to_i(line) : 1;
 _term_display_line_error:
@@ -132,10 +135,17 @@ static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_op
 		goto __horizontal_display_line_error;
 	if (!term_cursor_set_pos(line->prompt.root->row, line->prompt.root->col))
 		goto __horizontal_display_line_error;
-	if (!_TERM_CLEAR_END.fetched)
-		fetch(_TERM_CLEAR_END, ti_ed);
-	if (!clear() || write(1, buf, i) != (ssize_t)i)
-		goto __horizontal_display_line_error;
+	if (~opts & DISPLAY_FORCE_SCREEN_CLEAR) {
+		if (!_TERM_CLEAR_END_LNE.fetched)
+			fetch(_TERM_CLEAR_END_LNE, ti_el);
+		if (!clear_line() || write(1, buf, i) != (ssize_t)i)
+			goto __horizontal_display_line_error;
+	} else {
+		if (!_TERM_CLEAR_END_SCR.fetched)
+			fetch(_TERM_CLEAR_END_SCR, ti_ed);
+		if (!clear_screen() || write(1, buf, i) != (ssize_t)i)
+			goto __horizontal_display_line_error;
+	}
 	if (opts & DISPLAY_HIGHLIGHT_SUBSTR)
 		va_end(*args);
 	if (opts && DISPLAY_PROMPT_ONLY)
