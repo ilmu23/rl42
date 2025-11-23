@@ -23,7 +23,6 @@ static inline void	_transpose(rl42_line *line, size_t w1, size_t w2, const size_
 static inline u8	_on_first_word(const rl42_line *line);
 
 rl42_fn(transpose_words) {
-	size_t	len;
 	size_t	w1;
 	size_t	w2;
 
@@ -33,35 +32,25 @@ rl42_fn(transpose_words) {
 	} else {
 		if (_on_first_word(line))
 			return 2;
-		len = vector_size(line->line);
-		w2 = (line->i < len) ? line->i : line->i - 1;
-		while (w2 < len && !isspace(*(u32 *)vector_get(line->line, w2)))
-			w2++;
-		while (w2 < len && isspace(*(u32 *)vector_get(line->line, w2)))
-			w2++;
-		if (w2 == len) {
-			w2 = (line->i < len) ? line->i : line->i - 1;
-			while (isspace(*(u32 *)vector_get(line->line, w2 - 1)))
-				w2--;
-			while (!isspace(*(u32 *)vector_get(line->line, w2 - 1)))
-				w2--;
+		move_to_start_of_word(line);
+		w2 = line->i;
+		move_to_start_of_word(line);
+		w1 = line->i;
+		if (w1 == w2) {
+			move_to_end_of_word(line);
+			move_to_end_of_word(line);
+			move_to_start_of_word(line);
+			w2 = line->i;
+			if (w1 == w2)
+				return 2;
 		}
-		w1 = w2 - 1;
-		while (w1 > 0 && isspace(*(u32 *)vector_get(line->line, w1 - 1)))
-			w1--;
-		while (w1 > 0 && !isspace(*(u32 *)vector_get(line->line, w1 - 1)))
-			w1--;
-		_transpose(line, w1, w2, len);
-		while (w2 < len && isspace(*(u32 *)vector_get(line->line, w2)))
-			w2++;
-		while (w2 < len && !isspace(*(u32 *)vector_get(line->line, w2)))
-			w2++;
-		line->i = w2;
+		_transpose(line, w1, w2, vector_size(line->line));
+		move_to_end_of_word(line);
 	}
 	return (~state_flags & STATE_REPEAT) ? term_display_line(line, 0) : 1;
 }
 
-void	_transpose(rl42_line *line, size_t w1, size_t w2, const size_t len) {
+static inline void	_transpose(rl42_line *line, size_t w1, size_t w2, const size_t len) {
 	size_t	i;
 	size_t	len1;
 	size_t	len2;
@@ -88,7 +77,7 @@ void	_transpose(rl42_line *line, size_t w1, size_t w2, const size_t len) {
 		for (i = 0; i < len1 - len2; i++)
 			vector_set(line->line, w1 + len2 + i, (u32){' '});
 		memcpy(vector_get(line->line, w1), vector_get(line->line, w2), len2 * sizeof(u32));
-		memcpy(vector_get(line->line, w2 - i), buf, len2 * sizeof(u32));
+		memcpy(vector_get(line->line, w2 - i), buf, len1 * sizeof(u32));
 	}
 }
 
