@@ -210,7 +210,6 @@ static inline void	_init_binds(void) {
 	bind_vi_ins("<C-s>", "inc-forward-search-history");
 	bind_vi_ins("<C-y>", "yank-last-arg");
 	bind_vi_ins("<ESC>", "vi-command-mode");
-	// MAYBE: highlight color editing
 }
 
 static inline void	_rl42_exit(void) {
