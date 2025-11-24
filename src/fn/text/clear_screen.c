@@ -32,7 +32,7 @@ rl42_fn(clear_screen) {
 		((rl42_cursor_pos *)line->prompt.root)->col = 1;
 		((rl42_cursor_pos *)line->root)->row = line->prompt.root->row + diff_x;
 		((rl42_cursor_pos *)line->root)->col = line->prompt.root->col + diff_y;
-		ti_tputs(seq, 1, __putchar);
+		ti_tputs(seq, 1, term_putchar_unbuffered);
 		return term_display_line(line, 0);
 	}
 	return 1;

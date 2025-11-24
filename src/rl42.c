@@ -89,11 +89,13 @@ char	*ft_readline(const char *prompt) {
 					term_display_line(&line, 0);
 				n_arg.set = 0;
 			}
+			if (!term_flush_outbuf())
+				error("rl42: unable to flush output buffer: %m");
 			prev_fn = match.fn->f;
 			match.fn = NULL;
 		}
 	} while (rv);
-	ti_tputs("\n", 1, __putchar);
+	ti_tputs("\n", 1, term_putchar_unbuffered);
 	term_apply_settings(TERM_SETTINGS_DEFAULT);
 	out = (line.line) ? rl42str_to_cstr(line.line) : NULL;
 	term_cursor_delete_anchor(line.prompt.root);

@@ -30,8 +30,8 @@ rl42_fn(clear_display) {
 		((rl42_cursor_pos *)line->prompt.root)->col = 1;
 		((rl42_cursor_pos *)line->root)->row = line->prompt.root->row + row_diff;
 		((rl42_cursor_pos *)line->root)->col = line->prompt.root->col + col_diff;
-		ti_tputs(seq, 1, __putchar);
-		ti_tputs(_CLEAR_SCROLLBACK_BUFFER, 1, __putchar);
+		ti_tputs(seq, 1, term_putchar_unbuffered);
+		ti_tputs(_CLEAR_SCROLLBACK_BUFFER, 1, term_putchar_unbuffered);
 		term_display_line(line, 0);
 	}
 	return 1;

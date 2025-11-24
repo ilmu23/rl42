@@ -22,6 +22,10 @@
 #include "internal/_utils.h"
 #include "internal/_terminfo.h"
 
+#define _TERM_SCROLL_UP		"\x1b[%p1%dS"
+#define _TERM_SCROLL_DOWN	"\x1b[%p1%dT"
+#define _TERM_MOVE_CURSOR	"\x1b[%i%p1%d;%p2%dH"
+
 #define sgr_opt(n)	((opts >> (n - 1)) & 0x1U)
 
 typedef struct {
@@ -95,6 +99,10 @@ static struct {
 	const char	*sgr0;	// Turn off all attributes
 }	esc_seqs;
 
+extern const char	*scroll_up;
+extern const char	*scroll_down;
+extern const char	*move_cursor;
+
 term_settings	old;
 term_settings	new;
 
@@ -124,6 +132,9 @@ u8	term_init(void) {
 	if (!term_apply_settings(TERM_SETTINGS_RL42))
 		return 0;
 	_update_window_size(0);
+	scroll_up = (esc_seqs.indn) ? esc_seqs.indn : _TERM_SCROLL_UP;
+	scroll_down = (esc_seqs.rin) ? esc_seqs.rin : _TERM_SCROLL_DOWN;
+	move_cursor = (esc_seqs.cup) ? esc_seqs.cup : _TERM_MOVE_CURSOR;
 	return term_apply_settings(TERM_SETTINGS_DEFAULT);
 }
 
@@ -134,14 +145,14 @@ u8	term_apply_settings(const u8 settings) {
 		case TERM_SETTINGS_DEFAULT:
 			rv = (tcsetattr(0, TCSANOW, &old) != -1) ? 1 : 0;
 			if (esc_seqs.rmkx != TI_ABS_STR)
-				rv |= (ti_tputs(esc_seqs.rmkx, 1, __putchar)) ? 1 : 0;
+				rv |= (ti_tputs(esc_seqs.rmkx, 1, term_putchar_unbuffered)) ? 1 : 0;
 			if (esc_seqs.cnorm != TI_ABS_STR)
 				rv |= term_show_cursor();
 			break ;
 		case TERM_SETTINGS_RL42:
 			rv = (tcsetattr(0, TCSANOW, &new) != -1) ? 1 : 0;
 			if (esc_seqs.smkx != TI_ABS_STR)
-				rv |= (ti_tputs(esc_seqs.smkx, 1, __putchar)) ? 1 : 0;
+				rv |= (ti_tputs(esc_seqs.smkx, 1, term_putchar_unbuffered)) ? 1 : 0;
 			if (esc_seqs.civis != TI_ABS_STR)
 				rv |= term_hide_cursor();
 			break ;
@@ -317,13 +328,13 @@ u16	term_match_key_seq(const char *seq) {
 
 u8	term_set_fg_color(const u8 color) {
 	if (esc_seqs.setaf)
-		return (ti_tputs(ti_tparm(esc_seqs.setaf, color), 1, __putchar) != -1) ? 1 : 0;
+		return (ti_tputs(ti_tparm(esc_seqs.setaf, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 
 u8	term_set_bg_color(const u8 color) {
 	if (esc_seqs.setab)
-		return (ti_tputs(ti_tparm(esc_seqs.setab, color), 1, __putchar) != -1) ? 1 : 0;
+		return (ti_tputs(ti_tparm(esc_seqs.setab, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 
@@ -332,19 +343,19 @@ u8	term_set_sgr(const sgr_opts opts) {
 
 	sgr_str = (opts) ? ti_tparm(esc_seqs.sgr, sgr_opt(1), sgr_opt(2), sgr_opt(3), sgr_opt(4), sgr_opt(5), sgr_opt(6), sgr_opt(7), sgr_opt(8), sgr_opt(9)) : esc_seqs.sgr0;
 	if (sgr_str)
-		return (ti_tputs(sgr_str, 1, __putchar) != -1) ? 1 : 0;
+		return (ti_tputs(sgr_str, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 
 u8	term_hide_cursor(void) {
 	if (esc_seqs.civis)
-		return (ti_tputs(esc_seqs.civis, 1, __putchar) != -1) ? 1 : 0;
+		return (ti_tputs(esc_seqs.civis, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 
 u8	term_show_cursor(void) {
 	if (esc_seqs.cnorm)
-		return (ti_tputs(esc_seqs.cnorm, 1, __putchar) != -1) ? 1 : 0;
+		return (ti_tputs(esc_seqs.cnorm, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 

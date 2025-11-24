@@ -138,7 +138,6 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 	size_t		j;
 	size_t		n;
 	size_t		page;
-	char		buf[_BUF_SIZE];
 	i64			dwidth;
 	u8			paging;
 	u8			pathed;
@@ -160,6 +159,7 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 			widest = len;
 	}
 	cur = SIZE_MAX;
+	term_show_cursor();
 	while (1) {
 		dwidth = rl42_get(RL42_COMPLETION_DISPLAY_WIDTH).i64;
 		if (dwidth == -1 || dwidth > term_width)
@@ -194,7 +194,7 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 				}
 			} else
 				i = 0;
-			rv = snprintf(buf, _BUF_SIZE, "%s", term_get_seq(ti_ed));
+			rv = ti_tputs(term_get_seq(ti_ed), 1, term_putchar);
 			if (rv == -1) {
 				vector_delete(starts);
 				return 0;
@@ -203,9 +203,9 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 			for (n = 0; i < count; i++) {
 				completion = *(const char **)vector_get(completions, i);
 				if (i != cur)
-					rv = snprintf(&buf[j], _BUF_SIZE - j, "%-*s", (i32)widest, &completion[*(size_t *)vector_get(starts, i)]);
+					rv = term_putsf("%-*s", (i32)widest, &completion[*(size_t *)vector_get(starts, i)]);
 				else
-					rv = snprintf(&buf[j], _BUF_SIZE - j, "%s%-*s%s", term_get_hl_seq(), (i32)widest, &completion[*(size_t *)vector_get(starts, i)], _get_sgr0());
+					rv = term_putsf("%s%-*s%s", term_get_hl_seq(), (i32)widest, &completion[*(size_t *)vector_get(starts, i)], _get_sgr0());
 				if (rv == -1) {
 					vector_delete(starts);
 					return 0;
@@ -216,17 +216,21 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 				if (++n == cpr) {
 					if (--rows == 0)
 						break ;
-					buf[j++] = '\n';
+					if (term_putchar('\n') == -1) {
+						vector_delete(starts);
+						return 0;
+					}
 					n = 0;
-				} else
-					buf[j++] = ' ';
+				} else if (term_putchar(' ') == -1) {
+					vector_delete(starts);
+					return 0;
+				}
 			}
-			buf[j] = '\0';
 			if (rl42_get(RL42_HORIZONTAL_SCROLL_MODE).u64 == rl42_conf_off)
 				term_cursor_set_pos(line->root->row + line->rows, 1);
 			else
 				term_cursor_set_pos(line->root->row + 1, 1);
-			if (ti_tputs(buf, 1, __putchar) == -1) {
+			if (!term_flush_outbuf()) {
 				vector_delete(starts);
 				return 0;
 			}
@@ -321,7 +325,6 @@ static inline u8	_query(rl42_line *line, const size_t completions) {
 	rl42_fn_match	match;
 	rl42_line		dummy;
 	size_t			i;
-	char			buf[64];
 
 	dummy.keyseq = vector(u32, 8, NULL);
 	if (!dummy.keyseq)
@@ -333,9 +336,7 @@ static inline u8	_query(rl42_line *line, const size_t completions) {
 		return 0;
 	}
 	line->i = i;
-	if (snprintf(buf, 64, "rl42: display all %zu completions? ", completions) == -1)
-		return 0;
-	if (!ti_tputs(buf, 1, __putchar))
+	if (term_putsf("rl42: display all %zu completions? ", completions) == -1 || !term_flush_outbuf())
 		return 0;
 	match.fn = NULL;
 __query_match_seq:

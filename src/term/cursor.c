@@ -21,6 +21,7 @@
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 #include "internal/_display.h"
+#include "internal/_terminfo.h"
 
 #define _BUF_SIZE	64
 
@@ -30,6 +31,8 @@ extern vector	input_buf;
 
 extern u16	term_width;
 extern u16	term_height;
+
+const char	*move_cursor;
 
 map	anchors;
 
@@ -60,7 +63,8 @@ u8	term_cursor_get_pos(i16 *row, i16 *col) {
 	char		*end;
 	char		buf[_BUF_SIZE];
 
-	write(1, _CSI_DSR, sizeof(_CSI_DSR) - 1);
+	if (write(1, _CSI_DSR, sizeof(_CSI_DSR) - 1) != sizeof(_CSI_DSR) - 1)
+		return 0;
 	i = 0;
 _term_cursor_get_pos_read:
 	rv = read(0, &buf[i], _BUF_SIZE - i);
@@ -97,13 +101,7 @@ _term_cursor_get_pos_read:
 }
 
 u8	term_cursor_set_pos(const i16 row, const i16 col) {
-	ssize_t	rv;
-	char	buf[64];
-
-	rv = snprintf(buf, 64, "\x1b[%hd;%hdH", row, col);
-	if (rv >= 64)
-		return 0;
-	return (write(1, buf, rv) == rv) ? 1 : 0;
+	return (ti_tputs(ti_tparm(move_cursor, row - 1, col - 1), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 }
 
 u8	term_cursor_move_to(rl42_line *line, i16 row, i16 col) {

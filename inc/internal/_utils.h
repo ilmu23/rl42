@@ -211,13 +211,6 @@ size_t		rl42str_find(cvector s, cvector substr);
  */
 size_t		rl42str_find_case(cvector s, cvector substr);
 
-/** @brief Prints a single character to stdout
- *
- * @returns @c <b>ssize_t</b> Bytes written,
- * -1 in case of an error
- */
-ssize_t		__putchar(const char c);
-
 /** @brief Calculates the correct position for the cursor
  *
  * @param line Information about the current line

@@ -14,9 +14,7 @@
 #include "internal/_term.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
-
-#define _TERM_SCROLL_UP		"\x1b[S"
-#define _TERM_SCROLL_DOWN	"\x1b[T"
+#include "internal/_terminfo.h"
 
 #define _csi_match(s, c)	((csi_match){.start = s, .complete = c})
 
@@ -24,6 +22,9 @@ extern u16	term_height;
 extern u16	term_width;
 
 extern map	anchors;
+
+const char	*scroll_up;
+const char	*scroll_down;
 
 static size_t	to_scroll;
 
@@ -80,15 +81,13 @@ u8	term_scroll_display(size_t up, size_t down) {
 	if (up) {
 		to_scroll = up;
 		map_foreach(anchors, (void (*)(void *))_scroll_up);
-		while (up--)
-			if (write(1, _TERM_SCROLL_UP, sizeof(_TERM_SCROLL_UP) - 1) != (ssize_t)sizeof(_TERM_SCROLL_UP) - 1)
-				return 0;
+		if (!ti_tputs(ti_tparm(scroll_up, (i32)up), 1, term_putchar_unbuffered))
+			return 0;
 	} else if (down) {
 		to_scroll = down;
 		map_foreach(anchors, (void (*)(void *))_scroll_down);
-		while (down--)
-			if (write(1, _TERM_SCROLL_DOWN, sizeof(_TERM_SCROLL_DOWN) - 1) != (ssize_t)sizeof(_TERM_SCROLL_DOWN) - 1)
-				return 0;
+		if (!ti_tputs(ti_tparm(scroll_down, (i32)down), 1, term_putchar_unbuffered))
+			return 0;
 	}
 	return 1;
 }

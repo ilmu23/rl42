@@ -17,9 +17,8 @@
 #include "internal/_utils.h"
 #include "internal/_display.h"
 #include "internal/_keybinds.h"
-#include "internal/_terminfo.h"
+#include "internal/_terminfo_caps.h"
 
-#define __DUMP_FN
 #include "internal/fn/misc.h"
 
 typedef struct {
@@ -57,41 +56,11 @@ static const _setting_info	boolean[] = {
 #define _U_NUMERIC_SETTING_COUNT	(sizeof(u_numeric) / sizeof(*u_numeric))
 #define _BOOLEAN_SETTING_COUNT		(sizeof(boolean) / sizeof(*boolean))
 
-static size_t	dump_buf_i;
-static char		dump_buf[DUMP_BUFFER_SIZE];
-
 static inline u8	_dump_config(rl42_line *line);
 static inline u8	_dump_human(rl42_line *line);
 
 rl42_fn(dump_variables) {
 	return (get_numeric_arg(line, 1) == NUMERIC_ARG_NOT_SET) ? _dump_human(line) : _dump_config(line);
-}
-
-ssize_t	add_to_dump_buf(const char *fmt, ...) {
-	va_list	_args;
-	va_list	args;
-	ssize_t	rv;
-
-	va_start(args, fmt);
-_add_to_dump_buf_write:
-	va_copy(_args, args);
-	rv = vsnprintf(&dump_buf[dump_buf_i], DUMP_BUFFER_SIZE - dump_buf_i, fmt, _args);
-	va_end(_args);
-	if (rv >= (ssize_t)DUMP_BUFFER_SIZE - (ssize_t)dump_buf_i) {
-		if (flush_dump_buf() == -1)
-			return -1;
-		goto _add_to_dump_buf_write;
-	}
-	va_end(args);
-	if (rv != -1)
-		dump_buf_i += (size_t)rv;
-	return rv;
-}
-
-ssize_t	flush_dump_buf(void) {
-	dump_buf[dump_buf_i] = '\0';
-	dump_buf_i = 0;
-	return ti_tputs(dump_buf, 1, __putchar);
 }
 
 static inline u8	_dump_config(rl42_line *line) {
@@ -101,7 +70,7 @@ static inline u8	_dump_config(rl42_line *line) {
 	i16			col_diff;
 
 	tmp = term_get_seq(ti_ed);
-	if (add_to_dump_buf("\n%s", (tmp) ? tmp : "") == -1)
+	if (term_putsf("\n%s", (tmp) ? tmp : "") == -1)
 		return 0;
 	switch (rl42_get(RL42_BELL_STYLE).i64) {
 		case RL42_BELL_NONE:
@@ -116,7 +85,7 @@ static inline u8	_dump_config(rl42_line *line) {
 		default:
 			tmp = NULL;
 	}
-	if (tmp && add_to_dump_buf("set\tbell-style\t%s\n", tmp) == -1)
+	if (tmp && term_putsf("set\tbell-style\t%s\n", tmp) == -1)
 		return 0;
 	switch (get_editing_mode()) {
 		case EMACS:
@@ -125,18 +94,18 @@ static inline u8	_dump_config(rl42_line *line) {
 		default:
 			tmp = "vi";
 	}
-	if (add_to_dump_buf("set\tediting-mode\t%s\n", tmp) == -1)
+	if (term_putsf("set\tediting-mode\t%s\n", tmp) == -1)
 		return 0;
 	for (i = 0; i < _S_NUMERIC_SETTING_COUNT; i++)
-		if (add_to_dump_buf("set\t%s\t%ld\n", s_numeric[i].name, rl42_get(s_numeric[i].code).i64) == -1)
+		if (term_putsf("set\t%s\t%ld\n", s_numeric[i].name, rl42_get(s_numeric[i].code).i64) == -1)
 			return 0;
 	for (i = 0; i < _U_NUMERIC_SETTING_COUNT; i++)
-		if (add_to_dump_buf("set\t%s\t%lu\n", u_numeric[i].name, rl42_get(u_numeric[i].code).u64) == -1)
+		if (term_putsf("set\t%s\t%lu\n", u_numeric[i].name, rl42_get(u_numeric[i].code).u64) == -1)
 			return 0;
 	for (i = 0; i < _BOOLEAN_SETTING_COUNT; i++)
-		if (add_to_dump_buf("set\t%s\t%s\n",boolean[i].name, (rl42_get(boolean[i].code).u64) ? "on" : "off") == -1)
+		if (term_putsf("set\t%s\t%s\n",boolean[i].name, (rl42_get(boolean[i].code).u64) ? "on" : "off") == -1)
 			return 0;
-	if (flush_dump_buf() == -1)
+	if (!term_flush_outbuf())
 		return 0;
 	row_diff = line->root->row - line->prompt.root->row;
 	col_diff = line->root->col - line->prompt.root->col;
@@ -153,7 +122,7 @@ static inline u8	_dump_human(rl42_line *line) {
 	i16			col_diff;
 
 	tmp = term_get_seq(ti_ed);
-	if (add_to_dump_buf("\n%s", (tmp) ? tmp : "") == -1)
+	if (term_putsf("\n%s", (tmp) ? tmp : "") == -1)
 		return 0;
 	switch (rl42_get(RL42_BELL_STYLE).i64) {
 		case RL42_BELL_NONE:
@@ -168,7 +137,7 @@ static inline u8	_dump_human(rl42_line *line) {
 		default:
 			tmp = NULL;
 	}
-	if (tmp && add_to_dump_buf("bell-style is set to '%s'\n", tmp) == -1)
+	if (tmp && term_putsf("bell-style is set to '%s'\n", tmp) == -1)
 		return 0;
 	switch (get_editing_mode()) {
 		case EMACS:
@@ -177,18 +146,18 @@ static inline u8	_dump_human(rl42_line *line) {
 		default:
 			tmp = "vi";
 	}
-	if (add_to_dump_buf("editing-mode is set to '%s'\n", tmp) == -1)
+	if (term_putsf("editing-mode is set to '%s'\n", tmp) == -1)
 		return 0;
 	for (i = 0; i < _S_NUMERIC_SETTING_COUNT; i++)
-		if (add_to_dump_buf("%s is set to '%ld'\n", s_numeric[i].name, rl42_get(s_numeric[i].code).i64) == -1)
+		if (term_putsf("%s is set to '%ld'\n", s_numeric[i].name, rl42_get(s_numeric[i].code).i64) == -1)
 			return 0;
 	for (i = 0; i < _U_NUMERIC_SETTING_COUNT; i++)
-		if (add_to_dump_buf("%s is set to '%lu'\n", u_numeric[i].name, rl42_get(u_numeric[i].code).u64) == -1)
+		if (term_putsf("%s is set to '%lu'\n", u_numeric[i].name, rl42_get(u_numeric[i].code).u64) == -1)
 			return 0;
 	for (i = 0; i < _BOOLEAN_SETTING_COUNT; i++)
-		if (add_to_dump_buf("%s is set to '%s'\n",boolean[i].name, (rl42_get(boolean[i].code).u64) ? "on" : "off") == -1)
+		if (term_putsf("%s is set to '%s'\n",boolean[i].name, (rl42_get(boolean[i].code).u64) ? "on" : "off") == -1)
 			return 0;
-	if (flush_dump_buf() == -1)
+	if (!term_flush_outbuf())
 		return 0;
 	row_diff = line->root->row - line->prompt.root->row;
 	col_diff = line->root->col - line->prompt.root->col;

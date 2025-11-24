@@ -208,3 +208,41 @@ u8						term_cursor_move_to(rl42_line *line, i16 row, i16 col);
  * 0 on failure
  */
 u8						term_cursor_next_line(void);
+
+/** @brief Prints a printf like format string
+ *
+ * Expands fmt like printf and writes the result
+ * into an internal output buffer, flushin it
+ * if necessary
+ * @returns @c <b>ssize_t</b> Bytes written,
+ * -1 in case of an error
+ */
+ssize_t					term_putsf(const char *fmt, ...);
+
+/** @brief Prints a single character
+ *
+ * Writes c into an internal output buffer,
+ * flushing it if necessary
+ * @returns @c <b>ssize_t</b> Bytes written,
+ * -1 in case of an error
+ */
+ssize_t					term_putchar(const char c);
+
+/** @brief Prints a single character
+ *
+ * Writes c into stdout
+ * @returns @c <b>ssize_t</b> Bytes written,
+ * -1 in case of an error
+ */
+ssize_t					term_putchar_unbuffered(const char c);
+
+/** @brief Clears the internal output buffer
+ */
+void					term_clear_outbuf(void);
+
+/** @brief Flushes the internal output buffer
+ *
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8						term_flush_outbuf(void);

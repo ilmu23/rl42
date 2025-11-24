@@ -12,7 +12,7 @@
 #include "function.h"
 
 #include "internal/_rl42.h"
-#include "internal/_utils.h"
+#include "internal/_term.h"
 #include "internal/_terminfo.h"
 
 #define _BEL	"\a"
@@ -24,8 +24,8 @@ rl42_fn(rl42_abort) {
 		case RL42_BELL_NONE:
 			return 1;
 		case RL42_BELL_AUDIBLE:
-			return (ti_tputs(_BEL, 1, __putchar) != -1) ? 1 : 0;
+			return (ti_tputs(_BEL, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 		case RL42_BELL_VISIBLE:
-			return (ti_tputs(ti_getstr(ti_flash), 1, __putchar) != -1) ? 1 : 0;
+			return (ti_tputs(ti_getstr(ti_flash), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	}
 }
