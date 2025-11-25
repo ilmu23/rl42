@@ -108,7 +108,7 @@ u8	term_cursor_move_to(rl42_line *line, i16 row, i16 col) {
 	size_t	down;
 	size_t	up;
 
-	if (rl42_get(RL42_HORIZONTAL_SCROLL_MODE).u64 && ~state_flags & STATE_H_SCROLLING)
+	if (rl42_get(RL42_HORIZONTAL_SCROLL_MODE).u64 && ~state_flags & STATE_H_SCROLLING && line)
 		return term_display_line(line, 0);
 	up = 0;
 	down = 0;

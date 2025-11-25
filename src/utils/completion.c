@@ -226,10 +226,7 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 					return 0;
 				}
 			}
-			if (rl42_get(RL42_HORIZONTAL_SCROLL_MODE).u64 == rl42_conf_off)
-				term_cursor_set_pos(line->root->row + line->rows, 1);
-			else
-				term_cursor_set_pos(line->root->row + 1, 1);
+			term_cursor_set_pos(line->root->row + line->rows, 1);
 			if (!term_flush_outbuf()) {
 				vector_delete(starts);
 				return 0;

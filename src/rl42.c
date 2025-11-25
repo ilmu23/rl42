@@ -46,6 +46,7 @@ char	*ft_readline(const char *prompt) {
 	line = (rl42_line){
 		.prompt.prompt = cstr_to_rl42str(prompt),
 		.keyseq = vector(u32, 8, NULL),
+		.rows = 1,
 	};
 	if (!line.prompt.prompt || !line.keyseq)
 		goto _rl42_malloc_fail;
