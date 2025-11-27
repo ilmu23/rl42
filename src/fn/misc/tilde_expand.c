@@ -7,9 +7,9 @@
 //
 // <<tilde_expand.c>>
 
-#include <ctype.h>
 #include <stdlib.h>
 
+#include "internal/_defs.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 #include "internal/_display.h"
@@ -31,11 +31,11 @@ rl42_fn(tilde_expand) {
 	c = '\0';
 	i = line->i;
 	home = NULL;
-	if (line->i == len || isspace(*(u32 *)vector_get(line->line, line->i)))
+	if (line->i == len || is_space(*(u32 *)vector_get(line->line, line->i)))
 		line->i -= (line->i != 0) ? 1 : 0;
-	if (isspace(*(u32 *)vector_get(line->line, line->i)))
+	if (is_space(*(u32 *)vector_get(line->line, line->i)))
 		goto _tilde_expand_err_reset_i;
-	if (line->i != 0) for (c = *(u32 *)vector_get(line->line, line->i - 1); !isspace(c) && c != '~'; c = *(u32 *)vector_get(line->line, line->i))
+	if (line->i != 0) for (c = *(u32 *)vector_get(line->line, line->i - 1); !is_space(c) && c != '~'; c = *(u32 *)vector_get(line->line, line->i))
 		line->i--;
 	c = *(u32 *)vector_get(line->line, line->i);
 	if (c != '~')

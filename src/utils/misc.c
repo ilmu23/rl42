@@ -7,7 +7,6 @@
 //
 // <<misc.c>>
 
-#include <ctype.h>
 #include <unistd.h>
 
 #include "internal/_defs.h"
@@ -18,15 +17,32 @@ extern rl42_numeric_arg	n_arg;
 
 extern u16	term_width;
 
-static inline u8	isprint_uc(const u32 ucp);
-
 size_t	calculate_cursor_offset(const rl42_line *line) {
 	size_t	offset;
 	size_t	len;
 	size_t	i;
+	u32		ucp;
 
-	for (i = offset = 0, len = vector_size(line->line); i < line->i && i < len; i++)
-		offset += (isprint_uc(*(u32 *)vector_get(line->line, i))) ? 1 : 2;
+	for (i = offset = 0, len = vector_size(line->line); i < line->i && i < len; i++) {
+		ucp = *(u32 *)vector_get(line->line, i);
+		if (!is_print(ucp)) {
+			if (ucp < 0x80U)
+				offset += 2;
+			else if (ucp < 0x100U)
+				offset += 4;
+			else if (ucp < 0x1000U)
+				offset += 5;
+			else if (ucp < 0x10000U)
+				offset += 6;
+			else if (ucp < 0x100000U)
+				offset += 7;
+			else if (ucp < 0x1000000U)
+				offset += 8;
+			else
+				offset += 9;
+		} else
+			offset++;
+	}
 	return offset;
 }
 
@@ -51,10 +67,10 @@ i64	get_numeric_arg(rl42_line *line, const u8 redisplay) {
 u8	move_to_start_of_word(rl42_line *line) {
 	if (line->i == 0)
 		return 0;
-	if (isspace(*(u32 *)vector_get(line->line, line->i - 1))) do
+	if (is_space(*(u32 *)vector_get(line->line, line->i - 1))) do
 		line->i--;
-	while (line->i > 0 && isspace(*(u32 *)vector_get(line->line, line->i)));
-	while (line->i > 0 && !isspace(*(u32 *)vector_get(line->line, line->i - 1)))
+	while (line->i > 0 && is_space(*(u32 *)vector_get(line->line, line->i)));
+	while (line->i > 0 && !is_space(*(u32 *)vector_get(line->line, line->i - 1)))
 		line->i--;
 	return 1;
 }
@@ -65,14 +81,10 @@ u8	move_to_end_of_word(rl42_line *line) {
 	len = vector_size(line->line);
 	if (line->i == len)
 		return 0;
-	if (isspace(*(u32 *)vector_get(line->line, line->i))) do
+	if (is_space(*(u32 *)vector_get(line->line, line->i))) do
 		line->i++;
-	while (line->i < len && isspace(*(u32 *)vector_get(line->line, line->i)));
-	while (line->i < len && !isspace(*(u32 *)vector_get(line->line, line->i)))
+	while (line->i < len && is_space(*(u32 *)vector_get(line->line, line->i)));
+	while (line->i < len && !is_space(*(u32 *)vector_get(line->line, line->i)))
 		line->i++;
 	return 1;
-}
-
-static inline u8	isprint_uc(const u32 ucp) {
-	return (ucp < 0x20U || ucp == 0x7F) ? 0 : 1;
 }

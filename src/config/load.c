@@ -15,6 +15,7 @@
 
 #include "rl42.h"
 
+#include "internal/_defs.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 
@@ -144,8 +145,8 @@ static inline rl42_setting		_parse_var(const char *var) {
 static inline const char	*_convert_spaces(char *s) {
 	size_t	i;
 
-	for (i = 0; s[i]; i++)
-		if (isspace(s[i]))
+	for (i = 0; s[i]; i += charsize_utf8(s[i]))
+		if (is_space(utf8_decode(&s[i])))
 			s[i] = ' ';
 	return s;
 }

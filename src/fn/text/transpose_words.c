@@ -7,13 +7,13 @@
 //
 // <<transpose_words.c>>
 
-#include <ctype.h>
 #include <alloca.h>
 #include <string.h>
 
 #define __RL42_INTERNAL
 #include "function.h"
 
+#include "internal/_defs.h"
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
@@ -56,11 +56,11 @@ static inline void	_transpose(rl42_line *line, size_t w1, size_t w2, const size_
 	size_t	len2;
 	u32		*buf;
 
-	for (len1 = 0; !isspace(*(u32 *)vector_get(line->line, w1 + len1)); len1++)
+	for (len1 = 0; !is_space(*(u32 *)vector_get(line->line, w1 + len1)); len1++)
 		;
-	for (len2 = 0; w2 + len2 < len && !isspace(*(u32 *)vector_get(line->line, w2 + len2)); len2++)
+	for (len2 = 0; w2 + len2 < len && !is_space(*(u32 *)vector_get(line->line, w2 + len2)); len2++)
 		;
-	for (i = 0; w2 + len2 + i < len && isspace(*(u32 *)vector_get(line->line, w2 + len2 + i)); i++)
+	for (i = 0; w2 + len2 + i < len && is_space(*(u32 *)vector_get(line->line, w2 + len2 + i)); i++)
 		;
 	if (w2 + len2 + i == len)
 		len2 += i;
@@ -89,9 +89,9 @@ static inline u8	_on_first_word(const rl42_line *line) {
 	if (len == 0)
 		return 1;
 	i = (line->i < len) ? line->i : line->i - 1;
-	if (isspace(*(u32 *)vector_get(line->line, i)))
+	if (is_space(*(u32 *)vector_get(line->line, i)))
 		return 0;
-	while (i > 0 && !isspace(*(u32 *)vector_get(line->line, i)))
+	while (i > 0 && !is_space(*(u32 *)vector_get(line->line, i)))
 		i--;
 	return (i == 0) ? 1 : 0;
 }

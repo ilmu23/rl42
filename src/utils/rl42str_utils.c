@@ -7,8 +7,7 @@
 //
 // <<rl42str_utils.c>>
 
-#include <ctype.h>
-
+#include "internal/_defs.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 
@@ -47,7 +46,7 @@ size_t	rl42str_find_case(cvector s, cvector substr) {
 			return RL42STR_SUBSTR_NOT_FOUND;
 		for (i = 0; i + sslen <= slen; i++) {
 			for (j = 0; j < sslen; j++)
-				if (toupper(*(u32 *)vector_get(s, i + j)) != toupper(*(u32 *)vector_get(substr, j)))
+				if (to_upper(*(u32 *)vector_get(s, i + j)) != to_upper(*(u32 *)vector_get(substr, j)))
 					break ;
 			if (j == sslen)
 				return i;

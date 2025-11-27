@@ -7,11 +7,10 @@
 //
 // <<capitalize_word.c>>
 
-#include <ctype.h>
-
 #define __RL42_INTERNAL
 #include "function.h"
 
+#include "internal/_defs.h"
 #include "internal/_vector.h"
 #include "internal/_display.h"
 
@@ -24,14 +23,14 @@ rl42_fn(capitalize_word) {
 	if (len == 0)
 		return 1;
 	i = line->i;
-	if (isspace(*(u32 *)vector_get(line->line, (i != 0) ? i - 1 : i)))
+	if (is_space(*(u32 *)vector_get(line->line, (i != 0) ? i - 1 : i)))
 		return 1;
-	while (i > 0 && !isspace(*(u32 *)vector_get(line->line, i - 1)))
+	while (i > 0 && !is_space(*(u32 *)vector_get(line->line, i - 1)))
 		i--;
 	word = (u32 *)vector_get(line->line, i);
-	vector_set(line->line, i++, (u32){toupper(*word++)});
-	if (i < len && !isspace(*word)) do
-		vector_set(line->line, i++, (u32){tolower(*word++)});
-	while (i < len && !isspace(*word));
+	vector_set(line->line, i++, (u32){to_title(*word++)});
+	if (i < len && !is_space(*word)) do
+		vector_set(line->line, i++, (u32){to_lower(*word++)});
+	while (i < len && !is_space(*word));
 	return term_display_line(line, 0);
 }

@@ -7,8 +7,6 @@
 //
 // <<copy_word.c>>
 
-#include <ctype.h>
-
 #define __RL42_INTERNAL
 #include "function.h"
 
@@ -22,7 +20,7 @@ rl42_fn(copy_word) {
 	size_t	i;
 	u8		rv;
 
-	if (line->i == vector_size(line->line) || isspace(*(u32 *)vector_get(line->line, line->i)))
+	if (line->i == vector_size(line->line) || is_space(*(u32 *)vector_get(line->line, line->i)))
 		return 1;
 	i = line->i;
 	move_to_start_of_word(line);

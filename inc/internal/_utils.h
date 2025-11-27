@@ -17,6 +17,8 @@
 
 #include "internal/_data.h"
 
+#define UCP_INVALID	UINT32_MAX
+
 #define RL42STR_SUBSTR_NOT_FOUND	SIZE_MAX
 
 #define max(x, y)	((x > y) ? x : y)
@@ -67,8 +69,9 @@ u32			utf8_decode(const char *c);
  * @param ucp Codepoint to encode
  * @param buf Optional buffer for encoding
  * @returns @c <b>const char *</b> Pointer to encoded string
- * (buf or new allocation, depending on whether buf was NULL)
- * NULL if encoding failed
+ * (buf or new allocation, depending on whether buf was NULL),
+ * empty string if ucp was not a valid codepoint,
+ * NULL if an error occurred
  */
 const char	*utf8_encode(const u32 ucp, utf8_cbuf buf);
 

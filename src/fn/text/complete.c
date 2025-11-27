@@ -7,7 +7,6 @@
 //
 // <<complete.c>>
 
-#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -26,8 +25,8 @@
 #include "internal/_vector.h"
 #include "internal/_complete.h"
 
-#define on_word(line)	((line->i < vector_size(line->line) && !isspace(*(u32 *)vector_get(line->line, line->i))) \
-						|| (line->i > 0 && !isspace(*(u32 *)vector_get(line->line, line->i - 1))))
+#define on_word(line)	((line->i < vector_size(line->line) && !is_space(*(u32 *)vector_get(line->line, line->i))) \
+						|| (line->i > 0 && !is_space(*(u32 *)vector_get(line->line, line->i - 1))))
 
 typedef struct {
 	const char	*pattern;
@@ -100,7 +99,7 @@ static inline _cmp_info	_get_target(rl42_line *line) {
 	tmp = NULL;
 	_tmp = NULL;
 	if (on_word(line)) {
-		if (line->i > 0 && !isspace(*(u32 *)vector_get(line->line, line->i - 1)))
+		if (line->i > 0 && !is_space(*(u32 *)vector_get(line->line, line->i - 1)))
 			move_to_start_of_word(line);
 		add_mark(kill_start, line->i);
 		move_to_end_of_word(line);

@@ -13,6 +13,7 @@
 #include <sys/epoll.h>
 
 #include "internal/_kb.h"
+#include "internal/_defs.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
 #include "internal/_terminfo_caps.h"
@@ -73,9 +74,8 @@ u32	kb_event_to_ucp(const rl42_kb_event *event) {
 	u32	ucp;
 
 	ucp = event->code;
-	// TODO: proper modifier parsing
 	if (event->mods & KB_MOD_SHIFT)
-		ucp = (ucp <= 0x7F) ? ucp & ~0x20U : ucp | ~0x10000000;
+		ucp = to_upper(ucp);
 	if (event->mods & KB_MOD_CTRL && event->code != kcbs)
 		ucp &= ~0x60;
 	return ucp;
@@ -278,16 +278,15 @@ static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size
 	}
 	event->code = utf8_decode(&buf[seq_len]);
 	seq_len += charsize_utf8(buf[seq_len]);
-	// TODO: proper unicode case checks
 	if (event->code == kcbs) {
 		event->mods |= KB_MOD_CTRL;
 		event->code = kbs;
 	} else if (event->code < ' ') {
 		event->mods |= KB_MOD_CTRL;
 		event->code |= 0x60;
-	} else if (event->code >= 'A' && event->code <= 'Z') {
+	} else if (is_upper(event->code)) {
 		event->mods |= KB_MOD_SHIFT;
-		event->code |= 0x20;
+		event->code = to_lower(event->code);
 	}
 	vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 	event->text = event->code;

@@ -8,7 +8,6 @@
 // <<completion.c>>
 
 #include "data.h"
-#include <ctype.h>
 #include <stdio.h>
 #include <dirent.h>
 #include <stdlib.h>
@@ -502,7 +501,7 @@ static inline u8	_cmp(const char c1, const char c2) {
 }
 
 static inline u8	_cmp_ign_case(const char c1, const char c2) {
-	return (toupper(c1) == toupper(c2)) ? 1 : 0;
+	return (to_upper(c1) == to_upper(c2)) ? 1 : 0;
 }
 
 static inline u8	_cmp_map_case(const char c1, const char c2) {

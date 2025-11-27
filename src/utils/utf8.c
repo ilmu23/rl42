@@ -16,6 +16,11 @@
 #define _LENGTH_3B	(_BYTE_START | 0x60U)
 #define _LENGTH_4B	(_BYTE_START | 0x70U)
 
+#define ucp_is_valid(ucp)	(ucp <= 0x10FFFFU && \
+							!in_range(ucp, 0x15000U, 0x15FFFU) && \
+							!in_range(ucp, 0x19000U, 0x19FFFU) && \
+							!in_range(ucp, 0x40000U, 0xDFFFFU))
+
 #define decode_start_2(c)	((c & 0x1FU) << 6)
 #define decode_start_3(c)	((c & 0x0FU) << 12)
 #define decode_start_4(c)	((c & 0x07U) << 18)
@@ -60,29 +65,29 @@ u32	utf8_decode(const char *c) {
 			out = decode_start_2(c[0]) | decode_cont(c[1], 0);
 			break ;
 		default:
-			out = UINT32_MAX;
+			out = UCP_INVALID;
 	}
-	return out;
+	return (ucp_is_valid(out)) ? out : UCP_INVALID;
 }
 
 const char	*utf8_encode(const u32 ucp, utf8_cbuf buf) {
 	u8	len;
 
-	if (ucp <= 0x7FU)
+	if (!ucp_is_valid(ucp))
+		len = 0;
+	else if (ucp <= 0x7FU)
 		len = 1;
 	else if (ucp <= 0x7FFU)
 		len = 2;
 	else if (ucp <= 0xFFFFU)
 		len = 3;
-	else if (ucp <= 0x10FFFFU)
-		len = 4;
 	else
-		return NULL;
-	// TODO: codepoint validation
-	if (!buf)
+		len = 4;
+	if (!buf) {
 		buf = malloc((len + 1) * sizeof(*buf));
-	if (!buf)
-		return NULL;
+		if (!buf)
+			return NULL;
+	}
 	switch (len) {
 		case 1:
 			buf[0] = ucp;

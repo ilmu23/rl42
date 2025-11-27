@@ -7,11 +7,10 @@
 //
 // <<backward_char_search.c>>
 
-#include <ctype.h>
-
 #include "rl42.h"
 
 #include "internal/_kb.h"
+#include "internal/_defs.h"
 #include "internal/_term.h"
 #include "internal//_vector.h"
 
@@ -32,12 +31,12 @@ rl42_fn(backward_char_search) {
 			if (c == *(u32 *)vector_get(line->line, --i))
 				break ;
 	} else {
-		c = (u32)toupper(c);
+		c = (u32)to_upper(c);
 		while (i > 0)
-			if (c == (u32)toupper(*(u32 *)vector_get(line->line, --i)))
+			if (c == (u32)to_upper(*(u32 *)vector_get(line->line, --i)))
 				break ;
 	}
-	if (i == (size_t)-1)
+	if (i == 0)
 		return 1;
 	line->i = i;
 	return term_cursor_move_to_i(line);

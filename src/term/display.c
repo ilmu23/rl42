@@ -7,18 +7,22 @@
 //
 // <<display.c>>
 
+#include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
 
 #include "rl42.h"
 
+#include "internal/_defs.h"
 #include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
 #include "internal/_vector.h"
 #include "internal/_display.h"
 #include "internal/_terminfo.h"
+
+#define _BUFFER_SIZE	16
 
 #define _SGR_RESET			escapes[0]
 #define _SGR_REV_VIDEO		escapes[1]
@@ -48,8 +52,9 @@ static struct {
 
 static u8	hl_user_mark;
 
-static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_opts opts, va_list *args);
-static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts opts, const size_t start, const size_t max_visible);
+static inline const char	*_fmt_cntrl(const u32 ucp);
+static inline u8			_horizontal_display_line(rl42_line *line, const rl42_display_opts opts, va_list *args);
+static inline u8			_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts opts, const size_t start, const size_t max_visible);
 
 u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 	va_list		args;
@@ -84,6 +89,17 @@ _term_display_line_error:
 	if (opts & DISPLAY_HIGHLIGHT_SUBSTR)
 		va_end(args);
 	return 0;
+}
+
+static inline const char	*_fmt_cntrl(const u32 ucp) {
+	static char	esc_buf[_BUFFER_SIZE];
+	ssize_t		rv;
+
+	if (ucp <= 0x7FU)
+		rv = snprintf(esc_buf, _BUFFER_SIZE, "^%c", (ucp != 0x7FU) ? (char)ucp + '@' : '?');
+	else
+		rv = snprintf(esc_buf, _BUFFER_SIZE, "\\u%x", ucp);
+	return (rv != -1) ? esc_buf : NULL;
 }
 
 static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_opts opts, va_list *args) {
@@ -156,49 +172,54 @@ __horizontal_display_line_error:
 }
 
 static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts opts, const size_t start, const size_t max_visible) {
+	const char	*cntrl_esc;
 	const char	*hl_seq;
 	utf8_cbuf	encoded;
 	size_t		visible;
 	size_t		hl_start;
 	size_t		hl_end;
 	size_t		size;
-	size_t		_i;
+	size_t		len;
+	size_t		i;
 	u32			ucp;
 
 	hl_start = ((opts & DISPLAY_HIGHLIGHT_IGNORE_CASE) == 0) ? rl42str_find(s, hl) : rl42str_find_case(s, hl);
 	hl_end = (hl_start != RL42STR_SUBSTR_NOT_FOUND) ? hl_start + vector_size(hl) : hl_start;
-	for (_i = start, visible = 0, size = vector_size(s); _i < size && visible < max_visible; _i++) {
-		ucp = *(u32 *)vector_get(s, _i);
-		if (_i == user.pos && hl_user_mark) {
+	for (i = start, visible = 0, size = vector_size(s); i < size && visible < max_visible; i++) {
+		ucp = *(u32 *)vector_get(s, i);
+		if (i == user.pos && hl_user_mark) {
 			if (!_SGR_UNDERLINE.fetched)
 				fetch(_SGR_UNDERLINE, ti_smul);
 			if (ti_tputs(_SGR_UNDERLINE.seq, 1, term_putchar) == -1)
 				return 0;
-		} else if (_i == user.pos + 1 && hl_user_mark) {
+		} else if (i == user.pos + 1 && hl_user_mark) {
 			if (!_SGR_RESET.fetched)
 				fetch(_SGR_RESET, ti_sgr0);
 			if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 				return 0;
 		}
-		if (_i == hl_start) {
+		if (i == hl_start) {
 			hl_seq = term_get_hl_seq();
 			if (ti_tputs(hl_seq, 1, term_putchar) == -1)
 				return 0;
-		} else if (_i == hl_end) {
+		} else if (i == hl_end) {
 			if (!_SGR_RESET.fetched)
 				fetch(_SGR_RESET, ti_sgr0);
 			if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 				return 0;
 		}
-		// TODO: proper printable checking
-		if (in_range(ucp, ' ', '~')) {
+		if (is_print(ucp)) {
 			if (!utf8_encode(ucp, encoded))
 				return 0;
 			if (ti_tputs(encoded, 1, term_putchar) == -1)
 				return 0;
 			visible++;
-		} else if (ucp < 0x20U || ucp == 0x7FU) {
-			if (visible + 1 == max_visible)
+		} else {
+			cntrl_esc = _fmt_cntrl(ucp);
+			if (!cntrl_esc)
+				return 0;
+			len = strlen(cntrl_esc);
+			if (visible + len > max_visible)
 				break ;
 			if (!_SGR_REV_VIDEO.fetched)
 				fetch(_SGR_REV_VIDEO, ti_rev);
@@ -206,20 +227,20 @@ static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts 
 				fetch(_SGR_RESET, ti_sgr0);
 			if (ti_tputs(_SGR_REV_VIDEO.seq, 1, term_putchar) == -1)
 				return 0;
-			if (term_putchar('^') == -1 || term_putchar((ucp < 0x20) ? (char)ucp + '@' : '?') == -1)
+			if (ti_tputs(cntrl_esc, 1, term_putchar) == -1)
 				return 0;
 			if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 				return 0;
-			visible += 2;
+			visible += len;
 		}
 	}
-	if (_i == hl_end) {
+	if (i == hl_end) {
 		if (!_SGR_RESET.fetched)
 			fetch(_SGR_RESET, ti_sgr0);
 		if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 			return 0;
 	}
-	if (_i <= user.pos && hl_user_mark) {
+	if (i <= user.pos && hl_user_mark) {
 		if (!_SGR_UNDERLINE.fetched)
 			fetch(_SGR_UNDERLINE, ti_smul);
 		if (!_SGR_RESET.fetched)
@@ -230,7 +251,7 @@ static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts 
 			return 0;
 		if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 			return 0;
-	} else if (_i == user.pos + 1 && hl_user_mark) {
+	} else if (i == user.pos + 1 && hl_user_mark) {
 		if (!_SGR_RESET.fetched)
 			fetch(_SGR_RESET, ti_sgr0);
 		if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
