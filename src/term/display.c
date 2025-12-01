@@ -34,6 +34,13 @@
 #define clear_line()	((ti_tputs(_TERM_CLEAR_END_LNE.seq, 1, term_putchar_unbuffered) != -1) ? 1 : 0)
 #define fetch(esc, name)	(esc.seq = term_get_seq(name), esc.len = (esc.seq) ? strlen(esc.seq) : 0, esc.fetched = 1)
 
+typedef struct {
+	cvector	text;
+	size_t	cursor_offset;
+}	hscroll_section;
+
+#define hscroll_section(t, o)	((hscroll_section){ .text = t, .cursor_offset = o })
+
 extern rl42_mark	user;
 
 extern u16	term_width;
@@ -52,9 +59,14 @@ static struct {
 
 static u8	hl_user_mark;
 
-static inline const char	*_fmt_cntrl(const u32 ucp);
-static inline u8			_horizontal_display_line(rl42_line *line, const rl42_display_opts opts, va_list *args);
-static inline u8			_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts opts, const size_t start, const size_t max_visible);
+static inline hscroll_section	_extract_section(const rl42_line *line, const size_t space);
+static inline const char		*_fmt_cntrl(const u32 ucp);
+static inline size_t			_calculate_required_space(const rl42_line *line);
+static inline size_t			_calculate_start_pos(const rl42_line *line);
+static inline size_t			_calculate_escaped_length(u32 ucp);
+static inline u8				_pad_partial_escape(vector text, const size_t seq_len);
+static inline u8				_horizontal_display_line(rl42_line *line, const rl42_display_opts opts, va_list *args);
+static inline u8				_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts opts);
 
 u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 	va_list		args;
@@ -65,15 +77,15 @@ u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 		return _horizontal_display_line(line, opts, &args);
 	hl_user_mark = 0;
 	if (line->prompt.sprompt) {
-		if (!_add_str_to_buf(line->prompt.sprompt, NULL, opts, 0, SIZE_MAX))
+		if (!_add_str_to_buf(line->prompt.sprompt, NULL, opts))
 			goto _term_display_line_error;
 		term_putchar(' ');
 	}
-	if (!_add_str_to_buf(line->prompt.prompt, NULL, opts, 0, SIZE_MAX))
+	if (!_add_str_to_buf(line->prompt.prompt, NULL, opts))
 		goto _term_display_line_error;
 	hl_user_mark = user.set;
 	if (~opts & DISPLAY_PROMPT_ONLY) {
-		if (!_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(args, cvector) : NULL, opts, 0, SIZE_MAX))
+		if (!_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(args, cvector) : NULL, opts))
 			goto _term_display_line_error;
 		if (!term_calculate_required_rows(line, 1))
 			goto _term_display_line_error;
@@ -91,6 +103,76 @@ _term_display_line_error:
 	return 0;
 }
 
+static inline hscroll_section	_extract_section(const rl42_line *line, const size_t space) {
+	hscroll_section	section;
+	const char		*cntrl_esc;
+	size_t			req_space;
+	size_t			visible_r;
+	size_t			visible_l;
+	size_t			esc_len;
+	size_t			start;
+	size_t			half;
+	size_t			len;
+	size_t			i;
+	size_t			j;
+
+	req_space = _calculate_required_space(line);
+	if (req_space < space)
+		return hscroll_section(vector_copy(line->line, NULL), _calculate_start_pos(line));
+	half = space / 2;
+	len = vector_size(line->line);
+	start = _calculate_start_pos(line);
+	if (start < half + (half & 1)) {
+		for (i = visible_r = 0; i < len; i++) {
+			visible_r += _calculate_escaped_length(*(u32 *)vector_get(line->line, i));
+			if (visible_r >= space + (space & 1) + 1)
+				break ;
+		}
+		section = hscroll_section(vector_copy_range(line->line, 0, i, NULL), start);
+		if (!section.text)
+			goto __extract_section_err;
+	} else if (req_space - start < half + (half & 1)) {
+		for (i = len - 1, visible_l = 0; i != (size_t)-1; i--) {
+			if (i == line->i - 1)
+				start = visible_l;
+			visible_l += _calculate_escaped_length(*(u32 *)vector_get(line->line, i));
+			if (visible_l >= space)
+				break ;
+		}
+		section = hscroll_section(vector_copy_range(line->line, i, vector_size(line->line), NULL), visible_l - start);
+		if (!section.text)
+			goto __extract_section_err;
+		if (visible_l > space) {
+			cntrl_esc = _fmt_cntrl(*(u32 *)vector_get(line->line, i));
+			esc_len = strlen(cntrl_esc) - (visible_l - space);
+			if (!_pad_partial_escape((vector)section.text, esc_len))
+				goto __extract_section_err;
+		}
+	} else {
+		for (i = line->i - 1, visible_l = 0; i != (size_t)-1; i--) {
+			visible_l += _calculate_escaped_length(*(u32 *)vector_get(line->line, i));
+			if (visible_l >= half)
+				break ;
+		}
+		for (j = line->i, visible_r = 0; j < len; j++) {
+			visible_r += _calculate_escaped_length(*(u32 *)vector_get(line->line, j));
+			if (visible_r >= half + (half & 1) + 1)
+				break ;
+		}
+		section = hscroll_section(vector_copy_range(line->line, i, j, NULL), half);
+		if (visible_l > half) {
+			cntrl_esc = _fmt_cntrl(*(u32 *)vector_get(line->line, i));
+			esc_len = strlen(cntrl_esc) - (visible_l - half);
+			if (!_pad_partial_escape((vector)section.text, esc_len))
+				goto __extract_section_err;
+		}
+	}
+	return section;
+__extract_section_err:
+	vector_delete((vector)section.text);
+	return hscroll_section(NULL, 0);
+}
+
 static inline const char	*_fmt_cntrl(const u32 ucp) {
 	static char	esc_buf[_BUFFER_SIZE];
 	ssize_t		rv;
@@ -102,48 +184,74 @@ static inline const char	*_fmt_cntrl(const u32 ucp) {
 	return (rv != -1) ? esc_buf : NULL;
 }
 
-static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_opts opts, va_list *args) {
-	size_t	offset;
-	size_t	start;
-	size_t	space;
+static inline size_t	_calculate_required_space(const rl42_line *line) {
+	size_t	req;
+	size_t	len;
 	size_t	i;
-	u8		rv;
 
-	i = 0;
+	for (i = req = 0, len = vector_size(line->line); i < len; i++)
+		req += _calculate_escaped_length(*(u32 *)vector_get(line->line, i));
+	return req;
+}
+
+static inline size_t	_calculate_start_pos(const rl42_line *line) {
+	size_t	start;
+	size_t	i;
+
+	for (i = start = 0; i < line->i; i++)
+		start += _calculate_escaped_length(*(u32 *)vector_get(line->line, i));
+	return start;
+}
+
+static inline size_t	_calculate_escaped_length(u32 ucp) {
+	size_t	len;
+
+	if (is_print(ucp))
+		return 1;
+	if (ucp <= 0x7FU)
+		return 2;
+	for (len = 1; ucp > 15; len++)
+		ucp /= 16;
+	return len + 2;
+}
+
+static inline u8	_pad_partial_escape(vector text, const size_t seq_len) {
+	size_t	i;
+
+	if (!vector_resize(text, vector_size(text) + seq_len - 1))
+		return 0;
+	vector_erase(text, 0);
+	for (i = 0; i < seq_len; i++)
+		vector_insert(text, 0, (u32){' '});
+	return 1;
+}
+
+static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_opts opts, va_list *args) {
+	hscroll_section	section;
+	size_t			space;
+	u8				rv;
+
 	hl_user_mark = 0;
+	section.text = NULL;
 	state_flags |= STATE_H_SCROLLING;
 	if (line->prompt.sprompt) {
-		if (!_add_str_to_buf(line->prompt.sprompt, NULL, opts, 0, SIZE_MAX))
+		if (!_add_str_to_buf(line->prompt.sprompt, NULL, opts))
 			goto __horizontal_display_line_error;
 		term_putchar(' ');
 	}
-	if (!_add_str_to_buf(line->prompt.prompt, NULL, opts, 0, SIZE_MAX))
+	if (!_add_str_to_buf(line->prompt.prompt, NULL, opts))
 		goto __horizontal_display_line_error;
 	if (~opts & DISPLAY_PROMPT_ONLY) {
 		hl_user_mark = user.set;
 		space = calculate_scroll_space(line);
-		if (space >= term_width && ~opts & DISPLAY_PROMPT_ONLY) {
-			space = term_width - 1;
-			i = 0;
-		}
-		if (!space)
-			space = 1;
-		start = line->i;
-		if (start < space / 2 || vector_size(line->line) <= space) {
-			offset = start - 1;
-			start = 0;
-		} else if (vector_size(line->line) - start < space / 2) {
-			offset = space - (vector_size(line->line) - start) - 1;
-			start = vector_size(line->line) - space;
-		} else {
-			offset = space / 2 - 1;
-			start = line->i - space / 2;
-		}
-		if (!_add_str_to_buf(line->line, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(*args, cvector) : NULL, opts, start, space))
+		if (space >= term_width)
+			space = max(term_width - 1, 1);
+		section = _extract_section(line, space);
+		if (!section.text)
+			goto __horizontal_display_line_error;
+		if (!_add_str_to_buf(section.text, (opts & DISPLAY_HIGHLIGHT_SUBSTR) ? va_arg(*args, cvector) : NULL, opts))
 			goto __horizontal_display_line_error;
 	}
-	if (!term_cursor_move_to(line, line->prompt.root->row, line->prompt.root->col + i))
-		goto __horizontal_display_line_error;
 	if (!term_cursor_set_pos(line->prompt.root->row, line->prompt.root->col))
 		goto __horizontal_display_line_error;
 	if (~opts & DISPLAY_FORCE_SCREEN_CLEAR) {
@@ -161,31 +269,31 @@ static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_op
 		va_end(*args);
 	if (opts && DISPLAY_PROMPT_ONLY)
 		return 1;
-	rv = term_cursor_move_to(line, line->root->row, term_width - space + offset);
+	rv = term_cursor_move_to(line, line->root->row, term_width - space + section.cursor_offset - 1);
+	vector_delete((vector)section.text);
 	state_flags &= ~STATE_H_SCROLLING;
 	return rv;
 __horizontal_display_line_error:
 	if (opts & DISPLAY_HIGHLIGHT_SUBSTR)
 		va_end(*args);
+	vector_delete((vector)section.text);
 	state_flags &= ~STATE_H_SCROLLING;
 	return 0;
 }
 
-static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts opts, const size_t start, const size_t max_visible) {
+static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts opts) {
 	const char	*cntrl_esc;
 	const char	*hl_seq;
 	utf8_cbuf	encoded;
-	size_t		visible;
 	size_t		hl_start;
 	size_t		hl_end;
 	size_t		size;
-	size_t		len;
 	size_t		i;
 	u32			ucp;
 
 	hl_start = ((opts & DISPLAY_HIGHLIGHT_IGNORE_CASE) == 0) ? rl42str_find(s, hl) : rl42str_find_case(s, hl);
 	hl_end = (hl_start != RL42STR_SUBSTR_NOT_FOUND) ? hl_start + vector_size(hl) : hl_start;
-	for (i = start, visible = 0, size = vector_size(s); i < size && visible < max_visible; i++) {
+	for (i = 0, size = vector_size(s); i < size; i++) {
 		ucp = *(u32 *)vector_get(s, i);
 		if (i == user.pos && hl_user_mark) {
 			if (!_SGR_UNDERLINE.fetched)
@@ -213,14 +321,10 @@ static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts 
 				return 0;
 			if (ti_tputs(encoded, 1, term_putchar) == -1)
 				return 0;
-			visible++;
 		} else {
 			cntrl_esc = _fmt_cntrl(ucp);
 			if (!cntrl_esc)
 				return 0;
-			len = strlen(cntrl_esc);
-			if (visible + len > max_visible)
-				break ;
 			if (!_SGR_REV_VIDEO.fetched)
 				fetch(_SGR_REV_VIDEO, ti_rev);
 			if (!_SGR_RESET.fetched)
@@ -231,7 +335,6 @@ static inline u8	_add_str_to_buf(cvector s, cvector hl, const rl42_display_opts 
 				return 0;
 			if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 				return 0;
-			visible += len;
 		}
 	}
 	if (i == hl_end) {

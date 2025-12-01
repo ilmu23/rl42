@@ -33,9 +33,8 @@ rl42_fn(quoted_insert) {
 		return 0;
 	for (i = 0; buf[i]; i += charsize_utf8(buf[i])) {
 		ucp = utf8_decode(&buf[i]);
-		if (!vector_push(line->line, ucp))
+		if (!vector_insert(line->line, line->i++, ucp))
 			return 0;
-		line->i++;
 	}
 	return term_display_line(line, 0);
 }

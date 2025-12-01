@@ -53,20 +53,20 @@ vector	__vec_cpy(cvector vec, const size_t start, const size_t end, void *(*cpy)
 
 	out = malloc(sizeof(*out));
 	if (out) {
-		out->capacity = (end >= start) ? end - start : 0;
+		out->capacity = (end - start < vec->capacity) ? end - start : vec->capacity;
 		out->data = malloc(vec->element_size * ((out->capacity) ? out->capacity : 1));
 		if (!out->data) {
 			free(out);
 			return NULL;
 		}
-		out->elements = (cpy) ? 0 : out->capacity;
+		out->elements = (cpy) ? 0 : (vec->elements > out->capacity) ? out->capacity : vec->elements;
 		out->element_size = vec->element_size;
 		out->free = vec->free;
 		if (cpy) while (out->elements < out->capacity) {
 			_set_element(out, out->elements, cpy(index(vec, start + out->elements)));
 			out->elements++;
 		} else
-			memcpy(out->data, vec->data, out->element_size * out->capacity);
+			memcpy(out->data, index(vec, start), out->element_size * out->elements);
 		if (out->capacity == 0)
 			out->capacity = 1;
 	}
