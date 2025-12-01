@@ -17,6 +17,7 @@
 #include "internal/_display.h"
 #include "internal/_history.h"
 
+extern rl42_numeric_arg	n_arg;
 extern rl42_hist_node	*current;
 extern rl42_mark		user;
 
@@ -32,14 +33,18 @@ rl42_fn(discard_line) {
 			node->edit = NULL;
 		}
 	}
-	line->i = SIZE_MAX;
-	term_cursor_move_to(line, line->root->row + 1, line->root->col + calculate_cursor_offset(line) + ((line->prompt.sprompt) ? (__vec_sze(line->prompt.sprompt)) + 1 : 0));
-	term_cursor_get_pos((i16 *)&line->prompt.root->row, (i16 *)&line->prompt.root->col);
-	((rl42_cursor_pos *)line->prompt.root)->col = 1;
+	if (n_arg.set) {
+		vector_delete(line->prompt.sprompt);
+		line->prompt.sprompt = NULL;
+		n_arg.set = 0;
+	}
+	((rl42_cursor_pos *)line->prompt.root)->row = line->prompt.root->row + line->rows;
+	term_cursor_move_to(line, line->prompt.root->row, line->prompt.root->col);
 	term_display_line(line, DISPLAY_PROMPT_ONLY);
 	term_cursor_get_pos((i16 *)&line->root->row, (i16 *)&line->root->col);
 	vector_clear(line->line);
 	user.set = 0;
+	line->rows = 1;
 	line->i = 0;
 	return 1;
 }
