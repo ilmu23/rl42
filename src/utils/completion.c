@@ -347,17 +347,21 @@ static inline rl42_completion_fn(_complete_files) {
 	const char	*tmp;
 	const char	*path;
 	vector		completions;
+	u8			path_set;
 
 	tmp = strrchr(pattern, '/');
 	if (tmp) {
 		path = (tmp != pattern) ? cstr_substr(pattern, 0, (uintptr_t)tmp - (uintptr_t)pattern) : strdup("/");
 		if (!path)
 			return NULL;
+		path_set = 1;
 		pattern = (const char *)((uintptr_t)tmp + 1);
-	} else
+	} else {
+		path_set = 0;
 		path = ".";
-	completions = _build_path(_match_files(pattern, opendir(path)), path);
-	if (!strl_equals(path, "."))
+	}
+	completions = _build_path(_match_files(pattern, opendir(path)), (path_set) ? path : NULL);
+	if (path_set)
 		free((void *)path);
 	return completions;
 }
@@ -427,7 +431,7 @@ static inline vector	_build_path(vector completions, const char *path) {
 
 	if (completions) {
 		count = vector_size(completions);
-		if (!strl_equals(path, ".")) {
+		if (path) {
 			if (path[strlen(path) - 1] == '/') for (i = 0; i < count; i++) {
 				tmp = cstr_join(path, *(const char **)vector_get(completions, i));
 				if (!tmp)
