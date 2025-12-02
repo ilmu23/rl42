@@ -224,7 +224,7 @@ void	hist_remove_extra_nodes(void) {
 	i64				max_size;
 
 	max_size = rl42_get(RL42_HISTORY_SIZE).i64;
-	if (max_size == -1 || entries <= (size_t)max_size)
+	if (max_size++ == -1 || entries <= (size_t)max_size)
 		return ;
 	for (i = 0, node = hist_get_last_node(); i < entries - (size_t)max_size; i++) {
 		if (node->new)

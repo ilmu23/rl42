@@ -9,6 +9,8 @@
 
 #include "rl42.h"
 
+#include "internal/_history.h"
+
 #define _is_valid(s)	(s >= 0 && s < RL42_SETTING_NONE)
 
 static rl42_setting_val	settings[RL42_SETTING_NONE] = {
@@ -38,6 +40,8 @@ u8	rl42_set(const rl42_setting setting, const rl42_setting_val value) {
 	if (!_is_valid(setting))
 		return 0;
 	settings[setting] = value;
+	if (setting == RL42_HISTORY_SIZE)
+		hist_remove_extra_nodes();
 	return 1;
 }
 
