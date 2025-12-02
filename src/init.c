@@ -44,6 +44,7 @@
 #define bind_vi_ins(seq, f)	(rl42_bind(seq, f, _BIND_MODE, VI_INS))
 #define bind_insert(seq, f)	(bind_emacs(seq, f), bind_vi_ins(seq, f))
 #define bind_all(seq, f)	(bind_emacs(seq, f), bind_vi_cmd(seq, f), bind_vi_ins(seq, f))
+#define cbind_all(seq, f)	(rl42_bind(seq, f, CONST, EMACS), rl42_bind(seq, f, CONST, VI_CMD), rl42_bind(seq, f, CONST, VI_INS))
 
 extern vector	input_buf;
 
@@ -217,6 +218,7 @@ static inline void	_init_binds(void) {
 	bind_vi_ins("<C-s>", "inc-forward-search-history");
 	bind_vi_ins("<C-y>", "yank-last-arg");
 	bind_vi_ins("<ESC>", "vi-command-mode");
+	cbind_all("<ESC>[200~", "__bracketed_paste__");
 }
 
 static inline void	_rl42_exit(void) {
@@ -251,6 +253,7 @@ static const struct {
 	__rl42_fn(backward_word, "backward-word"),
 	__rl42_fn(beginning_of_history, "beginning-of-history"),
 	__rl42_fn(beginning_of_line, "beginning-of-line"),
+	__rl42_fn(bracketed_paste, "__bracketed_paste__"),
 	__rl42_fn(capitalize_word, "capitalize-word"),
 	__rl42_fn(clear_display, "clear-display"),
 	__rl42_fn(clear_screen, "clear-screen"),

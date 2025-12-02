@@ -70,7 +70,7 @@ size_t	term_csi_len(const char *seq) {
 		;
 	while (in_range(seq[i], '\x20', '\x2f'))
 		i++;
-	return (in_range(seq[i++], '\x40', '\x7e')) ? i : 0;
+	return (in_range(seq[i], '\x40', '\x7e')) ? i + 1 : 0;
 }
 
 u8	term_calculate_required_rows(rl42_line *line, const u8 scroll) {

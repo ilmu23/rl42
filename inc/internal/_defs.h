@@ -28,6 +28,9 @@
 // Checks whether s1 equals the string literal s2
 #define strl_equals(s1, s2)	(s1 && strcmp(s1, s2) == 0)
 
+// Gets the length of the string literal s
+#define strl_len(s)	(sizeof(s) - 1)
+
 #ifdef USE_LIBICU
 #include <unicode/uchar.h>
 

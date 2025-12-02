@@ -68,6 +68,12 @@ typedef enum __direction {
 	BACKWARD = 1
 }	rl42_direction;
 
+typedef enum __bpm_state {
+	BPM_ENABLED = 0,
+	BPM_DISABLED = 1,
+	BPM_TOGGLE = 2,
+}	rl42_bpm_state;
+
 // Generic map
 typedef struct __map *			map;
 typedef const struct __map *	cmap;

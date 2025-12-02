@@ -22,7 +22,7 @@
 
 static inline u8	_unbind(const char *seq, rl42_key_tree *node, const rl42_editing_mode emode);
 static inline u8	_rebind(const char *seq, const char *f, rl42_key_tree *node, rl42_fn_info *fninfo, const rl42_bind_mode bmode, const rl42_editing_mode emode);
-static inline u8	_bind(const char *seq, rl42_key_tree *node, rl42_fn_info *fninfo, const rl42_editing_mode emode);
+static inline u8	_bind(const char *seq, rl42_key_tree *node, rl42_fn_info *fninfo, const rl42_bind_mode bmode, const rl42_editing_mode emode);
 
 u8 rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const rl42_editing_mode emode) {
 	rl42_key_tree	*tmp;
@@ -71,7 +71,7 @@ u8 rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const r
 	vector_delete(expanded_seq);
 	if (binds->c)
 		return (!(bmode & 1)) ? warn("rl42: rl42_bind(%s, %s): sequence already const bound\n", seq, f) : 0;
-	return (!binds->f) ? _bind(seq, binds, fninfo, emode) : _rebind(seq, f, binds, fninfo, bmode, emode);
+	return (!binds->f) ? _bind(seq, binds, fninfo, bmode, emode) : _rebind(seq, f, binds, fninfo, bmode, emode);
 }
 
 u8	rl42_unbind(const char *seq, const rl42_editing_mode emode) {
@@ -129,16 +129,19 @@ static inline u8	_rebind(const char *seq, const char *f, rl42_key_tree *node, rl
 			return 0;
 		case REMAP:
 		case QREMAP:
+		case CONST:
 			break ;
 	}
 	if (fninfo->macro)
 		return edit_macro(fninfo, f);
-	return (_unbind(seq, node, emode)) ? _bind(seq, node, fninfo, emode) : 0;
+	return (_unbind(seq, node, emode)) ? _bind(seq, node, fninfo, bmode, emode) : 0;
 }
 
-static inline u8	_bind(const char *seq, rl42_key_tree *node, rl42_fn_info *fninfo, const rl42_editing_mode emode) {
+static inline u8	_bind(const char *seq, rl42_key_tree *node, rl42_fn_info *fninfo, const rl42_bind_mode bmode, const rl42_editing_mode emode) {
 	const char	*_seq;
 
+	if (bmode == CONST)
+		node->c = 1;
 	node->f = fninfo->f;
 	_seq = strdup(seq);
 	vector_push(fninfo->binds[(emode != CURRENT) ? emode : get_editing_mode()], _seq);

@@ -152,6 +152,7 @@ MVFNFILES	=	backward_char.c \
 				forward_word.c
 
 TXFNFILES	=	backward_delete_char.c \
+				bracketed_paste.c \
 				capitalize_word.c \
 				clear_display.c \
 				clear_screen.c \

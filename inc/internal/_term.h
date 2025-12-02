@@ -43,8 +43,6 @@ typedef struct {
 
 #define term_cursor_move_to_i(line)	(term_cursor_move_to(line, (line)->root->row, (line)->root->col + calculate_cursor_offset(line) + ((line->prompt.sprompt) ? vector_size(line->prompt.sprompt) + 1 : 0)))
 
-typedef struct termios	term_settings;
-
 #if __STDC_VERSION__ >= 202311L
 typedef unsigned _BitInt(9)	sgr_opts;
 #else
@@ -65,6 +63,14 @@ u8						term_init(void);
  * 0 on failure
  */
 u8						term_apply_settings(const u8 settings);
+
+/** @brief Enables/Disables/Toggles bracketed paste mode
+ *
+ * @param state What to do to BPM
+ * @returns @c <b>u8</b> Non-zero on success,
+ * 0 on failure
+ */
+u8						term_set_bpm(const rl42_bpm_state state);
 
 /** @brief Looks for the start of a given CSI sequence in buf
  *

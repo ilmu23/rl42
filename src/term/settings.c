@@ -18,6 +18,7 @@
 #include "rl42.h"
 
 #include "internal/_kb.h"
+#include "internal/_defs.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
 #include "internal/_terminfo.h"
@@ -26,7 +27,12 @@
 #define _TERM_SCROLL_DOWN	"\x1b[%p1%dT"
 #define _TERM_MOVE_CURSOR	"\x1b[%i%p1%d;%p2%dH"
 
+#define _TERM_BPM_ON		"\x1b[?2004h"
+#define _TERM_BPM_OFF	"\x1b[?2004l"
+
 #define sgr_opt(n)	((opts >> (n - 1)) & 0x1U)
+
+typedef struct termios	term_settings;
 
 typedef struct {
 	const char	*val;
@@ -160,6 +166,29 @@ u8	term_apply_settings(const u8 settings) {
 			rv = 0;
 	}
 	return rv;
+}
+
+u8	term_set_bpm(const rl42_bpm_state state) {
+	static u8	bpm_enabled = 0;
+
+	switch (state) {
+		case BPM_ENABLED:
+			if (!bpm_enabled && write(1, _TERM_BPM_ON, strl_len(_TERM_BPM_ON)) != (ssize_t)strl_len(_TERM_BPM_ON))
+				return 0;
+			bpm_enabled = 1;
+			return 1;
+		case BPM_DISABLED:
+			if (bpm_enabled && write(1, _TERM_BPM_OFF, strl_len(_TERM_BPM_OFF)) != (ssize_t)strl_len(_TERM_BPM_OFF))
+				return 0;
+			bpm_enabled = 0;
+			return 1;
+		case BPM_TOGGLE:
+			if ((bpm_enabled) ? write(1, _TERM_BPM_OFF, strl_len(_TERM_BPM_OFF)) != (ssize_t)strl_len(_TERM_BPM_OFF) : write(1, _TERM_BPM_ON, strl_len(_TERM_BPM_ON)) != (ssize_t)strl_len(_TERM_BPM_OFF))
+				return 0;
+			bpm_enabled ^= 1;
+			return 1;
+	}
+	return 0;
 }
 
 const char	*term_get_seq(const u16 name) {

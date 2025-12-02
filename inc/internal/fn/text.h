@@ -12,6 +12,7 @@
 #include "function.h"
 
 rl42_fn(backward_delete_char);
+rl42_fn(bracketed_paste);
 rl42_fn(capitalize_word);
 rl42_fn(clear_display);
 rl42_fn(clear_screen);

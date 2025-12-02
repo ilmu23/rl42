@@ -21,7 +21,10 @@ typedef enum __bind_mode {
 	WARN = 0,
 	QUIET = 1,
 	REMAP = 2,
-	QREMAP = 3
+	QREMAP = 3,
+#ifdef __RL42_INTERNAL
+	CONST = 4,
+#endif
 }	rl42_bind_mode;
 
 // Editing mode identifiers
@@ -87,7 +90,8 @@ typedef enum {
 	RL42_SEARCH_IGNORE_CASE = 17,
 	RL42_VISIBLE_STATS = 18,
 	RL42_HIGHLIGHT_COLOR = 19,
-	RL42_SETTING_NONE = 20
+	RL42_ENABLE_BRACKETED_PASTE = 20,
+	RL42_SETTING_NONE = 21
 }	rl42_setting;
 
 // Stores the value of a setting
