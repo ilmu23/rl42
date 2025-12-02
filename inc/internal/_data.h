@@ -129,13 +129,15 @@ typedef struct __mark {
 }	rl42_mark;
 
 // Stores a keyboard event
+// esc = unrecognized escape sequence, only set when code is KB_UNRECOGNIZED_ESCAPE
 // code = key code
 // text = text produced
 // mods = modifiers present
 typedef struct __kb_event {
-	u32	code;
-	u32	text;
-	u16	mods;
+	cvector	esc;
+	u32		code;
+	u32		text;
+	u16		mods;
 }	rl42_kb_event;
 
 // Stores numeric argument info

@@ -74,6 +74,14 @@ u8						term_apply_settings(const u8 settings);
  */
 csi_match				term_find_csi(const char *buf, const size_t buf_size, const char ident);
 
+/** @brief Calculates the length of the CSI sequence seq
+ *
+ * @param seq Sequence to measure
+ * @returns @c <b>size_t</b> Length of seq,
+ * 0 if seq was not a valid CSI sequence
+ */
+size_t					term_csi_len(const char *seq);
+
 /** @brief Gets the escape sequence corresponding to name
  *
  * @param name Name of the escape sequnce to get

@@ -20,7 +20,8 @@
 
 #define _BUF_SIZE	17
 
-#define kb_event(c, t, m)	((rl42_kb_event){.code = c, .text = t, .mods = m})
+#define kb_event(c, t, m)	((rl42_kb_event){ .esc = NULL, .code = c, .text = t, .mods = m })
+#define kb_event_ue(e)		((rl42_kb_event){ .esc = e, .code = KB_UNRECOGNIZED_ESCAPE, .text = 0, .mods = 0 })
 
 static i32	efd;
 
@@ -101,8 +102,10 @@ u8	init_kb_listener(void) {
 }
 
 static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size, rl42_kb_event *event) {
+	vector	escape;
 	size_t	buf_len;
 	size_t	seq_len;
+	size_t	i;
 
 	buf_len = strlen(buf);
 	memset(event, 0, sizeof(*event));
@@ -269,8 +272,16 @@ static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size
 				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 		}
-		vector_insert_n(input_buf, 0, buf_len - 1, &buf[1]);
-		*event = kb_event(*buf, 0, 0);
+		if (buf[1] == 'O')
+			return NULL;
+		seq_len = term_csi_len(buf);
+		vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+		escape = vector(u32, seq_len, NULL);
+		if (!escape)
+			return NULL;
+		for (i = 0; i < seq_len; i++)
+			vector_push(escape, (u32){buf[i]});
+		*event = kb_event_ue(escape);
 		return event;
 	}
 	seq_len = 0;

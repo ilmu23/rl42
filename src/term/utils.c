@@ -61,6 +61,18 @@ _term_find_csi_find_esc:
 	return _csi_match(--start, 1);
 }
 
+size_t	term_csi_len(const char *seq) {
+	size_t	i;
+
+	if (seq[0] != '\x1b' || seq[1] != '[')
+		return 0;
+	for (i = 2; in_range(seq[i], '\x30', '\x3f'); i++)
+		;
+	while (in_range(seq[i], '\x20', '\x2f'))
+		i++;
+	return (in_range(seq[i++], '\x40', '\x7e')) ? i : 0;
+}
+
 u8	term_calculate_required_rows(rl42_line *line, const u8 scroll) {
 	size_t	orig_i;
 	i16		col;

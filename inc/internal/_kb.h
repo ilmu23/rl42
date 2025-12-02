@@ -61,6 +61,10 @@
 #define KB_KEY_LEGACY_SHIFT_END			0x90000048U
 #define KB_KEY_LEGACY_SHIFT_PAGE_DOWN	0x90000049U
 
+// Unrecognized escape sequence identifier
+
+#define KB_UNRECOGNIZED_ESCAPE			0xA0000000U
+
 /** @brief Listens for a keyboard event
  *
  * @param timeout Listen timeout in milliseconds, -1 for no timeout

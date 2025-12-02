@@ -23,10 +23,15 @@ rl42_fn_match	kb_match_seq(rl42_line *line, rl42_key_tree *current, const rl42_k
 
 	if (!event)
 		return __fn_match(current, 1);
-	ucp = kb_event_to_ucp(event);
-	if (event->mods & KB_MOD_ALT)
-		vector_push(line->keyseq, (u32){'\x1b'});
-	vector_push(line->keyseq, ucp);
+	if (event->code != KB_UNRECOGNIZED_ESCAPE) {
+		ucp = kb_event_to_ucp(event);
+		if (event->mods & KB_MOD_ALT)
+			vector_push(line->keyseq, (u32){'\x1b'});
+		vector_push(line->keyseq, ucp);
+	} else {
+		vector_delete(line->keyseq);
+		line->keyseq = (vector)event->esc;
+	}
 	for (i = 0, tmp = NULL, len = vector_size(line->keyseq), binds = get_key_tree(CURRENT); i < len && binds->next; i++) {
 		tmp = map_get(binds->next, *(u32 *)vector_get(line->keyseq, i));
 		if (tmp == MAP_NOT_FOUND)
