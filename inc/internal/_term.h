@@ -169,6 +169,13 @@ const rl42_cursor_pos	*term_cursor_new_anchor(void);
  */
 void					term_cursor_delete_anchor(const rl42_cursor_pos *anchor);
 
+/** @brief Deletes all anchor data
+ *
+ * Deletes all anchor positions and the underlying
+ * structure used to store them
+ */
+void					term_cursor_destroy_anchors(void);
+
 /** @brief Gets the current cursor position
  *
  * @param row Where to store the current row

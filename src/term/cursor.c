@@ -56,6 +56,11 @@ void	term_cursor_delete_anchor(const rl42_cursor_pos *anchor) {
 	map_erase(anchors, anchor);
 }
 
+void	term_cursor_destroy_anchors(void) {
+	map_delete(anchors);
+	anchors = NULL;
+}
+
 u8	term_cursor_get_pos(i16 *row, i16 *col) {
 	csi_match	cpr;
 	ssize_t		rv;
@@ -95,7 +100,7 @@ _term_cursor_get_pos_read:
 	do i++;
 	while (!isdigit(buf[i]));
 	*col = (u16)strtoul(&buf[i], &end, 10);
-	if (*(++end) && !vector_insert_n(input_buf, -1, rv - i, end))
+	if (++end - buf != (ptrdiff_t)rv && !vector_insert_n(input_buf, -1, rv - i, end))
 		return 0;
 	return 1;
 }

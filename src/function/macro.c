@@ -96,8 +96,10 @@ rl42_fn_info	*create_macro(const size_t id, const char *content, const rl42_edit
 	}
 	in_map = 0;
 	macro = mmap((void *)(uintptr_t)_exec_macro, sizeof(*macro), _PROT_EDIT, MAP_ANON | MAP_PRIVATE, 0, 0);
-	if (macro == MAP_FAILED)
+	if (macro == MAP_FAILED) {
+		free((void *)tmp);
 		return NULL;
+	}
 	memcpy(macro, caller, sizeof(*macro));
 	_copy_ptr(&(*macro)[_CALLER_CONTENT_PTR_OFFSET], tmp);
 	if (mprotect(macro, sizeof(*macro), _PROT_REST) == -1)

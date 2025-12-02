@@ -222,6 +222,7 @@ static inline void	_init_binds(void) {
 static inline void	_rl42_exit(void) {
 	if (init) {
 		vector_delete(input_buf);
+		term_cursor_destroy_anchors();
 		term_apply_settings(TERM_SETTINGS_DEFAULT);
 		hist_clean();
 		clean_kb_listener();
