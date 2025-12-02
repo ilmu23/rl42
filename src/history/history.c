@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <linux/limits.h>
 
 #include "internal/_kb.h"
 #include "internal/_list.h"
@@ -22,6 +23,8 @@
 
 #include "internal/fn/move.h"
 #include "internal/fn/text.h"
+
+#define _HFNAME_BUF_SIZE	PATH_MAX + 1
 
 #define _DEFAULT_HIST_FILE	".rl42_history"
 
@@ -48,7 +51,7 @@ static const char	*search_prompts[2][2] = {
 	{ &_SEARCH_PROMPT_BCK[4], _SEARCH_PROMPT_BCK }
 };
 
-static const char	*histfile_name;
+static char	histfile_name[_HFNAME_BUF_SIZE];
 
 static size_t	entries;
 static list		history;
@@ -261,9 +264,10 @@ u8	hist_add_line(const char *line) {
 }
 
 u8	hist_load(const char *fname) {
+	ssize_t	read;
+	size_t	length;
 	FILE	*file;
 	char	*line;
-	char	buf[4096];
 	u8		rv;
 
 	if (history)
@@ -272,16 +276,24 @@ u8	hist_load(const char *fname) {
 	if (!history)
 		return 0;
 	if (!fname) {
-		snprintf(buf, 4096, "%s/" _DEFAULT_HIST_FILE, getenv("HOME"));
+		snprintf(histfile_name, _HFNAME_BUF_SIZE, "%s/" _DEFAULT_HIST_FILE, getenv("HOME"));
 	} else
-		snprintf(buf, 4096, "%s", fname);
-	histfile_name = strdup(buf);
-	file = fopen(buf, "r");
+		snprintf(histfile_name, _HFNAME_BUF_SIZE, "%s", fname);
+	file = fopen(histfile_name, "r");
 	if (!file)
 		return 0;
-	for (rv = 1, line = fgets(buf, 4096, file); rv && line; line = fgets(buf, 4096, file))
-		if (!hist_add_line(strndup(line, strlen(line) - 1)))
+	line = NULL;
+	length = 0;
+	for (rv = 1, read = getline(&line, &length, file); rv && read != -1; read = getline(&line, &length, file)) {
+		if (line[read - 1] == '\n')
+			line[read - 1] = '\0';
+		if (!hist_add_line(line))
 			rv = 0;
+		line = NULL;
+	}
+	if (!feof(file))
+		rv = 0;
+	free(line);
 	load_done = 1;
 	fclose(file);
 	return rv;
@@ -305,7 +317,6 @@ void	hist_clean(void) {
 		} while (prev != node);
 		fclose(file);
 	}
-	free((void *)histfile_name);
 	list_delete(history);
 }
 

@@ -15,7 +15,7 @@
 
 #include "internal/_term.h"
 
-#define _BUFFER_SIZE	4096
+#define _BUFFER_SIZE	0x8000
 
 static struct {
 	size_t	i;
