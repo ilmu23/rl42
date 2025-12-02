@@ -662,6 +662,9 @@ static inline u8	_tpm_sprintf(const char **seq, char buf[_BUFFER_SIZE + 1], cons
 			break ;
 		case 's':
 			rv = snprintf(buf, _BUFFER_SIZE, fmt, (const char *)val);
+			break ;
+		default:
+			rv = 0;
 	}
 	*seq = tmp;
 	return (rv != -1 && rv < _BUFFER_SIZE) ? 1 : 0;

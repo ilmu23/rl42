@@ -47,6 +47,7 @@ rl42_fn(complete) {
 		return 1;
 	rv = 0;
 	if (vector_size(line->line) == 0) {
+		target.context = NULL;
 		target.pattern = strdup("");
 		add_mark(kill_start, 0);
 	} else

@@ -231,6 +231,7 @@ static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_op
 	size_t			space;
 	u8				rv;
 
+	space = 0;
 	hl_user_mark = 0;
 	section.text = NULL;
 	state_flags |= STATE_H_SCROLLING;

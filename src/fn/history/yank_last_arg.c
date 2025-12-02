@@ -43,6 +43,7 @@ rl42_fn(yank_last_arg)	{
 	if (current == next)
 		return 1;
 	rv = 0;
+	match.fn = NULL;
 	add_mark(kill_start, line->i);
 	if (!hist_yank_arg(line, next, n) || !term_display_line(line, 0))
 		goto _yank_last_arg_ret;

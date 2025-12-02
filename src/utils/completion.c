@@ -157,6 +157,8 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 		if (len > widest)
 			widest = len;
 	}
+	cpp = 0;
+	page = 0;
 	cur = SIZE_MAX;
 	term_show_cursor();
 	while (1) {
