@@ -5,17 +5,18 @@
 // ██║        ██║███████╗██║     ╚██████╔╝   ██║   ╚██████╗██║  ██║██║  ██║██║  ██║
 // ╚═╝        ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// <<move.h>>
+// <<beginning_of_word.c>>
 
-#pragma once
-
+#define __RL42_INTERNAL
 #include "function.h"
 
-rl42_fn(backward_char);
-rl42_fn(backward_word);
-rl42_fn(beginning_of_line);
-rl42_fn(beginning_of_word);
-rl42_fn(end_of_line);
-rl42_fn(end_of_word);
-rl42_fn(forward_char);
-rl42_fn(forward_word);
+#include "internal/_defs.h"
+#include "internal/_term.h"
+#include "internal/_utils.h"
+
+rl42_fn(beginning_of_word) {
+	if (line->i > 0 && is_space(*(u32 *)vector_get(line->line, line->i - 1)))
+		return 1;
+	move_to_start_of_word(line);
+	return term_cursor_move_to_i(line);
+}

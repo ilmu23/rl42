@@ -128,7 +128,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<C-f>", "forward-char");
 	bind_emacs("<C-b>", "backward-char");
 	bind_emacs("<S-RIGHT>", "end-of-word");
-	bind_emacs("<S-LEFT>", "start-of-word");
+	bind_emacs("<S-LEFT>", "beginning-of-word");
 	bind_emacs("<M-f>", "forward-word");
 	bind_emacs("<M-b>", "backward-word");
 	bind_emacs("<M-]>", "forward-char-search");
@@ -183,7 +183,7 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-C-r>", "revert-line");
 	bind_emacs("<M-T>", "tilde-expand");
 	bind_vi_cmd("<C-e>", "emacs-editing-mode");
-	bind_vi_cmd("<C-t>", "tranpose-characters");
+	bind_vi_cmd("<C-t>", "transpose-characters");
 	bind_vi_cmd("<SPC>", "forward-char");
 	bind_vi_cmd("<M-r>", "reload-config-file");
 	bind_vi_cmd("$", "end-of-line");
@@ -199,7 +199,7 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("9", "numeric-argument");
 	bind_vi_cmd(",", "exchange-point-and-mark");
 	bind_vi_cmd("/", "inc-forward-search-history");
-	bind_vi_cmd("?", "inc-reverse-search-history");
+	bind_vi_cmd("?", "inc-backward-search-history");
 	bind_vi_cmd("a", "vi-append");
 	bind_vi_cmd("A", "vi-append-eol");
 	bind_vi_cmd("b", "backward-word");
@@ -226,7 +226,7 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("Z", "discard-line");
 	bind_vi_cmd("<ESC>", "abort");
 	bind_vi_ins("<C-r>", "inc-reverse-search-history");
-	bind_vi_ins("<C-s>", "inc-forward-search-history");
+	bind_vi_ins("<C-s>", "inc-backward-search-history");
 	bind_vi_ins("<C-y>", "yank-last-arg");
 	bind_vi_ins("<ESC>", "vi-command-mode");
 	cbind_all("<ESC>[200~", "__bracketed_paste__");
@@ -250,6 +250,7 @@ static const struct {
 	__rl42_fn(backward_word, "backward-word"),
 	__rl42_fn(beginning_of_history, "beginning-of-history"),
 	__rl42_fn(beginning_of_line, "beginning-of-line"),
+	__rl42_fn(beginning_of_word, "beginning-of-word"),
 	__rl42_fn(bracketed_paste, "__bracketed_paste__"),
 	__rl42_fn(capitalize_word, "capitalize-word"),
 	__rl42_fn(clear_display, "clear-display"),
@@ -268,6 +269,7 @@ static const struct {
 	__rl42_fn(end_of_file, "end-of-file"),
 	__rl42_fn(end_of_history, "end-of-history"),
 	__rl42_fn(end_of_line, "end-of-line"),
+	__rl42_fn(end_of_word, "end-of-word"),
 	__rl42_fn(exchange_point_and_mark, "exchange-point-and-mark"),
 	__rl42_fn(fetch_history, "fetch-history"),
 	__rl42_fn(forward_char, "forward-char"),

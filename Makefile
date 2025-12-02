@@ -156,7 +156,9 @@ MCFNFILES	=	abort.c \
 MVFNFILES	=	backward_char.c \
 				backward_word.c \
 				beginning_of_line.c \
+				beginning_of_word.c \
 				end_of_line.c \
+				end_of_word.c \
 				forward_char.c \
 				forward_word.c
 
