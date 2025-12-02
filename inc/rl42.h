@@ -59,3 +59,13 @@ u8					rl42_set(const rl42_setting setting, const rl42_setting_val value);
  * .u64 = 0 if setting was not a valid setting
  */
 rl42_setting_val	rl42_get(const rl42_setting setting);
+
+/** @brief Cleans up all rl42 resources
+ *
+ * General cleanup function that, among other things,
+ * frees up all used resources and saves the history.
+ * Calling any rl42 functions after calling rl42_cleanup
+ * will cause undefined behaviour and will likely result
+ * in a crash of some sort
+ */
+void				rl42_cleanup(void);

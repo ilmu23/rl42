@@ -62,5 +62,6 @@ i32	main(void) {
 	if (!_rv)
 		rv = 1;
 	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", REMAP, CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
+	rl42_cleanup();
 	return rv;
 }

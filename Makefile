@@ -7,14 +7,16 @@
 ##
 ## <<Makefile>>
 
-NAME	=	librl42.a
+NAME	=	librl42
+STATIC	=	$(NAME).a
+SHARED	=	$(NAME).so
 
 BUILD	=	fsan
 
 ## COMPILER FLAGS
 
 CC				=	gcc
-cflags.common	=	-Wall -Wextra -Werror -Wpedantic -std=gnu2x -pedantic-errors -I$(INCDIR)
+cflags.common	=	-Wall -Wextra -Werror -Wpedantic -std=gnu2x -pedantic-errors -fPIC -I$(INCDIR)
 cflags.debug	=	-g -D__DEBUG_BUILD
 cflags.fsan		=	$(cflags.debug) -fsanitize=address,undefined
 cflags.normal	=	-s -O1
@@ -24,6 +26,11 @@ CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
 ifndef NO_LIBICU
 	CFLAGS	+=	-DUSE_LIBICU
 endif
+
+## LD FLAGS
+
+LD		=	ld
+LDFLAGS	=	-shared
 
 ## DIRECTORIES
 
@@ -41,6 +48,8 @@ KEYBDIR	=	keybinds
 KILLDIR	=	kill
 TERMDIR	=	term
 UTILDIR	=	utils
+
+INSTALL_PATH	=	/usr
 
 ### RL42 FUNCTION DIRS
 
@@ -256,22 +265,43 @@ ITCFLAGS	=	$(cflags.common) $(cflags.$(ITBUILD)) $(cflags.extra)
 ifeq ($(shell bash -c 'gcc -x c -<<< "#include <stdio.h> int main(void) { printf(\"%ld\n\", __STDC_VERSION__); }" && ./a.out && rm a.out'), 202311)
 	ITLDFLAGS	=	-L. -lrl42
 else
-	LDFLAGS		=	-lbsd
-	ITLDFLAGS	=	-L. -lrl42 $(LDFLAGS)
+	TLDFLAGS	=	-lbsd
+	ITLDFLAGS	=	-L. -lrl42 $(TLDFLAGS)
 endif
 
 ifndef NO_LIBICU
-	LDFLAGS		+=	-licuuc
+	TLDFLAGS	+=	-licuuc
 	ITLDFLAGS	+=	-licuuc
 endif
 
-all: $(NAME)
+all: $(STATIC) $(SHARED)
+
+static: $(STATIC)
+
+shared: $(SHARED)
 
 tester: $(INTERACTIVE_TESTER)
 
-$(NAME): $(OBJDIR) $(OBJS)
+install: $(STATIC) $(SHARED)
+	@printf "\e[1;38;5;39mRL42 >\e[m Installing rl42\n"
+	@mkdir -p $(INSTALL_PATH)/lib
+	@cp $(STATIC) $(SHARED) $(INSTALL_PATH)/lib/
+	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
+
+install-headers:
+	@printf "\e[1;38;5;39mRL42 >\e[m Installing headers\n"
+	@mkdir -p $(INSTALL_PATH)/include/rl42
+	@cp -r $(INCDIR)/* $(INSTALL_PATH)/include/rl42/
+	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
+
+$(STATIC): $(OBJDIR) $(OBJS)
 	@printf "\e[1;38;5;39mRL42 >\e[m Creating %s\n" $@
-	@ar -crs $(NAME) $(OBJS)
+	@ar -crs $@ $(OBJS)
+	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
+
+$(SHARED): $(OBJDIR) $(OBJS)
+	@printf "\e[1;38;5;39mRL42 >\e[m Linking %s\n" $@
+	@$(LD) $(LDFLAGS) $(OBJS) -o $@
 	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
 
 $(INTERACTIVE_TESTER): $(TESTBIN) $(SRCS) $(TESTDIR)/interactive/main.c
@@ -306,39 +336,39 @@ utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(TERMINFO_TEST) $(VECTOR_TES
 
 $(FUNCTION_TEST): $(FUNCTION_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
 $(HISTORY_TEST): $(HISTORY_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
 $(KEYBIND_TEST): $(KEYBIND_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
 $(STRLEN_UTF8_TEST): $(STRLEN_UTF8_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
 $(RL42_STRING_TEST): $(RL42_STRING_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
 $(TERMINFO_TEST): $(TERMINFO_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
 $(VECTOR_TEST): $(VECTOR_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
 $(LIST_TEST): $(LIST_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
 $(MAP_TEST): $(MAP_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(LDFLAGS) -o $@
+	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
 $(OBJDIR):
 	@printf "\e[1;38;5;39mRL42 >\e[m Creating objdirs\n"
@@ -382,7 +412,8 @@ tclean:
 fclean: clean tclean
 	@rm -rf $(TESTBIN)
 	@rm -rf $(OBJDIR)
-	@rm -f $(NAME)
+	@rm -f $(STATIC)
+	@rm -f $(SHARED)
 
 re: fclean all
 

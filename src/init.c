@@ -51,7 +51,6 @@ extern vector	input_buf;
 static u8	init = 0;
 
 static inline void	_init_binds(void);
-static inline void	_rl42_exit(void);
 static inline u8	_init_fns(void);
 
 u8	rl42_init(void) {
@@ -66,8 +65,6 @@ u8	rl42_init(void) {
 				rv = 0;
 		}
 		if (!init_key_trees())
-			rv = 0;
-		if (atexit(_rl42_exit) != 0)
 			rv = 0;
 #ifdef __TEST_BUILD
 		if (isatty(0) && !term_init())
@@ -85,6 +82,20 @@ u8	rl42_init(void) {
 		init = rv;
 	}
 	return rv;
+}
+
+void	rl42_cleanup(void) {
+	if (init) {
+		vector_delete(input_buf);
+		term_cursor_destroy_anchors();
+		term_apply_settings(TERM_SETTINGS_DEFAULT);
+		hist_clean();
+		clean_kb_listener();
+		clean_key_trees();
+		kill_clear_ring();
+		clean_fns();
+		ti_unload();
+	}
 }
 
 static inline void	_init_binds(void) {
@@ -219,20 +230,6 @@ static inline void	_init_binds(void) {
 	bind_vi_ins("<C-y>", "yank-last-arg");
 	bind_vi_ins("<ESC>", "vi-command-mode");
 	cbind_all("<ESC>[200~", "__bracketed_paste__");
-}
-
-static inline void	_rl42_exit(void) {
-	if (init) {
-		vector_delete(input_buf);
-		term_cursor_destroy_anchors();
-		term_apply_settings(TERM_SETTINGS_DEFAULT);
-		hist_clean();
-		clean_kb_listener();
-		clean_key_trees();
-		kill_clear_ring();
-		clean_fns();
-		ti_unload();
-	}
 }
 
 #define __rl42_fn(f, n)	{.address = f, .name = n}

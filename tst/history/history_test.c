@@ -14,6 +14,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "rl42.h"
+
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
 #include "internal/_history.h"
@@ -59,6 +61,7 @@ i32	main(void) {
 				node->entry_n, node->line, hist_items[i]);
 	}
 	unlink(".hist");
+	rl42_cleanup();
 	return rv;
 }
 

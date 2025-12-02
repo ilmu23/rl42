@@ -12,6 +12,7 @@
 #include <string.h>
 
 #define __RL42_INTERNAL
+#include "rl42.h"
 #include "function.h"
 
 #include "internal/_utils.h"
@@ -80,6 +81,7 @@ i32	main(void) {
 		rv = 1;
 	if (rl42_register_function(_fn_3, "fn-3"))
 		rv = 1;
+	rl42_cleanup();
 	return rv;
 }
 
