@@ -20,6 +20,7 @@
 #include "internal/_vector.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
+#include "internal/_keybinds.h"
 
 #include "internal/fn/move.h"
 #include "internal/fn/text.h"
@@ -120,6 +121,7 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	rl42_line				query;
 	rl42_fn					fn;
 	size_t					old_i;
+	u8						vi_cmd_mode;
 	u8						rv;
 
 	query = (rl42_line){
@@ -130,6 +132,9 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	};
 	match = NULL;
 	match_str = NULL;
+	vi_cmd_mode = (get_editing_mode() == VI_CMD) ? 1 : 0;
+	if (vi_cmd_mode)
+		set_editing_mode(VI_INS);
 	if (current->edit)
 		free((void *)current->edit);
 	current->edit = rl42str_to_cstr(line->line);
@@ -180,6 +185,8 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 		rv = fn(line);
 		prev_fn = fn;
 	}
+	if (vi_cmd_mode)
+		set_editing_mode(VI_CMD);
 	return (incremental) ? rv : 1;
 _hist_search_error:
 	term_cursor_delete_anchor(query.prompt.root);
@@ -188,6 +195,8 @@ _hist_search_error:
 	vector_delete(query.keyseq);
 	vector_delete(query.line);
 	free((void *)match_str);
+	if (vi_cmd_mode)
+		set_editing_mode(VI_CMD);
 	return 0;
 }
 

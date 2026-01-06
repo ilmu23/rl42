@@ -27,6 +27,7 @@
 #include "internal/_keybinds.h"
 #include "internal/_terminfo.h"
 
+#include "internal/fn/vi.h"
 #include "internal/fn/kill.h"
 #include "internal/fn/misc.h"
 #include "internal/fn/move.h"
@@ -107,6 +108,8 @@ static inline void	_init_binds(void) {
 	bind_all("<RET>", "accept-line");
 	bind_all("<C-c>", "discard-line");
 	bind_all("<C-d>", "end-of-file");
+	bind_all("<RIGHT>", "forward-char");
+	bind_all("<LEFT>", "backward-char");
 	bind_all("<DOWN>", "forward-history");
 	bind_all("<UP>", "backward-history");
 	bind_all("<C-g>", "abort");
@@ -120,8 +123,6 @@ static inline void	_init_binds(void) {
 	bind_insert("<BCK>", "backward-delete-char");
 	bind_insert("<END>", "end-of-line");
 	bind_insert("<HME>", "beginning-of-line");
-	bind_insert("<RIGHT>", "forward-char");
-	bind_insert("<LEFT>", "backward-char");
 	bind_insert("<TAB>", "complete");
 	bind_emacs("<C-a>", "beginning-of-line");
 	bind_emacs("<C-e>", "end-of-line");
@@ -183,11 +184,12 @@ static inline void	_init_binds(void) {
 	bind_emacs("<M-C-r>", "revert-line");
 	bind_emacs("<M-T>", "tilde-expand");
 	bind_vi_cmd("<C-e>", "emacs-editing-mode");
-	bind_vi_cmd("<C-t>", "transpose-characters");
+	bind_vi_cmd("<C-t>", "transpose-chars");
 	bind_vi_cmd("<SPC>", "forward-char");
 	bind_vi_cmd("<M-r>", "reload-config-file");
 	bind_vi_cmd("$", "end-of-line");
-	bind_vi_cmd("0", "beginning-of-line");
+	bind_vi_cmd("_", "beginning-of-line");
+	bind_vi_cmd("0", "numeric-argument");
 	bind_vi_cmd("1", "numeric-argument");
 	bind_vi_cmd("2", "numeric-argument");
 	bind_vi_cmd("3", "numeric-argument");
@@ -198,8 +200,8 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("8", "numeric-argument");
 	bind_vi_cmd("9", "numeric-argument");
 	bind_vi_cmd(",", "exchange-point-and-mark");
-	bind_vi_cmd("/", "inc-forward-search-history");
-	bind_vi_cmd("?", "inc-backward-search-history");
+	bind_vi_cmd("?", "inc-forward-search-history");
+	bind_vi_cmd("/", "inc-backward-search-history");
 	bind_vi_cmd("a", "vi-append");
 	bind_vi_cmd("A", "vi-append-eol");
 	bind_vi_cmd("b", "backward-word");
@@ -225,8 +227,8 @@ static inline void	_init_binds(void) {
 	bind_vi_cmd("X", "backward-delete-char");
 	bind_vi_cmd("Z", "discard-line");
 	bind_vi_cmd("<ESC>", "abort");
-	bind_vi_ins("<C-r>", "inc-reverse-search-history");
-	bind_vi_ins("<C-s>", "inc-backward-search-history");
+	bind_vi_ins("<C-r>", "inc-backward-search-history");
+	bind_vi_ins("<C-s>", "inc-forward-search-history");
 	bind_vi_ins("<C-y>", "yank-last-arg");
 	bind_vi_ins("<ESC>", "vi-command-mode");
 	cbind_all("<ESC>[200~", "__bracketed_paste__");
@@ -282,6 +284,15 @@ static const struct {
 	__rl42_fn(inc_forward_search_history, "inc-forward-search-history"),
 	__rl42_fn(kill_line, "kill-line"),
 	__rl42_fn(kill_region, "kill-region"),
+	__rl42_fn(vi_append, "vi-append"),
+	__rl42_fn(vi_append_eol, "vi-append-eol"),
+	__rl42_fn(vi_command_mode, "vi-command-mode"),
+	__rl42_fn(vi_delete, "vi-delete"),
+	__rl42_fn(vi_insert, "vi-insert"),
+	__rl42_fn(vi_insert_sol, "vi-insert-sol"),
+	__rl42_fn(vi_replace, "vi-replace"),
+	__rl42_fn(vi_substitute, "vi-substitute"),
+	__rl42_fn(vi_substitute_line, "vi-substitute-line"),
 	__rl42_fn(kill_whole_line, "kill-whole-line"),
 	__rl42_fn(kill_word, "kill-word"),
 	__rl42_fn(numeric_argument, "numeric-argument"),

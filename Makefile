@@ -60,6 +60,7 @@ KLFNDIR	=	kill
 MCFNDIR	=	misc
 MVFNDIR	=	move
 TXFNDIR	=	text
+VIFNDIR	=	vi
 
 ## SOURCE FILES
 
@@ -105,7 +106,8 @@ RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
 				$(addprefix $(KLFNDIR)/, $(KLFNFILES)) \
 				$(addprefix $(MCFNDIR)/, $(MCFNFILES)) \
 				$(addprefix $(MVFNDIR)/, $(MVFNFILES)) \
-				$(addprefix $(TXFNDIR)/, $(TXFNFILES))
+				$(addprefix $(TXFNDIR)/, $(TXFNFILES)) \
+				$(addprefix $(VIFNDIR)/, $(VIFNFILES))
 
 HSFNFILES	=	accept_line.c \
 				backward_history.c \
@@ -176,6 +178,16 @@ TXFNFILES	=	backward_delete_char.c \
 				transpose_chars.c \
 				transpose_words.c \
 				upcase_word.c
+
+VIFNFILES	=	vi_append.c \
+				vi_append_eol.c \
+				vi_command_mode.c \
+				vi_delete.c \
+				vi_insert.c \
+				vi_insert_sol.c \
+				vi_replace.c \
+				vi_substitute.c \
+				vi_substitute_line.c
 
 FILES	=	rl42.c \
 			init.c \
@@ -384,9 +396,10 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)/$(UTILDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(HSFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(KLFNDIR)
-	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(TXFNDIR)
-	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MVFNDIR)
 	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MCFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(MVFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(TXFNDIR)
+	@mkdir -p $(OBJDIR)/$(RLFNDIR)/$(VIFNDIR)
 
 $(TESTBIN):
 	@printf "\e[1;38;5;39mRL42 >\e[m Creating test executable dir\n"
