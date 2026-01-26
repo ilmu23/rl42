@@ -53,6 +53,7 @@ u8	rl42_set(const rl42_setting setting, const rl42_setting_val value) {
 			}
 			break ;
 		default:
+			;
 	}
 	return 1;
 }

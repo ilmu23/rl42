@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 #ifdef __TEST_BUILD
-#include <unistd.h>
+# include <unistd.h>
 #endif
 
 #define __RL42_INTERNAL

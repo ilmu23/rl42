@@ -22,7 +22,7 @@
 #include <linux/limits.h>
 
 #if __STDC_VERSION__ < 202311L
-#include <bsd/string.h>
+# include <bsd/string.h>
 #endif
 
 #include "internal/_map.h"

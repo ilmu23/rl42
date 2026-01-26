@@ -7,6 +7,10 @@
 //
 // <<settings.c>>
 
+#if __STDC_VERSION__ < 202311L
+# include <bsd/string.h>
+#endif
+
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>

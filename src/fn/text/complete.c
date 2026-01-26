@@ -11,7 +11,7 @@
 #include <string.h>
 
 #if __STDC_VERSION__ < 202311L
-#include <bsd/string.h>
+# include <bsd/string.h>
 #endif
 
 #define __RL42_INTERNAL
@@ -99,6 +99,7 @@ static inline _cmp_info	_get_target(rl42_line *line) {
 
 	tmp = NULL;
 	_tmp = NULL;
+	target.context = NULL;
 	if (on_word(line)) {
 		if (line->i > 0 && !is_space(*(u32 *)vector_get(line->line, line->i - 1)))
 			move_to_start_of_word(line);
@@ -132,8 +133,7 @@ static inline _cmp_info	_get_target(rl42_line *line) {
 		if (!_tmp)
 			goto __get_target_error;
 		target.context = cstr_split(_tmp, ' ', "'\"");
-	} else
-		target.context = NULL;
+	}
 	vector_delete((vector)tmp);
 	free((void *)_tmp);
 	return target;
