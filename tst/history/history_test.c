@@ -46,6 +46,7 @@ i32	main(void) {
 	if (!_create_history())
 		return 1;
 	rl42_init();
+	rl42_set_history_file(".hist");
 	info("Test 1 ---- Start -> End\n");
 	for (i = rv = 0, node = hist_get_last_node(); i < _HIST_ITEMS_COUNT; node = next(node), i++) {
 		if (strcmp(node->line, hist_items[i]) != 0)
@@ -74,7 +75,6 @@ static inline u8	_create_history(void) {
 		return 0;
 	for (i = 0; i < _HIST_ITEMS_COUNT; i++)
 		fprintf(file, "%s\n", hist_items[i]);
-	setenv("RL42_HISTORY", ".hist", 1);
 	fclose(file);
 	return 1;
 }

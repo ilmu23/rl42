@@ -13,7 +13,7 @@
 
 #include "data.h"
 
-#define RL42_VERSION "3.10.23"
+#define RL42_VERSION "3.10.24"
 
 /** @brief Gets a line from the user with editing
  *
@@ -42,6 +42,20 @@ u8					rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, con
  * 0 on failure
  */
 u8					rl42_unbind(const char *seq, const rl42_editing_mode emode);
+
+/** @brief Changes the file used for storing the history
+ *
+ * @param path Path to the new file, or NULL to reset to the default
+ * @returns @c <b>u9</b> Non-zero on success,
+ * 0 on failure
+ */
+u8					rl42_set_history_file(const char *path);
+
+/** @brief Returns the path to the file used for storing the history
+ * @returns @c <b>const char *</b> Path to the file,
+ * NULL if using the default file
+ */
+const char			*rl42_get_history_file(void);
 
 /** @brief Sets the value of a setting
  *

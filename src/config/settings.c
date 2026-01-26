@@ -7,12 +7,26 @@
 //
 // <<settings.c>>
 
+#if __STDC_VERSION__ < 202311L
+# include <bsd/string.h>
+#endif
+
+#include <stdlib.h>
+#include <string.h>
+#include <linux/limits.h>
+
 #include "rl42.h"
 
 #include "internal/_term.h"
 #include "internal/_history.h"
 
+#define _EP_BUF_SIZE	PATH_MAX + 1
+
 #define _is_valid(s)	(s >= 0 && s < RL42_SETTING_NONE)
+
+#define _set_hfile_success(p)	(((history_file && p) || (!history_file && !p)))
+
+static const char	*history_file = NULL;
 
 static rl42_setting_val	settings[RL42_SETTING_NONE] = {
 	{ .i64 = RL42_BELL_NONE },	// bell-style
@@ -38,6 +52,21 @@ static rl42_setting_val	settings[RL42_SETTING_NONE] = {
 	{ .u64 = rl42_conf_on },	// enable-bracketed-paste
 };
 
+static inline const char	*_expand_path(const char *path);
+
+u8	rl42_set_history_file(const char *path) {
+	hist_clean();
+	free((void *)history_file);
+	history_file = (path) ? _expand_path(path) : NULL;
+	if (_set_hfile_success(path))
+		return hist_load(history_file);
+	return 0;
+}
+
+const char	*rl42_get_history_file(void) {
+	return history_file;
+}
+
 u8	rl42_set(const rl42_setting setting, const rl42_setting_val value) {
 	if (!_is_valid(setting))
 		return 0;
@@ -62,4 +91,16 @@ rl42_setting_val	rl42_get(const rl42_setting setting) {
 	if (!_is_valid(setting))
 		return (rl42_setting_val){ .u64 = 0 };
 	return settings[setting];
+}
+
+static inline const char	*_expand_path(const char *path) {
+	char	buf[_EP_BUF_SIZE];
+
+	if (*path == '~') {
+		memset(buf, 0, sizeof(buf));
+		strlcpy(buf, getenv("HOME"), sizeof(buf));
+		strlcat(buf, &path[1], sizeof(buf));
+		return strdup(buf);
+	}
+	return strdup(path);
 }

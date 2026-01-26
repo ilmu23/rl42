@@ -9,6 +9,7 @@
 
 #if __STDC_VERSION__ < 202311L
 # define _GNU_SOURCE
+# include <bsd/string.h>
 #endif
 
 #include <stdio.h>
@@ -288,15 +289,17 @@ u8	hist_load(const char *fname) {
 	history = list(rl42_hist_node, 500, (void (*)(void *))_free_hist_node);
 	if (!history)
 		return 0;
-	if (!fname) {
+	if (!fname)
 		snprintf(histfile_name, _HFNAME_BUF_SIZE, "%s/" _DEFAULT_HIST_FILE, getenv("HOME"));
-	} else
-		snprintf(histfile_name, _HFNAME_BUF_SIZE, "%s", fname);
+	else
+		strlcpy(histfile_name, fname, sizeof(histfile_name));
 	file = fopen(histfile_name, "r");
 	if (!file)
 		return 0;
 	line = NULL;
 	length = 0;
+	entries = 0;
+	load_done = 0;
 	for (rv = 1, read = getline(&line, &length, file); rv && read != -1; read = getline(&line, &length, file)) {
 		if (line[read - 1] == '\n')
 			line[read - 1] = '\0';
@@ -317,6 +320,8 @@ void	hist_clean(void) {
 	rl42_hist_node	*prev;
 	FILE			*file;
 
+	if (!history)
+		return ;
 	node = hist_get_first_node();
 	if (node && node->new) {
 		file = fopen(histfile_name, "a");
@@ -331,6 +336,9 @@ void	hist_clean(void) {
 		fclose(file);
 	}
 	list_delete(history);
+	history = NULL;
+	load_done = 0;
+	entries = 0;
 }
 
 static inline _match _search_get_match(const char *match_str, const rl42_direction direction) {
