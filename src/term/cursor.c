@@ -21,7 +21,12 @@
 #include "internal/_utils.h"
 #include "internal/_darray.h"
 #include "internal/_display.h"
+
+#ifndef __RL42_USE_EXTERNAL_TERMINFO
 #include "internal/_terminfo.h"
+#else
+#include <ti42/ti42.h>
+#endif
 
 #define _BUF_SIZE	64
 

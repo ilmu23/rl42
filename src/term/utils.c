@@ -14,7 +14,12 @@
 #include "internal/_term.h"
 #include "internal/_utils.h"
 #include "internal/_darray.h"
+
+#ifndef __RL42_USE_EXTERNAL_TERMINFO
 #include "internal/_terminfo.h"
+#else
+#include <ti42/ti42.h>
+#endif
 
 #define _csi_match(s, c)	((csi_match){.start = s, .complete = c})
 

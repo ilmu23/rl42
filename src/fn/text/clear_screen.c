@@ -11,9 +11,13 @@
 #include "function.h"
 
 #include "internal/_term.h"
-#include "internal/_utils.h"
 #include "internal/_display.h"
+
+#ifndef __RL42_USE_EXTERNAL_TERMINFO
 #include "internal/_terminfo.h"
+#else
+#include <ti42/ti42.h>
+#endif
 
 extern rl42_numeric_arg	n_arg;
 

@@ -25,7 +25,12 @@
 #include "internal/_defs.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
+
+#ifndef __RL42_USE_EXTERNAL_TERMINFO
 #include "internal/_terminfo.h"
+#else
+#include <ti42/ti42.h>
+#endif
 
 #define _TERM_SCROLL_UP		"\x1b[%p1%dS"
 #define _TERM_SCROLL_DOWN	"\x1b[%p1%dT"

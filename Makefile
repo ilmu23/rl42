@@ -23,6 +23,14 @@ cflags.normal	=	-s -O1
 cflags.extra	=	
 CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
 
+ifdef USE_EXTERNAL_CONTAINERS
+	CFLAGS	+=	-D__RL42_USE_EXTERNAL_CONTAINERS
+endif
+
+ifdef USE_EXTERNAL_TERMINFO
+	CFLAGS	+=	-D__RL42_USE_EXTERNAL_TERMINFO
+endif
+
 ifndef NO_LIBICU
 	CFLAGS	+=	-DUSE_LIBICU
 endif
@@ -90,17 +98,23 @@ TERMFILES	=	cursor.c \
 
 UTILFILES	=	completion.c \
 				cstr_utils.c \
-				list.c \
-				map.c \
 				message.c \
 				misc.c \
 				repeat.c \
 				rl42_string.c \
 				rl42str_utils.c \
 				strhash.c \
-				terminfo.c \
 				utf8.c \
-				darray.c
+
+ifndef USE_EXTERNAL_CONTAINERS
+	UTILFILES	+=	darray.c \
+					list.c \
+					map.c
+endif
+
+ifndef USE_EXTERNAL_TERMINFO
+	UTILFILES	+=	terminfo.c
+endif
 
 RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
 				$(addprefix $(KLFNDIR)/, $(KLFNFILES)) \

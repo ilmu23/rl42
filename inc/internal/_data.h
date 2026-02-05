@@ -13,7 +13,11 @@
 
 #include <stddef.h>
 
+#ifndef __RL42_USE_EXTERNAL_CONTAINERS
 #include "internal/_darray.h"
+#else
+#include <libcont/darray.h>
+#endif
 
 // Stores a cursor position
 // row = row number
@@ -72,8 +76,13 @@ typedef enum __bpm_state {
 	BPM_TOGGLE = 2,
 }	rl42_bpm_state;
 
+#ifndef __RL42_USE_EXTERNAL_CONTAINERS
 #include "internal/_map.h"
 #include "internal/_list.h"
+#else
+#include <libcont/map.h>
+#include <libcont/list.h>
+#endif
 
 // History node containing the original line and
 // the potentially edited version
