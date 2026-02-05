@@ -98,12 +98,12 @@ u8	term_scroll_display(size_t up, size_t down) {
 	if (up) {
 		to_scroll = up;
 		map_foreach(anchors, (void (*)(void *))_scroll_up);
-		if (!ti_tputs(ti_tparm(scroll_up, (i32)up), 1, term_putchar_unbuffered))
+		if (!ti42_tputs(ti42_tparm(scroll_up, (i32)up), 1, term_putchar_unbuffered))
 			return 0;
 	} else if (down) {
 		to_scroll = down;
 		map_foreach(anchors, (void (*)(void *))_scroll_down);
-		if (!ti_tputs(ti_tparm(scroll_down, (i32)down), 1, term_putchar_unbuffered))
+		if (!ti42_tputs(ti42_tparm(scroll_down, (i32)down), 1, term_putchar_unbuffered))
 			return 0;
 	}
 	return 1;

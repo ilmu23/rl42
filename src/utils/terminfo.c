@@ -59,7 +59,7 @@
 
 #define _TPM_F_DVARS_INIT_DONE	0x1U
 #define _TPM_F_INCREMENT_P12		0x2U
-#define _TPM_F_IN_CONDITIONAL	0x4U
+#define _TPM_F_IN_CONDITI42ONAL	0x4U
 
 #define _TPS_DELAY_ALWAYS		0x1U
 #define _TPS_DELAY_NORMAL		0x2U
@@ -67,8 +67,8 @@
 
 #define offset(p, n)	((void *)((uintptr_t)p + n))
 
-#define is_present_u16(n, i)	(n.u16[i] != (u16)TI_ABS_NUM && n.u16[i] != (u16)_CAN_NUM)
-#define is_present_u32(n, i)	(n.u32[i] != (u32)TI_ABS_NUM && n.u32[i] != (u32)_CAN_NUM)
+#define is_present_u16(n, i)	(n.u16[i] != (u16)TI42_ABS_NUM && n.u16[i] != (u16)_CAN_NUM)
+#define is_present_u32(n, i)	(n.u32[i] != (u32)TI42_ABS_NUM && n.u32[i] != (u32)_CAN_NUM)
 
 #define tp_stack_top(st)		(*(uintptr_t *)darray_last(st))
 #define tp_stack_push(st, val)	(darray_push(st, (uintptr_t){val}))
@@ -126,13 +126,13 @@ static struct {
 
 static char	seq_buf[_BUFFER_SIZE + 1];
 
-u8	ti_load(const char *term) {
+u8	ti42_load(const char *term) {
 	size_t	i;
 
 	if (description.loaded) {
 		if (strcmp(description.name, term) == 0)
 			return 1;
-		ti_unload();
+		ti42_unload();
 	}
 	if (!_get_entry(_open(term), &description.entry))
 		return 0;
@@ -166,44 +166,44 @@ ti_load_err_ret:
 	return 0;
 }
 
-const char *ti_getname(void) {
+const char *ti42_getname(void) {
 	return description.entry.term_names;
 }
 
-i32	ti_getflag(const u8 name) {
+i32	ti42_getflag(const u8 name) {
 	boolean_cap	*val;
 
-	if (name > TI_BOOLEAN_CAPS)
-		return TI_NOT_BOOL;
+	if (name > TI42_BOOLEAN_CAPS)
+		return TI42_NOT_BOOL;
 	val = map_get(caps.boolean, name);
 	return (val != MAP_NOT_FOUND) ? 1 : 0;
 }
 
-i32	ti_getnum(const u8 name) {
+i32	ti42_getnum(const u8 name) {
 	numeric_cap	*val;
 
-	if (name > TI_NUMERIC_CAPS)
-		return TI_NOT_NUM;
+	if (name > TI42_NUMERIC_CAPS)
+		return TI42_NOT_NUM;
 	val = map_get(caps.numeric, name);
-	return (val != MAP_NOT_FOUND) ? *val : TI_ABS_NUM;
+	return (val != MAP_NOT_FOUND) ? *val : TI42_ABS_NUM;
 }
 
-const char	*ti_getstr(const u16 name) {
+const char	*ti42_getstr(const u16 name) {
 	string_cap	*val;
 
-	if (name > TI_STRING_CAPS)
-		return TI_NOT_STR;
+	if (name > TI42_STRING_CAPS)
+		return TI42_NOT_STR;
 	val = map_get(caps.string, name);
-	return (val != MAP_NOT_FOUND) ? *val : TI_ABS_STR;
+	return (val != MAP_NOT_FOUND) ? *val : TI42_ABS_STR;
 }
 
-const char	*ti_tgoto(const char *seq, const i32 row, const i32 col) {
+const char	*ti42_tgoto(const char *seq, const i32 row, const i32 col) {
 	if (row < 1 || col < 1)
 		return NULL;
-	return ti_tparm(seq, row - 1, col - 1);
+	return ti42_tparm(seq, row - 1, col - 1);
 }
 
-const char	*ti_tparm(const char *seq, ...) {
+const char	*ti42_tparm(const char *seq, ...) {
 	static uintptr_t	svars[_TPM_SVARS];
 	uintptr_t			dvars[_TPM_DVARS];
 	uintptr_t			params[_TPM_PARAMS];
@@ -218,7 +218,7 @@ const char	*ti_tparm(const char *seq, ...) {
 	u8					param_count;
 	u8					flags;
 
-	if (seq == TI_ABS_STR || seq == TI_NOT_STR)
+	if (seq == TI42_ABS_STR || seq == TI42_NOT_STR)
 		return NULL;
 	for (present_params = param_count = seqlen = 0; seq[seqlen]; seqlen++) {
 		if (seq[seqlen] == 'p') switch (seq[++seqlen]) {
@@ -390,12 +390,12 @@ const char	*ti_tparm(const char *seq, ...) {
 				tp_stack_push(stack, (*seq == '!') ? !x : ~x);
 				break ;
 			case '?':
-				if (flags & _TPM_F_IN_CONDITIONAL)
+				if (flags & _TPM_F_IN_CONDITI42ONAL)
 					goto _ti_tparm_err_ret;
-				flags |=  _TPM_F_IN_CONDITIONAL;
+				flags |=  _TPM_F_IN_CONDITI42ONAL;
 				break ;
 			case 't':
-				if (~flags & _TPM_F_IN_CONDITIONAL)
+				if (~flags & _TPM_F_IN_CONDITI42ONAL)
 					goto _ti_tparm_err_ret;
 				x = tp_stack_top(stack);
 				darray_pop(stack);
@@ -409,7 +409,7 @@ const char	*ti_tparm(const char *seq, ...) {
 							case 'e':
 								if (y == 0) {
 									if (*seq == ';')
-										flags &= ~_TPM_F_IN_CONDITIONAL;
+										flags &= ~_TPM_F_IN_CONDITI42ONAL;
 									goto _ti_tparm_continue;
 								}
 								y -= (*seq == ':') ? 1 : 0;
@@ -421,7 +421,7 @@ const char	*ti_tparm(const char *seq, ...) {
 				}
 				break ;
 			case 'e':
-				if (~flags & _TPM_F_IN_CONDITIONAL)
+				if (~flags & _TPM_F_IN_CONDITI42ONAL)
 					goto _ti_tparm_err_ret;
 				for (seq++, x = 0; ; seq++) {
 					if (*seq == '%') switch (*(++seq)) {
@@ -430,7 +430,7 @@ const char	*ti_tparm(const char *seq, ...) {
 							break ;
 						case ';':
 							if (x == 0) {
-								flags &= ~_TPM_F_IN_CONDITIONAL;
+								flags &= ~_TPM_F_IN_CONDITI42ONAL;
 								goto _ti_tparm_continue;
 							}
 							x--;
@@ -440,9 +440,9 @@ const char	*ti_tparm(const char *seq, ...) {
 				}
 				break ;
 			case ';':
-				if (~flags & _TPM_F_IN_CONDITIONAL)
+				if (~flags & _TPM_F_IN_CONDITI42ONAL)
 					goto _ti_tparm_err_ret;
-				flags &=  ~_TPM_F_IN_CONDITIONAL;
+				flags &=  ~_TPM_F_IN_CONDITI42ONAL;
 				break ;
 			case '%':
 				seq_buf[i++] = '%';
@@ -474,21 +474,21 @@ static const speed_t	_tps_speeds[_TPS_SPEEDCOUNT * 2] = { 0, 1, 2, 3, 4, 5, 6, 7
 
 static speed_t	_tps_ospeed;
 
-ssize_t	ti_tputs(const char *s, const size_t affln, ssize_t (*putc)(const char)) {
+ssize_t	ti42_tputs(const char *s, const size_t affln, ssize_t (*putc)(const char)) {
 	ssize_t	bytes_written;
 	ssize_t	rv;
 	u64		delay_ms;
 	u8		delay_type;
 	u8		delay;
 
-	if (s == TI_ABS_STR || s == TI_NOT_STR)
+	if (s == TI42_ABS_STR || s == TI42_NOT_STR)
 		return 0;
 	delay = 0;
-	if (str_equals(s, ti_getstr(ti_bel)) || str_equals(s, ti_getstr(ti_flash)))
+	if (str_equals(s, ti42_getstr(ti42_bel)) || str_equals(s, ti42_getstr(ti42_flash)))
 		delay |= _TPS_DELAY_ALWAYS;
-	if (!ti_getflag(ti_xon) && ti_getnum(ti_pb) != (i32)TI_ABS_NUM && _tps_get_baud_rate() >= ti_getnum(ti_pb))
+	if (!ti42_getflag(ti42_xon) && ti42_getnum(ti42_pb) != (i32)TI42_ABS_NUM && _tps_get_baud_rate() >= ti42_getnum(ti42_pb))
 		delay |= _TPS_DELAY_NORMAL;
-	delay_type = (ti_getflag(ti_npc)) ? _TPS_SLEEP_NANOSLEEP : _TPS_SLEEP_PAD;
+	delay_type = (ti42_getflag(ti42_npc)) ? _TPS_SLEEP_NANOSLEEP : _TPS_SLEEP_PAD;
 	bytes_written = 0;
 	do {
 		if (_tps_is_delay(s)) {
@@ -515,7 +515,7 @@ ssize_t	ti_tputs(const char *s, const size_t affln, ssize_t (*putc)(const char))
 	return (rv != -1) ? bytes_written : -1;
 }
 
-void	ti_unload(void) {
+void	ti42_unload(void) {
 	if (description.loaded) {
 		munmap(description.entry.data, description.entry.size);
 		map_delete(caps.boolean);
@@ -702,8 +702,8 @@ static inline i8	_tps_sleep(const u64 ms, const u8 sleep_type, ssize_t (*putc)(c
 				return 0;
 	} else {
 		if (!pad_char) {
-			pad_char = ti_getstr(ti_pad);
-			if (pad_char == TI_ABS_STR)
+			pad_char = ti42_getstr(ti42_pad);
+			if (pad_char == TI42_ABS_STR)
 				pad_char = "\0";
 		}
 		for (pads_needed = (ms * _tps_get_baud_rate()) / 1000; pads_needed; pads_needed--) {

@@ -159,16 +159,16 @@ u8	term_apply_settings(const u8 settings) {
 	switch (settings) {
 		case TERM_SETTINGS_DEFAULT:
 			rv = (tcsetattr(0, TCSANOW, &old) != -1) ? 1 : 0;
-			if (esc_seqs.rmkx != TI_ABS_STR)
-				rv |= (ti_tputs(esc_seqs.rmkx, 1, term_putchar_unbuffered)) ? 1 : 0;
-			if (esc_seqs.cnorm != TI_ABS_STR)
+			if (esc_seqs.rmkx != TI42_ABS_STR)
+				rv |= (ti42_tputs(esc_seqs.rmkx, 1, term_putchar_unbuffered)) ? 1 : 0;
+			if (esc_seqs.cnorm != TI42_ABS_STR)
 				rv |= term_show_cursor();
 			break ;
 		case TERM_SETTINGS_RL42:
 			rv = (tcsetattr(0, TCSANOW, &new) != -1) ? 1 : 0;
-			if (esc_seqs.smkx != TI_ABS_STR)
-				rv |= (ti_tputs(esc_seqs.smkx, 1, term_putchar_unbuffered)) ? 1 : 0;
-			if (esc_seqs.civis != TI_ABS_STR)
+			if (esc_seqs.smkx != TI42_ABS_STR)
+				rv |= (ti42_tputs(esc_seqs.smkx, 1, term_putchar_unbuffered)) ? 1 : 0;
+			if (esc_seqs.civis != TI42_ABS_STR)
 				rv |= term_hide_cursor();
 			break ;
 		default:
@@ -202,125 +202,125 @@ u8	term_set_bpm(const rl42_bpm_state state) {
 
 const char	*term_get_seq(const u16 name) {
 	switch (name) {
-		case ti_kbs:
+		case ti42_kbs:
 			return key_seqs.kbs;
-		case ti_kf1:
+		case ti42_kf1:
 			return key_seqs.kf1.val;
-		case ti_kf2:
+		case ti42_kf2:
 			return key_seqs.kf2.val;
-		case ti_kf3:
+		case ti42_kf3:
 			return key_seqs.kf3.val;
-		case ti_kf4:
+		case ti42_kf4:
 			return key_seqs.kf4.val;
-		case ti_kf5:
+		case ti42_kf5:
 			return key_seqs.kf5.val;
-		case ti_kf6:
+		case ti42_kf6:
 			return key_seqs.kf6.val;
-		case ti_kf7:
+		case ti42_kf7:
 			return key_seqs.kf7.val;
-		case ti_kf8:
+		case ti42_kf8:
 			return key_seqs.kf8.val;
-		case ti_kf9:
+		case ti42_kf9:
 			return key_seqs.kf9.val;
-		case ti_kf10:
+		case ti42_kf10:
 			return key_seqs.kf10.val;
-		case ti_kf11:
+		case ti42_kf11:
 			return key_seqs.kf11.val;
-		case ti_kf12:
+		case ti42_kf12:
 			return key_seqs.kf12.val;
-		case ti_kcuu1:
+		case ti42_kcuu1:
 			return key_seqs.kcuu1.val;
-		case ti_kcud1:
+		case ti42_kcud1:
 			return key_seqs.kcud1.val;
-		case ti_kcub1:
+		case ti42_kcub1:
 			return key_seqs.kcub1.val;
-		case ti_kcuf1:
+		case ti42_kcuf1:
 			return key_seqs.kcuf1.val;
-		case ti_kich1:
+		case ti42_kich1:
 			return key_seqs.kich1.val;
-		case ti_khome:
+		case ti42_khome:
 			return key_seqs.khome.val;
-		case ti_knp:
+		case ti42_knp:
 			return key_seqs.knp.val;
-		case ti_kdch1:
+		case ti42_kdch1:
 			return key_seqs.kdch1.val;
-		case ti_kend:
+		case ti42_kend:
 			return key_seqs.kend.val;
-		case ti_kpp:
+		case ti42_kpp:
 			return key_seqs.kpp.val;
-		case ti_kri:
+		case ti42_kri:
 			return key_seqs.kri.val;
-		case ti_kind:
+		case ti42_kind:
 			return key_seqs.kind.val;
-		case ti_kLFT:
+		case ti42_kLFT:
 			return key_seqs.kLFT.val;
-		case ti_kRIT:
+		case ti42_kRIT:
 			return key_seqs.kRIT.val;
-		case ti_kIC:
+		case ti42_kIC:
 			return key_seqs.kIC.val;
-		case ti_kHOM:
+		case ti42_kHOM:
 			return key_seqs.kHOM.val;
-		case ti_kNXT:
+		case ti42_kNXT:
 			return key_seqs.kNXT.val;
-		case ti_kDC:
+		case ti42_kDC:
 			return key_seqs.kDC.val;
-		case ti_kEND:
+		case ti42_kEND:
 			return key_seqs.kEND.val;
-		case ti_kPRV:
+		case ti42_kPRV:
 			return key_seqs.kPRV.val;
-		case ti_cup:
+		case ti42_cup:
 			return esc_seqs.cup;
-		case ti_bel:
+		case ti42_bel:
 			return esc_seqs.bel;
-		case ti_flash:
+		case ti42_flash:
 			return esc_seqs.flash;
-		case ti_civis:
+		case ti42_civis:
 			return esc_seqs.civis;
-		case ti_cnorm:
+		case ti42_cnorm:
 			return esc_seqs.cnorm;
-		case ti_smkx:
+		case ti42_smkx:
 			return esc_seqs.smkx;
-		case ti_rmkx:
+		case ti42_rmkx:
 			return esc_seqs.rmkx;
-		case ti_el1:
+		case ti42_el1:
 			return esc_seqs.el1;
-		case ti_el:
+		case ti42_el:
 			return esc_seqs.el;
-		case ti_ed:
+		case ti42_ed:
 			return esc_seqs.ed;
-		case ti_clear:
+		case ti42_clear:
 			return esc_seqs.clear;
-		case ti_indn:
+		case ti42_indn:
 			return esc_seqs.indn;
-		case ti_rin:
+		case ti42_rin:
 			return esc_seqs.rin;
-		case ti_bold:
+		case ti42_bold:
 			return esc_seqs.bold;
-		case ti_dim:
+		case ti42_dim:
 			return esc_seqs.dim;
-		case ti_rev:
+		case ti42_rev:
 			return esc_seqs.rev;
-		case ti_sitm:
+		case ti42_sitm:
 			return esc_seqs.sitm;
-		case ti_ritm:
+		case ti42_ritm:
 			return esc_seqs.ritm;
-		case ti_smso:
+		case ti42_smso:
 			return esc_seqs.smso;
-		case ti_rmso:
+		case ti42_rmso:
 			return esc_seqs.rmso;
-		case ti_smul:
+		case ti42_smul:
 			return esc_seqs.smul;
-		case ti_rmul:
+		case ti42_rmul:
 			return esc_seqs.rmul;
-		case ti_setaf:
+		case ti42_setaf:
 			return esc_seqs.setaf;
-		case ti_setab:
+		case ti42_setab:
 			return esc_seqs.setab;
-		case ti_op:
+		case ti42_op:
 			return esc_seqs.op;
-		case ti_sgr:
+		case ti42_sgr:
 			return esc_seqs.sgr;
-		case ti_sgr0:
+		case ti42_sgr0:
 			return esc_seqs.sgr0;
 	}
 	return NULL;
@@ -336,7 +336,7 @@ const char	*term_get_hl_seq(void) {
 		return "";
 	hl = rl42_get(RL42_HIGHLIGHT_COLOR).hlc;
 	if (hl.type == RL42_HL_INDEX)
-		strlcpy(buf, ti_tparm(esc_seqs.setaf, hl.val.index), _BUFFER_SIZE + 1);
+		strlcpy(buf, ti42_tparm(esc_seqs.setaf, hl.val.index), _BUFFER_SIZE + 1);
 	else
 		snprintf(buf, _BUFFER_SIZE, "\x1b[38;2;%hhu;%hhu;%hhum", hl.val.rgb.r, hl.val.rgb.g, hl.val.rgb.b);
 	return buf;
@@ -366,34 +366,34 @@ u16	term_match_key_seq(const char *seq) {
 
 u8	term_set_fg_color(const u8 color) {
 	if (esc_seqs.setaf)
-		return (ti_tputs(ti_tparm(esc_seqs.setaf, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+		return (ti42_tputs(ti42_tparm(esc_seqs.setaf, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 
 u8	term_set_bg_color(const u8 color) {
 	if (esc_seqs.setab)
-		return (ti_tputs(ti_tparm(esc_seqs.setab, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+		return (ti42_tputs(ti42_tparm(esc_seqs.setab, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 
 u8	term_set_sgr(const sgr_opts opts) {
 	const char	*sgr_str;
 
-	sgr_str = (opts) ? ti_tparm(esc_seqs.sgr, sgr_opt(1), sgr_opt(2), sgr_opt(3), sgr_opt(4), sgr_opt(5), sgr_opt(6), sgr_opt(7), sgr_opt(8), sgr_opt(9)) : esc_seqs.sgr0;
+	sgr_str = (opts) ? ti42_tparm(esc_seqs.sgr, sgr_opt(1), sgr_opt(2), sgr_opt(3), sgr_opt(4), sgr_opt(5), sgr_opt(6), sgr_opt(7), sgr_opt(8), sgr_opt(9)) : esc_seqs.sgr0;
 	if (sgr_str)
-		return (ti_tputs(sgr_str, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+		return (ti42_tputs(sgr_str, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 
 u8	term_hide_cursor(void) {
 	if (esc_seqs.civis)
-		return (ti_tputs(esc_seqs.civis, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+		return (ti42_tputs(esc_seqs.civis, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 
 u8	term_show_cursor(void) {
 	if (esc_seqs.cnorm)
-		return (ti_tputs(esc_seqs.cnorm, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+		return (ti42_tputs(esc_seqs.cnorm, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	return 0;
 }
 
@@ -401,68 +401,68 @@ static inline u8	_init_seqs(void) {
 	const char	*term;
 
 	term = rl42_getenv("TERM");
-	if (!ti_load((term) ? term : "dumb"))
+	if (!ti42_load((term) ? term : "dumb"))
 		return 0;
-	key_seqs.kbs = ti_getstr(ti_kbs);
-	key_seqs.kf1 = (escape){ .name = ti_kf1, .val = ti_getstr(ti_kf1) };
-	key_seqs.kf2 = (escape){ .name = ti_kf2, .val = ti_getstr(ti_kf2) };
-	key_seqs.kf3 = (escape){ .name = ti_kf3, .val = ti_getstr(ti_kf3) };
-	key_seqs.kf4 = (escape){ .name = ti_kf4, .val = ti_getstr(ti_kf4) };
-	key_seqs.kf5 = (escape){ .name = ti_kf5, .val = ti_getstr(ti_kf5) };
-	key_seqs.kf6 = (escape){ .name = ti_kf6, .val = ti_getstr(ti_kf6) };
-	key_seqs.kf7 = (escape){ .name = ti_kf7, .val = ti_getstr(ti_kf7) };
-	key_seqs.kf8 = (escape){ .name = ti_kf8, .val = ti_getstr(ti_kf8) };
-	key_seqs.kf9 = (escape){ .name = ti_kf9, .val = ti_getstr(ti_kf9) };
-	key_seqs.kf10 = (escape){ .name = ti_kf10, .val = ti_getstr(ti_kf10) };
-	key_seqs.kf11 = (escape){ .name = ti_kf11, .val = ti_getstr(ti_kf11) };
-	key_seqs.kf12 = (escape){ .name = ti_kf12, .val = ti_getstr(ti_kf12) };
-	key_seqs.kcuu1 = (escape){ .name = ti_kcuu1, .val = ti_getstr(ti_kcuu1) };
-	key_seqs.kcud1 = (escape){ .name = ti_kcud1, .val = ti_getstr(ti_kcud1) };
-	key_seqs.kcub1 = (escape){ .name = ti_kcub1, .val = ti_getstr(ti_kcub1) };
-	key_seqs.kcuf1 = (escape){ .name = ti_kcuf1, .val = ti_getstr(ti_kcuf1) };
-	key_seqs.kich1 = (escape){ .name = ti_kich1, .val = ti_getstr(ti_kich1) };
-	key_seqs.khome = (escape){ .name = ti_khome, .val = ti_getstr(ti_khome) };
-	key_seqs.knp = (escape){ .name = ti_knp, .val = ti_getstr(ti_knp) };
-	key_seqs.kdch1 = (escape){ .name = ti_kdch1, .val = ti_getstr(ti_kdch1) };
-	key_seqs.kend = (escape){ .name = ti_kend, .val = ti_getstr(ti_kend) };
-	key_seqs.kpp = (escape){ .name = ti_kpp, .val = ti_getstr(ti_kpp) };
-	key_seqs.kri = (escape){ .name = ti_kri, .val = ti_getstr(ti_kri) };
-	key_seqs.kind = (escape){ .name = ti_kind, .val = ti_getstr(ti_kind) };
-	key_seqs.kLFT = (escape){ .name = ti_kLFT, .val = ti_getstr(ti_kLFT) };
-	key_seqs.kRIT = (escape){ .name = ti_kRIT, .val = ti_getstr(ti_kRIT) };
-	key_seqs.kIC = (escape){ .name = ti_kIC, .val = ti_getstr(ti_kIC) };
-	key_seqs.kHOM = (escape){ .name = ti_kHOM, .val = ti_getstr(ti_kHOM) };
-	key_seqs.kNXT = (escape){ .name = ti_kNXT, .val = ti_getstr(ti_kNXT) };
-	key_seqs.kDC = (escape){ .name = ti_kDC, .val = ti_getstr(ti_kDC) };
-	key_seqs.kEND = (escape){ .name = ti_kEND, .val = ti_getstr(ti_kEND) };
-	key_seqs.kPRV = (escape){ .name = ti_kPRV, .val = ti_getstr(ti_kPRV) };
-	esc_seqs.cup = ti_getstr(ti_cup);
-	esc_seqs.bel = ti_getstr(ti_bel);
-	esc_seqs.flash = ti_getstr(ti_flash);
-	esc_seqs.civis = ti_getstr(ti_civis);
-	esc_seqs.cnorm = ti_getstr(ti_cnorm);
-	esc_seqs.smkx = ti_getstr(ti_smkx);
-	esc_seqs.rmkx = ti_getstr(ti_rmkx);
-	esc_seqs.el1 = ti_getstr(ti_el1);
-	esc_seqs.el = ti_getstr(ti_el);
-	esc_seqs.ed = ti_getstr(ti_ed);
-	esc_seqs.clear = ti_getstr(ti_clear);
-	esc_seqs.indn = ti_getstr(ti_indn);
-	esc_seqs.rin = ti_getstr(ti_rin);
-	esc_seqs.bold = ti_getstr(ti_bold);
-	esc_seqs.dim = ti_getstr(ti_dim);
-	esc_seqs.rev = ti_getstr(ti_rev);
-	esc_seqs.sitm = ti_getstr(ti_sitm);
-	esc_seqs.ritm = ti_getstr(ti_ritm);
-	esc_seqs.smso = ti_getstr(ti_smso);
-	esc_seqs.rmso = ti_getstr(ti_rmso);
-	esc_seqs.smul = ti_getstr(ti_smul);
-	esc_seqs.rmul = ti_getstr(ti_rmul);
-	esc_seqs.setaf = ti_getstr(ti_setaf);
-	esc_seqs.setab = ti_getstr(ti_setab);
-	esc_seqs.op = ti_getstr(ti_op);
-	esc_seqs.sgr = ti_getstr(ti_sgr);
-	esc_seqs.sgr0 = ti_getstr(ti_sgr0);
+	key_seqs.kbs = ti42_getstr(ti42_kbs);
+	key_seqs.kf1 = (escape){ .name = ti42_kf1, .val = ti42_getstr(ti42_kf1) };
+	key_seqs.kf2 = (escape){ .name = ti42_kf2, .val = ti42_getstr(ti42_kf2) };
+	key_seqs.kf3 = (escape){ .name = ti42_kf3, .val = ti42_getstr(ti42_kf3) };
+	key_seqs.kf4 = (escape){ .name = ti42_kf4, .val = ti42_getstr(ti42_kf4) };
+	key_seqs.kf5 = (escape){ .name = ti42_kf5, .val = ti42_getstr(ti42_kf5) };
+	key_seqs.kf6 = (escape){ .name = ti42_kf6, .val = ti42_getstr(ti42_kf6) };
+	key_seqs.kf7 = (escape){ .name = ti42_kf7, .val = ti42_getstr(ti42_kf7) };
+	key_seqs.kf8 = (escape){ .name = ti42_kf8, .val = ti42_getstr(ti42_kf8) };
+	key_seqs.kf9 = (escape){ .name = ti42_kf9, .val = ti42_getstr(ti42_kf9) };
+	key_seqs.kf10 = (escape){ .name = ti42_kf10, .val = ti42_getstr(ti42_kf10) };
+	key_seqs.kf11 = (escape){ .name = ti42_kf11, .val = ti42_getstr(ti42_kf11) };
+	key_seqs.kf12 = (escape){ .name = ti42_kf12, .val = ti42_getstr(ti42_kf12) };
+	key_seqs.kcuu1 = (escape){ .name = ti42_kcuu1, .val = ti42_getstr(ti42_kcuu1) };
+	key_seqs.kcud1 = (escape){ .name = ti42_kcud1, .val = ti42_getstr(ti42_kcud1) };
+	key_seqs.kcub1 = (escape){ .name = ti42_kcub1, .val = ti42_getstr(ti42_kcub1) };
+	key_seqs.kcuf1 = (escape){ .name = ti42_kcuf1, .val = ti42_getstr(ti42_kcuf1) };
+	key_seqs.kich1 = (escape){ .name = ti42_kich1, .val = ti42_getstr(ti42_kich1) };
+	key_seqs.khome = (escape){ .name = ti42_khome, .val = ti42_getstr(ti42_khome) };
+	key_seqs.knp = (escape){ .name = ti42_knp, .val = ti42_getstr(ti42_knp) };
+	key_seqs.kdch1 = (escape){ .name = ti42_kdch1, .val = ti42_getstr(ti42_kdch1) };
+	key_seqs.kend = (escape){ .name = ti42_kend, .val = ti42_getstr(ti42_kend) };
+	key_seqs.kpp = (escape){ .name = ti42_kpp, .val = ti42_getstr(ti42_kpp) };
+	key_seqs.kri = (escape){ .name = ti42_kri, .val = ti42_getstr(ti42_kri) };
+	key_seqs.kind = (escape){ .name = ti42_kind, .val = ti42_getstr(ti42_kind) };
+	key_seqs.kLFT = (escape){ .name = ti42_kLFT, .val = ti42_getstr(ti42_kLFT) };
+	key_seqs.kRIT = (escape){ .name = ti42_kRIT, .val = ti42_getstr(ti42_kRIT) };
+	key_seqs.kIC = (escape){ .name = ti42_kIC, .val = ti42_getstr(ti42_kIC) };
+	key_seqs.kHOM = (escape){ .name = ti42_kHOM, .val = ti42_getstr(ti42_kHOM) };
+	key_seqs.kNXT = (escape){ .name = ti42_kNXT, .val = ti42_getstr(ti42_kNXT) };
+	key_seqs.kDC = (escape){ .name = ti42_kDC, .val = ti42_getstr(ti42_kDC) };
+	key_seqs.kEND = (escape){ .name = ti42_kEND, .val = ti42_getstr(ti42_kEND) };
+	key_seqs.kPRV = (escape){ .name = ti42_kPRV, .val = ti42_getstr(ti42_kPRV) };
+	esc_seqs.cup = ti42_getstr(ti42_cup);
+	esc_seqs.bel = ti42_getstr(ti42_bel);
+	esc_seqs.flash = ti42_getstr(ti42_flash);
+	esc_seqs.civis = ti42_getstr(ti42_civis);
+	esc_seqs.cnorm = ti42_getstr(ti42_cnorm);
+	esc_seqs.smkx = ti42_getstr(ti42_smkx);
+	esc_seqs.rmkx = ti42_getstr(ti42_rmkx);
+	esc_seqs.el1 = ti42_getstr(ti42_el1);
+	esc_seqs.el = ti42_getstr(ti42_el);
+	esc_seqs.ed = ti42_getstr(ti42_ed);
+	esc_seqs.clear = ti42_getstr(ti42_clear);
+	esc_seqs.indn = ti42_getstr(ti42_indn);
+	esc_seqs.rin = ti42_getstr(ti42_rin);
+	esc_seqs.bold = ti42_getstr(ti42_bold);
+	esc_seqs.dim = ti42_getstr(ti42_dim);
+	esc_seqs.rev = ti42_getstr(ti42_rev);
+	esc_seqs.sitm = ti42_getstr(ti42_sitm);
+	esc_seqs.ritm = ti42_getstr(ti42_ritm);
+	esc_seqs.smso = ti42_getstr(ti42_smso);
+	esc_seqs.rmso = ti42_getstr(ti42_rmso);
+	esc_seqs.smul = ti42_getstr(ti42_smul);
+	esc_seqs.rmul = ti42_getstr(ti42_rmul);
+	esc_seqs.setaf = ti42_getstr(ti42_setaf);
+	esc_seqs.setab = ti42_getstr(ti42_setab);
+	esc_seqs.op = ti42_getstr(ti42_op);
+	esc_seqs.sgr = ti42_getstr(ti42_sgr);
+	esc_seqs.sgr0 = ti42_getstr(ti42_sgr0);
 	return 1;
 }
 

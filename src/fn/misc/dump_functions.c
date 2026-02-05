@@ -47,7 +47,7 @@ static inline u8	_dump_config(rl42_line *line) {
 	i16					col_diff;
 
 	funcs = get_fn_list();
-	tmp = term_get_seq(ti_ed);
+	tmp = term_get_seq(ti42_ed);
 	if (term_putsf("\n%s", (tmp) ? tmp : "") == -1)
 		return 0;
 	if (~state_flags & STATE_DUMP_MACROS) for (emode = EMACS; emode < CURRENT; emode++) {
@@ -90,7 +90,7 @@ static inline u8	_dump_human(rl42_line *line) {
 	i16					col_diff;
 
 	funcs = get_fn_list();
-	tmp = term_get_seq(ti_ed);
+	tmp = term_get_seq(ti42_ed);
 	emode = get_editing_mode();
 	if (term_putsf("\n%s", (tmp) ? tmp : "") == -1)
 		return 0;

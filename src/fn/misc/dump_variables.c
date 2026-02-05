@@ -69,7 +69,7 @@ static inline u8	_dump_config(rl42_line *line) {
 	i16			row_diff;
 	i16			col_diff;
 
-	tmp = term_get_seq(ti_ed);
+	tmp = term_get_seq(ti42_ed);
 	if (term_putsf("\n%s", (tmp) ? tmp : "") == -1)
 		return 0;
 	switch (rl42_get(RL42_BELL_STYLE).i64) {
@@ -121,7 +121,7 @@ static inline u8	_dump_human(rl42_line *line) {
 	i16			row_diff;
 	i16			col_diff;
 
-	tmp = term_get_seq(ti_ed);
+	tmp = term_get_seq(ti42_ed);
 	if (term_putsf("\n%s", (tmp) ? tmp : "") == -1)
 		return 0;
 	switch (rl42_get(RL42_BELL_STYLE).i64) {

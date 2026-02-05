@@ -35,8 +35,8 @@
 #define _TERM_CLEAR_END_SCR	escapes[3]
 #define _TERM_CLEAR_END_LNE	escapes[4]
 
-#define clear_screen()	((ti_tputs(_TERM_CLEAR_END_SCR.seq, 1, term_putchar_unbuffered) != -1) ? 1 : 0)
-#define clear_line()	((ti_tputs(_TERM_CLEAR_END_LNE.seq, 1, term_putchar_unbuffered) != -1) ? 1 : 0)
+#define clear_screen()	((ti42_tputs(_TERM_CLEAR_END_SCR.seq, 1, term_putchar_unbuffered) != -1) ? 1 : 0)
+#define clear_line()	((ti42_tputs(_TERM_CLEAR_END_LNE.seq, 1, term_putchar_unbuffered) != -1) ? 1 : 0)
 #define fetch(esc, name)	(esc.seq = term_get_seq(name), esc.len = (esc.seq) ? strlen(esc.seq) : 0, esc.fetched = 1)
 
 typedef struct {
@@ -98,7 +98,7 @@ u8	term_display_line(rl42_line *line, const rl42_display_opts opts, ...) {
 	if (!term_cursor_set_pos(line->prompt.root->row, line->prompt.root->col))
 		goto _term_display_line_error;
 	if (!_TERM_CLEAR_END_SCR.fetched)
-		fetch(_TERM_CLEAR_END_SCR, ti_ed);
+		fetch(_TERM_CLEAR_END_SCR, ti42_ed);
 	if (!clear_screen() || !term_flush_outbuf())
 		goto _term_display_line_error;
 	return (~opts & DISPLAY_PROMPT_ONLY) ? term_cursor_move_to_i(line) : 1;
@@ -262,12 +262,12 @@ static inline u8	_horizontal_display_line(rl42_line *line, const rl42_display_op
 		goto __horizontal_display_line_error;
 	if (~opts & DISPLAY_FORCE_SCREEN_CLEAR) {
 		if (!_TERM_CLEAR_END_LNE.fetched)
-			fetch(_TERM_CLEAR_END_LNE, ti_el);
+			fetch(_TERM_CLEAR_END_LNE, ti42_el);
 		if (!clear_line() || !term_flush_outbuf())
 			goto __horizontal_display_line_error;
 	} else {
 		if (!_TERM_CLEAR_END_SCR.fetched)
-			fetch(_TERM_CLEAR_END_SCR, ti_ed);
+			fetch(_TERM_CLEAR_END_SCR, ti42_ed);
 		if (!clear_screen() || !term_flush_outbuf())
 			goto __horizontal_display_line_error;
 	}
@@ -303,67 +303,67 @@ static inline u8	_add_str_to_buf(cdarray s, cdarray hl, const rl42_display_opts 
 		ucp = *(u32 *)darray_get(s, i);
 		if (i == user.pos && hl_user_mark) {
 			if (!_SGR_UNDERLINE.fetched)
-				fetch(_SGR_UNDERLINE, ti_smul);
-			if (ti_tputs(_SGR_UNDERLINE.seq, 1, term_putchar) == -1)
+				fetch(_SGR_UNDERLINE, ti42_smul);
+			if (ti42_tputs(_SGR_UNDERLINE.seq, 1, term_putchar) == -1)
 				return 0;
 		} else if (i == user.pos + 1 && hl_user_mark) {
 			if (!_SGR_RESET.fetched)
-				fetch(_SGR_RESET, ti_sgr0);
-			if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
+				fetch(_SGR_RESET, ti42_sgr0);
+			if (ti42_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 				return 0;
 		}
 		if (i == hl_start) {
 			hl_seq = term_get_hl_seq();
-			if (ti_tputs(hl_seq, 1, term_putchar) == -1)
+			if (ti42_tputs(hl_seq, 1, term_putchar) == -1)
 				return 0;
 		} else if (i == hl_end) {
 			if (!_SGR_RESET.fetched)
-				fetch(_SGR_RESET, ti_sgr0);
-			if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
+				fetch(_SGR_RESET, ti42_sgr0);
+			if (ti42_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 				return 0;
 		}
 		if (is_print(ucp)) {
 			if (!utf8_encode(ucp, encoded))
 				return 0;
-			if (ti_tputs(encoded, 1, term_putchar) == -1)
+			if (ti42_tputs(encoded, 1, term_putchar) == -1)
 				return 0;
 		} else {
 			cntrl_esc = _fmt_cntrl(ucp);
 			if (!cntrl_esc)
 				return 0;
 			if (!_SGR_REV_VIDEO.fetched)
-				fetch(_SGR_REV_VIDEO, ti_rev);
+				fetch(_SGR_REV_VIDEO, ti42_rev);
 			if (!_SGR_RESET.fetched)
-				fetch(_SGR_RESET, ti_sgr0);
-			if (ti_tputs(_SGR_REV_VIDEO.seq, 1, term_putchar) == -1)
+				fetch(_SGR_RESET, ti42_sgr0);
+			if (ti42_tputs(_SGR_REV_VIDEO.seq, 1, term_putchar) == -1)
 				return 0;
-			if (ti_tputs(cntrl_esc, 1, term_putchar) == -1)
+			if (ti42_tputs(cntrl_esc, 1, term_putchar) == -1)
 				return 0;
-			if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
+			if (ti42_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 				return 0;
 		}
 	}
 	if (i == hl_end) {
 		if (!_SGR_RESET.fetched)
-			fetch(_SGR_RESET, ti_sgr0);
-		if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
+			fetch(_SGR_RESET, ti42_sgr0);
+		if (ti42_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 			return 0;
 	}
 	if (i <= user.pos && hl_user_mark) {
 		if (!_SGR_UNDERLINE.fetched)
-			fetch(_SGR_UNDERLINE, ti_smul);
+			fetch(_SGR_UNDERLINE, ti42_smul);
 		if (!_SGR_RESET.fetched)
-			fetch(_SGR_RESET, ti_sgr0);
-		if (ti_tputs(_SGR_UNDERLINE.seq, 1, term_putchar) == -1)
+			fetch(_SGR_RESET, ti42_sgr0);
+		if (ti42_tputs(_SGR_UNDERLINE.seq, 1, term_putchar) == -1)
 			return 0;
 		if (term_putchar(' ') == -1)
 			return 0;
-		if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
+		if (ti42_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 			return 0;
 	} else if (i == user.pos + 1 && hl_user_mark) {
 		if (!_SGR_RESET.fetched)
-			fetch(_SGR_RESET, ti_sgr0);
-		if (ti_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
+			fetch(_SGR_RESET, ti42_sgr0);
+		if (ti42_tputs(_SGR_RESET.seq, 1, term_putchar) == -1)
 			return 0;
 	}
 	return 1;

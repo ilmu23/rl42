@@ -32,7 +32,7 @@ rl42_fn(quoted_insert) {
 	i16		y;
 
 	term_cursor_get_pos(&x, &y);
-	ti_tputs("^", 1, term_putchar_unbuffered);
+	ti42_tputs("^", 1, term_putchar_unbuffered);
 	term_cursor_set_pos(x, y);
 	if (!kb_listen_buf(-1, buf, _BUF_SIZE))
 		return 0;

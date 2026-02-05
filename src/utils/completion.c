@@ -200,7 +200,7 @@ u8	cmp_display(rl42_line *line, cdarray completions) {
 				}
 			} else
 				i = 0;
-			rv = ti_tputs(term_get_seq(ti_ed), 1, term_putchar);
+			rv = ti42_tputs(term_get_seq(ti42_ed), 1, term_putchar);
 			if (rv == -1) {
 				darray_delete(starts);
 				return 0;
@@ -285,8 +285,8 @@ static inline size_t	_find_longest(cdarray completions) {
 static inline const char	*_get_sgr0(void) {
 	const char	*seq;
 
-	seq = term_get_seq(ti_sgr0);
-	if (seq == TI_ABS_STR)
+	seq = term_get_seq(ti42_sgr0);
+	if (seq == TI42_ABS_STR)
 		seq = "\x1b[m";
 	return seq;
 }

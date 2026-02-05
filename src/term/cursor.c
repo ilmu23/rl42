@@ -111,7 +111,7 @@ _term_cursor_get_pos_read:
 }
 
 u8	term_cursor_set_pos(const i16 row, const i16 col) {
-	return (ti_tputs(ti_tparm(move_cursor, row - 1, col - 1), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+	return (ti42_tputs(ti42_tparm(move_cursor, row - 1, col - 1), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 }
 
 u8	term_cursor_move_to(rl42_line *line, i16 row, i16 col) {

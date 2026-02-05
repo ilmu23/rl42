@@ -13,7 +13,7 @@
 
 #include "data.h"
 
-#define RL42_VERSION "3.11.1"
+#define RL42_VERSION "3.11.2"
 
 extern char	*(*rl42_getenv)(const char *);
 

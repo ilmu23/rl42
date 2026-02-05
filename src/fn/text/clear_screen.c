@@ -28,15 +28,15 @@ rl42_fn(clear_screen) {
 
 	if (n_arg.set)
 		return term_display_line(line, 0);
-	seq = term_get_seq(ti_clear);
-	if (seq != TI_ABS_STR) {
+	seq = term_get_seq(ti42_clear);
+	if (seq != TI42_ABS_STR) {
 		diff_x = line->root->row - line->prompt.root->row;
 		diff_y = line->root->col - line->prompt.root->col;
 		((rl42_cursor_pos *)line->prompt.root)->row = 1;
 		((rl42_cursor_pos *)line->prompt.root)->col = 1;
 		((rl42_cursor_pos *)line->root)->row = line->prompt.root->row + diff_x;
 		((rl42_cursor_pos *)line->root)->col = line->prompt.root->col + diff_y;
-		ti_tputs(seq, 1, term_putchar_unbuffered);
+		ti42_tputs(seq, 1, term_putchar_unbuffered);
 		return term_display_line(line, 0);
 	}
 	return 1;

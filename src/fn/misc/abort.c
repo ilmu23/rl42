@@ -29,8 +29,8 @@ rl42_fn(rl42_abort) {
 		case RL42_BELL_NONE:
 			return 1;
 		case RL42_BELL_AUDIBLE:
-			return (ti_tputs(_BEL, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+			return (ti42_tputs(_BEL, 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 		case RL42_BELL_VISIBLE:
-			return (ti_tputs(ti_getstr(ti_flash), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+			return (ti42_tputs(ti42_getstr(ti42_flash), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 	}
 }

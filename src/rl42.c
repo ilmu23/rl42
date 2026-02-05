@@ -107,7 +107,7 @@ char	*ft_readline(const char *prompt) {
 			match.fn = NULL;
 		}
 	} while (rv);
-	ti_tputs("\n", 1, term_putchar_unbuffered);
+	ti42_tputs("\n", 1, term_putchar_unbuffered);
 	term_apply_settings(TERM_SETTINGS_DEFAULT);
 	if (rl42_get(RL42_ENABLE_BRACKETED_PASTE).u64 == rl42_conf_on && ! term_set_bpm(BPM_ENABLED))
 		error("rl42: unable to disable bracketed paste mode: %s", (errno) ? strerror(errno) : "unknown error");

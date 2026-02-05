@@ -100,7 +100,7 @@ void	rl42_cleanup(void) {
 		clean_key_trees();
 		kill_clear_ring();
 		clean_fns();
-		ti_unload();
+		ti42_unload();
 	}
 }
 
