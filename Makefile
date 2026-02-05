@@ -11,7 +11,7 @@ NAME	=	librl42
 STATIC	=	$(NAME).a
 SHARED	=	$(NAME).so
 
-BUILD	=	fsan
+BUILD	=	normal
 
 ## COMPILER FLAGS
 
