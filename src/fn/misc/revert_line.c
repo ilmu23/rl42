@@ -13,7 +13,7 @@
 #include "function.h"
 
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 
 extern rl42_hist_node	*current;
@@ -23,10 +23,10 @@ rl42_fn(revert_line) {
 		free((void *)current->edit);
 		current->edit = NULL;
 	}
-	vector_delete(line->line);
+	darray_delete(line->line);
 	line->line = cstr_to_rl42str(current->line);
 	if (!line->line)
 		return 0;
-	line->i = vector_size(line->line);
+	line->i = darray_size(line->line);
 	return term_display_line(line, 0);
 }

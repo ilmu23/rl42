@@ -20,7 +20,7 @@
 #include "internal/_map.h"
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_function.h"
 
@@ -195,17 +195,17 @@ static inline void	_copy_ptr(u8 buf[8], const void *ptr) {
 }
 
 static inline u8	_exec_macro(rl42_line *line, const char *content) {
-	cvector	_content;
+	cdarray	_content;
 	size_t	len;
 
 	_content = cstr_to_rl42str(content);
 	if (!_content)
 		return 0;
-	len = vector_size(_content);
-	if (!vector_insert_n(line->line, line->i, len, vector_start(_content)))
+	len = darray_size(_content);
+	if (!darray_insert_n(line->line, line->i, len, darray_start(_content)))
 		return 0;
 	line->i += len;
-	vector_delete((vector)_content);
+	darray_delete((darray)_content);
 	return term_display_line(line, 0);
 }
 

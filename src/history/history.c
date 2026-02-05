@@ -22,7 +22,7 @@
 #include "internal/_list.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
 #include "internal/_keybinds.h"
@@ -64,7 +64,7 @@ static list		history;
 static u8		load_done;
 
 static inline _match	_search_get_match(const char *match_str, const rl42_direction direction);
-static inline u8		_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction);
+static inline u8		_search_process_query(rl42_line *line, cdarray query, const rl42_hist_node **match, const rl42_direction direction);
 static inline u8		_search_get_query(rl42_line *query, rl42_fn *fn, const u8 incremental);
 
 static void	_free_hist_node(rl42_hist_node *node);
@@ -131,8 +131,8 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 
 	query = (rl42_line){
 		.prompt.prompt = cstr_to_rl42str(search_prompts[direction][incremental]),
-		.keyseq = vector(u32, 8, NULL),
-		.line = vector(u32, 16, NULL),
+		.keyseq = darray(u32, 8, NULL),
+		.line = darray(u32, 16, NULL),
 		.i = 0,
 	};
 	match = NULL;
@@ -148,7 +148,7 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	if (!query.prompt.prompt || !query.keyseq || !query.line)
 		goto _hist_search_error;
 	old_i = line->i;
-	line->i = vector_size(line->line);
+	line->i = darray_size(line->line);
 	term_cursor_move_to_i(line);
 	line->i = old_i;
 	term_cursor_next_line();
@@ -160,7 +160,7 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	if (!query.root)
 		goto _hist_search_error;
 	if (incremental) do {
-		if (vector_size(query.line) && !_search_process_query(line, query.line, &match, direction))
+		if (darray_size(query.line) && !_search_process_query(line, query.line, &match, direction))
 			goto _hist_search_error;
 		if (!term_display_line(line, DISPLAY_HIGHLIGHT_SUBSTR | ((rl42_get(RL42_SEARCH_IGNORE_CASE).u64) ? DISPLAY_HIGHLIGHT_IGNORE_CASE : 0), query.line))
 			goto _hist_search_error;
@@ -171,7 +171,7 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 		rv = _search_get_query(&query, &fn, incremental);
 	} while (rv == 1); else {
 		rv = _search_get_query(&query, &fn, incremental);
-		if (vector_size(query.line) && !_search_process_query(line, query.line, &match, direction))
+		if (darray_size(query.line) && !_search_process_query(line, query.line, &match, direction))
 			goto _hist_search_error;
 	}
 	if (!rv)
@@ -182,9 +182,9 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 		goto _hist_search_error;
 	term_cursor_delete_anchor(query.prompt.root);
 	term_cursor_delete_anchor(query.root);
-	vector_delete(query.prompt.prompt);
-	vector_delete(query.keyseq);
-	vector_delete(query.line);
+	darray_delete(query.prompt.prompt);
+	darray_delete(query.keyseq);
+	darray_delete(query.line);
 	free((void *)match_str);
 	if (incremental) {
 		rv = fn(line);
@@ -196,9 +196,9 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 _hist_search_error:
 	term_cursor_delete_anchor(query.prompt.root);
 	term_cursor_delete_anchor(query.root);
-	vector_delete(query.prompt.prompt);
-	vector_delete(query.keyseq);
-	vector_delete(query.line);
+	darray_delete(query.prompt.prompt);
+	darray_delete(query.keyseq);
+	darray_delete(query.line);
 	free((void *)match_str);
 	if (vi_cmd_mode)
 		set_editing_mode(VI_CMD);
@@ -206,8 +206,8 @@ _hist_search_error:
 }
 
 u8	hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n) {
-	cvector	args;
-	cvector	word;
+	cdarray	args;
+	cdarray	word;
 	size_t	word_i;
 	size_t	len;
 	u8		rv;
@@ -218,18 +218,18 @@ u8	hist_yank_arg(rl42_line *line, const rl42_hist_node *node, const i64 n) {
 	if (!args)
 		return 0;
 	rv = 0;
-	word_i = (n > 0) ? min((size_t)n, vector_size(args)) : (size_t)max(1, (i64)vector_size(args) + 1 - -n);
-	word = cstr_to_rl42str(*(char **)vector_get(args, word_i - 1));
+	word_i = (n > 0) ? min((size_t)n, darray_size(args)) : (size_t)max(1, (i64)darray_size(args) + 1 - -n);
+	word = cstr_to_rl42str(*(char **)darray_get(args, word_i - 1));
 	if (!word)
 		goto _hist_yank_arg_ret;
-	len = vector_size(word);
-	if (!vector_insert_n(line->line, line->i, len, vector_start(word)))
+	len = darray_size(word);
+	if (!darray_insert_n(line->line, line->i, len, darray_start(word)))
 		goto _hist_yank_arg_ret;
 	line->i += len;
 	rv = 1;
 _hist_yank_arg_ret:
-	vector_delete((vector)word);
-	vector_delete((vector)args);
+	darray_delete((darray)word);
+	darray_delete((darray)args);
 	return rv;
 }
 
@@ -356,7 +356,7 @@ static inline _match _search_get_match(const char *match_str, const rl42_directi
 	return (_match){ .node = NULL, .i = 0 };
 }
 
-static inline u8	_search_process_query(rl42_line *line, cvector query, const rl42_hist_node **match, const rl42_direction direction) {
+static inline u8	_search_process_query(rl42_line *line, cdarray query, const rl42_hist_node **match, const rl42_direction direction) {
 	const char	*query_str;
 	_match		_match;
 	u8			rv;
@@ -368,11 +368,11 @@ static inline u8	_search_process_query(rl42_line *line, cvector query, const rl4
 	_match = _search_get_match(query_str, direction);
 	(*match) = _match.node;
 	if (*match) {
-		vector_delete(line->line);
+		darray_delete(line->line);
 		line->line = cstr_to_rl42str(((*match)->edit) ? (*match)->edit : (*match)->line);
 		if (!line->line)
 			goto _search_process_query_ret;
-		line->i = (!rl42_get(RL42_HORIZONTAL_SCROLL_MODE).u64) ? vector_size(line->line) : _match.i;
+		line->i = (!rl42_get(RL42_HORIZONTAL_SCROLL_MODE).u64) ? darray_size(line->line) : _match.i;
 		rv = 1;
 	} else
 		rv = 1;
@@ -397,7 +397,7 @@ static inline u8	_search_get_query(rl42_line *query, rl42_fn *fn, const u8 incre
 				prev_fn = *fn;
 			} else
 				rv = 2;
-			vector_clear(query->keyseq);
+			darray_clear(query->keyseq);
 			if (incremental)
 				break ;
 			match.fn = NULL;

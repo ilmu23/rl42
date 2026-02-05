@@ -12,7 +12,7 @@
 #include "internal/_kb.h"
 #include "internal/_defs.h"
 #include "internal/_term.h"
-#include "internal//_vector.h"
+#include "internal//_darray.h"
 
 #include "internal/fn/misc.h"
 
@@ -28,12 +28,12 @@ rl42_fn(backward_char_search) {
 	i = line->i;
 	if (rl42_get(RL42_SEARCH_IGNORE_CASE).u64 == 0) {
 		while (i > 0)
-			if (c == *(u32 *)vector_get(line->line, --i))
+			if (c == *(u32 *)darray_get(line->line, --i))
 				break ;
 	} else {
 		c = (u32)to_upper(c);
 		while (i > 0)
-			if (c == (u32)to_upper(*(u32 *)vector_get(line->line, --i)))
+			if (c == (u32)to_upper(*(u32 *)darray_get(line->line, --i)))
 				break ;
 	}
 	if (i == 0)

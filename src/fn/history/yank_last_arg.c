@@ -11,7 +11,7 @@
 #include "internal/_defs.h"
 #include "internal/_kill.h"
 #include "internal/_rl42.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
 
@@ -33,7 +33,7 @@ rl42_fn(yank_last_arg)	{
 		return 1;
 	if (n_arg.set) {
 		n = (!n_arg.neg) ? n_arg.val + 1 : -n_arg.val - 1;
-		vector_delete(line->prompt.sprompt);
+		darray_delete(line->prompt.sprompt);
 		line->prompt.sprompt = NULL;
 		n_arg.set = 0;
 	} else
@@ -50,7 +50,7 @@ rl42_fn(yank_last_arg)	{
 	add_mark(kill_end, line->i);
 	rv = 1;
 	match.fn = NULL;
-	vector_clear(line->keyseq);
+	darray_clear(line->keyseq);
 	state_flags |= STATE_KILL_DONT_UPDATE_RING;
 	do {
 		match = kb_match_seq(line, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
@@ -60,7 +60,7 @@ rl42_fn(yank_last_arg)	{
 				if (n_arg.set) {
 					if (n_arg.neg)
 						direction ^= BACKWARD;
-					vector_delete(line->prompt.sprompt);
+					darray_delete(line->prompt.sprompt);
 					line->prompt.sprompt = NULL;
 					n_arg.set = 0;
 				}
@@ -76,7 +76,7 @@ rl42_fn(yank_last_arg)	{
 				rv = numeric_argument(line);
 			} else
 				break ;
-			vector_clear(line->keyseq);
+			darray_clear(line->keyseq);
 			prev_fn = match.fn->f;
 			match.fn = NULL;
 		}

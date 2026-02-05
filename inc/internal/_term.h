@@ -17,7 +17,7 @@
 
 #include "internal/_data.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 
 typedef struct {
 	const char	*start;
@@ -41,7 +41,7 @@ typedef struct {
 #define SGR_PROTECT		0x080U
 #define SGR_ALTCHARSET	0x100U
 
-#define term_cursor_move_to_i(line)	(term_cursor_move_to(line, (line)->root->row, (line)->root->col + calculate_cursor_offset(line) + ((line->prompt.sprompt) ? vector_size(line->prompt.sprompt) + 1 : 0)))
+#define term_cursor_move_to_i(line)	(term_cursor_move_to(line, (line)->root->row, (line)->root->col + calculate_cursor_offset(line) + ((line->prompt.sprompt) ? darray_size(line->prompt.sprompt) + 1 : 0)))
 
 #if __STDC_VERSION__ >= 202311L
 typedef unsigned _BitInt(9)	sgr_opts;

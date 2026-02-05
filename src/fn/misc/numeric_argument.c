@@ -13,7 +13,7 @@
 #include "function.h"
 
 #include "internal/_defs.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 
 #include "internal/fn/misc.h"
@@ -27,15 +27,15 @@ rl42_fn(numeric_argument) {
 
 
 	if (!n_arg.set) {
-		line->prompt.sprompt = vector(u32, 21, NULL);
+		line->prompt.sprompt = darray(u32, 21, NULL);
 		if (!line->prompt.sprompt)
 			return 0;
 		n_arg.set = 2;
 		n_arg.neg = 0;
 		n_arg.val = 0;
 	}
-	for (i = 0, size = vector_size(line->keyseq); i < size; i++) {
-		n = (i64)*(u32 *)vector_get(line->keyseq, i);
+	for (i = 0, size = darray_size(line->keyseq); i < size; i++) {
+		n = (i64)*(u32 *)darray_get(line->keyseq, i);
 		if (isdigit((i32)n) || (i32)n == '-')
 			break ;
 	}
@@ -44,28 +44,28 @@ rl42_fn(numeric_argument) {
 	if ((i32)n == '-') {
 		n_arg.neg ^= 1;
 		if (n_arg.set == 2)
-			vector_push(line->prompt.sprompt, (u32){'0'});
+			darray_push(line->prompt.sprompt, (u32){'0'});
 		if (n_arg.neg)
-			vector_insert(line->prompt.sprompt, 0, (u32){'-'});
+			darray_insert(line->prompt.sprompt, 0, (u32){'-'});
 		else
-			vector_erase(line->prompt.sprompt, 0);
+			darray_erase(line->prompt.sprompt, 0);
 		n_arg.set = 1;
 	} else if (n_arg.val != NUMERIC_ARG_MAX) {
 		if (n_arg.val == 0 && n_arg.set != 2) {
 			if (n - '0' == 0)
 				return 1;
-			vector_pop(line->prompt.sprompt);
+			darray_pop(line->prompt.sprompt);
 		}
 		n_arg.val = n_arg.val * 10 + n - '0';
 		if (n_arg.val > NUMERIC_ARG_MAX) {
 			n_arg.val = NUMERIC_ARG_MAX;
-			vector_clear(line->prompt.sprompt);
+			darray_clear(line->prompt.sprompt);
 			if (n_arg.neg)
-				vector_push(line->prompt.sprompt, (u32){'-'});
+				darray_push(line->prompt.sprompt, (u32){'-'});
 			for (n = NUMERIC_ARG_MAX; n; n /= 10)
-				vector_insert(line->prompt.sprompt, n_arg.neg, (u32){n % 10 + '0'});
+				darray_insert(line->prompt.sprompt, n_arg.neg, (u32){n % 10 + '0'});
 		} else
-			vector_push(line->prompt.sprompt, (u32){n_arg.val % 10 + '0'});
+			darray_push(line->prompt.sprompt, (u32){n_arg.val % 10 + '0'});
 		n_arg.set = 1;
 	} else
 		return 1;

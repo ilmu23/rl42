@@ -30,7 +30,7 @@
 #include "internal/_map.h"
 #include "internal/_defs.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_terminfo.h"
 
 #define _BUFFER_SIZE 4096
@@ -70,8 +70,8 @@
 #define is_present_u16(n, i)	(n.u16[i] != (u16)TI_ABS_NUM && n.u16[i] != (u16)_CAN_NUM)
 #define is_present_u32(n, i)	(n.u32[i] != (u32)TI_ABS_NUM && n.u32[i] != (u32)_CAN_NUM)
 
-#define tp_stack_top(st)		(*(uintptr_t *)vector_last(st))
-#define tp_stack_push(st, val)	(vector_push(st, (uintptr_t){val}))
+#define tp_stack_top(st)		(*(uintptr_t *)darray_last(st))
+#define tp_stack_push(st, val)	(darray_push(st, (uintptr_t){val}))
 
 typedef struct {
 	u16	bit_count;
@@ -103,7 +103,7 @@ typedef u32			numeric_cap;
 typedef const char *string_cap;
 
 static inline i32	_open(const char *term);
-static inline u8	_extract_dirs(const char *list, vector dirs, vector allocs);
+static inline u8	_extract_dirs(const char *list, darray dirs, darray allocs);
 static inline u8	_get_entry(const i32 fd, entry *entry);
 
 static inline u8	_tpm_sprintf(const char **seq, char buf[_BUFFER_SIZE + 1], const uintptr_t val);
@@ -210,7 +210,7 @@ const char	*ti_tparm(const char *seq, ...) {
 	uintptr_t			x;
 	uintptr_t			y;
 	va_list				args;
-	vector				stack;
+	darray				stack;
 	size_t				seqlen;
 	size_t				i;
 	char				tmp[_BUFFER_SIZE + 1];
@@ -241,7 +241,7 @@ const char	*ti_tparm(const char *seq, ...) {
 				return NULL;
 		}
 	}
-	stack = vector(uintptr_t, 5, NULL);
+	stack = darray(uintptr_t, 5, NULL);
 	if (!stack)
 		goto _ti_tparm_err_ret;
 	va_start(args, seq);
@@ -255,7 +255,7 @@ const char	*ti_tparm(const char *seq, ...) {
 		if (*seq == '%') switch (*(++seq)) {
 			case 'c':
 				seq_buf[i++] = (u8)tp_stack_top(stack);
-				vector_pop(stack);
+				darray_pop(stack);
 				break ;
 			case 'd':
 			case 'o':
@@ -303,7 +303,7 @@ const char	*ti_tparm(const char *seq, ...) {
 					dvars[*seq - 'a'] = tp_stack_top(stack);
 				} else
 					svars[*seq - 'A'] = tp_stack_top(stack);
-				vector_pop(stack);
+				darray_pop(stack);
 				break ;
 			case 'g':
 				if (islower(*(++seq))) {
@@ -326,7 +326,7 @@ const char	*ti_tparm(const char *seq, ...) {
 				break ;
 			case 'l':
 				x = strlen((const char *)tp_stack_top(stack));
-				vector_pop(stack);
+				darray_pop(stack);
 				tp_stack_push(stack, x);
 				break ;
 			case '+':
@@ -342,9 +342,9 @@ const char	*ti_tparm(const char *seq, ...) {
 			case 'A':
 			case 'O':
 				x = tp_stack_top(stack);
-				vector_pop(stack);
+				darray_pop(stack);
 				y = tp_stack_top(stack);
-				vector_pop(stack);
+				darray_pop(stack);
 				switch (*seq) {
 					case '+':
 						tp_stack_push(stack, y + x);
@@ -386,7 +386,7 @@ const char	*ti_tparm(const char *seq, ...) {
 			case '!':
 			case '~':
 				x = tp_stack_top(stack);
-				vector_pop(stack);
+				darray_pop(stack);
 				tp_stack_push(stack, (*seq == '!') ? !x : ~x);
 				break ;
 			case '?':
@@ -398,7 +398,7 @@ const char	*ti_tparm(const char *seq, ...) {
 				if (~flags & _TPM_F_IN_CONDITIONAL)
 					goto _ti_tparm_err_ret;
 				x = tp_stack_top(stack);
-				vector_pop(stack);
+				darray_pop(stack);
 				if (!x) {
 					for (seq++, y = 0; ; seq++) {
 						if (*seq == '%') switch (*(++seq)) {
@@ -451,11 +451,11 @@ const char	*ti_tparm(const char *seq, ...) {
 _ti_tparm_continue:
 		;
 	}
-	vector_delete(stack);
+	darray_delete(stack);
 	seq_buf[i] = '\0';
 	return (i < _BUFFER_SIZE) ? seq_buf : NULL;
 _ti_tparm_err_ret:
-	vector_delete(stack);
+	darray_delete(stack);
 	return NULL;
 }
 
@@ -530,51 +530,51 @@ static inline i32	_open(const char *term) {
 	ssize_t		rv;
 	size_t		i;
 	size_t		size;
-	vector		dirs;
-	vector		allocs;
+	darray		dirs;
+	darray		allocs;
 	char		buf[PATH_MAX + 1];
 	char		path[PATH_MAX + 1];
 
-	dirs = vector(const char *, 8, NULL);
-	allocs = vector(void *, 4, free);
+	dirs = darray(const char *, 8, NULL);
+	allocs = darray(void *, 4, free);
 	if (!dirs || !allocs)
 		goto _open_err_ret;
 	tmp = rl42_getenv("TERMINFO");
-	if (tmp && !vector_push(dirs, tmp))
+	if (tmp && !darray_push(dirs, tmp))
 		goto _open_err_ret;
 	tmp = rl42_getenv("HOME");
 	if (tmp) {
 		tmp = cstr_joinb(tmp, "/.terminfo", buf, PATH_MAX + 1);
-		if (!vector_push(dirs, tmp))
+		if (!darray_push(dirs, tmp))
 			goto _open_err_ret;
 	}
 	tmp = rl42_getenv("TERMINFO_DIRS");
 	if (tmp && !_extract_dirs(tmp, dirs, allocs))
 		goto _open_err_ret;
-	if (!vector_push(dirs, (const char *){"/etc/terminfo"}))
+	if (!darray_push(dirs, (const char *){"/etc/terminfo"}))
 		goto _open_err_ret;
-	if (!vector_push(dirs, (const char *){"/lib/terminfo"}))
+	if (!darray_push(dirs, (const char *){"/lib/terminfo"}))
 		goto _open_err_ret;
-	if (!vector_push(dirs, (const char *){"/usr/share/terminfo"}))
+	if (!darray_push(dirs, (const char *){"/usr/share/terminfo"}))
 		goto _open_err_ret;
-	for (i = rv = 0, size = vector_size(dirs); i < size; i++) {
-		rv = snprintf(path, PATH_MAX, "%s/%s", *(const char **)vector_get(dirs, i), term);
+	for (i = rv = 0, size = darray_size(dirs); i < size; i++) {
+		rv = snprintf(path, PATH_MAX, "%s/%s", *(const char **)darray_get(dirs, i), term);
 		if (rv == -1 || access(path, R_OK) == 0)
 			break ;
-		rv = snprintf(path, PATH_MAX, "%s/%c/%s", *(const char **)vector_get(dirs, i), *term, term);
+		rv = snprintf(path, PATH_MAX, "%s/%c/%s", *(const char **)darray_get(dirs, i), *term, term);
 		if (rv == -1 || access(path, R_OK) == 0)
 			break ;
 	}
-	vector_delete(allocs);
-	vector_delete(dirs);
+	darray_delete(allocs);
+	darray_delete(dirs);
 	return (rv != -1) ? open(path, O_RDONLY) : -1;
 _open_err_ret:
-	vector_delete(allocs);
-	vector_delete(dirs);
+	darray_delete(allocs);
+	darray_delete(dirs);
 	return -1;
 }
 
-static inline u8	_extract_dirs(const char *list, vector dirs, vector allocs) {
+static inline u8	_extract_dirs(const char *list, darray dirs, darray allocs) {
 	const char	*tmp;
 	size_t		i;
 	size_t		j;
@@ -591,11 +591,11 @@ static inline u8	_extract_dirs(const char *list, vector dirs, vector allocs) {
 				tmp = strdup(buf);
 				if (!tmp)
 					return 0;
-				if (!vector_push(allocs, tmp)) {
+				if (!darray_push(allocs, tmp)) {
 					free((void *)tmp);
 					return 0;
 				}
-				if (!vector_push(dirs, tmp))
+				if (!darray_push(dirs, tmp))
 					return 0;
 			}
 		}

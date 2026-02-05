@@ -34,7 +34,7 @@ typedef char	utf8_cbuf[5];
  * @returns @c <b>rl42_string *</b> The converted string,
  * NULL if conversion failed
  */
-vector		cstr_to_rl42str(const char *s);
+darray		cstr_to_rl42str(const char *s);
 
 /** @brief Converts a rl42 string to a C string
  *
@@ -42,7 +42,7 @@ vector		cstr_to_rl42str(const char *s);
  * @returns @c <b>char *</b> The converted string,
  * NULL if conversion failed
  */
-char		*rl42str_to_cstr(cvector s);
+char		*rl42str_to_cstr(cdarray s);
 
 /** @brief Counts the lenght of an utf-8 encoded C string
  *
@@ -91,7 +91,7 @@ u64			cstr_hash(const char *s, const u64 salt, const size_t max);
  * @param max Maximum value of the hash
  * @returns @c <b>u64</b> Hash of the string
  */
-u64			rl42str_hash(cvector s, const u64 salt, const size_t max);
+u64			rl42str_hash(cdarray s, const u64 salt, const size_t max);
 
 /** @brief Appends s2 to the end of s1
  *
@@ -181,10 +181,10 @@ char		*cstr_substrb(const char *s, const size_t start, const size_t len, char *b
  * @param s String to split
  * @param c Character to split on
  * @param ignore_within String of characters, if given, to not split within
- * @returns @c <b>vector</b> Vector containing all split substrings,
+ * @returns @c <b>darray</b> Vector containing all split substrings,
  * NULL on failure
  */
-vector		cstr_split(const char *s, const char c, const char *ignore_within);
+darray		cstr_split(const char *s, const char c, const char *ignore_within);
 
 /** @brief Finds the first occurence of c in s, checking at most n bytes
  *
@@ -203,7 +203,7 @@ const char	*cstr_find_char(const char *s, const size_t n, const char c);
  * @returns @c <b>size_t</b> Start of substr in s,
  * RL42STR_SUBSTR_NOT_FOUND if substr is not found in s
  */
-size_t		rl42str_find(cvector s, cvector substr);
+size_t		rl42str_find(cdarray s, cdarray substr);
 
 /** @brief Finds the start of substr in s, ignoring case
  *
@@ -212,7 +212,7 @@ size_t		rl42str_find(cvector s, cvector substr);
  * @returns @c <b>size_t</b> Start of substr in s,
  * RL42STR_SUBSTR_NOT_FOUND if substr is not found in s
  */
-size_t		rl42str_find_case(cvector s, cvector substr);
+size_t		rl42str_find_case(cdarray s, cdarray substr);
 
 /** @brief Calculates the correct position for the cursor
  *

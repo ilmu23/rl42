@@ -11,11 +11,11 @@
 #include "function.h"
 
 #include "internal/_rl42.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 
 rl42_fn(prefix_meta) {
-	vector_clear(line->keyseq);
-	vector_push(line->keyseq, (i32){'\x1b'});
+	darray_clear(line->keyseq);
+	darray_push(line->keyseq, (i32){'\x1b'});
 	state_flags |= STATE_DONT_CLEAR_KEYSEQ;
 	return 1;
 }

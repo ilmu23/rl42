@@ -13,7 +13,7 @@
 #include "function.h"
 
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
 
@@ -32,10 +32,10 @@ rl42_fn(fetch_history) {
 	if (!current->edit)
 		return 0;
 	current = new;
-	vector_delete(line->line);
+	darray_delete(line->line);
 	line->line = cstr_to_rl42str((current->edit) ? current->edit : current->line);
 	if (!line->line)
 		return 0;
-	line->i = vector_size(line->line);
+	line->i = darray_size(line->line);
 	return term_display_line(line, 0);
 }

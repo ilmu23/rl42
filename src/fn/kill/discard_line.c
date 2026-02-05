@@ -13,7 +13,7 @@
 #include "function.h"
 
 #include "internal/_term.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
 
@@ -34,7 +34,7 @@ rl42_fn(discard_line) {
 		}
 	}
 	if (n_arg.set) {
-		vector_delete(line->prompt.sprompt);
+		darray_delete(line->prompt.sprompt);
 		line->prompt.sprompt = NULL;
 		n_arg.set = 0;
 	}
@@ -42,7 +42,7 @@ rl42_fn(discard_line) {
 	term_cursor_move_to(line, line->prompt.root->row, line->prompt.root->col);
 	term_display_line(line, DISPLAY_PROMPT_ONLY);
 	term_cursor_get_pos((i16 *)&line->root->row, (i16 *)&line->root->col);
-	vector_clear(line->line);
+	darray_clear(line->line);
 	user.set = 0;
 	line->rows = 1;
 	line->i = 0;

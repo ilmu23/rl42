@@ -13,9 +13,7 @@
 
 #include <stddef.h>
 
-// Generic vector
-typedef struct __vec *			vector;
-typedef const struct __vec *	cvector;
+#include "internal/_darray.h"
 
 // Stores a cursor position
 // row = row number
@@ -31,8 +29,8 @@ typedef struct __cursor_pos {
 // prompt = user provided prompt
 typedef struct __prompt {
 	const rl42_cursor_pos	*root;
-	vector					sprompt;
-	vector					prompt;
+	darray					sprompt;
+	darray					prompt;
 }	rl42_prompt;
 
 // Stores the current input environment
@@ -45,17 +43,17 @@ typedef struct __prompt {
 typedef struct __line {
 	const rl42_cursor_pos	*root;
 	rl42_prompt				prompt;
-	vector					keyseq;
-	vector					line;
+	darray					keyseq;
+	darray					line;
 	size_t					rows;
 	size_t					i;
 }	rl42_line;
 
 // Function for getting completions
 // 1st arg = pattern to complete
-// 2nd arg = vector of space separated strings before the pattern, NULL if nothing before pattern
-// Returns vector containing all possible completions or NULL if no completions were found
-typedef cvector	(*rl42_completion_fn)(const char *, cvector);
+// 2nd arg = darray of space separated strings before the pattern, NULL if nothing before pattern
+// Returns darray containing all possible completions or NULL if no completions were found
+typedef cdarray	(*rl42_completion_fn)(const char *, cdarray);
 
 typedef u8	(*rl42_fn)(rl42_line *);
 
@@ -74,13 +72,8 @@ typedef enum __bpm_state {
 	BPM_TOGGLE = 2,
 }	rl42_bpm_state;
 
-// Generic map
-typedef struct __map *			map;
-typedef const struct __map *	cmap;
-
-// Generic list
-typedef struct __lst *			list;
-typedef const struct __lst *	clist;
+#include "internal/_map.h"
+#include "internal/_list.h"
 
 // History node containing the original line and
 // the potentially edited version
@@ -122,7 +115,7 @@ typedef struct __fn_match {
 typedef struct __fn_info {
 	rl42_fn		f;
 	const char	*fname;
-	vector		binds[3];
+	darray		binds[3];
 	u8			macro;
 }	rl42_fn_info;
 
@@ -140,7 +133,7 @@ typedef struct __mark {
 // text = text produced
 // mods = modifiers present
 typedef struct __kb_event {
-	cvector	esc;
+	cdarray	esc;
 	u32		code;
 	u32		text;
 	u16		mods;

@@ -12,7 +12,7 @@
 #include "internal/_kb.h"
 #include "internal/_utils.h"
 #include "internal/_hashes.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_keybinds.h"
 
 #define _INVALID_ESCAPE	UINT32_MAX
@@ -59,14 +59,14 @@ extern u32	kcbs;
 
 static inline escape	_match_escape(const char *seq, size_t len);
 
-vector	expand_seq(const char *seq) {
-	vector	out;
+darray	expand_seq(const char *seq) {
+	darray	out;
 	escape	tmp;
 	size_t	i;
 	size_t	j;
 	u8		esc;
 
-	out = vector(u32, 256, NULL);
+	out = darray(u32, 256, NULL);
 	if (!out)
 		return NULL;
 	for (i = j = esc = 0, tmp.ucp = 0; seq[i]; j = ++i, tmp.ucp = 0) {
@@ -87,15 +87,15 @@ vector	expand_seq(const char *seq) {
 			tmp = _match_escape(&seq[j], i - j + 1);
 			if (tmp.str) do {
 				tmp.ucp = utf8_decode(tmp.str);
-				if (!vector_push(out, tmp.ucp))
+				if (!darray_push(out, tmp.ucp))
 					goto err;
 				tmp.str += charsize_utf8(*tmp.str);
 			} while (*tmp.str);
-			else if (!tmp.ucp || !vector_push(out, tmp.ucp))
+			else if (!tmp.ucp || !darray_push(out, tmp.ucp))
 				goto err;
 		} else {
 			tmp.ucp = utf8_decode(&seq[i]);
-			if (!vector_push(out, tmp.ucp))
+			if (!darray_push(out, tmp.ucp))
 				goto err;
 			if (tmp.ucp > 0xFFFFU)
 				i += 3;
@@ -107,7 +107,7 @@ vector	expand_seq(const char *seq) {
 	}
 	return out;
 err:
-	vector_delete(out);
+	darray_delete(out);
 	return EXPAND_INVALID_SEQ;
 }
 

@@ -13,21 +13,21 @@
 #include "internal/_defs.h"
 #include "internal/_kill.h"
 #include "internal/_rl42.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 
 rl42_fn(delete_horizontal_space) {
 	size_t	len;
 	u8		rv;
 
-	len = vector_size(line->line);
-	if (line->i != len && !is_space(*(u32 *)vector_get(line->line, line->i)))
+	len = darray_size(line->line);
+	if (line->i != len && !is_space(*(u32 *)darray_get(line->line, line->i)))
 		return 1;
-	if (line->i > 0 && is_space(*(u32 *)vector_get(line->line, line->i - 1))) do
+	if (line->i > 0 && is_space(*(u32 *)darray_get(line->line, line->i - 1))) do
 		line->i--;
-	while (line->i > 0 && is_space(*(u32 *)vector_get(line->line, line->i - 1)));
+	while (line->i > 0 && is_space(*(u32 *)darray_get(line->line, line->i - 1)));
 	add_mark(kill_start, line->i);
-	while (line->i < len && is_space(*(u32 *)vector_get(line->line, line->i)))
+	while (line->i < len && is_space(*(u32 *)darray_get(line->line, line->i)))
 		line->i++;
 	add_mark(kill_end, line->i);
 	state_flags |= STATE_KILL_DONT_UPDATE_RING;

@@ -14,7 +14,7 @@
 
 #include "internal/_list.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/test/defs.h"
 
 #ifndef REMOVE_CHANCE
@@ -123,7 +123,7 @@ static inline u8	_test2(void) {
 static inline u8	_test3(void) {
 	list_node	node;
 	list_node	prev;
-	vector		vals;
+	darray		vals;
 	size_t		i;
 	size_t		removed;
 	list		list;
@@ -132,7 +132,7 @@ static inline u8	_test3(void) {
 	u8			rv;
 
 	rv = 1;
-	vals = vector(u32, 50, NULL);
+	vals = darray(u32, 50, NULL);
 	if (!vals)
 		exit(error("UNABLE TO ALLOCATE MEMORY"));
 	info("Test 3 ---- Randomized list\n");
@@ -141,27 +141,27 @@ static inline u8	_test3(void) {
 		return error("Failed to create a list of size 5\n");
 	for (i = 0; i < 50; i++) {
 		val = rand_range(1, 4200);
-		if (!vector_push(vals, val) || !list_push_back(list, val))
+		if (!darray_push(vals, val) || !list_push_back(list, val))
 			return error("Failed to add element #%zu\n", i + 1);
 	}
 	for (i = removed = 0, node = list_first(list); node; i++) {
 		prev = node;
 		node = list_next(list, node);
 		if (rand_range(1, 100) < REMOVE_CHANCE) {
-			vector_erase(vals, i - removed++);
+			darray_erase(vals, i - removed++);
 			list_erase(list, prev);
 		}
 	}
 	node = list_first(list);
 	for (i = 0, node = list_first(list); node; i++) {
 		val = *(u32 *)node->data;
-		chk = *(u32 *)vector_get(vals, i);
+		chk = *(u32 *)darray_get(vals, i);
 		if (val != chk)
 			rv = 0;
 		fprintf(stderr, "%sNode #%.2zu: %u" ENDL, hl(val == chk), i + 1, val);
 		node = list_next(list, node);
 	}
-	vector_delete(vals);
+	darray_delete(vals);
 	list_delete(list);
 	return rv;
 }

@@ -15,14 +15,14 @@
 
 #include "internal/_defs.h"
 #include "internal/_term.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 
 #define _BP_END	"\x1b[201~"
 
 #define _BUF_SIZE	4096
 
-extern vector	input_buf;
+extern darray	input_buf;
 
 static inline ssize_t	_fill_buf(char *buf, const size_t buf_size);
 static inline u8		_paste(rl42_line *line, const char *buf, const size_t n);
@@ -36,7 +36,7 @@ rl42_fn(bracketed_paste) {
 
 	i = 0;
 _bracketed_paste_read:
-	if (vector_size(input_buf) == 0) {
+	if (darray_size(input_buf) == 0) {
 		rv = read(0, &buf[i], _BUF_SIZE - i);
 		if (rv == -1)
 			return 0;
@@ -75,7 +75,7 @@ _bracketed_paste_find_bp_end:
 	if (paste_len) {
 		if (!_paste(line, buf, paste_len))
 			return 0;
-		if (paste_len + strl_len(_BP_END) != (size_t)rv && !vector_insert_n(input_buf, -1, rv - paste_len, &bp_end.start[strl_len(_BP_END)]))
+		if (paste_len + strl_len(_BP_END) != (size_t)rv && !darray_insert_n(input_buf, -1, rv - paste_len, &bp_end.start[strl_len(_BP_END)]))
 			return 0;
 	}
 	return term_display_line(line, 0);
@@ -84,14 +84,14 @@ _bracketed_paste_find_bp_end:
 static inline ssize_t	_fill_buf(char *buf, const size_t buf_size) {
 	size_t	inbuf_size;
 
-	inbuf_size = vector_size(input_buf);
+	inbuf_size = darray_size(input_buf);
 	if (inbuf_size > buf_size)
 		inbuf_size = buf_size;
-	memcpy(buf, vector_start(input_buf), inbuf_size * sizeof(*buf));
-	if (inbuf_size != vector_size(input_buf))
-		vector_erase_n(input_buf, 0, inbuf_size);
+	memcpy(buf, darray_start(input_buf), inbuf_size * sizeof(*buf));
+	if (inbuf_size != darray_size(input_buf))
+		darray_erase_n(input_buf, 0, inbuf_size);
 	else
-		vector_clear(input_buf);
+		darray_clear(input_buf);
 	return inbuf_size;
 }
 
@@ -102,10 +102,10 @@ static inline u8	_paste(rl42_line *line, const char *buf, const size_t n) {
 
 	for (i = 0, csize = charsize_utf8(buf[i]); i <= n - csize; csize = charsize_utf8(buf[i]), i += csize) {
 		ucp = utf8_decode(&buf[i]);
-		if (!vector_insert(line->line, line->i++, ucp))
+		if (!darray_insert(line->line, line->i++, ucp))
 			return 0;
 	}
-	if (i != n && !vector_insert_n(input_buf, 0, n - i, &buf[i]))
+	if (i != n && !darray_insert_n(input_buf, 0, n - i, &buf[i]))
 		return 0;
 	return 1;
 }

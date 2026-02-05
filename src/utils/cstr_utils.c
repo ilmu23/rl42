@@ -11,7 +11,7 @@
 #include <stdlib.h>
 
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 
 #define _SPLIT_IGN_UNSET	'\xff'
 
@@ -113,18 +113,18 @@ char	*cstr_substrb(const char *s, const size_t start, const size_t len, char *bu
 	return buf;
 }
 
-vector	cstr_split(const char *s, const char c, const char *ignore_within) {
+darray	cstr_split(const char *s, const char c, const char *ignore_within) {
 	const char	*tmp;
-	vector		out;
+	darray		out;
 	size_t		i;
 	size_t		j;
 	char		ign;
 
-	out = vector(char *, 1, free);
+	out = darray(char *, 1, free);
 	if (!out)
 		return NULL;
 	if (c == '\0') {
-		vector_push(out, (const char *){strdup(s)});
+		darray_push(out, (const char *){strdup(s)});
 		return out;
 	}
 	for (i = j = 0, ign = _SPLIT_IGN_UNSET; s[i]; i++) {
@@ -133,8 +133,8 @@ vector	cstr_split(const char *s, const char c, const char *ignore_within) {
 				i++;
 				j++;
 			} while (s[i] == c); else {
-				if (!vector_push(out, (const char *){cstr_substr(s, j, i - j)})) {
-					vector_delete(out);
+				if (!darray_push(out, (const char *){cstr_substr(s, j, i - j)})) {
+					darray_delete(out);
 					return NULL;
 				}
 				j = i + 1;
@@ -154,8 +154,8 @@ vector	cstr_split(const char *s, const char c, const char *ignore_within) {
 			}
 		}
 	}
-	if ((i != j || vector_size(out) == 0) && !vector_push(out, (const char *){cstr_substr(s, j, i - j)})) {
-		vector_delete(out);
+	if ((i != j || darray_size(out) == 0) && !darray_push(out, (const char *){cstr_substr(s, j, i - j)})) {
+		darray_delete(out);
 		return NULL;
 	}
 	return out;

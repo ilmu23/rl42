@@ -15,7 +15,7 @@
 #include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
 #include "internal/_keybinds.h"
@@ -51,7 +51,7 @@ char	*ft_readline(const char *prompt) {
 	}
 	line = (rl42_line){
 		.prompt.prompt = cstr_to_rl42str(prompt),
-		.keyseq = vector(u32, 8, NULL),
+		.keyseq = darray(u32, 8, NULL),
 		.rows = 1,
 	};
 	if (!line.prompt.prompt || !line.keyseq)
@@ -70,12 +70,12 @@ char	*ft_readline(const char *prompt) {
 	hist_add_line(strdup(""));
 	if (!current) {
 		current = hist_get_first_node();
-		line.line = vector(u32, 64, NULL);
+		line.line = darray(u32, 64, NULL);
 	} else
 		line.line = cstr_to_rl42str(current->line);
 	if (!line.line)
 		goto _rl42_malloc_fail;
-	line.i = vector_size(line.line);
+	line.i = darray_size(line.line);
 	term_display_line(&line, 0);
 	rv = 1;
 	if (get_editing_mode() == VI_CMD)
@@ -86,11 +86,11 @@ char	*ft_readline(const char *prompt) {
 			rv = match.fn->f(&line);
 			state_flags &= ~STATE_ABORT;
 			if (~state_flags & STATE_DONT_CLEAR_KEYSEQ)
-				vector_clear(line.keyseq);
+				darray_clear(line.keyseq);
 			else
 				state_flags &= ~STATE_DONT_CLEAR_KEYSEQ;
 			if (n_arg.set && match.fn->f != numeric_argument) {
-				vector_delete(line.prompt.sprompt);
+				darray_delete(line.prompt.sprompt);
 				line.prompt.sprompt = NULL;
 				if (line.line)
 					term_display_line(&line, 0);
@@ -109,18 +109,18 @@ char	*ft_readline(const char *prompt) {
 	out = (line.line) ? rl42str_to_cstr(line.line) : NULL;
 	term_cursor_delete_anchor(line.prompt.root);
 	term_cursor_delete_anchor(line.root);
-	vector_delete(line.prompt.sprompt);
-	vector_delete(line.prompt.prompt);
-	vector_delete(line.keyseq);
-	vector_delete(line.line);
+	darray_delete(line.prompt.sprompt);
+	darray_delete(line.prompt.prompt);
+	darray_delete(line.keyseq);
+	darray_delete(line.line);
 	_commit_hist(out);
 	return out;
 _rl42_malloc_fail:
 	error("rl42: unable to allocate memory: %s", (errno) ? strerror(errno) : "unknown error");
 	term_cursor_delete_anchor(line.prompt.root);
 	term_cursor_delete_anchor(line.root);
-	vector_delete(line.prompt.prompt);
-	vector_delete(line.keyseq);
+	darray_delete(line.prompt.prompt);
+	darray_delete(line.keyseq);
 	return NULL;
 }
 

@@ -13,14 +13,14 @@
 #include "internal/_defs.h"
 #include "internal/_kill.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 
 rl42_fn(copy_word) {
 	size_t	i;
 	u8		rv;
 
-	if (line->i == vector_size(line->line) || is_space(*(u32 *)vector_get(line->line, line->i)))
+	if (line->i == darray_size(line->line) || is_space(*(u32 *)darray_get(line->line, line->i)))
 		return 1;
 	i = line->i;
 	move_to_start_of_word(line);

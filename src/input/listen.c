@@ -28,7 +28,7 @@ static i32	efd;
 static u32	kbs;
 u32			kcbs;
 
-vector	input_buf;
+darray	input_buf;
 
 static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size, rl42_kb_event *event);
 static inline const char	*_fill_buf(char *buf, const size_t buf_size);
@@ -44,7 +44,7 @@ rl42_kb_event	*kb_listen_buf(const i32 timeout, char *buf, const size_t buf_size
 	struct epoll_event		event;
 	ssize_t					rv;
 
-	if (vector_size(input_buf) > 0)
+	if (darray_size(input_buf) > 0)
 		return (_parse_event(_fill_buf(buf, buf_size), buf_size, &kb_event));
 	term_show_cursor();
 	rv = epoll_wait(efd, &event, 1, timeout);
@@ -102,7 +102,7 @@ u8	init_kb_listener(void) {
 }
 
 static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size, rl42_kb_event *event) {
-	vector	escape;
+	darray	escape;
 	size_t	buf_len;
 	size_t	seq_len;
 	size_t	i;
@@ -114,173 +114,173 @@ static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size
 			case ti_kf1:
 				*event = kb_event(KB_KEY_LEGACY_F1, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf1));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf2:
 				*event = kb_event(KB_KEY_LEGACY_F2, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf2));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf3:
 				*event = kb_event(KB_KEY_LEGACY_F3, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf3));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf4:
 				*event = kb_event(KB_KEY_LEGACY_F4, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf4));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf5:
 				*event = kb_event(KB_KEY_LEGACY_F5, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf5));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf6:
 				*event = kb_event(KB_KEY_LEGACY_F6, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf6));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf7:
 				*event = kb_event(KB_KEY_LEGACY_F7, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf7));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf8:
 				*event = kb_event(KB_KEY_LEGACY_F8, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf8));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf9:
 				*event = kb_event(KB_KEY_LEGACY_F9, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf9));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf10:
 				*event = kb_event(KB_KEY_LEGACY_F10, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf10));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf11:
 				*event = kb_event(KB_KEY_LEGACY_F11, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf11));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kf12:
 				*event = kb_event(KB_KEY_LEGACY_F12, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kf12));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kcuu1:
 				*event = kb_event(KB_KEY_LEGACY_UP, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kcuu1));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kcud1:
 				*event = kb_event(KB_KEY_LEGACY_DOWN, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kcud1));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kcub1:
 				*event = kb_event(KB_KEY_LEGACY_LEFT, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kcub1));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kcuf1:
 				*event = kb_event(KB_KEY_LEGACY_RIGHT, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kcuf1));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kich1:
 				*event = kb_event(KB_KEY_LEGACY_INSERT, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kich1));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_khome:
 				*event = kb_event(KB_KEY_LEGACY_HOME, 0, 0);
 				seq_len = strlen(term_get_seq(ti_khome));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_knp:
 				*event = kb_event(KB_KEY_LEGACY_PAGE_UP, 0, 0);
 				seq_len = strlen(term_get_seq(ti_knp));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kdch1:
 				*event = kb_event(KB_KEY_LEGACY_DELETE, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kdch1));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kend:
 				*event = kb_event(KB_KEY_LEGACY_END, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kend));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kpp:
 				*event = kb_event(KB_KEY_LEGACY_PAGE_DOWN, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kpp));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kri:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_UP, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kri));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kind:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_DOWN, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kind));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kLFT:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_LEFT, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kLFT));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kRIT:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_RIGHT, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kRIT));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kIC:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_INSERT, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kIC));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kHOM:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_HOME, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kHOM));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kNXT:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_PAGE_UP, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kNXT));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kDC:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_DELETE, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kDC));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kEND:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_END, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kEND));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 			case ti_kPRV:
 				*event = kb_event(KB_KEY_LEGACY_SHIFT_PAGE_DOWN, 0, 0);
 				seq_len = strlen(term_get_seq(ti_kPRV));
-				vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+				darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 				return event;
 		}
 		if (buf[1] == 'O')
 			return NULL;
 		seq_len = term_csi_len(buf);
-		vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
-		escape = vector(u32, seq_len, NULL);
+		darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+		escape = darray(u32, seq_len, NULL);
 		if (!escape)
 			return NULL;
 		for (i = 0; i < seq_len; i++)
-			vector_push(escape, (u32){buf[i]});
+			darray_push(escape, (u32){buf[i]});
 		*event = kb_event_ue(escape);
 		return event;
 	}
@@ -301,7 +301,7 @@ static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size
 		event->mods |= KB_MOD_SHIFT;
 		event->code = to_lower(event->code);
 	}
-	vector_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
+	darray_insert_n(input_buf, 0, buf_len - seq_len, &buf[seq_len]);
 	event->text = event->code;
 	return event;
 }
@@ -309,14 +309,14 @@ static inline rl42_kb_event	*_parse_event(const char *buf, const size_t buf_size
 static inline const char	*_fill_buf(char *buf, const size_t buf_size) {
 	size_t	inbuf_size;
 
-	inbuf_size = vector_size(input_buf);
+	inbuf_size = darray_size(input_buf);
 	if (inbuf_size > buf_size - 1)
 		inbuf_size = buf_size - 1;
-	memcpy(buf, vector_start(input_buf), inbuf_size * sizeof(*buf));
+	memcpy(buf, darray_start(input_buf), inbuf_size * sizeof(*buf));
 	buf[inbuf_size] = '\0';
-	if (inbuf_size != vector_size(input_buf))
-		vector_erase_n(input_buf, 0, inbuf_size);
+	if (inbuf_size != darray_size(input_buf))
+		darray_erase_n(input_buf, 0, inbuf_size);
 	else
-		vector_clear(input_buf);
+		darray_clear(input_buf);
 	return buf;
 }

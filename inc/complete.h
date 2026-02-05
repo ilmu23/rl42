@@ -11,7 +11,7 @@
 
 #include "internal/_data.h"
 
-#define rl42_completion_fn(name)	cvector	name(const char *pattern, [[maybe_unused]] cvector context)
+#define rl42_completion_fn(name)	cdarray	name(const char *pattern, [[maybe_unused]] cdarray context)
 
 /** @brief Sets the function used for performing completions
  *

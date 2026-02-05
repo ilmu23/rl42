@@ -9,11 +9,12 @@
 
 #pragma once
 
-#ifndef __RL42_INTERNAL
-# define __RL42_INTERNAL
-#endif
+#include <stddef.h>
 
-#include "internal/_data.h"
+#include "defs.h"
+
+typedef struct __map *			map;
+typedef const struct __map *	cmap;
 
 typedef enum {
 	STRING,

@@ -24,7 +24,7 @@
 #include "internal/_kill.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_complete.h"
 #include "internal/_terminfo.h"
@@ -63,7 +63,7 @@ rl42_completion_fn	cmp_fn = _complete_files;
 static const char	*stat_chars[ST_FIFO + 1] = { "/", "*", "@", "%", "#", "=", "|" };
 
 // cmp_get_common
-static inline size_t	_find_longest(cvector completions);
+static inline size_t	_find_longest(cdarray completions);
 
 // cmp_display
 static inline const char	*_get_sgr0(void);
@@ -75,8 +75,8 @@ static inline u8			_query(rl42_line *line, const size_t completions);
 
 // _complete_files
 static inline stat_type	_get_file_type(const char *path);
-static inline vector	_match_files(const char *pattern, DIR *dir);
-static inline vector	_build_path(vector completions, const char *path);
+static inline darray	_match_files(const char *pattern, DIR *dir);
+static inline darray	_build_path(darray completions, const char *path);
 static inline u8		_cmp_fname(const char *fname, const char *pattern, const size_t n, const cmp_type type);
 static inline u8		_is_sldir(const char *path);
 static inline u8		_is_dir(const char *path);
@@ -92,7 +92,7 @@ void	set_completion_fn(rl42_completion_fn f) {
 	cmp_fn = (f) ? f : _complete_files;
 }
 
-cvector	cmp_get_common(cvector completions, const size_t pattern_len) {
+cdarray	cmp_get_common(cdarray completions, const size_t pattern_len) {
 	const char	*s1;
 	const char	*tmp;
 	size_t		count;
@@ -100,12 +100,12 @@ cvector	cmp_get_common(cvector completions, const size_t pattern_len) {
 	size_t		i;
 	size_t		j;
 
-	if (completions && vector_size(completions) > 1) {
-		count = vector_size(completions);
-		s1 = *(const char **)vector_get(completions, 0);
+	if (completions && darray_size(completions) > 1) {
+		count = darray_size(completions);
+		s1 = *(const char **)darray_get(completions, 0);
 		for (i = 0, len = _find_longest(completions); i < len; i++) {
 			for (j = 1; j < count; j++) {
-				tmp = *(const char **)vector_get(completions, j);
+				tmp = *(const char **)darray_get(completions, j);
 				if (s1[i] != tmp[i])
 					break ;
 			}
@@ -113,18 +113,18 @@ cvector	cmp_get_common(cvector completions, const size_t pattern_len) {
 				break ;
 		}
 		if (i > 0 && i != pattern_len) {
-			vector_resize((vector)completions, 1);
+			darray_resize((darray)completions, 1);
 			((char *)s1)[i] = '\0';
 		}
 	}
 	return completions;
 }
 
-u8	cmp_display(rl42_line *line, cvector completions) {
+u8	cmp_display(rl42_line *line, cdarray completions) {
 	const char	*completion;
 	rl42_fn		next;
 	ssize_t		rv;
-	vector		starts;
+	darray		starts;
 	size_t		widest;
 	size_t		scroll;
 	size_t		count;
@@ -141,18 +141,18 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 	u8			paging;
 	u8			pathed;
 
-	count = vector_size(completions);
+	count = darray_size(completions);
 	if ((i64)count >= rl42_get(RL42_COMPLETION_QUERY_ITEMS).i64 && !_query(line, count))
 		return 1;
-	pathed = _is_path(*(const char **)vector_get(completions, 0));
-	starts = vector(size_t, count, NULL);
+	pathed = _is_path(*(const char **)darray_get(completions, 0));
+	starts = darray(size_t, count, NULL);
 	for (i = widest = 0; i < count; i++) {
-		completion = *(const char **)vector_get(completions, i);
+		completion = *(const char **)darray_get(completions, i);
 		if (pathed) {
-			vector_push(starts, (size_t){_path_len(completion)});
-			completion = &completion[*(size_t *)vector_get(starts, i)];
+			darray_push(starts, (size_t){_path_len(completion)});
+			completion = &completion[*(size_t *)darray_get(starts, i)];
 		} else
-			vector_push(starts, (size_t){0});
+			darray_push(starts, (size_t){0});
 		len = strlen(completion);
 		if (len > widest)
 			widest = len;
@@ -197,18 +197,18 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 				i = 0;
 			rv = ti_tputs(term_get_seq(ti_ed), 1, term_putchar);
 			if (rv == -1) {
-				vector_delete(starts);
+				darray_delete(starts);
 				return 0;
 			}
 			j = (size_t)rv;
 			for (n = 0; i < count; i++) {
-				completion = *(const char **)vector_get(completions, i);
+				completion = *(const char **)darray_get(completions, i);
 				if (i != cur)
-					rv = term_putsf("%-*s", (i32)widest, &completion[*(size_t *)vector_get(starts, i)]);
+					rv = term_putsf("%-*s", (i32)widest, &completion[*(size_t *)darray_get(starts, i)]);
 				else
-					rv = term_putsf("%s%-*s%s", term_get_hl_seq(), (i32)widest, &completion[*(size_t *)vector_get(starts, i)], _get_sgr0());
+					rv = term_putsf("%s%-*s%s", term_get_hl_seq(), (i32)widest, &completion[*(size_t *)darray_get(starts, i)], _get_sgr0());
 				if (rv == -1) {
-					vector_delete(starts);
+					darray_delete(starts);
 					return 0;
 				}
 				j += (size_t)rv;
@@ -218,18 +218,18 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 					if (--rows == 0)
 						break ;
 					if (term_putchar('\n') == -1) {
-						vector_delete(starts);
+						darray_delete(starts);
 						return 0;
 					}
 					n = 0;
 				} else if (term_putchar(' ') == -1) {
-					vector_delete(starts);
+					darray_delete(starts);
 					return 0;
 				}
 			}
 			term_cursor_set_pos(line->root->row + line->rows, 1);
 			if (!term_flush_outbuf()) {
-				vector_delete(starts);
+				darray_delete(starts);
 				return 0;
 			}
 			term_cursor_move_to_i(line);
@@ -238,13 +238,13 @@ u8	cmp_display(rl42_line *line, cvector completions) {
 			break ;
 		if (++cur == count)
 			cur = 0;
-		if (!cmp_insert(line, *(const char **)vector_get(completions, cur))) {
-			vector_delete(starts);
+		if (!cmp_insert(line, *(const char **)darray_get(completions, cur))) {
+			darray_delete(starts);
 			return 0;
 		}
 		add_mark(kill_end, line->i);
 	}
-	vector_delete(starts);
+	darray_delete(starts);
 	return (next && term_display_line(line, DISPLAY_FORCE_SCREEN_CLEAR)) ? next(line) : 0;
 }
 
@@ -256,21 +256,21 @@ u8	cmp_insert(rl42_line *line, const char *completion) {
 	line->i = kill_start.pos;
 	while (*completion) {
 		ucp = utf8_decode(completion);
-		if (!vector_insert(line->line, line->i++, ucp))
+		if (!darray_insert(line->line, line->i++, ucp))
 			return 0;
 		completion += charsize_utf8(*completion);
 	}
 	return term_display_line(line, 0);
 }
 
-static inline size_t	_find_longest(cvector completions) {
+static inline size_t	_find_longest(cdarray completions) {
 	size_t	longest;
 	size_t	count;
 	size_t	len;
 	size_t	i;
 
-	for (i = longest = 0, count = vector_size(completions); i < count; i++) {
-		len = strlen(*(const char **)vector_get(completions, i));
+	for (i = longest = 0, count = darray_size(completions); i < count; i++) {
+		len = strlen(*(const char **)darray_get(completions, i));
 		if (len > longest)
 			longest = len;
 	}
@@ -311,7 +311,7 @@ static inline u8	_select_next(rl42_line *line, rl42_fn *next) {
 	rl42_fn_match	match;
 
 	match.fn = NULL;
-	vector_clear(line->keyseq);
+	darray_clear(line->keyseq);
 	do
 		match = kb_match_seq(line, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
 	while (!match.fn || !match.run);
@@ -324,11 +324,11 @@ static inline u8	_query(rl42_line *line, const size_t completions) {
 	rl42_line		dummy;
 	size_t			i;
 
-	dummy.keyseq = vector(u32, 8, NULL);
+	dummy.keyseq = darray(u32, 8, NULL);
 	if (!dummy.keyseq)
 		return 0;
 	i = line->i;
-	line->i = vector_size(line->line);
+	line->i = darray_size(line->line);
 	if (!term_cursor_move_to_i(line) || !term_cursor_next_line()) {
 		line->i = i;
 		return 0;
@@ -341,14 +341,14 @@ __query_match_seq:
 	match = kb_match_seq(&dummy, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
 	if (match.fn && !match.run)
 		goto __query_match_seq;
-	vector_delete(dummy.keyseq);
+	darray_delete(dummy.keyseq);
 	return (match.fn && match.fn->f == complete) ? 1 : 0;
 }
 
 static inline rl42_completion_fn(_complete_files) {
 	const char	*tmp;
 	const char	*path;
-	vector		completions;
+	darray		completions;
 	u8			path_set;
 
 	tmp = strrchr(pattern, '/');
@@ -390,15 +390,15 @@ static inline stat_type	_get_file_type(const char *path) {
 	return (access(path, X_OK) == 0) ? ST_EXEC : ST_REGULAR;
 }
 
-static inline vector	_match_files(const char *pattern, DIR *dir) {
+static inline darray	_match_files(const char *pattern, DIR *dir) {
 	struct dirent	*data;
 	const char		*tmp;
 	cmp_type		type;
-	vector			matches;
+	darray			matches;
 	size_t			pattern_len;
 	u8				match_hidden;
 
-	matches = vector(const char *, 16, free);
+	matches = darray(const char *, 16, free);
 	if (matches) {
 		if (!dir)
 			return matches;
@@ -412,8 +412,8 @@ static inline vector	_match_files(const char *pattern, DIR *dir) {
 				continue ;
 			if (_cmp_fname(data->d_name, pattern, pattern_len, type)) {
 				tmp = strdup(data->d_name);
-				if (!tmp || !vector_push(matches, tmp)) {
-					vector_delete(matches);
+				if (!tmp || !darray_push(matches, tmp)) {
+					darray_delete(matches);
 					closedir(dir);
 					return NULL;
 				}
@@ -424,7 +424,7 @@ static inline vector	_match_files(const char *pattern, DIR *dir) {
 	return matches;
 }
 
-static inline vector	_build_path(vector completions, const char *path) {
+static inline darray	_build_path(darray completions, const char *path) {
 	const char	*tmp;
 	stat_type	type;
 	size_t		i;
@@ -432,48 +432,48 @@ static inline vector	_build_path(vector completions, const char *path) {
 	u8			(*is_dir)(const char *);
 
 	if (completions) {
-		count = vector_size(completions);
+		count = darray_size(completions);
 		if (path) {
 			if (path[strlen(path) - 1] == '/') for (i = 0; i < count; i++) {
-				tmp = cstr_join(path, *(const char **)vector_get(completions, i));
+				tmp = cstr_join(path, *(const char **)darray_get(completions, i));
 				if (!tmp)
 					goto __build_path_err;
-				vector_replace(completions, i, tmp);
+				darray_replace(completions, i, tmp);
 			} else for (i = 0; i < count; i++) {
-				tmp = cstr_joins(path, *(const char **)vector_get(completions, i), '/');
+				tmp = cstr_joins(path, *(const char **)darray_get(completions, i), '/');
 				if (!tmp)
 					goto __build_path_err;
-				vector_replace(completions, i, tmp);
+				darray_replace(completions, i, tmp);
 			}
 		}
 		switch (rl42_get(RL42_MARK_DIRECTORIES).u64 << 1 | rl42_get(RL42_VISIBLE_STATS).u64) {
 			case rl42_conf_on:
 			case rl42_conf_on << 1 | rl42_conf_on:
 				for (i = 0; i < count; i++) {
-					type = _get_file_type(*(const char **)vector_get(completions, i));
+					type = _get_file_type(*(const char **)darray_get(completions, i));
 					if (type != ST_REGULAR) {
-						tmp = cstr_join(*(const char **)vector_get(completions, i), stat_chars[type]);
+						tmp = cstr_join(*(const char **)darray_get(completions, i), stat_chars[type]);
 						if (!tmp)
 							goto __build_path_err;
-						vector_replace(completions, i, tmp);
+						darray_replace(completions, i, tmp);
 					}
 				}
 				break ;
 			case rl42_conf_on << 1:
 				is_dir = (rl42_get(RL42_MARK_SYMLINKED_DIRECTORIES).u64 == rl42_conf_on) ? _is_sldir : _is_dir;
 				for (i = 0; i < count; i++) {
-					if (is_dir(*(const char **)vector_get(completions, i))) {
-						tmp = cstr_join(*(const char **)vector_get(completions, i), stat_chars[ST_DIR]);
+					if (is_dir(*(const char **)darray_get(completions, i))) {
+						tmp = cstr_join(*(const char **)darray_get(completions, i), stat_chars[ST_DIR]);
 						if (!tmp)
 							goto __build_path_err;
-						vector_replace(completions, i, tmp);
+						darray_replace(completions, i, tmp);
 					}
 				}
 		}
 	}
 	return completions;
 __build_path_err:
-	vector_delete(completions);
+	darray_delete(completions);
 	return NULL;
 }
 

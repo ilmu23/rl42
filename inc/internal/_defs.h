@@ -20,7 +20,7 @@
 
 #define NUMERIC_ARG_NOT_SET	NUMERIC_ARG_MAX + 1
 
-#define line_at(l, i)	(*(u32 *)vector_get((*l).line, i))
+#define line_at(l, i)	(*(u32 *)darray_get((*l).line, i))
 
 #define add_mark(m, p)	(m.pos = p, m.set = 1)
 

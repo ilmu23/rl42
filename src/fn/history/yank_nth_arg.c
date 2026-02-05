@@ -10,7 +10,7 @@
 #define __RL42_INTERNAL
 #include "function.h"
 
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
 
@@ -24,7 +24,7 @@ rl42_fn(yank_nth_arg) {
 		return 1;
 	if (n_arg.set) {
 		n = (!n_arg.neg) ? n_arg.val + 1 : -n_arg.val - 1;
-		vector_delete(line->prompt.sprompt);
+		darray_delete(line->prompt.sprompt);
 		line->prompt.sprompt = NULL;
 		n_arg.set = 0;
 	} else

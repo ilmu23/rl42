@@ -10,7 +10,7 @@
 #include "internal/_kb.h"
 #include "internal/_kill.h"
 #include "internal/_rl42.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 
 #include "internal/fn/kill.h"
@@ -30,7 +30,7 @@ rl42_fn(yank_pop) {
 	if (!rv || !term_display_line(line, 0))
 		goto _yank_pop_ret;
 	match.fn = NULL;
-	vector_clear(line->keyseq);
+	darray_clear(line->keyseq);
 	do {
 		match = kb_match_seq(line, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
 		if (match.run) {
@@ -42,7 +42,7 @@ rl42_fn(yank_pop) {
 				rv &= term_display_line(line, 0);
 			} else
 				break ;
-			vector_clear(line->keyseq);
+			darray_clear(line->keyseq);
 			prev_fn = match.fn->f;
 			match.fn = NULL;
 		}

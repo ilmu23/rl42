@@ -13,7 +13,7 @@
 #include "internal/_map.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_terminfo.h"
 
 #define _csi_match(s, c)	((csi_match){.start = s, .complete = c})
@@ -80,7 +80,7 @@ u8	term_calculate_required_rows(rl42_line *line, const u8 scroll) {
 	line->rows = 1;
 	orig_i = line->i;
 	line->i = SIZE_MAX;
-	col = line->root->col + calculate_cursor_offset(line) + ((line->prompt.sprompt) ? vector_size(line->prompt.sprompt) : 0);
+	col = line->root->col + calculate_cursor_offset(line) + ((line->prompt.sprompt) ? darray_size(line->prompt.sprompt) : 0);
 	line->i = orig_i;
 	while (col > term_width) {
 		col -= term_width;

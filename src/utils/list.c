@@ -13,7 +13,7 @@
 #include <sys/resource.h>
 
 #include "internal/_list.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 
 #define _INDEX_NONE	SIZE_MAX
 
@@ -37,7 +37,7 @@ struct __lst {
 	size_t	elements;
 	size_t	first;
 	size_t	last;
-	vector	data;
+	darray	data;
 };
 
 static struct {
@@ -57,7 +57,7 @@ list	__lst_new(const size_t size, const size_t count, void (*_free)(void *)) {
 		_set_alloca_max();
 	out = (size) ? malloc(sizeof(*out)) : NULL;
 	if (out) {
-		out->data = vector(__list_node__, count, (void (*)(void *))_free_node);
+		out->data = darray(__list_node__, count, (void (*)(void *))_free_node);
 		if (!out->data) {
 			free(out);
 			return NULL;
@@ -75,7 +75,7 @@ list	__lst_new(const size_t size, const size_t count, void (*_free)(void *)) {
 void	__lst_del(list list) {
 	if (list) {
 		__lst_clr(list);
-		vector_delete(list->data);
+		darray_delete(list->data);
 		free(list);
 	}
 }
@@ -94,15 +94,15 @@ u8	__lst_psh_b(list list, const void *val) {
 	};
 	if (!new.node.data)
 		return 0;
-	last = vector_get(list->data, list->last);
+	last = darray_get(list->data, list->last);
 	memcpy(new.node.data, val, list->element_size);
 	new.prev = (last != VECTOR_OUT_OF_BOUNDS) ? last->index : _INDEX_NONE;
-	new.index = vector_size(list->data);
-	rv = vector_push(list->data, new);
+	new.index = darray_size(list->data);
+	rv = darray_push(list->data, new);
 	if (rv) {
 		list->highest_index = new.index;
 		if (new.prev != _INDEX_NONE) {
-			last = vector_get(list->data, new.prev);
+			last = darray_get(list->data, new.prev);
 			last->next = new.index;
 		}
 		list->last = new.index;
@@ -126,15 +126,15 @@ u8	__lst_psh_f(list list, const void *val) {
 	};
 	if (!new.node.data)
 		return 0;
-	first = vector_get(list->data, list->first);
+	first = darray_get(list->data, list->first);
 	memcpy(new.node.data, val, list->element_size);
 	new.next = (first != VECTOR_OUT_OF_BOUNDS) ? first->index : _INDEX_NONE;
-	new.index = vector_size(list->data);
-	rv = vector_push(list->data, new);
+	new.index = darray_size(list->data);
+	rv = darray_push(list->data, new);
 	if (rv) {
 		list->highest_index = new.index;
 		if (new.next != _INDEX_NONE) {
-			first = vector_get(list->data, new.next);
+			first = darray_get(list->data, new.next);
 			first->prev = new.index;
 		}
 		list->first = new.index;
@@ -150,19 +150,19 @@ void	__lst_pop_b(list list) {
 
 	if (!list->elements)
 		return ;
-	last = vector_get(list->data, list->last);
+	last = darray_get(list->data, list->last);
 	if (!--list->elements) {
-		vector_pop(list->data);
+		darray_pop(list->data);
 		list->highest_index = 0;
 		return ;
 	}
 	list->last = last->prev;
-	tmp = vector_get(list->data, list->last);
+	tmp = darray_get(list->data, list->last);
 	tmp->next = _INDEX_NONE;
 	last->delete = 1;
 	if (last->index == list->highest_index) do {
-		vector_pop(list->data);
-		tmp = vector_get(list->data, --list->highest_index);
+		darray_pop(list->data);
+		tmp = darray_get(list->data, --list->highest_index);
 	} while (tmp->delete);
 }
 
@@ -172,19 +172,19 @@ void	__lst_pop_f(list list) {
 
 	if (!list->elements)
 		return ;
-	first = vector_get(list->data, list->first);
+	first = darray_get(list->data, list->first);
 	if (!--list->elements) {
-		vector_pop(list->data);
+		darray_pop(list->data);
 		list->highest_index = 0;
 		return ;
 	}
 	list->first = first->next;
-	tmp = vector_get(list->data, list->first);
+	tmp = darray_get(list->data, list->first);
 	tmp->prev = _INDEX_NONE;
 	first->delete = 1;
 	if (first->index == list->highest_index) do {
-		vector_pop(list->data);
-		tmp = vector_get(list->data, --list->highest_index);
+		darray_pop(list->data);
+		tmp = darray_get(list->data, --list->highest_index);
 	} while (tmp->delete);
 }
 
@@ -195,18 +195,18 @@ list_node	__lst_nth(clist list, const size_t i) {
 	if (!list->elements)
 		return NULL;
 	if (i == 0)
-		return &((__list_node__ *)vector_get(list->data, list->first))->node;
+		return &((__list_node__ *)darray_get(list->data, list->first))->node;
 	if (i >= list->elements - 1)
-		return &((__list_node__ *)vector_get(list->data, list->last))->node;
+		return &((__list_node__ *)darray_get(list->data, list->last))->node;
 	_i = i;
 	if (_i < list->elements / 2) {
-		out = vector_get(list->data, list->first);
+		out = darray_get(list->data, list->first);
 		while (_i--)
-			out = vector_get(list->data, out->next);
+			out = darray_get(list->data, out->next);
 	} else {
-		out = vector_get(list->data, list->last);
+		out = darray_get(list->data, list->last);
 		while (++_i < list->elements)
-			out = vector_get(list->data, out->prev);
+			out = darray_get(list->data, out->prev);
 	}
 	return &out->node;
 }
@@ -214,13 +214,13 @@ list_node	__lst_nth(clist list, const size_t i) {
 list_node	__lst_nxt(clist list, const list_node node) {
 	if (get_node(node)->next == _INDEX_NONE)
 		return NULL;
-	return &((__list_node__ *)vector_get(list->data, get_node(node)->next))->node;
+	return &((__list_node__ *)darray_get(list->data, get_node(node)->next))->node;
 }
 
 list_node	__lst_prv(clist list, const list_node node) {
 	if (get_node(node)->prev == _INDEX_NONE)
 		return NULL;
-	return &((__list_node__ *)vector_get(list->data, get_node(node)->prev))->node;
+	return &((__list_node__ *)darray_get(list->data, get_node(node)->prev))->node;
 }
 
 u8	__lst_ins_a(list list, const list_node ref, const void *val) {
@@ -239,14 +239,14 @@ u8	__lst_ins_a(list list, const list_node ref, const void *val) {
 	memcpy(new.node.data, val, list->element_size);
 	new.prev = prev->index;
 	new.next = prev->next;
-	new.index = vector_size(list->data);
-	rv = vector_push(list->data, new);
+	new.index = darray_size(list->data);
+	rv = darray_push(list->data, new);
 	if (rv) {
 		list->highest_index = new.index;
-		prev = vector_get(list->data, prev->index);
+		prev = darray_get(list->data, prev->index);
 		prev->next = new.index;
 		if (new.next != _INDEX_NONE)
-			((__list_node__ *)vector_get(list->data, new.next))->prev = new.index;
+			((__list_node__ *)darray_get(list->data, new.next))->prev = new.index;
 		else
 			list->last = new.index;
 		list->elements++;
@@ -271,14 +271,14 @@ u8	__lst_ins_b(list list, const list_node ref, const void *val) {
 	memcpy(new.node.data, val, list->element_size);
 	new.next = next->index;
 	new.prev = next->prev;
-	new.index = vector_size(list->data);
-	rv = vector_push(list->data, new);
+	new.index = darray_size(list->data);
+	rv = darray_push(list->data, new);
 	if (rv) {
 		list->highest_index = new.index;
-		next = vector_get(list->data, next->index);
+		next = darray_get(list->data, next->index);
 		next->prev = new.index;
 		if (new.prev != _INDEX_NONE)
-			((__list_node__ *)vector_get(list->data, new.prev))->next = new.index;
+			((__list_node__ *)darray_get(list->data, new.prev))->next = new.index;
 		else
 			list->first = new.index;
 		list->elements++;
@@ -299,15 +299,15 @@ void	__lst_mve_a(list list, const list_node ref, const list_node node) {
 	_node = get_node(node);
 	if (_node->prev == _ref->index)
 		return ;
-	prev = (_node->prev != _INDEX_NONE) ? vector_get(list->data, _node->prev) : NULL;
-	next = (_node->next != _INDEX_NONE) ? vector_get(list->data, _node->next) : NULL;
+	prev = (_node->prev != _INDEX_NONE) ? darray_get(list->data, _node->prev) : NULL;
+	next = (_node->next != _INDEX_NONE) ? darray_get(list->data, _node->next) : NULL;
 	if (prev)
 		prev->next = _node->next;
 	else
 		list->first = _node->next;
 	if (next)
 		next->prev = _node->prev;
-	next = (_ref->next != _INDEX_NONE) ? vector_get(list->data, _ref->next) : NULL;
+	next = (_ref->next != _INDEX_NONE) ? darray_get(list->data, _ref->next) : NULL;
 	if (next)
 		next->prev = _node->index;
 	else
@@ -330,15 +330,15 @@ void	__lst_mve_b(list list, const list_node ref, const list_node node) {
 	_node = get_node(node);
 	if (_node->next == _ref->index)
 		return ;
-	prev = (_node->prev != _INDEX_NONE) ? vector_get(list->data, _node->prev) : NULL;
-	next = (_node->next != _INDEX_NONE) ? vector_get(list->data, _node->next) : NULL;
+	prev = (_node->prev != _INDEX_NONE) ? darray_get(list->data, _node->prev) : NULL;
+	next = (_node->next != _INDEX_NONE) ? darray_get(list->data, _node->next) : NULL;
 	if (prev)
 		prev->next = _node->next;
 	else
 		list->first = _node->next;
 	if (next)
 		next->prev = _node->prev;
-	prev = (_ref->prev != _INDEX_NONE) ? vector_get(list->data, _ref->prev) : NULL;
+	prev = (_ref->prev != _INDEX_NONE) ? darray_get(list->data, _ref->prev) : NULL;
 	if (prev)
 		prev->next = _node->index;
 	_node->next = _ref->index;
@@ -359,22 +359,22 @@ void	__lst_ers(list list, const list_node node) {
 		__lst_pop_f(list);
 		return ;
 	}
-	((__list_node__ *)vector_get(list->data, _node->next))->prev = _node->prev;
-	((__list_node__ *)vector_get(list->data, _node->prev))->next = _node->next;
+	((__list_node__ *)darray_get(list->data, _node->next))->prev = _node->prev;
+	((__list_node__ *)darray_get(list->data, _node->prev))->next = _node->next;
 	_node->delete = 1;
 	list->elements--;
 	if (_node->index == list->highest_index) do {
-		vector_pop(list->data);
-		_node = vector_get(list->data, --list->highest_index);
+		darray_pop(list->data);
+		_node = darray_get(list->data, --list->highest_index);
 	} while (_node->delete);
 }
 
 size_t	__lst_sze(clist list, const u8 real) {
-	return (real) ? vector_size(list->data) : list->elements;
+	return (real) ? darray_size(list->data) : list->elements;
 }
 
 size_t	__lst_cap(clist list) {
-	return vector_capacity(list->data);
+	return darray_capacity(list->data);
 }
 
 u8	__lst_rsz(list list, const size_t size) {
@@ -384,26 +384,26 @@ u8	__lst_rsz(list list, const size_t size) {
 	size_t			tmp_size;
 	size_t			i;
 
-	vec_size = vector_size(list->data);
+	vec_size = darray_size(list->data);
 	if (size < vec_size) {
 		tmp_size = vec_size * sizeof(*tmp);
 		tmp = (tmp_size <= _alloca_size.max) ? alloca(tmp_size) : malloc(tmp_size);
 		if (!tmp)
 			return 0;
-		for (i = 0, node = vector_get(list->data, list->first); i < vec_size; node = vector_get(list->data, node->next))
+		for (i = 0, node = darray_get(list->data, list->first); i < vec_size; node = darray_get(list->data, node->next))
 			tmp[i++] = *node;
 		for (i = 0; i < vec_size; i++) {
 			tmp[i].next = (i + 1 < size) ? i + 1 : _INDEX_NONE;
 			tmp[i].prev = (i != 0) ? i - 1 : _INDEX_NONE;
 			tmp[i].index = i;
-			vector_set(list->data, i, tmp[i]);
+			darray_set(list->data, i, tmp[i]);
 		}
 		list->highest_index = size - 1;
 		list->elements = size;
 		list->last = size - 1;
 		list->first = 0;
 	}
-	return vector_resize(list->data, size);
+	return darray_resize(list->data, size);
 }
 
 u8	__lst_stf(list list) {
@@ -411,7 +411,7 @@ u8	__lst_stf(list list) {
 }
 
 void	__lst_clr(list list) {
-	vector_clear(list->data);
+	darray_clear(list->data);
 	list->highest_index = 0;
 	list->elements = 0;
 	list->first = 0;

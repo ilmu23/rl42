@@ -8,9 +8,9 @@
 // <<end_of_line.c>>
 
 #include "internal/_term.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 
 u8	end_of_line(rl42_line *line) {
-	line->i = vector_size(line->line);
+	line->i = darray_size(line->line);
 	return term_cursor_move_to_i(line);
 }

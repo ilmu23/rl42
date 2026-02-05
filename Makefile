@@ -100,7 +100,7 @@ UTILFILES	=	completion.c \
 				strhash.c \
 				terminfo.c \
 				utf8.c \
-				vector.c
+				darray.c
 
 RLFNFILES	=	$(addprefix $(HSFNDIR)/, $(HSFNFILES)) \
 				$(addprefix $(KLFNDIR)/, $(KLFNFILES)) \
@@ -232,40 +232,40 @@ KEYBIND_TEST_FILES	=	$(TESTDIR)/$(KEYBDIR)/keybind_test.c \
 STRLEN_UTF8_TEST		=	$(TESTBIN)/strlen_utf8_test
 RL42_STRING_TEST		=	$(TESTBIN)/rl42_string_test
 TERMINFO_TEST			=	$(TESTBIN)/terminfo_test
-VECTOR_TEST				=	$(TESTBIN)/vector_test
+DARRAY_TEST				=	$(TESTBIN)/darray_test
 LIST_TEST				=	$(TESTBIN)/list_test
 MAP_TEST				=	$(TESTBIN)/map_test
 
 STRLEN_UTF8_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/strlen_utf8.c \
 							$(SRCDIR)/$(UTILDIR)/rl42_string.c \
-							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/darray.c \
 							$(SRCDIR)/$(UTILDIR)/utf8.c
 
 RL42_STRING_TEST_FILES	=	$(TESTDIR)/$(UTILDIR)/rl42_string.c \
 							$(SRCDIR)/$(UTILDIR)/rl42_string.c \
-							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/darray.c \
 							$(SRCDIR)/$(UTILDIR)/utf8.c
 
 TERMINFO_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/terminfo.c \
 							$(SRCDIR)/$(UTILDIR)/terminfo.c \
 							$(SRCDIR)/$(UTILDIR)/cstr_utils.c \
 							$(SRCDIR)/$(UTILDIR)/map.c \
-							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/darray.c \
 							$(SRCDIR)/$(UTILDIR)/strhash.c \
 							$(SRCDIR)/$(UTILDIR)/message.c
 
-VECTOR_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/vector.c \
-							$(SRCDIR)/$(UTILDIR)/vector.c \
+VECTOR_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/darray.c \
+							$(SRCDIR)/$(UTILDIR)/darray.c \
 							$(SRCDIR)/$(UTILDIR)/message.c
 
 LIST_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/list.c \
 							$(SRCDIR)/$(UTILDIR)/list.c \
-							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/darray.c \
 							$(SRCDIR)/$(UTILDIR)/message.c
 
 MAP_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/map.c \
 							$(SRCDIR)/$(UTILDIR)/map.c \
-							$(SRCDIR)/$(UTILDIR)/vector.c \
+							$(SRCDIR)/$(UTILDIR)/darray.c \
 							$(SRCDIR)/$(UTILDIR)/strhash.c \
 							$(SRCDIR)/$(UTILDIR)/message.c
 
@@ -339,11 +339,11 @@ keybtests: $(KEYBIND_TEST)
 	@./run_test rl42_bind $(KEYBIND_TEST)
 	@printf "\e[1;38;5;39mRL42 >\e[m All keybind tests passed!\n"
 
-utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(TERMINFO_TEST) $(VECTOR_TEST) $(LIST_TEST) $(MAP_TEST)
+utiltests: $(STRLEN_UTF8_TEST) $(RL42_STRING_TEST) $(TERMINFO_TEST) $(DARRAY_TEST) $(LIST_TEST) $(MAP_TEST)
 	@./run_test strlen_utf8 $(STRLEN_UTF8_TEST)
 	@./run_test rl42_string $(RL42_STRING_TEST)
 	@./run_test terminfo $(TERMINFO_TEST)
-	@./run_test vector $(VECTOR_TEST)
+	@./run_test darray $(DARRAY_TEST)
 	@./run_test list $(LIST_TEST)
 	@./run_test map $(MAP_TEST)
 	@printf "\e[1;38;5;39mRL42 >\e[m All util tests passed!\n"
@@ -372,7 +372,7 @@ $(TERMINFO_TEST): $(TERMINFO_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
-$(VECTOR_TEST): $(VECTOR_TEST_FILES)
+$(DARRAY_TEST): $(VECTOR_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
@@ -420,7 +420,7 @@ tclean:
 	@rm -f $(STRLEN_UTF8_TEST)
 	@rm -f $(RL42_STRING_TEST)
 	@rm -f $(TERMINFO_TEST)
-	@rm -f $(VECTOR_TEST)
+	@rm -f $(DARRAY_TEST)
 	@rm -f $(LIST_TEST)
 	@rm -f $(MAP_TEST)
 

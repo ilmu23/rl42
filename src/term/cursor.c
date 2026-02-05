@@ -19,7 +19,7 @@
 #include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_terminfo.h"
 
@@ -27,7 +27,7 @@
 
 #define _CSI_DSR	"\x1b[6n" // Device Status Report / Report Cursor Position
 
-extern vector	input_buf;
+extern darray	input_buf;
 
 extern u16	term_width;
 extern u16	term_height;
@@ -77,14 +77,14 @@ _term_cursor_get_pos_read:
 		return 0;
 	cpr = term_find_csi(buf, rv + i, CSI_CPR);
 	if (!cpr.start) {
-		if (!vector_insert_n(input_buf, -1, rv + i, buf))
+		if (!darray_insert_n(input_buf, -1, rv + i, buf))
 			return 0;
 		i = 0;
 		goto _term_cursor_get_pos_read;
 	}
 	if (cpr.start != buf) {
 		i = (size_t)((uintptr_t)cpr.start - (uintptr_t)buf);
-		if (!vector_insert_n(input_buf, -1, i, buf))
+		if (!darray_insert_n(input_buf, -1, i, buf))
 			return 0;
 		memmove(buf, &buf[i], _BUF_SIZE - i);
 		memset(&buf[_BUF_SIZE - i], 0, i);
@@ -100,7 +100,7 @@ _term_cursor_get_pos_read:
 	do i++;
 	while (!isdigit(buf[i]));
 	*col = (u16)strtoul(&buf[i], &end, 10);
-	if (++end - buf != (ptrdiff_t)rv && !vector_insert_n(input_buf, -1, rv - i, end))
+	if (++end - buf != (ptrdiff_t)rv && !darray_insert_n(input_buf, -1, rv - i, end))
 		return 0;
 	return 1;
 }

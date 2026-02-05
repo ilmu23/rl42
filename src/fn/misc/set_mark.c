@@ -13,14 +13,14 @@
 #include "internal/_defs.h"
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 
 rl42_fn(set_mark) {
 	i64	len;
 	i64	n;
 
-	len = (i64)vector_size(line->line);
+	len = (i64)darray_size(line->line);
 	n = (n_arg.set) ? get_numeric_arg(line, 0) : (i64)line->i;
 	if (n < 0)
 		n = (len - -n >= 0) ? len - -n : len;

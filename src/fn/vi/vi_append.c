@@ -11,12 +11,12 @@
 #include "function.h"
 
 #include "internal/_term.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_keybinds.h"
 
 rl42_fn(vi_append) {
 	set_editing_mode(VI_INS);
-	if (line->i < vector_size(line->line))
+	if (line->i < darray_size(line->line))
 		line->i++;
 	return term_cursor_move_to_i(line);
 }

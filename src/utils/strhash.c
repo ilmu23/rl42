@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 
 static inline u64	_upow(const u64 x, u64 y);
 
@@ -26,13 +26,13 @@ u64	cstr_hash(const char *s, const u64 salt, const size_t max) {
 	return hash;
 }
 
-u64	rl42str_hash(cvector s, const u64 salt, const size_t max) {
+u64	rl42str_hash(cdarray s, const u64 salt, const size_t max) {
 	size_t	i;
 	size_t	len;
 	u64		hash;
 
-	for (i = hash = 0 , len = vector_size(s); i < len; i++) {
-		hash += _upow(salt, len - i + 1) * *(u32 *)vector_get(s, i);
+	for (i = hash = 0 , len = darray_size(s); i < len; i++) {
+		hash += _upow(salt, len - i + 1) * *(u32 *)darray_get(s, i);
 		hash %= max;
 	}
 	return hash;

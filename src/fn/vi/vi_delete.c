@@ -11,7 +11,7 @@
 #include "function.h"
 
 #include "internal/_kb.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 
 #include "internal/fn/kill.h"
 #include "internal/fn/misc.h"
@@ -24,7 +24,7 @@ rl42_fn(vi_delete) {
 
 	rv = 1;
 	match.fn = NULL;
-	vector_clear(line->keyseq);
+	darray_clear(line->keyseq);
 	do {
 		match = kb_match_seq(line, match.fn, kb_listen((match.fn && match.fn->f) ? AMBIGUOUS_TIMEOUT : -1));
 		if (match.fn && match.run) {
@@ -44,7 +44,7 @@ rl42_fn(vi_delete) {
 				break ;
 			}
 			rv = match.fn->f(line);
-			vector_clear(line->keyseq);
+			darray_clear(line->keyseq);
 		}
 	} while (rv);
 	return rv;

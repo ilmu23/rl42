@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/test/defs.h"
 
 #define STR_COUNT	4
@@ -32,7 +32,7 @@
 #define r3	rstrings[2]
 #define r4	rstrings[3]
 
-#define rstr_check(rstr, exp_len)					(vector_size(rstr) == exp_len)
+#define rstr_check(rstr, exp_len)					(darray_size(rstr) == exp_len)
 #define cstr_check(cstr, exp_str, exp_len, exp_sze)	(memcmp(cstr, exp_str, exp_sze) == 0 \
 													 && strlen_utf8(cstr) == exp_len \
 													 && strlen(cstr) == exp_sze)
@@ -48,7 +48,7 @@ const char			*strings[STR_COUNT] = {S1, S2, S3, S4};
 
 i32	main(void) {
 	const char	*cstrings[STR_COUNT];
-	vector		rstrings[STR_COUNT];
+	darray		rstrings[STR_COUNT];
 	size_t		i;
 	size_t		j;
 	size_t		len;
@@ -64,8 +64,8 @@ i32	main(void) {
 		if (!rstr_check(rstrings[i], strlengths[i]))
 			rv = 1;
 		fprintf(stderr, "%scstr_to_rl42str(S%zu): \"", hl(rstr_check(rstrings[i], strlengths[i])), i + 1);
-		for (j = 0, len = vector_size(rstrings[i]); j < len; j++) {
-			utf8_encode(*(u32 *)vector_get(rstrings[i], j), buf);
+		for (j = 0, len = darray_size(rstrings[i]); j < len; j++) {
+			utf8_encode(*(u32 *)darray_get(rstrings[i], j), buf);
 			fputs(buf, stderr);
 		}
 		fputs("\"" ENDL, stderr);
@@ -80,7 +80,7 @@ i32	main(void) {
 		fprintf(stderr, "%srl42str_to_cstr(r%zu): \"%s\"" ENDL,
 				hl(cstr_check(cstrings[i], strings[i], strlengths[i], strsizes[i])),
 				i + 1, cstrings[i]);
-		vector_delete(rstrings[i]);
+		darray_delete(rstrings[i]);
 		free((void *)cstrings[i]);
 	}
 	return rv;

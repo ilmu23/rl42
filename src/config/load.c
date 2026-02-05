@@ -17,7 +17,7 @@
 
 #include "internal/_defs.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 
 #define _DEFAULT_CFG_FILE	".rl42rc"
 
@@ -46,8 +46,8 @@
 static inline rl42_editing_mode	_parse_mode(const char *mode);
 static inline rl42_setting		_parse_var(const char *var);
 static inline const char		*_convert_spaces(char *s);
-static inline u8				_parse_line(vector lines, cvector line, const size_t line_n);
-static inline u8				_exec_lines(cvector lines);
+static inline u8				_parse_line(darray lines, cdarray line, const size_t line_n);
+static inline u8				_exec_lines(cdarray lines);
 static inline u8				_is_int(const char *s);
 static inline u8				_is_uint(const char *s);
 static inline u8				_is_rgb(const char *s);
@@ -55,14 +55,14 @@ static inline u8				_is_rgb(const char *s);
 static void	_free_cfg_line(rl42_cfg_line *line);
 
 u8	rl42_load_config(const char *fname) {
-	vector	lines;
+	darray	lines;
 	size_t	line_n;
 	FILE	*file;
 	char	*line;
 	char	buf[4096];
 	u8		rv;
 
-	lines = vector(rl42_cfg_line, 32, (void (*)(void *))_free_cfg_line);
+	lines = darray(rl42_cfg_line, 32, (void (*)(void *))_free_cfg_line);
 	if (!lines)
 		return 0;
 	rv = 0;
@@ -80,7 +80,7 @@ u8	rl42_load_config(const char *fname) {
 _cfg_load_close_file:
 	fclose(file);
 _cfg_load_del_lines:
-	vector_delete(lines);
+	darray_delete(lines);
 	return rv;
 }
 
@@ -154,7 +154,7 @@ static inline const char	*_convert_spaces(char *s) {
 	return s;
 }
 
-static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
+static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 	struct {
 		i64	i64;
 		u64	u64;
@@ -163,9 +163,9 @@ static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
 	const char		*s;
 	size_t			elements;
 
-	s = *(const char **)vector_get(line, 0);
+	s = *(const char **)darray_get(line, 0);
 	if (*s == '#') {
-		vector_delete((vector)line);
+		darray_delete((darray)line);
 		return 1;
 	}
 	if (strcmp(s, "bind") == 0)
@@ -174,55 +174,55 @@ static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
 		_line.type = SETTING;
 	else {
 		warn("rl42: rl42_load_config: unrecognized keyword on line #%zu: %s\n", line_n, s);
-		vector_delete((vector)line);
+		darray_delete((darray)line);
 		return 1;
 	}
-	elements = vector_size(line);
+	elements = darray_size(line);
 	if (_line.type == BIND) {
 		switch (elements) {
 			case 1:
 				warn("rl42: rl42_load_config: missing key-sequence on line #%zu\n", line_n);
-				vector_delete((vector)line);
+				darray_delete((darray)line);
 				return 1;
 			case 2:
 				warn("rl42: rl42_load_config: missing command on line #%zu\n", line_n);
-				vector_delete((vector)line);
+				darray_delete((darray)line);
 				return 1;
 			case 3:
 				warn("rl42: rl42_load_config: missing mode on line #%zu\n", line_n);
-				vector_delete((vector)line);
+				darray_delete((darray)line);
 				return 1;
 		}
-		s = *(const char **)vector_get(line, 3);
+		s = *(const char **)darray_get(line, 3);
 		_line.line.bind.mode = _parse_mode(s);
 		if (_line.line.bind.mode == CURRENT) {
 			warn("rl42: rl42_load_config: unrecognized mode on line #%zu: %s\n", line_n, s);
-			vector_delete((vector)line);
+			darray_delete((darray)line);
 			return 1;
 		}
-		_line.line.bind.keyseq = strdup(*(const char **)vector_get(line, 1));
-		_line.line.bind.val = strdup(*(const char **)vector_get(line, 2));
+		_line.line.bind.keyseq = strdup(*(const char **)darray_get(line, 1));
+		_line.line.bind.val = strdup(*(const char **)darray_get(line, 2));
 		_line.line.bind.type = (*_line.line.bind.val == '\'' || *_line.line.bind.val == '"') ? MACRO : CMD;
 	} else {
-		switch (vector_size(line)) {
+		switch (darray_size(line)) {
 			case 1:
 				warn("rl42: rl42_load_config: missing variable name on line #%zu\n", line_n);
-				vector_delete((vector)line);
+				darray_delete((darray)line);
 				return 1;
 			case 2:
 				warn("rl42: rl42_load_config: missing value on line #%zu\n", line_n);
-				vector_delete((vector)line);
+				darray_delete((darray)line);
 				return 1;
 		}
-		s = *(const char **)vector_get(line, 1);
+		s = *(const char **)darray_get(line, 1);
 		_line.line.setting.var = _parse_var(s);
 		switch (_line.line.setting.var) {
 			case RL42_SETTING_NONE:
 				warn("rl42: rl42_load_config: unrecognized setting on line #%zu: %s\n", line_n, s);
-				vector_delete((vector)line);
+				darray_delete((darray)line);
 				return 1;
 			case RL42_BELL_STYLE:
-				s = *(const char **)vector_get(line, 2);
+				s = *(const char **)darray_get(line, 2);
 				if (strcasecmp(s, "none") == 0)
 					_line.line.setting.val.i64 = RL42_BELL_NONE;
 				else if (strcasecmp(s, "audible") == 0)
@@ -231,29 +231,29 @@ static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
 					_line.line.setting.val.i64 = RL42_BELL_VISIBLE;
 				else {
 					warn("rl42: rl42_load_config: unrecognized bell style on line #%zu: %s\n", line_n, s);
-					vector_delete((vector)line);
+					darray_delete((darray)line);
 					return 1;
 				}
 				break ;
 			case RL42_EDITING_MODE:
-				s = *(const char **)vector_get(line, 2);
+				s = *(const char **)darray_get(line, 2);
 				if (strcasecmp(s, "vi") == 0)
 					_line.line.setting.val.i64 = VI_CMD;
 				else if (strcasecmp(s, "emacs") == 0)
 					_line.line.setting.val.i64 = EMACS;
 				else {
 					warn("rl42: rl42_load_config: unrecognized editing mode on line #%zu: %s\n", line_n, s);
-					vector_delete((vector)line);
+					darray_delete((darray)line);
 					return 1;
 				}
 				break ;
 			case RL42_HIGHLIGHT_COLOR:
-				s = *(const char **)vector_get(line, 2);
+				s = *(const char **)darray_get(line, 2);
 				if (_is_uint(s)) {
 					n.u64 = strtoul(s, NULL, 10);
 					if (n.u64 > 255) {
 						warn("rl42: rl42_load_config: highlight color index out of range on line #%zu: %s\n", line_n, s);
-						vector_delete((vector)line);
+						darray_delete((darray)line);
 						return 1;
 					}
 					_line.line.setting.val.hlc = (rl42_hl_color){
@@ -270,7 +270,7 @@ static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
 					};
 				} else {
 					warn("rl42: rl42_load_config: invalid highlight color on line #%zu: %s\n", line_n, s);
-					vector_delete((vector)line);
+					darray_delete((darray)line);
 					return 1;
 				}
 				break ;
@@ -288,50 +288,50 @@ static inline u8	_parse_line(vector lines, cvector line, const size_t line_n) {
 			case RL42_PAGE_COMPLETIONS:
 			case RL42_SEARCH_IGNORE_CASE:
 			case RL42_VISIBLE_STATS:
-				s = *(const char **)vector_get(line, 2);
+				s = *(const char **)darray_get(line, 2);
 				if (strcasecmp(s, "on") == 0)
 					_line.line.setting.val.u64 = 1;
 				else if (strcasecmp(s, "off") == 0)
 					_line.line.setting.val.u64 = 0;
 				else {
 					warn("rl42: rl42_load_config: invalid argument to on/off setting on line #%zu: %s\n", line_n, s);
-					vector_delete((vector)line);
+					darray_delete((darray)line);
 					return 1;
 				}
 				break ;
 			case RL42_COMPLETION_DISPLAY_WIDTH:
 			case RL42_HISTORY_SIZE:
 			case RL42_KEYSEQ_TIMEOUT:
-				s = *(const char **)vector_get(line, 2);
+				s = *(const char **)darray_get(line, 2);
 				if (!_is_int(s)) {
 					warn("rl42: rl42_load_config: invalid argument to signed numeric setting on line #%zu: %s\n", line_n, s);
-					vector_delete((vector)line);
+					darray_delete((darray)line);
 					return 1;
 				}
 				n.i64 = strtol(s, NULL, 10);
 				_line.line.setting.val.i64 = (n.i64 >= 0) ? n.i64 : -1;
 				break ;
 			case RL42_COMPLETION_QUERY_ITEMS:
-				s = *(const char **)vector_get(line, 2);
+				s = *(const char **)darray_get(line, 2);
 				if (!_is_uint(s)) {
 					warn("rl42: rl42_load_config: invalid argument to unsigned numeric setting on line #%zu: %s\n", line_n, s);
-					vector_delete((vector)line);
+					darray_delete((darray)line);
 					return 1;
 				}
 				_line.line.setting.val.u64 = strtoul(s, NULL, 10);
 		}
 	}
-	vector_delete((vector)line);
-	return vector_push(lines, _line);
+	darray_delete((darray)line);
+	return darray_push(lines, _line);
 }
 
-static inline u8	_exec_lines(cvector lines) {
+static inline u8	_exec_lines(cdarray lines) {
 	rl42_cfg_line	*line;
 	size_t			size;
 	size_t			i;
 
-	for (i = 0, size = vector_size(lines); i < size; i++) {
-		line = vector_get(lines, i);
+	for (i = 0, size = darray_size(lines); i < size; i++) {
+		line = darray_get(lines, i);
 		if (line->type == BIND)
 			rl42_bind(line->line.bind.keyseq, line->line.bind.val, REMAP, line->line.bind.mode);
 		else

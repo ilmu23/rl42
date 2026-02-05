@@ -24,7 +24,7 @@
  * @returns @c <b>rl42_fn_infor</b> Information about the function,
  * NULL if no function is bound to the specified sequence
  */
-rl42_fn_info	*get_fn_info_keyseq(cvector expanded_seq, const rl42_editing_mode emode);
+rl42_fn_info	*get_fn_info_keyseq(cdarray expanded_seq, const rl42_editing_mode emode);
 
 /** @brief Gets function info by name
  *
@@ -70,9 +70,9 @@ const char		*get_macro_content(const rl42_fn macro);
 
 /** @brief Gets a list of all registered functions
  *
- * @returns @c <b>cvector</b> List of all registered functions
+ * @returns @c <b>cdarray</b> List of all registered functions
  */
-cvector			get_fn_list(void);
+cdarray			get_fn_list(void);
 
 /** @brief Gets the next avaialable macro id
  *

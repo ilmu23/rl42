@@ -11,11 +11,11 @@
 #include "function.h"
 
 #include "internal/_term.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_keybinds.h"
 
 rl42_fn(vi_append_eol) {
 	set_editing_mode(VI_INS);
-	line->i = vector_size(line->line);
+	line->i = darray_size(line->line);
 	return term_cursor_move_to_i(line);
 }

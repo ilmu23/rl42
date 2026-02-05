@@ -45,14 +45,14 @@ u8		kill_copy_region(rl42_line *line);
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8		kill_add_to_ring(cvector text);
+u8		kill_add_to_ring(cdarray text);
 
 /** @brief Gets the text on top of the kill ring
  *
- * @returns @c <b>cvector</b> The text on top of the kill ring,
+ * @returns @c <b>cdarray</b> The text on top of the kill ring,
  * NULL if the kill ring is empty
  */
-cvector	kill_get_top_of_ring(void);
+cdarray	kill_get_top_of_ring(void);
 
 /** @brief Rotates the kill ring
  *

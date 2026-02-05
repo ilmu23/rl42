@@ -12,7 +12,7 @@
 #include "internal/_kb.h"
 #include "internal/_defs.h"
 #include "internal/_term.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 
 #include "internal/fn/misc.h"
 
@@ -23,18 +23,18 @@ rl42_fn(forward_char_search) {
 
 	if (get_numeric_arg(line, 1) < 0)
 		return backward_char_search(line);
-	len = vector_size(line->line);
+	len = darray_size(line->line);
 	if (line->i >= len - 1)
 		return 1;
 	c = kb_event_to_ucp(kb_listen(-1));
 	if (rl42_get(RL42_SEARCH_IGNORE_CASE).u64 == 0) {
 		for (i = line->i + 1; i < len; i++)
-			if (c == *(u32 *)vector_get(line->line, i))
+			if (c == *(u32 *)darray_get(line->line, i))
 				break ;
 	} else {
 		c = (u32)to_upper(c);
 		for (i = line->i + 1; i < len; i++)
-			if (c == (u32)to_upper(*(u32 *)vector_get(line->line, i)))
+			if (c == (u32)to_upper(*(u32 *)darray_get(line->line, i)))
 				break ;
 	}
 	if (i == len)

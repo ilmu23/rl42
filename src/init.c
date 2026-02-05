@@ -47,7 +47,7 @@
 #define bind_all(seq, f)	(bind_emacs(seq, f), bind_vi_cmd(seq, f), bind_vi_ins(seq, f))
 #define cbind_all(seq, f)	(rl42_bind(seq, f, CONST, EMACS), rl42_bind(seq, f, CONST, VI_CMD), rl42_bind(seq, f, CONST, VI_INS))
 
-extern vector	input_buf;
+extern darray	input_buf;
 
 static u8	init = 0;
 
@@ -61,7 +61,7 @@ u8	rl42_init(void) {
 	if (!init && ~state_flags & STATE_INIT_IN_PROGRESS) {
 		state_flags ^= STATE_INIT_IN_PROGRESS;
 		if (!input_buf) {
-			input_buf = vector(char, 64, NULL);
+			input_buf = darray(char, 64, NULL);
 			if (!input_buf)
 				rv = 0;
 		}
@@ -87,7 +87,7 @@ u8	rl42_init(void) {
 
 void	rl42_cleanup(void) {
 	if (init) {
-		vector_delete(input_buf);
+		darray_delete(input_buf);
 		term_cursor_destroy_anchors();
 		term_apply_settings(TERM_SETTINGS_DEFAULT);
 		hist_clean();

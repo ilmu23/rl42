@@ -15,11 +15,11 @@
  *
  * @param completions Completions to analyze
  * @param pattern_len Length of the completed pattern
- * @returns @c <b>cvector</b> Common part of the completions,
+ * @returns @c <b>cdarray</b> Common part of the completions,
  * completions if no common part was found or if there were no completions,
  * NULL if completions was NULL
  */
-cvector	cmp_get_common(cvector completions, const size_t pattern_len);
+cdarray	cmp_get_common(cdarray completions, const size_t pattern_len);
 
 /** @brief Displays all completions
  *
@@ -28,7 +28,7 @@ cvector	cmp_get_common(cvector completions, const size_t pattern_len);
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8		cmp_display(rl42_line *line, cvector completions);
+u8		cmp_display(rl42_line *line, cdarray completions);
 
 /** @brief Inserts a completion into line
  *

@@ -13,7 +13,7 @@
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
 #include "internal/_utils.h"
-#include "internal/_vector.h"
+#include "internal/_darray.h"
 #include "internal/_display.h"
 
 u8	_swap(void *x, void *y);
@@ -28,9 +28,9 @@ rl42_fn(transpose_chars) {
 	} else {
 		if (line->i == 0)
 			return 2;
-		len = vector_size(line->line);
+		len = darray_size(line->line);
 		i = (line->i < len) ? line->i : line->i - 1;
-		vector_swap(line->line, i, i - 1, _swap);
+		darray_swap(line->line, i, i - 1, _swap);
 		line->i = ++i;
 	}
 	return (~state_flags & STATE_REPEAT) ? term_display_line(line, 0) : 1;
