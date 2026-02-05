@@ -31,6 +31,8 @@ typedef struct {
 
 extern char	**environ;
 
+char	*(*rl42_getenv)(const char *) = getenv;
+
 static const cap	bool_caps[TI_BOOLEAN_CAPS] = {
 	{ .name_str = "OTMT", .name = ti_OTMT },
 	{ .name_str = "OTNL", .name = ti_OTNL },

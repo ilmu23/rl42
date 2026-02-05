@@ -23,6 +23,8 @@
 
 #include "internal/fn/misc.h"
 
+char	*(*rl42_getenv)(const char *) = getenv;
+
 rl42_hist_node	*current;
 
 rl42_state	state_flags;

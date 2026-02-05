@@ -15,6 +15,8 @@
 
 #define RL42_VERSION "3.10.24"
 
+extern char	*(*rl42_getenv)(const char *);
+
 /** @brief Gets a line from the user with editing
  *
  * @param prompt Prompt to be displayed

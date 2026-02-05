@@ -7,13 +7,13 @@
 //
 // <<relaod_config_file.c>>
 
-#include <stdlib.h>
 
 #define __RL42_INTERNAL
+#include "rl42.h"
 #include "config.h"
 #include "function.h"
 
 rl42_fn(reload_config_file) {
-	rl42_load_config(getenv("RL42RC"));
+	rl42_load_config(rl42_getenv("RL42RC"));
 	return 1;
 }

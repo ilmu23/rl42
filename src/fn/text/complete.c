@@ -115,7 +115,7 @@ static inline _cmp_info	_get_target(rl42_line *line) {
 	if (!target.pattern)
 		goto __get_target_error;
 	if (rl42_get(RL42_EXPAND_TILDE).u64 == rl42_conf_on && *target.pattern == '~') {
-		_tmp = getenv("HOME");
+		_tmp = rl42_getenv("HOME");
 		if (_tmp) {
 			_tmp = cstr_join(_tmp, &target.pattern[1]);
 			if (!_tmp)

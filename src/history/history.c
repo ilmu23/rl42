@@ -290,7 +290,7 @@ u8	hist_load(const char *fname) {
 	if (!history)
 		return 0;
 	if (!fname)
-		snprintf(histfile_name, _HFNAME_BUF_SIZE, "%s/" _DEFAULT_HIST_FILE, getenv("HOME"));
+		snprintf(histfile_name, _HFNAME_BUF_SIZE, "%s/" _DEFAULT_HIST_FILE, rl42_getenv("HOME"));
 	else
 		strlcpy(histfile_name, fname, sizeof(histfile_name));
 	file = fopen(histfile_name, "r");

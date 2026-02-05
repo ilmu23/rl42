@@ -7,7 +7,7 @@
 //
 // <<tilde_expand.c>>
 
-#include <stdlib.h>
+#include "rl42.h"
 
 #include "internal/_defs.h"
 #include "internal/_utils.h"
@@ -40,7 +40,7 @@ rl42_fn(tilde_expand) {
 	c = *(u32 *)vector_get(line->line, line->i);
 	if (c != '~')
 		goto _tilde_expand_err_reset_i;
-	_home = getenv("HOME");
+	_home = rl42_getenv("HOME");
 	if (!_home)
 		goto _tilde_expand_err_reset_i;
 	rv = 0;

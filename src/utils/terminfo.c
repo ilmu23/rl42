@@ -25,6 +25,8 @@
 # include <bsd/string.h>
 #endif
 
+#include "rl42.h"
+
 #include "internal/_map.h"
 #include "internal/_defs.h"
 #include "internal/_utils.h"
@@ -537,16 +539,16 @@ static inline i32	_open(const char *term) {
 	allocs = vector(void *, 4, free);
 	if (!dirs || !allocs)
 		goto _open_err_ret;
-	tmp = getenv("TERMINFO");
+	tmp = rl42_getenv("TERMINFO");
 	if (tmp && !vector_push(dirs, tmp))
 		goto _open_err_ret;
-	tmp = getenv("HOME");
+	tmp = rl42_getenv("HOME");
 	if (tmp) {
 		tmp = cstr_joinb(tmp, "/.terminfo", buf, PATH_MAX + 1);
 		if (!vector_push(dirs, tmp))
 			goto _open_err_ret;
 	}
-	tmp = getenv("TERMINFO_DIRS");
+	tmp = rl42_getenv("TERMINFO_DIRS");
 	if (tmp && !_extract_dirs(tmp, dirs, allocs))
 		goto _open_err_ret;
 	if (!vector_push(dirs, (const char *){"/etc/terminfo"}))

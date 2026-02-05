@@ -98,7 +98,7 @@ static inline const char	*_expand_path(const char *path) {
 
 	if (*path == '~') {
 		memset(buf, 0, sizeof(buf));
-		strlcpy(buf, getenv("HOME"), sizeof(buf));
+		strlcpy(buf, rl42_getenv("HOME"), sizeof(buf));
 		strlcat(buf, &path[1], sizeof(buf));
 		return strdup(buf);
 	}

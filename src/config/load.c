@@ -67,7 +67,7 @@ u8	rl42_load_config(const char *fname) {
 		return 0;
 	rv = 0;
 	if (!fname)
-		snprintf(buf, 4096, "%s/" _DEFAULT_CFG_FILE, getenv("HOME"));
+		snprintf(buf, 4096, "%s/" _DEFAULT_CFG_FILE, rl42_getenv("HOME"));
 	else
 		snprintf(buf, 4096, "%s", fname);
 	file = fopen(buf, "r");

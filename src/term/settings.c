@@ -395,7 +395,7 @@ u8	term_show_cursor(void) {
 static inline u8	_init_seqs(void) {
 	const char	*term;
 
-	term = getenv("TERM");
+	term = rl42_getenv("TERM");
 	if (!ti_load((term) ? term : "dumb"))
 		return 0;
 	key_seqs.kbs = ti_getstr(ti_kbs);
