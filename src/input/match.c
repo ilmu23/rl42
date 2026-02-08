@@ -8,8 +8,6 @@
 // <<match.c>>
 
 #include "internal/_kb.h"
-#include "internal/_map.h"
-#include "internal/_darray.h"
 #include "internal/_keybinds.h"
 
 #define __fn_match(f, r)	((rl42_fn_match){.fn = f, .run = r})

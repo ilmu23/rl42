@@ -27,10 +27,8 @@
 
 #include "rl42.h"
 
-#include "internal/_map.h"
 #include "internal/_defs.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/_terminfo.h"
 
 #define _BUFFER_SIZE 4096
@@ -582,7 +580,7 @@ static inline u8	_extract_dirs(const char *list, darray dirs, darray allocs) {
 
 	buf[PATH_MAX] = '\0';
 	for (i = j = 0; list[j]; j++) {
-		if (buf[j] == ':') {
+		if (list[j] == ':') {
 			if (j > i) {
 				if (j - i > PATH_MAX)
 					return 0;

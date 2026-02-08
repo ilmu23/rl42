@@ -10,7 +10,6 @@
 #include "internal/_kb.h"
 #include "internal/_kill.h"
 #include "internal/_rl42.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 #include "internal/fn/kill.h"

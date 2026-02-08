@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/test/defs.h"
 
 static inline char	*_strdup(const char *s);

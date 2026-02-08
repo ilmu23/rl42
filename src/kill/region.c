@@ -9,7 +9,13 @@
 
 #include "internal/_kill.h"
 #include "internal/_rl42.h"
-#include "internal/_darray.h"
+
+#undef darray_push
+#ifndef __RL42_USE_EXTERNAL_CONTAINERS
+#define darray_push(darray, value)	(__dar_psh(darray, value))
+#else
+#define darray_push(darray, value)	(_dar_psh(darray, value))
+#endif
 
 extern rl42_state	state_flags;
 
@@ -33,7 +39,7 @@ u8	kill_region_internal(rl42_line *line) {
 		}
 	}
 	if (~state_flags & STATE_KILL_DONT_UPDATE_RING) do {
-		__dar_psh(killed, darray_get(line->line, kill_start.pos));
+		darray_push(killed, darray_get(line->line, kill_start.pos));
 		darray_erase(line->line, kill_start.pos);
 	} while (--len); else do
 		darray_erase(line->line, kill_start.pos);
@@ -57,6 +63,6 @@ u8	kill_copy_region(rl42_line *line) {
 		return 0;
 	}
 	for (i = 0; len--; i++)
-		__dar_psh(copy, darray_get(line->line, kill_start.pos + i));
+		darray_push(copy, darray_get(line->line, kill_start.pos + i));
 	return 1;
 }

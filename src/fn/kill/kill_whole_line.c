@@ -12,7 +12,6 @@
 
 #include "internal/_kill.h"
 #include "internal/_defs.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 rl42_fn(kill_whole_line) {

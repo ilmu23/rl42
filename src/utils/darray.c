@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 
 struct __darray {
 	void	(*free)(void *);

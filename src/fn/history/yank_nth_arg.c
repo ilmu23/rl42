@@ -10,7 +10,6 @@
 #define __RL42_INTERNAL
 #include "function.h"
 
-#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
 

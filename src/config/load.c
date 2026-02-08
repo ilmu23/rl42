@@ -17,7 +17,6 @@
 
 #include "internal/_defs.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 
 #define _DEFAULT_CFG_FILE	".rl42rc"
 

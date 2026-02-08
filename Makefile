@@ -297,6 +297,16 @@ else
 	ITLDFLAGS	=	-L. -lrl42 $(TLDFLAGS)
 endif
 
+ifdef USE_EXTERNAL_CONTAINERS
+	TLDFLAGS	+=	-lcont
+	ITLDFLAGS	+=	-lcont
+endif
+
+ifdef USE_EXTERNAL_TERMINFO
+	TLDFLAGS	+=	-lti42
+	ITLDFLAGS	+=	-lti42
+endif
+
 ifndef NO_LIBICU
 	TLDFLAGS	+=	-licuuc
 	ITLDFLAGS	+=	-licuuc
@@ -421,7 +431,7 @@ $(TESTBIN):
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
-	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@rm -f $(OBJS)

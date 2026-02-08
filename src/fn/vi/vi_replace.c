@@ -13,7 +13,6 @@
 #include "internal/_kb.h"
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 rl42_fn(vi_replace) {

@@ -10,15 +10,14 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "internal/_map.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 
 #ifndef __RL42_USE_EXTERNAL_TERMINFO
 #include "internal/_terminfo.h"
 #else
 #include <ti42/ti42.h>
+#define ti42_tparm(seq, arg)	(ti42_tparm1(seq, arg))
 #endif
 
 #define _csi_match(s, c)	((csi_match){.start = s, .complete = c})

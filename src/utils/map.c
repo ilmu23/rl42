@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "internal/_map.h"
 #include "internal/_utils.h"
 
 #define _DELETED	((void *)2)

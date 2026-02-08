@@ -9,11 +9,14 @@
 
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 #undef darray_insert
+#ifndef __RL42_USE_EXTERNAL_CONTAINERS
 #define darray_insert(arr, i, val)	(__dar_ins(arr, i, 1, val))
+#else
+#define darray_insert(arr, i, val)	(_dar_ins(arr, i, 1, val))
+#endif
 
 u8	self_insert(rl42_line *line) {
 	if (NEED_REPEAT) {

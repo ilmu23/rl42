@@ -17,7 +17,6 @@
 
 #include "internal/_data.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 
 typedef struct {
 	const char	*start;

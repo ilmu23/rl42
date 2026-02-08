@@ -16,7 +16,6 @@
 #include "internal/_defs.h"
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 static inline void	_transpose(rl42_line *line, size_t w1, size_t w2, const size_t len);

@@ -10,7 +10,6 @@
 #include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 
 #include "internal/fn/move.h"
 

@@ -13,7 +13,6 @@
 #include "function.h"
 
 #include "internal/_defs.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 #include "internal/fn/misc.h"

@@ -15,7 +15,6 @@
 
 #include "internal/_defs.h"
 #include "internal/_term.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 #define _BP_END	"\x1b[201~"

@@ -335,9 +335,13 @@ const char	*term_get_hl_seq(void) {
 	if (!rl42_get(RL42_ENABLE_HIGHLIGHT).u64)
 		return "";
 	hl = rl42_get(RL42_HIGHLIGHT_COLOR).hlc;
-	if (hl.type == RL42_HL_INDEX)
+	if (hl.type == RL42_HL_INDEX) {
+#ifndef __RL42_USE_EXTERNAL_TERMINFO
 		strlcpy(buf, ti42_tparm(esc_seqs.setaf, hl.val.index), _BUFFER_SIZE + 1);
-	else
+#else
+		strlcpy(buf, ti42_tparm1(esc_seqs.setaf, hl.val.index), _BUFFER_SIZE + 1);
+#endif
+	} else
 		snprintf(buf, _BUFFER_SIZE, "\x1b[38;2;%hhu;%hhu;%hhum", hl.val.rgb.r, hl.val.rgb.g, hl.val.rgb.b);
 	return buf;
 }
@@ -365,14 +369,24 @@ u16	term_match_key_seq(const char *seq) {
 }
 
 u8	term_set_fg_color(const u8 color) {
-	if (esc_seqs.setaf)
+	if (esc_seqs.setaf) {
+#ifndef __RL42_USE_EXTERNAL_TERMINFO
 		return (ti42_tputs(ti42_tparm(esc_seqs.setaf, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+#else
+		return (ti42_tputs(ti42_tparm1(esc_seqs.setaf, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+#endif
+	}
 	return 0;
 }
 
 u8	term_set_bg_color(const u8 color) {
-	if (esc_seqs.setab)
+	if (esc_seqs.setab) {
+#ifndef __RL42_USE_EXTERNAL_TERMINFO
 		return (ti42_tputs(ti42_tparm(esc_seqs.setab, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+#else
+		return (ti42_tputs(ti42_tparm1(esc_seqs.setab, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+#endif
+	}
 	return 0;
 }
 

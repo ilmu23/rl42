@@ -19,10 +19,8 @@
 #include <linux/limits.h>
 
 #include "internal/_kb.h"
-#include "internal/_list.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
 #include "internal/_keybinds.h"

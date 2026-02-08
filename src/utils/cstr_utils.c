@@ -11,7 +11,6 @@
 #include <stdlib.h>
 
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 
 #define _SPLIT_IGN_UNSET	'\xff'
 

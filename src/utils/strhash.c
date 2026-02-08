@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 
 static inline u64	_upow(const u64 x, u64 y);
 

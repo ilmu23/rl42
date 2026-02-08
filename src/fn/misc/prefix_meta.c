@@ -11,7 +11,6 @@
 #include "function.h"
 
 #include "internal/_rl42.h"
-#include "internal/_darray.h"
 
 rl42_fn(prefix_meta) {
 	darray_clear(line->keyseq);

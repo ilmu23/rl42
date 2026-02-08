@@ -7,8 +7,8 @@
 //
 // <<ring.c>>
 
-#include "internal/_list.h"
-#include "internal/_darray.h"
+#define __RL42_INTERNAL
+#include "internal/_data.h"
 
 static list	ring;
 

@@ -12,9 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "internal/_list.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/test/defs.h"
 
 #ifndef REMOVE_CHANCE

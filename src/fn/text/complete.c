@@ -22,7 +22,6 @@
 #include "internal/_kill.h"
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/_complete.h"
 
 #define on_word(line)	((line->i < darray_size(line->line) && !is_space(*(u32 *)darray_get(line->line, line->i))) \

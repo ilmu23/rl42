@@ -12,7 +12,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "internal/_map.h"
+#define __RL42_INTERNAL
+#include "internal/_data.h"
 #include "internal/_defs.h"
 #include "internal/test/defs.h"
 

@@ -8,7 +8,6 @@
 // <<end_of_file.c>>
 
 #include "internal/_data.h"
-#include "internal/_darray.h"
 
 u8	end_of_file(rl42_line *line) {
 	if (darray_size(line->line) == 0) {

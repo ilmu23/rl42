@@ -13,7 +13,6 @@
 #include "function.h"
 
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 extern rl42_hist_node	*current;

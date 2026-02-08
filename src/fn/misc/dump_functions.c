@@ -11,11 +11,15 @@
 #include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_function.h"
 #include "internal/_keybinds.h"
+
+#ifndef __RL42_USE_EXTERNAL_TERMINFO
 #include "internal/_terminfo_caps.h"
+#else
+#include <ti42/ti42_caps.h>
+#endif
 
 #define __DUMP_FN
 #include "internal/fn/misc.h"

@@ -12,7 +12,6 @@
 #include "internal/_kb.h"
 #include "internal/_defs.h"
 #include "internal/_term.h"
-#include "internal/_darray.h"
 
 #include "internal/fn/misc.h"
 

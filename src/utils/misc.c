@@ -10,7 +10,6 @@
 #include <unistd.h>
 
 #include "internal/_defs.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 extern rl42_numeric_arg	n_arg;

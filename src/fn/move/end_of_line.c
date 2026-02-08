@@ -8,7 +8,6 @@
 // <<end_of_line.c>>
 
 #include "internal/_term.h"
-#include "internal/_darray.h"
 
 u8	end_of_line(rl42_line *line) {
 	line->i = darray_size(line->line);

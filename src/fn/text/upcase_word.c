@@ -11,7 +11,6 @@
 #include "function.h"
 
 #include "internal/_defs.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 rl42_fn(upcase_word) {

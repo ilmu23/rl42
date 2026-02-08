@@ -12,7 +12,6 @@
 #include "internal/_kb.h"
 #include "internal/_utils.h"
 #include "internal/_hashes.h"
-#include "internal/_darray.h"
 #include "internal/_keybinds.h"
 
 #define _INVALID_ESCAPE	UINT32_MAX

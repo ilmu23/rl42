@@ -11,7 +11,6 @@
 #include "function.h"
 
 #include "internal/_term.h"
-#include "internal/_darray.h"
 #include "internal/_keybinds.h"
 
 rl42_fn(vi_append_eol) {

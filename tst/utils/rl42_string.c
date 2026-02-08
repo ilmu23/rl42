@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/test/defs.h"
 
 #define STR_COUNT	4

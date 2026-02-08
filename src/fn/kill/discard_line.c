@@ -13,7 +13,6 @@
 #include "function.h"
 
 #include "internal/_term.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 #include "internal/_history.h"
 

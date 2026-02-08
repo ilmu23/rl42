@@ -11,7 +11,6 @@
 #include <string.h>
 
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 
 darray	cstr_to_rl42str(const char *s) {
 	darray	out;

@@ -11,7 +11,6 @@
 #include "function.h"
 
 #include "internal/_kb.h"
-#include "internal/_darray.h"
 
 #include "internal/fn/kill.h"
 #include "internal/fn/misc.h"

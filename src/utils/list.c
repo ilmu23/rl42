@@ -12,8 +12,8 @@
 #include <string.h>
 #include <sys/resource.h>
 
-#include "internal/_list.h"
-#include "internal/_darray.h"
+#define __RL42_INTERNAL
+#include "internal/_data.h"
 
 #define _INDEX_NONE	SIZE_MAX
 

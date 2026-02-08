@@ -15,11 +15,9 @@
 
 #include "rl42.h"
 
-#include "internal/_map.h"
 #include "internal/_rl42.h"
 #include "internal/_term.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 #include "internal/_display.h"
 
 #ifndef __RL42_USE_EXTERNAL_TERMINFO
@@ -111,7 +109,7 @@ _term_cursor_get_pos_read:
 }
 
 u8	term_cursor_set_pos(const i16 row, const i16 col) {
-	return (ti42_tputs(ti42_tparm(move_cursor, row - 1, col - 1), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
+	return (ti42_tputs(ti42_tgoto(move_cursor, row, col), 1, term_putchar_unbuffered));
 }
 
 u8	term_cursor_move_to(rl42_line *line, i16 row, i16 col) {

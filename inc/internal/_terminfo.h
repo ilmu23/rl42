@@ -81,7 +81,7 @@ const char	*ti42_getstr(const u16 name);
 
 /** @brief Returns an escape sequence for moving the cursor to the desired location
  *
- * @apram seq Cursor move sequence (ti_cup)
+ * @param seq Cursor move sequence (ti42_cup)
  * @param row Desired row, 1-based
  * @param col Desired column, 1-based
  * @returns @c <b>const char *</b> Sequence for moving to the desired location,
@@ -108,7 +108,7 @@ const char	*ti42_tparm(const char *seq, ...);
  */
 ssize_t		ti42_tputs(const char *s, const size_t affln, ssize_t (*putc)(const char));
 
-/** @Unloads the currently loaded description
+/** @brief Unloads the currently loaded description
  *
  * Frees all resources used for storing the
  * currently loaded description. Does nothing

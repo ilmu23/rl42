@@ -9,7 +9,6 @@
 
 #include "internal/_defs.h"
 #include "internal/_utils.h"
-#include "internal/_darray.h"
 
 size_t	rl42str_find(cdarray s, cdarray substr) {
 	size_t	sslen;
