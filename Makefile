@@ -268,7 +268,7 @@ TERMINFO_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/terminfo.c \
 							$(SRCDIR)/$(UTILDIR)/strhash.c \
 							$(SRCDIR)/$(UTILDIR)/message.c
 
-VECTOR_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/darray.c \
+DARRAY_TEST_FILES		=	$(TESTDIR)/$(UTILDIR)/darray.c \
 							$(SRCDIR)/$(UTILDIR)/darray.c \
 							$(SRCDIR)/$(UTILDIR)/message.c
 
@@ -396,7 +396,7 @@ $(TERMINFO_TEST): $(TERMINFO_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 
-$(DARRAY_TEST): $(VECTOR_TEST_FILES)
+$(DARRAY_TEST): $(DARRAY_TEST_FILES)
 	@printf "\e[1;38;5;39mRL42 >\e[m Compiling %s\n" $@
 	@$(CC) $(TCFLAGS) -I$(INCDIR) $^ $(TLDFLAGS) -o $@
 

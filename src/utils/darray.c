@@ -97,7 +97,7 @@ void	__dar_pop(darray arr) {
 }
 
 void	*__dar_get(cdarray arr, const size_t i) {
-	return (i < arr->elements) ? index(arr, i) : (i == (size_t)-1 && arr->elements) ? index(arr, arr->elements -1) : VECTOR_OUT_OF_BOUNDS;
+	return (i < arr->elements) ? index(arr, i) : (i == (size_t)-1 && arr->elements) ? index(arr, arr->elements -1) : DARRAY_OUT_OF_BOUNDS;
 }
 
 u8	__dar_set(darray arr, const size_t i, const void *val, const u8 free) {

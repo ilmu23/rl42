@@ -96,7 +96,7 @@ u8	__lst_psh_b(list list, const void *val) {
 		return 0;
 	last = darray_get(list->data, list->last);
 	memcpy(new.node.data, val, list->element_size);
-	new.prev = (last != VECTOR_OUT_OF_BOUNDS) ? last->index : _INDEX_NONE;
+	new.prev = (last != DARRAY_OUT_OF_BOUNDS) ? last->index : _INDEX_NONE;
 	new.index = darray_size(list->data);
 	rv = darray_push(list->data, new);
 	if (rv) {
@@ -128,7 +128,7 @@ u8	__lst_psh_f(list list, const void *val) {
 		return 0;
 	first = darray_get(list->data, list->first);
 	memcpy(new.node.data, val, list->element_size);
-	new.next = (first != VECTOR_OUT_OF_BOUNDS) ? first->index : _INDEX_NONE;
+	new.next = (first != DARRAY_OUT_OF_BOUNDS) ? first->index : _INDEX_NONE;
 	new.index = darray_size(list->data);
 	rv = darray_push(list->data, new);
 	if (rv) {

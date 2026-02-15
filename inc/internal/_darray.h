@@ -16,7 +16,7 @@
 typedef struct __darray *		darray;
 typedef const struct __darray *	cdarray;
 
-#define VECTOR_OUT_OF_BOUNDS	((void *)1)
+#define DARRAY_OUT_OF_BOUNDS	((void *)1)
 
 #define darray(type, count, free)	(__dar_new(sizeof(type), count, free))
 darray	__dar_new(const size_t size, const size_t count, void (*free)(void *));

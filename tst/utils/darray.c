@@ -155,7 +155,7 @@ static inline i32	_test3(void) {
 	fprintf(stderr, "%sraw data comparison %s" ENDL, hl(chk == 0), (chk == 0) ? "OK" : "KO");
 	for (i = 0; i < 6; i++) {
 		tmp = darray_get(darray, i);
-		if (tmp == VECTOR_OUT_OF_BOUNDS) {
+		if (tmp == DARRAY_OUT_OF_BOUNDS) {
 			fprintf(stderr, "%sdarray[%zu]: access out of bounds" ENDL, hl(i == 5), i);
 			continue ;
 		}
@@ -194,7 +194,7 @@ static inline i32	_test4(void) {
 	fprintf(stderr, "%sraw data comparison %s" ENDL, hl(chk == 0), (chk == 0) ? "OK" : "KO");
 	for (i = 0; i < 10; i++) {
 		tmp = darray_get(darray, i);
-		if (tmp == VECTOR_OUT_OF_BOUNDS) {
+		if (tmp == DARRAY_OUT_OF_BOUNDS) {
 			fprintf(stderr, "%sdarray[%zu]: access out of bounds" ENDL, hl(i >= 8), i);
 			continue ;
 		}
