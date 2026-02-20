@@ -320,10 +320,11 @@ shared: $(SHARED)
 
 tester: $(INTERACTIVE_TESTER)
 
-install: $(STATIC) $(SHARED)
+install:
 	@printf "\e[1;38;5;39mRL42 >\e[m Installing rl42\n"
 	@mkdir -p $(INSTALL_PATH)/lib
-	@cp $(STATIC) $(SHARED) $(INSTALL_PATH)/lib/
+	@if [ -a $(STATIC) ]; then cp $(STATIC) $(INSTALL_PATH)/lib/; fi
+	@if [ -a $(SHARED) ]; then cp $(SHARED) $(INSTALL_PATH)/lib/; fi
 	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
 
 install-headers:
