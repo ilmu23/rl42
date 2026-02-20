@@ -74,7 +74,7 @@ static inline u8	_create_history(void) {
 	if (!file)
 		return 0;
 	for (i = 0; i < _HIST_ITEMS_COUNT; i++)
-		fprintf(file, "%s\n", hist_items[i]);
+		fprintf(file, "%s%c\n", hist_items[i], '\xff');
 	fclose(file);
 	return 1;
 }

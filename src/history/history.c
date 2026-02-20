@@ -298,10 +298,9 @@ u8	hist_load(const char *fname) {
 	length = 0;
 	entries = 0;
 	load_done = 0;
-	for (rv = 1, read = getline(&line, &length, file); rv && read != -1; read = getline(&line, &length, file)) {
-		if (line[read - 1] == '\n')
-			line[read - 1] = '\0';
-		if (!hist_add_line(line))
+	for (rv = 1, read = getdelim(&line, &length, '\xff', file); rv && read != -1; read = getdelim(&line, &length, '\xff', file)) {
+		line[read - 1] = '\0';
+		if (!hist_add_line(line) || fseek(file, 1, SEEK_CUR) == -1)
 			rv = 0;
 		line = NULL;
 	}
@@ -329,7 +328,7 @@ void	hist_clean(void) {
 		do {
 			prev = node;
 			node = hist_get_next_node(node, FORWARD);
-			fprintf(file, "%s\n", prev->line);
+			fprintf(file, "%s%c\n", prev->line, '\xff');
 		} while (prev != node);
 		fclose(file);
 	}
