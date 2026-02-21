@@ -319,9 +319,13 @@ void	hist_clean(void) {
 
 	if (!history)
 		return ;
+	if (rl42_in_child_process)
+		goto _hist_clean_delete_history;
 	node = hist_get_first_node();
 	if (node && node->new) {
 		file = fopen(histfile_name, "a");
+		if (!file)
+			goto _hist_clean_delete_history;
 		for (node = hist_get_last_node(), prev = NULL; node != prev; prev = node, node = hist_get_next_node(node, FORWARD))
 			if (node->new)
 				break ;
@@ -332,6 +336,7 @@ void	hist_clean(void) {
 		} while (prev != node);
 		fclose(file);
 	}
+_hist_clean_delete_history:
 	list_delete(history);
 	history = NULL;
 	load_done = 0;

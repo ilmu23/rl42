@@ -13,7 +13,9 @@
 
 #include "data.h"
 
-#define RL42_VERSION "3.11.5"
+#define RL42_VERSION "3.11.6"
+
+extern u8	rl42_in_child_process;
 
 extern char	*(*rl42_getenv)(const char *);
 

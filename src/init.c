@@ -94,7 +94,8 @@ void	rl42_cleanup(void) {
 	if (init) {
 		darray_delete(input_buf);
 		term_cursor_destroy_anchors();
-		term_apply_settings(TERM_SETTINGS_DEFAULT);
+		if (!rl42_in_child_process)
+			term_apply_settings(TERM_SETTINGS_DEFAULT);
 		hist_clean();
 		clean_kb_listener();
 		clean_key_trees();

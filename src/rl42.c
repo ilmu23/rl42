@@ -27,6 +27,8 @@
 
 #include "internal/fn/misc.h"
 
+u8	rl42_in_child_process;
+
 char	*(*rl42_getenv)(const char *) = getenv;
 
 rl42_hist_node	*current;

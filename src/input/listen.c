@@ -72,7 +72,8 @@ rl42_kb_event	*kb_listen_buf(const i32 timeout, char *buf, const size_t buf_size
 }
 
 void	clean_kb_listener(void) {
-	epoll_ctl(efd, EPOLL_CTL_DEL, 0, NULL);
+	if (!rl42_in_child_process)
+		epoll_ctl(efd, EPOLL_CTL_DEL, 0, NULL);
 	close(efd);
 }
 
