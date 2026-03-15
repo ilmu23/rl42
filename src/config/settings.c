@@ -19,6 +19,7 @@
 
 #include "internal/_term.h"
 #include "internal/_history.h"
+#include "internal/_keybinds.h"
 
 #define _EP_BUF_SIZE	PATH_MAX + 1
 
@@ -80,6 +81,9 @@ u8	rl42_set(const rl42_setting setting, const rl42_setting_val value) {
 				settings[setting].u64 = (settings[setting].u64) ? rl42_conf_off : rl42_conf_on;
 				return 0;
 			}
+			break ;
+		case RL42_EDITING_MODE:
+			set_editing_mode(settings[setting].i64);
 			break ;
 		default:
 			;
