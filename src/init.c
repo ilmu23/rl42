@@ -90,6 +90,8 @@ u8	rl42_init(void) {
 	return rv;
 }
 
+extern const char	*history_file;
+
 void	rl42_cleanup(void) {
 	if (init) {
 		darray_delete(input_buf);
@@ -97,6 +99,7 @@ void	rl42_cleanup(void) {
 		if (!rl42_in_child_process)
 			term_apply_settings(TERM_SETTINGS_DEFAULT);
 		hist_clean();
+		free((void *)history_file);
 		clean_kb_listener();
 		clean_key_trees();
 		kill_clear_ring();

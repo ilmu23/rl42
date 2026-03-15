@@ -27,7 +27,7 @@
 
 #define _set_hfile_success(p)	(((history_file && p) || (!history_file && !p)))
 
-static const char	*history_file = NULL;
+const char	*history_file = NULL;
 
 static rl42_setting_val	settings[RL42_SETTING_NONE] = {
 	{ .i64 = RL42_BELL_NONE },	// bell-style
