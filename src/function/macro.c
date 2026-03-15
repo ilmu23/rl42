@@ -34,8 +34,8 @@
 
 typedef u8	 caller_segment[32];
 
-static size_t	macro_counts[3];
-static map		macros[3];
+static size_t	macro_counts[8];
+static map		macros[8];
 
 static inline const char	*_id_to_name(const size_t id, const rl42_editing_mode emode);
 static inline void			*_get_ptr(u8 buf[8]);
@@ -148,12 +148,22 @@ size_t	get_next_macro_id(const rl42_editing_mode emode) {
 }
 
 void	delete_macros(void) {
-	map_delete(macros[EMACS]);
-	map_delete(macros[VI_CMD]);
-	map_delete(macros[VI_INS]);
-	macros[EMACS] = NULL;
-	macros[VI_CMD] = NULL;
-	macros[VI_INS] = NULL;
+	map_delete(macros[RL42_EM_EMACS]);
+	map_delete(macros[RL42_EM_VI_CMD]);
+	map_delete(macros[RL42_EM_VI_INS]);
+	map_delete(macros[RL42_EM_CUSTOM_1]);
+	map_delete(macros[RL42_EM_CUSTOM_2]);
+	map_delete(macros[RL42_EM_CUSTOM_3]);
+	map_delete(macros[RL42_EM_CUSTOM_4]);
+	map_delete(macros[RL42_EM_CUSTOM_5]);
+	macros[RL42_EM_CUSTOM_5] = NULL;
+	macros[RL42_EM_CUSTOM_4] = NULL;
+	macros[RL42_EM_CUSTOM_3] = NULL;
+	macros[RL42_EM_CUSTOM_2] = NULL;
+	macros[RL42_EM_CUSTOM_1] = NULL;
+	macros[RL42_EM_VI_INS] = NULL;
+	macros[RL42_EM_VI_CMD] = NULL;
+	macros[RL42_EM_EMACS] = NULL;
 }
 
 void	delete_macro_name(const size_t id, const rl42_editing_mode emode) {
@@ -165,7 +175,7 @@ void	init_caller(void) {
 }
 
 static inline const char	*_id_to_name(const size_t id, const rl42_editing_mode emode) {
-	static const char	*emode_strs[3] = { "emacs", "vi-cmd", "vi-ins" };
+	static const char	*emode_strs[8] = { "emacs", "vi-cmd", "vi-ins", "custom-1", "custom-2", "custom-3", "custom-4", "custom-5" };
 	static char			name_buf[_NAME_BUFFER_SIZE];
 
 	snprintf(name_buf, _NAME_BUFFER_SIZE, "%s-macro-%zu", emode_strs[emode], id);

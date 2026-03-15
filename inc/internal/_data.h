@@ -124,7 +124,7 @@ typedef struct __fn_match {
 typedef struct __fn_info {
 	rl42_fn		f;
 	const char	*fname;
-	darray		binds[3];
+	darray		binds[8];
 	u8			macro;
 }	rl42_fn_info;
 

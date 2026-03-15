@@ -13,7 +13,7 @@
 
 #include "data.h"
 
-#define RL42_VERSION "3.11.7"
+#define RL42_VERSION "3.11.8"
 
 extern u8	rl42_in_child_process;
 

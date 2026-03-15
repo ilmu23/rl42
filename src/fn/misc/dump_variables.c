@@ -93,7 +93,7 @@ static inline u8	_dump_config(rl42_line *line) {
 	if (tmp && term_putsf("set\tbell-style\t%s\n", tmp) == -1)
 		return 0;
 	switch (get_editing_mode()) {
-		case EMACS:
+		case RL42_EM_EMACS:
 			tmp = "emacs";
 			break ;
 		default:
@@ -145,7 +145,7 @@ static inline u8	_dump_human(rl42_line *line) {
 	if (tmp && term_putsf("bell-style is set to '%s'\n", tmp) == -1)
 		return 0;
 	switch (get_editing_mode()) {
-		case EMACS:
+		case RL42_EM_EMACS:
 			tmp = "emacs";
 			break ;
 		default:

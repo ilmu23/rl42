@@ -14,6 +14,6 @@
 #include "internal/_keybinds.h"
 
 rl42_fn(emacs_editing_mode) {
-	set_editing_mode(EMACS);
+	set_editing_mode(RL42_EM_EMACS);
 	return 1;
 }

@@ -40,17 +40,17 @@
 #include "internal/fn/history.h"
 
 #if !defined __DEBUG_BUILD || defined __DEBUG_BIND_WARNINGS
-# define _BIND_MODE WARN
+# define _BIND_MODE RL42_BM_WARN
 #else
-# define _BIND_MODE QUIET
+# define _BIND_MODE RL42_BM_QUIET
 #endif
 
-#define bind_emacs(seq, f)	(rl42_bind(seq, f, _BIND_MODE, EMACS))
-#define bind_vi_cmd(seq, f)	(rl42_bind(seq, f, _BIND_MODE, VI_CMD))
-#define bind_vi_ins(seq, f)	(rl42_bind(seq, f, _BIND_MODE, VI_INS))
+#define bind_emacs(seq, f)	(rl42_bind(seq, f, _BIND_MODE, RL42_EM_EMACS))
+#define bind_vi_cmd(seq, f)	(rl42_bind(seq, f, _BIND_MODE, RL42_EM_VI_CMD))
+#define bind_vi_ins(seq, f)	(rl42_bind(seq, f, _BIND_MODE, RL42_EM_VI_INS))
 #define bind_insert(seq, f)	(bind_emacs(seq, f), bind_vi_ins(seq, f))
 #define bind_all(seq, f)	(bind_emacs(seq, f), bind_vi_cmd(seq, f), bind_vi_ins(seq, f))
-#define cbind_all(seq, f)	(rl42_bind(seq, f, CONST, EMACS), rl42_bind(seq, f, CONST, VI_CMD), rl42_bind(seq, f, CONST, VI_INS))
+#define cbind_all(seq, f)	(rl42_bind(seq, f, RL42_BM_CONST, RL42_EM_EMACS), rl42_bind(seq, f, RL42_BM_CONST, RL42_EM_VI_CMD), rl42_bind(seq, f, RL42_BM_CONST, RL42_EM_VI_INS))
 
 extern darray	input_buf;
 

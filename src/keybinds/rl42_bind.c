@@ -111,7 +111,7 @@ static inline u8	_unbind(const char *seq, rl42_key_tree *node, const rl42_editin
 	size_t			i;
 
 	fn = get_fn_info_fn(node->f);
-	vec = fn->binds[(emode != CURRENT) ? emode : get_editing_mode()];
+	vec = fn->binds[(emode != RL42_EM_CURRENT) ? emode : get_editing_mode()];
 	for (i = 0, size = darray_size(vec); i < size; i++)
 		if (strcmp(seq, *(const char **)darray_get(vec, i)) == 0)
 			break ;
@@ -120,14 +120,14 @@ static inline u8	_unbind(const char *seq, rl42_key_tree *node, const rl42_editin
 
 static inline u8	_rebind(const char *seq, const char *f, rl42_key_tree *node, rl42_fn_info *fninfo, const rl42_bind_mode bmode, const rl42_editing_mode emode) {
 	switch (bmode) {
-		case WARN:
+		case RL42_BM_WARN:
 			warn("rl42: rl42_bind(%s, %s): key sequence is already bound\n", seq, f);
 			[[fallthrough]];
-		case QUIET:
+		case RL42_BM_QUIET:
 			return 0;
-		case REMAP:
-		case QREMAP:
-		case CONST:
+		case RL42_BM_REMAP:
+		case RL42_BM_QREMAP:
+		case RL42_BM_CONST:
 			break ;
 	}
 	if (fninfo->macro)
@@ -138,10 +138,10 @@ static inline u8	_rebind(const char *seq, const char *f, rl42_key_tree *node, rl
 static inline u8	_bind(const char *seq, rl42_key_tree *node, rl42_fn_info *fninfo, const rl42_bind_mode bmode, const rl42_editing_mode emode) {
 	const char	*_seq;
 
-	if (bmode == CONST)
+	if (bmode == RL42_BM_CONST)
 		node->c = 1;
 	node->f = fninfo->f;
 	_seq = strdup(seq);
-	darray_push(fninfo->binds[(emode != CURRENT) ? emode : get_editing_mode()], _seq);
+	darray_push(fninfo->binds[(emode != RL42_EM_CURRENT) ? emode : get_editing_mode()], _seq);
 	return 1;
 }

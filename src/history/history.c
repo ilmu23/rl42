@@ -135,9 +135,9 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	};
 	match = NULL;
 	match_str = NULL;
-	vi_cmd_mode = (get_editing_mode() == VI_CMD) ? 1 : 0;
+	vi_cmd_mode = (get_editing_mode() == RL42_EM_VI_CMD) ? 1 : 0;
 	if (vi_cmd_mode)
-		set_editing_mode(VI_INS);
+		set_editing_mode(RL42_EM_VI_INS);
 	if (current->edit)
 		free((void *)current->edit);
 	current->edit = rl42str_to_cstr(line->line);
@@ -189,7 +189,7 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 		prev_fn = fn;
 	}
 	if (vi_cmd_mode)
-		set_editing_mode(VI_CMD);
+		set_editing_mode(RL42_EM_VI_CMD);
 	return (incremental) ? rv : 1;
 _hist_search_error:
 	term_cursor_delete_anchor(query.prompt.root);
@@ -199,7 +199,7 @@ _hist_search_error:
 	darray_delete(query.line);
 	free((void *)match_str);
 	if (vi_cmd_mode)
-		set_editing_mode(VI_CMD);
+		set_editing_mode(RL42_EM_VI_CMD);
 	return 0;
 }
 

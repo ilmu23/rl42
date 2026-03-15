@@ -11,8 +11,19 @@
 
 #include "internal/_keybinds.h"
 
-static rl42_editing_mode	current_mode = EMACS;
-static rl42_key_tree		*trees[3];
+#define _KEY_TREE_ALLOC_OK	(\
+		trees[RL42_EM_EMACS] &&\
+		trees[RL42_EM_VI_CMD] &&\
+		trees[RL42_EM_VI_INS] &&\
+		trees[RL42_EM_CUSTOM_1] &&\
+		trees[RL42_EM_CUSTOM_2] &&\
+		trees[RL42_EM_CUSTOM_3] &&\
+		trees[RL42_EM_CUSTOM_4] &&\
+		trees[RL42_EM_CUSTOM_5]\
+)
+
+static rl42_editing_mode	current_mode = RL42_EM_EMACS;
+static rl42_key_tree		*trees[RL42_EM_CUSTOM_5 + 1];
 
 rl42_editing_mode	get_editing_mode(void) {
 	return current_mode;
@@ -20,9 +31,14 @@ rl42_editing_mode	get_editing_mode(void) {
 
 void	set_editing_mode(const rl42_editing_mode mode) {
 	switch (mode) {
-		case EMACS:
-		case VI_CMD:
-		case VI_INS:
+		case RL42_EM_EMACS:
+		case RL42_EM_VI_CMD:
+		case RL42_EM_VI_INS:
+		case RL42_EM_CUSTOM_1:
+		case RL42_EM_CUSTOM_2:
+		case RL42_EM_CUSTOM_3:
+		case RL42_EM_CUSTOM_4:
+		case RL42_EM_CUSTOM_5:
 			current_mode = mode;
 		default:
 			break ;
@@ -30,7 +46,7 @@ void	set_editing_mode(const rl42_editing_mode mode) {
 }
 
 rl42_key_tree	*get_key_tree(const rl42_editing_mode mode) {
-	if (mode == CURRENT)
+	if (mode == RL42_EM_CURRENT)
 		return get_key_tree(current_mode);
 	return trees[mode];
 }
@@ -59,14 +75,24 @@ void	free_key_tree_node(rl42_key_tree **node) {
 }
 
 void	clean_key_trees(void) {
-	free_key_tree_node(&trees[EMACS]);
-	free_key_tree_node(&trees[VI_CMD]);
-	free_key_tree_node(&trees[VI_INS]);
+	free_key_tree_node(&trees[RL42_EM_EMACS]);
+	free_key_tree_node(&trees[RL42_EM_VI_CMD]);
+	free_key_tree_node(&trees[RL42_EM_VI_INS]);
+	free_key_tree_node(&trees[RL42_EM_CUSTOM_1]);
+	free_key_tree_node(&trees[RL42_EM_CUSTOM_2]);
+	free_key_tree_node(&trees[RL42_EM_CUSTOM_3]);
+	free_key_tree_node(&trees[RL42_EM_CUSTOM_4]);
+	free_key_tree_node(&trees[RL42_EM_CUSTOM_5]);
 }
 
 u8	init_key_trees(void) {
-	trees[EMACS] = new_key_tree_node();
-	trees[VI_CMD] = new_key_tree_node();
-	trees[VI_INS] = new_key_tree_node();
-	return (trees[EMACS] && trees[VI_CMD] && trees[VI_INS]) ? 1 : 0;
+	trees[RL42_EM_EMACS] = new_key_tree_node();
+	trees[RL42_EM_VI_CMD] = new_key_tree_node();
+	trees[RL42_EM_VI_INS] = new_key_tree_node();
+	trees[RL42_EM_CUSTOM_1] = new_key_tree_node();
+	trees[RL42_EM_CUSTOM_2] = new_key_tree_node();
+	trees[RL42_EM_CUSTOM_3] = new_key_tree_node();
+	trees[RL42_EM_CUSTOM_4] = new_key_tree_node();
+	trees[RL42_EM_CUSTOM_5] = new_key_tree_node();
+	return (_KEY_TREE_ALLOC_OK) ? 1 : 0;
 }

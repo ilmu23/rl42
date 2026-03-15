@@ -54,7 +54,7 @@ static inline u8	_dump_config(rl42_line *line) {
 	tmp = term_get_seq(ti42_ed);
 	if (term_putsf("\n%s", (tmp) ? tmp : "") == -1)
 		return 0;
-	if (~state_flags & STATE_DUMP_MACROS) for (emode = EMACS; emode < CURRENT; emode++) {
+	if (~state_flags & STATE_DUMP_MACROS) for (emode = RL42_EM_EMACS; emode < RL42_EM_CURRENT; emode++) {
 		for (i = 0, size = darray_size(funcs); i < size; i++) {
 			info = darray_get(funcs, i);
 			if (info->macro)
@@ -63,7 +63,7 @@ static inline u8	_dump_config(rl42_line *line) {
 				if (term_putsf("bind\t%s\t%s\t%s\n", *(const char **)darray_get(info->binds[emode], j), info->fname, emode_strs[emode]) == -1)
 					return 0;
 		}
-	} else for (emode = EMACS; emode < CURRENT; emode++) {
+	} else for (emode = RL42_EM_EMACS; emode < RL42_EM_CURRENT; emode++) {
 		for (i = 0, size = darray_size(funcs); i < size; i++) {
 			info = darray_get(funcs, i);
 			if (!info->macro)

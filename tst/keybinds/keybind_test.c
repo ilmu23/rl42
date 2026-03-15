@@ -30,38 +30,38 @@ i32	main(void) {
 		return 1;
 	}
 	rv = 0;
-	rl42_unbind("m", CURRENT);
+	rl42_unbind("m", RL42_EM_CURRENT);
 	info("Test 1 ---- valid bindings\n");
-	_rv = rl42_bind("<C-x><C-a>a", _FN_1_NAME, WARN, CURRENT);
+	_rv = rl42_bind("<C-x><C-a>a", _FN_1_NAME, RL42_BM_WARN, RL42_EM_CURRENT);
 	if (!_rv)
 		rv = 1;
-	fprintf(stderr, "%srl42_bind(<C-x><C-a>a, " _FN_1_NAME ", WARN, CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
-	_rv = rl42_bind("m", _FN_2_NAME, WARN, CURRENT);
+	fprintf(stderr, "%srl42_bind(<C-x><C-a>a, " _FN_1_NAME ", RL42_BM_WARN, RL42_EM_CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
+	_rv = rl42_bind("m", _FN_2_NAME, RL42_BM_WARN, RL42_EM_CURRENT);
 	if (!_rv)
 		rv = 1;
-	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", WARN, CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
+	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", RL42_BM_WARN, RL42_EM_CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
 	info("Test 2 ---- invalid bindings\n");
-	_rv = rl42_bind("<HELLO>", _FN_1_NAME, WARN, EMACS);
+	_rv = rl42_bind("<HELLO>", _FN_1_NAME, RL42_BM_WARN, RL42_EM_EMACS);
 	if (_rv)
 		rv = 1;
-	fprintf(stderr, "%srl42_bind(<HELLO>, " _FN_1_NAME ", WARN, EMACS): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
-	_rv = rl42_bind("<C-e>", "cool-function", WARN, VI_CMD);
+	fprintf(stderr, "%srl42_bind(<HELLO>, " _FN_1_NAME ", RL42_BM_WARN, RL42_EM_EMACS): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
+	_rv = rl42_bind("<C-e>", "cool-function", RL42_BM_WARN, RL42_EM_VI_CMD);
 	if (_rv)
 		rv = 1;
-	fprintf(stderr, "%srl42_bind(<C-e>, cool-function, WARN, VI_CMD): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
-	_rv = rl42_bind("<C-x><C-r", _FN_2_NAME, WARN, VI_INS);
+	fprintf(stderr, "%srl42_bind(<C-e>, cool-function, RL42_BM_WARN, RL42_EM_VI_CMD): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
+	_rv = rl42_bind("<C-x><C-r", _FN_2_NAME, RL42_BM_WARN, RL42_EM_VI_INS);
 	if (_rv)
 		rv = 1;
-	fprintf(stderr, "%srl42_bind(<C-x><C-r, " _FN_2_NAME ", WARN, VI_INS): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
+	fprintf(stderr, "%srl42_bind(<C-x><C-r, " _FN_2_NAME ", RL42_BM_WARN, RL42_EM_VI_INS): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
 	info("Test 3 ---- remap\n");
-	_rv = rl42_bind("m", _FN_2_NAME, WARN, CURRENT);
+	_rv = rl42_bind("m", _FN_2_NAME, RL42_BM_WARN, RL42_EM_CURRENT);
 	if (_rv)
 		rv = 1;
-	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", WARN, CURRENT): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
-	_rv = rl42_bind("m", _FN_2_NAME, REMAP, CURRENT);
+	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", RL42_BM_WARN, RL42_EM_CURRENT): %s" ENDL, hl(!_rv), (!_rv) ? "OK" : "KO");
+	_rv = rl42_bind("m", _FN_2_NAME, RL42_BM_REMAP, RL42_EM_CURRENT);
 	if (!_rv)
 		rv = 1;
-	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", REMAP, CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
+	fprintf(stderr, "%srl42_bind(m, " _FN_2_NAME ", RL42_BM_REMAP, RL42_EM_CURRENT): %s" ENDL, hl(_rv), (_rv) ? "OK" : "KO");
 	rl42_cleanup();
 	return rv;
 }

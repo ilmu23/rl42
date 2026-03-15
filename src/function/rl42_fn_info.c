@@ -94,9 +94,14 @@ u8	rl42_register_function(rl42_fn f, const char *fname) {
 		.macro = (state_flags & STATE_REGISTER_MACRO) ? 1 : 0,
 		.binds[0] = darray(char *, 1, free),
 		.binds[1] = darray(char *, 1, free),
-		.binds[2] = darray(char *, 1, free)
+		.binds[2] = darray(char *, 1, free),
+		.binds[3] = darray(char *, 1, free),
+		.binds[4] = darray(char *, 1, free),
+		.binds[5] = darray(char *, 1, free),
+		.binds[6] = darray(char *, 1, free),
+		.binds[7] = darray(char *, 1, free)
 	};
-	if (!new.binds[0] || !new.binds[1] || !new.binds[2]) {
+	if (!new.binds[0] || !new.binds[1] || !new.binds[2] || !new.binds[3] || !new.binds[4] || !new.binds[5] || !new.binds[6] || !new.binds[7]) {
 		darray_delete(new.binds[0]);
 		darray_delete(new.binds[1]);
 		darray_delete(new.binds[2]);
@@ -109,5 +114,10 @@ static void	_clean_fn_info(rl42_fn_info *f) {
 	darray_delete(f->binds[0]);
 	darray_delete(f->binds[1]);
 	darray_delete(f->binds[2]);
+	darray_delete(f->binds[3]);
+	darray_delete(f->binds[4]);
+	darray_delete(f->binds[5]);
+	darray_delete(f->binds[6]);
+	darray_delete(f->binds[7]);
 	free((void *)f->fname);
 }

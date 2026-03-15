@@ -14,7 +14,7 @@
 #include "internal/_keybinds.h"
 
 rl42_fn(vi_append_eol) {
-	set_editing_mode(VI_INS);
+	set_editing_mode(RL42_EM_VI_INS);
 	line->i = darray_size(line->line);
 	return term_cursor_move_to_i(line);
 }

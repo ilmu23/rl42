@@ -30,7 +30,7 @@ rl42_fn_match	kb_match_seq(rl42_line *line, rl42_key_tree *current, const rl42_k
 		darray_delete(line->keyseq);
 		line->keyseq = (darray)event->esc;
 	}
-	for (i = 0, tmp = NULL, len = darray_size(line->keyseq), binds = get_key_tree(CURRENT); i < len && binds->next; i++) {
+	for (i = 0, tmp = NULL, len = darray_size(line->keyseq), binds = get_key_tree(RL42_EM_CURRENT); i < len && binds->next; i++) {
 		tmp = map_get(binds->next, *(u32 *)darray_get(line->keyseq, i));
 		if (tmp == MAP_NOT_FOUND)
 			break ;

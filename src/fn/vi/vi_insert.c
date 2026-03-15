@@ -13,6 +13,6 @@
 #include "internal/_keybinds.h"
 
 rl42_fn(vi_insert) {
-	set_editing_mode(VI_INS);
+	set_editing_mode(RL42_EM_VI_INS);
 	return 1;
 }

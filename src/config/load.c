@@ -85,12 +85,12 @@ _cfg_load_del_lines:
 
 static inline rl42_editing_mode	_parse_mode(const char *mode) {
 	if (strcasecmp(mode, "emacs") == 0)
-		return EMACS;
+		return RL42_EM_EMACS;
 	if (strcasecmp(mode, "vi-cmd") == 0)
-		return VI_CMD;
+		return RL42_EM_VI_CMD;
 	if (strcasecmp(mode, "vi-ins") == 0)
-		return VI_INS;
-	return CURRENT;
+		return RL42_EM_VI_INS;
+	return RL42_EM_CURRENT;
 }
 
 static inline rl42_setting		_parse_var(const char *var) {
@@ -194,7 +194,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 		}
 		s = *(const char **)darray_get(line, 3);
 		_line.line.bind.mode = _parse_mode(s);
-		if (_line.line.bind.mode == CURRENT) {
+		if (_line.line.bind.mode == RL42_EM_CURRENT) {
 			warn("rl42: rl42_load_config: unrecognized mode on line #%zu: %s\n", line_n, s);
 			darray_delete((darray)line);
 			return 1;
@@ -237,9 +237,9 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 			case RL42_EDITING_MODE:
 				s = *(const char **)darray_get(line, 2);
 				if (strcasecmp(s, "vi") == 0)
-					_line.line.setting.val.i64 = VI_CMD;
+					_line.line.setting.val.i64 = RL42_EM_VI_CMD;
 				else if (strcasecmp(s, "emacs") == 0)
-					_line.line.setting.val.i64 = EMACS;
+					_line.line.setting.val.i64 = RL42_EM_EMACS;
 				else {
 					warn("rl42: rl42_load_config: unrecognized editing mode on line #%zu: %s\n", line_n, s);
 					darray_delete((darray)line);
@@ -332,7 +332,7 @@ static inline u8	_exec_lines(cdarray lines) {
 	for (i = 0, size = darray_size(lines); i < size; i++) {
 		line = darray_get(lines, i);
 		if (line->type == BIND)
-			rl42_bind(line->line.bind.keyseq, line->line.bind.val, REMAP, line->line.bind.mode);
+			rl42_bind(line->line.bind.keyseq, line->line.bind.val, RL42_BM_REMAP, line->line.bind.mode);
 		else
 			rl42_set(line->line.setting.var, line->line.setting.val);
 	}

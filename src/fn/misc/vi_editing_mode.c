@@ -14,6 +14,6 @@
 #include "internal/_keybinds.h"
 
 rl42_fn(vi_editing_mode) {
-	set_editing_mode(VI_CMD);
+	set_editing_mode(RL42_EM_VI_CMD);
 	return 1;
 }

@@ -18,12 +18,12 @@
 // REMAP = Notify the user and remap the key sequence, it it isn't const bound
 // QREMAP = Silently remap the key sequence, if it isn't const bound
 typedef enum __bind_mode {
-	WARN = 0,
-	QUIET = 1,
-	REMAP = 2,
-	QREMAP = 3,
+	RL42_BM_WARN = 0,
+	RL42_BM_QUIET = 1,
+	RL42_BM_REMAP = 2,
+	RL42_BM_QREMAP = 3,
 #ifdef __RL42_INTERNAL
-	CONST = 4,
+	RL42_BM_CONST = 4
 #endif
 }	rl42_bind_mode;
 
@@ -33,10 +33,15 @@ typedef enum __bind_mode {
 // VI_INS = vi insert mode
 // CURRENT = Currently active editing mode
 typedef enum __editing_mode {
-	EMACS = 0,
-	VI_CMD = 1,
-	VI_INS = 2,
-	CURRENT = 3
+	RL42_EM_EMACS = 0,
+	RL42_EM_VI_CMD = 1,
+	RL42_EM_VI_INS = 2,
+	RL42_EM_CUSTOM_1 = 3,
+	RL42_EM_CUSTOM_2 = 4,
+	RL42_EM_CUSTOM_3 = 5,
+	RL42_EM_CUSTOM_4 = 6,
+	RL42_EM_CUSTOM_5 = 7,
+	RL42_EM_CURRENT = 8
 }	rl42_editing_mode;
 
 // Terminal bell style
