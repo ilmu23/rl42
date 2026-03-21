@@ -26,7 +26,7 @@
 #include "internal/_term.h"
 #include "internal/_utils.h"
 
-#ifndef __RL42_USE_EXTERNAL_TERMINFO
+#ifdef __RL42_USE_INTERNAL_TERMINFO
 #include "internal/_terminfo.h"
 #else
 #include <ti42/ti42.h>
@@ -336,7 +336,7 @@ const char	*term_get_hl_seq(void) {
 		return "";
 	hl = rl42_get(RL42_HIGHLIGHT_COLOR).hlc;
 	if (hl.type == RL42_HL_INDEX) {
-#ifndef __RL42_USE_EXTERNAL_TERMINFO
+#ifdef __RL42_USE_INTERNAL_TERMINFO
 		strlcpy(buf, ti42_tparm(esc_seqs.setaf, hl.val.index), _BUFFER_SIZE + 1);
 #else
 		strlcpy(buf, ti42_tparm1(esc_seqs.setaf, hl.val.index), _BUFFER_SIZE + 1);
@@ -370,7 +370,7 @@ u16	term_match_key_seq(const char *seq) {
 
 u8	term_set_fg_color(const u8 color) {
 	if (esc_seqs.setaf) {
-#ifndef __RL42_USE_EXTERNAL_TERMINFO
+#ifdef __RL42_USE_INTERNAL_TERMINFO
 		return (ti42_tputs(ti42_tparm(esc_seqs.setaf, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 #else
 		return (ti42_tputs(ti42_tparm1(esc_seqs.setaf, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
@@ -381,7 +381,7 @@ u8	term_set_fg_color(const u8 color) {
 
 u8	term_set_bg_color(const u8 color) {
 	if (esc_seqs.setab) {
-#ifndef __RL42_USE_EXTERNAL_TERMINFO
+#ifdef __RL42_USE_INTERNAL_TERMINFO
 		return (ti42_tputs(ti42_tparm(esc_seqs.setab, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;
 #else
 		return (ti42_tputs(ti42_tparm1(esc_seqs.setab, color), 1, term_putchar_unbuffered) != -1) ? 1 : 0;

@@ -13,7 +13,7 @@
 #include "internal/_term.h"
 #include "internal/_utils.h"
 
-#ifndef __RL42_USE_EXTERNAL_TERMINFO
+#ifdef __RL42_USE_INTERNAL_TERMINFO
 #include "internal/_terminfo.h"
 #else
 #include <ti42/ti42.h>

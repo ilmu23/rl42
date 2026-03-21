@@ -12,7 +12,7 @@
 #include "internal/_display.h"
 
 #undef darray_insert
-#ifndef __RL42_USE_EXTERNAL_CONTAINERS
+#ifdef __RL42_USE_INTERNAL_CONTAINERS
 #define darray_insert(arr, i, val)	(__dar_ins(arr, i, 1, val))
 #else
 #define darray_insert(arr, i, val)	(_dar_ins(arr, i, 1, val))

@@ -13,7 +13,7 @@
 
 #include <stddef.h>
 
-#ifndef __RL42_USE_EXTERNAL_CONTAINERS
+#ifdef __RL42_USE_INTERNAL_CONTAINERS
 #include "internal/_darray.h"
 #else
 #include <libcont/darray.h>
@@ -76,7 +76,7 @@ typedef enum __bpm_state {
 	BPM_TOGGLE = 2,
 }	rl42_bpm_state;
 
-#ifndef __RL42_USE_EXTERNAL_CONTAINERS
+#ifdef __RL42_USE_INTERNAL_CONTAINERS
 #include "internal/_map.h"
 #include "internal/_list.h"
 #else

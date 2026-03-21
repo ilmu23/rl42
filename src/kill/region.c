@@ -11,8 +11,8 @@
 #include "internal/_rl42.h"
 
 #undef darray_push
-#ifndef __RL42_USE_EXTERNAL_CONTAINERS
-#define darray_push(darray, value)	(__dar_psh(darray, value))
+#ifdef __RL42_USE_INTERNAL_CONTAINERS
+#define darray_push(darray, value)	(_dar_psh(darray, value))
 #else
 #define darray_push(darray, value)	(_dar_psh(darray, value))
 #endif

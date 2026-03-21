@@ -18,7 +18,7 @@
 #include "internal/_display.h"
 #include "internal/_keybinds.h"
 
-#ifndef __RL42_USE_EXTERNAL_TERMINFO
+#ifdef __RL42_USE_INTERNAL_TERMINFO
 #include "internal/_terminfo_caps.h"
 #else
 #include <ti42/ti42_caps.h>
