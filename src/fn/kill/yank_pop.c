@@ -21,6 +21,7 @@ rl42_fn(yank_pop) {
 	if (prev_fn != yank)
 		return 1;
 	rv = 0;
+	match.fn = NULL;
 	state_flags |= STATE_KILL_DONT_UPDATE_RING;
 	if (!kill_rotate_ring() || !kill_region_internal(line))
 		goto _yank_pop_ret;
