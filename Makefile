@@ -323,8 +323,8 @@ tester: $(INTERACTIVE_TESTER)
 install:
 	@printf "\e[1;38;5;39mRL42 >\e[m Installing rl42\n"
 	@mkdir -p $(INSTALL_PATH)/lib
-	@if [ -a $(STATIC) ]; then cp $(STATIC) $(INSTALL_PATH)/lib/; fi
-	@if [ -a $(SHARED) ]; then cp $(SHARED) $(INSTALL_PATH)/lib/; fi
+	@bash -c "if [ -a $(STATIC) ]; then cp $(STATIC) $(INSTALL_PATH)/lib/; fi"
+	@bash -c "if [ -a $(SHARED) ]; then cp $(SHARED) $(INSTALL_PATH)/lib/; fi"
 	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
 
 install-headers:
@@ -461,7 +461,7 @@ retest: tclean tests
 
 db:
 	@printf "\e[1;38;5;39mRL42 >\e[m Creating compilation command database\n"
-	@compiledb make --no-print-directory BUILD=$(BUILD) cflags.extra=$(cflags.extra) | sed -E '/^##.*\.\.\.$$|^[[:space:]]*$$/d'
+	@compiledb make --no-print-directory BUILD=$(BUILD) cflags.extra="$(cflags.extra)" | sed -E '/^##.*\.\.\.$$|^[[:space:]]*$$/d'
 	@printf "\e[1;38;5;39mRL42 >\e[m \e[1mDone!\e[m\n"
 
 .PHONY: all tests utiltests clean tclean fclean re retest db
