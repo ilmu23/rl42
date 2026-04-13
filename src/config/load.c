@@ -41,6 +41,7 @@
 #define _SEARCH_IGNORE_CASE_HASH			0x6B3D10CD7D0E3762U
 #define _VISIBLE_STATS_HASH					0x11CE0D87591B49A8U
 #define _HIGHLIGHT_COLOR_HASH				0xB32F3587B1CA2F3EU
+#define _DISABLE_HISTORY_HASH				0xED0712BD37FDE2E7U
 
 static inline rl42_editing_mode	_parse_mode(const char *mode);
 static inline rl42_setting		_parse_var(const char *var);
@@ -140,6 +141,8 @@ static inline rl42_setting		_parse_var(const char *var) {
 			return RL42_VISIBLE_STATS;
 		case _HIGHLIGHT_COLOR_HASH:
 			return RL42_HIGHLIGHT_COLOR;
+		case _DISABLE_HISTORY_HASH:
+			return RL42_DISABLE_HISTORY;
 	}
 	return RL42_SETTING_NONE;
 }
@@ -287,6 +290,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 			case RL42_PAGE_COMPLETIONS:
 			case RL42_SEARCH_IGNORE_CASE:
 			case RL42_VISIBLE_STATS:
+			case RL42_DISABLE_HISTORY:
 				s = *(const char **)darray_get(line, 2);
 				if (strcasecmp(s, "on") == 0)
 					_line.line.setting.val.u64 = 1;

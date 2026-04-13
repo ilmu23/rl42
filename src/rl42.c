@@ -73,12 +73,17 @@ char	*ft_readline(const char *prompt) {
 	line.root = term_cursor_new_anchor();
 	if (!line.root)
 		goto _rl42_malloc_fail;
-	hist_add_line(strdup(""));
-	if (!current) {
-		current = hist_get_first_node();
+	if (!rl42_get_unsigned(RL42_DISABLE_HISTORY)) {
+		hist_add_line(strdup(""));
+		if (!current) {
+			current = hist_get_first_node();
+			line.line = darray(u32, 64, NULL);
+		} else
+			line.line = cstr_to_rl42str(current->line);
+	} else {
 		line.line = darray(u32, 64, NULL);
-	} else
-		line.line = cstr_to_rl42str(current->line);
+		current = NULL;
+	}
 	if (!line.line)
 		goto _rl42_malloc_fail;
 	line.i = darray_size(line.line);
@@ -119,7 +124,8 @@ char	*ft_readline(const char *prompt) {
 	darray_delete(line.prompt.prompt);
 	darray_delete(line.keyseq);
 	darray_delete(line.line);
-	_commit_hist(out);
+	if (!rl42_get_unsigned(RL42_DISABLE_HISTORY))
+		_commit_hist(out);
 	return out;
 _rl42_malloc_fail:
 	rl42_error("rl42: unable to allocate memory: %s", (errno) ? strerror(errno) : "unknown error");

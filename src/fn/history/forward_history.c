@@ -9,6 +9,8 @@
 
 #include <stdlib.h>
 
+#include "rl42.h"
+
 #include "internal/_rl42.h"
 #include "internal/_utils.h"
 #include "internal/_display.h"
@@ -22,6 +24,8 @@ static rl42_hist_node	*start;
 rl42_fn(forward_history) {
 	rl42_hist_node	*next;
 
+	if (rl42_get_unsigned(RL42_DISABLE_HISTORY))
+		return 1;
 	if (NEED_REPEAT) {
 		start = current;
 		if (!repeat(line, forward_history, backward_history))

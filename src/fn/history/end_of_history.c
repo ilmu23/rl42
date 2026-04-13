@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #define __RL42_INTERNAL
+#include "rl42.h"
 #include "function.h"
 
 #include "internal/_utils.h"
@@ -21,6 +22,8 @@ extern rl42_hist_node	*current;
 rl42_fn(end_of_history) {
 	rl42_hist_node	*first;
 
+	if (rl42_get_unsigned(RL42_DISABLE_HISTORY))
+		return 1;
 	first = hist_get_first_node();
 	if (first == current)
 		return 1;

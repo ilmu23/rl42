@@ -51,6 +51,7 @@ static rl42_setting_val	settings[RL42_SETTING_NONE] = {
 	{ .u64 = rl42_conf_off },	// visible-stats
 	{ .hlc = { .type = RL42_HL_INDEX, .val.index = 39 }},	// highlight-color
 	{ .u64 = rl42_conf_on },	// enable-bracketed-paste
+	{ .u64 = rl42_conf_off },	// disable-history
 };
 
 static inline const char	*_expand_path(const char *path);

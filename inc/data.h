@@ -96,7 +96,8 @@ typedef enum {
 	RL42_VISIBLE_STATS = 18,
 	RL42_HIGHLIGHT_COLOR = 19,
 	RL42_ENABLE_BRACKETED_PASTE = 20,
-	RL42_SETTING_NONE = 21
+	RL42_DISABLE_HISTORY = 21,
+	RL42_SETTING_NONE = 22
 }	rl42_setting;
 
 // Stores the value of a setting

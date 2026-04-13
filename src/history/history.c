@@ -127,6 +127,8 @@ u8	hist_search(rl42_line *line, const rl42_direction direction, const u8 increme
 	u8						vi_cmd_mode;
 	u8						rv;
 
+	if (rl42_get_unsigned(RL42_DISABLE_HISTORY))
+		return 1;
 	query = (rl42_line){
 		.prompt.prompt = cstr_to_rl42str(search_prompts[direction][incremental]),
 		.keyseq = darray(u32, 8, NULL),
