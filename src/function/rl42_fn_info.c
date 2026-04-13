@@ -74,20 +74,20 @@ u8	rl42_register_function(rl42_fn f, const char *fname) {
 	rl42_fn_info		new;
 
 	if (!rl42_init()) {
-		error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
+		rl42_error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
 		return 0;
 	}
 	if (!functions) {
 		functions = darray(rl42_fn_info, FUNCTION_COUNT, (void (*)(void *))_clean_fn_info);
 		if (!functions)
-			return error("rl42_register_function: unable to create function database\n");
+			return rl42_error("rl42_register_function: unable to create function database\n");
 	}
 	tmp = get_fn_info_fn(f);
 	if (tmp)
-		return error("rl42_register_function(%s): function already registered as '%s'\n", fname, tmp->fname);
+		return rl42_error("rl42_register_function(%s): function already registered as '%s'\n", fname, tmp->fname);
 	tmp = get_fn_info_name(fname);
 	if (tmp)
-		return error("rl42_register_function(%s): function name '%s' already taken\n", fname, tmp->fname);
+		return rl42_error("rl42_register_function(%s): function name '%s' already taken\n", fname, tmp->fname);
 	new = (rl42_fn_info){
 		.f = f,
 		.fname = strdup(fname),
@@ -105,9 +105,9 @@ u8	rl42_register_function(rl42_fn f, const char *fname) {
 		darray_delete(new.binds[0]);
 		darray_delete(new.binds[1]);
 		darray_delete(new.binds[2]);
-		return error("rl42_register_function(%s): %s\n", fname, strerror(errno));
+		return rl42_error("rl42_register_function(%s): %s\n", fname, strerror(errno));
 	}
-	return (darray_push(functions, new)) ? 1 : error("rl42_register_function(%s): %s\n", fname, strerror(errno));
+	return (darray_push(functions, new)) ? 1 : rl42_error("rl42_register_function(%s): %s\n", fname, strerror(errno));
 }
 
 static void	_clean_fn_info(rl42_fn_info *f) {

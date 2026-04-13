@@ -15,7 +15,7 @@
 
 static inline void	_print_message(const char *fmt, va_list args);
 
-u8	error(const char *fmt, ...) {
+u8	rl42_error(const char *fmt, ...) {
 	va_list	args;
 
 	va_start(args, fmt);
@@ -26,7 +26,7 @@ u8	error(const char *fmt, ...) {
 	return 0;
 }
 
-u8	warn(const char *fmt, ...) {
+u8	rl42_warn(const char *fmt, ...) {
 	va_list	args;
 
 	va_start(args, fmt);
@@ -37,7 +37,7 @@ u8	warn(const char *fmt, ...) {
 	return 0;
 }
 
-u8	info(const char *fmt, ...) {
+u8	rl42_info(const char *fmt, ...) {
 	va_list	args;
 
 	va_start(args, fmt);

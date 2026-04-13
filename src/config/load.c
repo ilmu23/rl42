@@ -172,7 +172,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 	else if (strcmp(s, "set") == 0)
 		_line.type = SETTING;
 	else {
-		warn("rl42: rl42_load_config: unrecognized keyword on line #%zu: %s\n", line_n, s);
+		rl42_warn("rl42: rl42_load_config: unrecognized keyword on line #%zu: %s\n", line_n, s);
 		darray_delete((darray)line);
 		return 1;
 	}
@@ -180,22 +180,22 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 	if (_line.type == BIND) {
 		switch (elements) {
 			case 1:
-				warn("rl42: rl42_load_config: missing key-sequence on line #%zu\n", line_n);
+				rl42_warn("rl42: rl42_load_config: missing key-sequence on line #%zu\n", line_n);
 				darray_delete((darray)line);
 				return 1;
 			case 2:
-				warn("rl42: rl42_load_config: missing command on line #%zu\n", line_n);
+				rl42_warn("rl42: rl42_load_config: missing command on line #%zu\n", line_n);
 				darray_delete((darray)line);
 				return 1;
 			case 3:
-				warn("rl42: rl42_load_config: missing mode on line #%zu\n", line_n);
+				rl42_warn("rl42: rl42_load_config: missing mode on line #%zu\n", line_n);
 				darray_delete((darray)line);
 				return 1;
 		}
 		s = *(const char **)darray_get(line, 3);
 		_line.line.bind.mode = _parse_mode(s);
 		if (_line.line.bind.mode == RL42_EM_CURRENT) {
-			warn("rl42: rl42_load_config: unrecognized mode on line #%zu: %s\n", line_n, s);
+			rl42_warn("rl42: rl42_load_config: unrecognized mode on line #%zu: %s\n", line_n, s);
 			darray_delete((darray)line);
 			return 1;
 		}
@@ -205,11 +205,11 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 	} else {
 		switch (darray_size(line)) {
 			case 1:
-				warn("rl42: rl42_load_config: missing variable name on line #%zu\n", line_n);
+				rl42_warn("rl42: rl42_load_config: missing variable name on line #%zu\n", line_n);
 				darray_delete((darray)line);
 				return 1;
 			case 2:
-				warn("rl42: rl42_load_config: missing value on line #%zu\n", line_n);
+				rl42_warn("rl42: rl42_load_config: missing value on line #%zu\n", line_n);
 				darray_delete((darray)line);
 				return 1;
 		}
@@ -217,7 +217,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 		_line.line.setting.var = _parse_var(s);
 		switch (_line.line.setting.var) {
 			case RL42_SETTING_NONE:
-				warn("rl42: rl42_load_config: unrecognized setting on line #%zu: %s\n", line_n, s);
+				rl42_warn("rl42: rl42_load_config: unrecognized setting on line #%zu: %s\n", line_n, s);
 				darray_delete((darray)line);
 				return 1;
 			case RL42_BELL_STYLE:
@@ -229,7 +229,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 				else if (strcasecmp(s, "visible") == 0)
 					_line.line.setting.val.i64 = RL42_BELL_VISIBLE;
 				else {
-					warn("rl42: rl42_load_config: unrecognized bell style on line #%zu: %s\n", line_n, s);
+					rl42_warn("rl42: rl42_load_config: unrecognized bell style on line #%zu: %s\n", line_n, s);
 					darray_delete((darray)line);
 					return 1;
 				}
@@ -241,7 +241,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 				else if (strcasecmp(s, "emacs") == 0)
 					_line.line.setting.val.i64 = RL42_EM_EMACS;
 				else {
-					warn("rl42: rl42_load_config: unrecognized editing mode on line #%zu: %s\n", line_n, s);
+					rl42_warn("rl42: rl42_load_config: unrecognized editing mode on line #%zu: %s\n", line_n, s);
 					darray_delete((darray)line);
 					return 1;
 				}
@@ -251,7 +251,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 				if (_is_uint(s)) {
 					n.u64 = strtoul(s, NULL, 10);
 					if (n.u64 > 255) {
-						warn("rl42: rl42_load_config: highlight color index out of range on line #%zu: %s\n", line_n, s);
+						rl42_warn("rl42: rl42_load_config: highlight color index out of range on line #%zu: %s\n", line_n, s);
 						darray_delete((darray)line);
 						return 1;
 					}
@@ -268,7 +268,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 						.val.rgb.b = n.u64 & 0xFFU
 					};
 				} else {
-					warn("rl42: rl42_load_config: invalid highlight color on line #%zu: %s\n", line_n, s);
+					rl42_warn("rl42: rl42_load_config: invalid highlight color on line #%zu: %s\n", line_n, s);
 					darray_delete((darray)line);
 					return 1;
 				}
@@ -293,7 +293,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 				else if (strcasecmp(s, "off") == 0)
 					_line.line.setting.val.u64 = 0;
 				else {
-					warn("rl42: rl42_load_config: invalid argument to on/off setting on line #%zu: %s\n", line_n, s);
+					rl42_warn("rl42: rl42_load_config: invalid argument to on/off setting on line #%zu: %s\n", line_n, s);
 					darray_delete((darray)line);
 					return 1;
 				}
@@ -303,7 +303,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 			case RL42_KEYSEQ_TIMEOUT:
 				s = *(const char **)darray_get(line, 2);
 				if (!_is_int(s)) {
-					warn("rl42: rl42_load_config: invalid argument to signed numeric setting on line #%zu: %s\n", line_n, s);
+					rl42_warn("rl42: rl42_load_config: invalid argument to signed numeric setting on line #%zu: %s\n", line_n, s);
 					darray_delete((darray)line);
 					return 1;
 				}
@@ -313,7 +313,7 @@ static inline u8	_parse_line(darray lines, cdarray line, const size_t line_n) {
 			case RL42_COMPLETION_QUERY_ITEMS:
 				s = *(const char **)darray_get(line, 2);
 				if (!_is_uint(s)) {
-					warn("rl42: rl42_load_config: invalid argument to unsigned numeric setting on line #%zu: %s\n", line_n, s);
+					rl42_warn("rl42: rl42_load_config: invalid argument to unsigned numeric setting on line #%zu: %s\n", line_n, s);
 					darray_delete((darray)line);
 					return 1;
 				}

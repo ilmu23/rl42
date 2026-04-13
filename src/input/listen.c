@@ -57,7 +57,7 @@ rl42_kb_event	*kb_listen_buf(const i32 timeout, char *buf, const size_t buf_size
 	if (rv == 1) {
 		rv = read(0, buf, buf_size - 1);
 		if (rv == -1) {
-			error("rl42: kb_listen: %s", strerror(errno));
+			rl42_error("rl42: kb_listen: %s", strerror(errno));
 			return NULL;
 		}
 		buf[rv] = '\0';
@@ -66,7 +66,7 @@ rl42_kb_event	*kb_listen_buf(const i32 timeout, char *buf, const size_t buf_size
 	if (rv == -1) {
 		if (errno == EINTR)
 			return (kb_listen(timeout));
-		error("rl42: kb_listen: %s", strerror(errno));
+		rl42_error("rl42: kb_listen: %s", strerror(errno));
 	}
 	return NULL;
 }

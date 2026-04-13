@@ -31,17 +31,17 @@ u8 rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const r
 	size_t			i;
 
 	if (!rl42_init()) {
-		error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
+		rl42_error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
 		return 0;
 	}
 	expanded_seq = expand_seq(seq);
 	if (!expanded_seq || expanded_seq == EXPAND_INVALID_SEQ)
-		return error("rl42: rl42_bind(%s, %s): %s\n", seq, f, (expanded_seq == NULL) ? strerror(errno) : "invalid key sequence");
+		return rl42_error("rl42: rl42_bind(%s, %s): %s\n", seq, f, (expanded_seq == NULL) ? strerror(errno) : "invalid key sequence");
 	if (!is_macro(f)) {
 		fninfo = get_fn_info_name(f);
 		if (!fninfo) {
 			darray_delete(expanded_seq);
-			return (!(bmode & 1)) ? warn("rl42: rl42_bind(%s, %s): function not found\n", seq, f) : 0;
+			return (!(bmode & 1)) ? rl42_warn("rl42: rl42_bind(%s, %s): function not found\n", seq, f) : 0;
 		}
 	} else {
 		fninfo = get_fn_info_keyseq(expanded_seq, emode);
@@ -49,7 +49,7 @@ u8 rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const r
 			fninfo = create_macro(get_next_macro_id(emode), f, emode);
 			if (!fninfo) {
 				darray_delete(expanded_seq);
-				return error("rl42: rl42_bind(%s, %s): %s\n", seq, f, (errno) ? strerror(errno) : "unknown error");
+				return rl42_error("rl42: rl42_bind(%s, %s): %s\n", seq, f, (errno) ? strerror(errno) : "unknown error");
 			}
 		}
 	}
@@ -60,7 +60,7 @@ u8 rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const r
 			if (!tmp || !map_set(binds->next, *(u32 *)darray_get(expanded_seq, i), tmp)) {
 				free_key_tree_node(&tmp);
 				darray_delete(expanded_seq);
-				return error("rl42: rl42_bind(%s, %s): %s\n", seq, f, strerror(errno));
+				return rl42_error("rl42: rl42_bind(%s, %s): %s\n", seq, f, strerror(errno));
 			}
 			binds = tmp;
 		} else
@@ -68,7 +68,7 @@ u8 rl42_bind(const char *seq, const char *f, const rl42_bind_mode bmode, const r
 	}
 	darray_delete(expanded_seq);
 	if (binds->c)
-		return (!(bmode & 1)) ? warn("rl42: rl42_bind(%s, %s): sequence already const bound\n", seq, f) : 0;
+		return (!(bmode & 1)) ? rl42_warn("rl42: rl42_bind(%s, %s): sequence already const bound\n", seq, f) : 0;
 	return (!binds->f) ? _bind(seq, binds, fninfo, bmode, emode) : _rebind(seq, f, binds, fninfo, bmode, emode);
 }
 
@@ -81,25 +81,25 @@ u8	rl42_unbind(const char *seq, const rl42_editing_mode emode) {
 
 	errno = 0;
 	if (!rl42_init()) {
-		error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
+		rl42_error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
 		return 0;
 	}
 	expanded_seq = expand_seq(seq);
 	if (!expanded_seq || expanded_seq == EXPAND_INVALID_SEQ)
-		return error("rl42: rl42_unbind(%s): %s\n", seq, (expanded_seq == NULL) ? strerror(errno) : "invalid key sequence");
+		return rl42_error("rl42: rl42_unbind(%s): %s\n", seq, (expanded_seq == NULL) ? strerror(errno) : "invalid key sequence");
 	for (i = 0, len = darray_size(expanded_seq), binds = get_key_tree(emode); i < len; i++) {
 		tmp = map_get(binds->next, *(u32 *)darray_get(expanded_seq, i));
 		if (tmp == MAP_NOT_FOUND) {
 			darray_delete(expanded_seq);
-			return error("rl42: rl42_unbind(%s): sequence not bound\n", seq);
+			return rl42_error("rl42: rl42_unbind(%s): sequence not bound\n", seq);
 		}
 		binds = *tmp;
 	}
 	darray_delete(expanded_seq);
 	if (binds->c)
-		return error("rl42: rl42_unbind(%s): sequence is const bound\n", seq);
+		return rl42_error("rl42: rl42_unbind(%s): sequence is const bound\n", seq);
 	if (!_unbind(seq, binds, emode))
-		return error("rl42: rl42_unbind(%s): unable to unbind: %s\n", seq, (errno) ? strerror(errno) : "unknown error");
+		return rl42_error("rl42: rl42_unbind(%s): unable to unbind: %s\n", seq, (errno) ? strerror(errno) : "unknown error");
 	binds->f = NULL;
 	return 1;
 }
@@ -121,7 +121,7 @@ static inline u8	_unbind(const char *seq, rl42_key_tree *node, const rl42_editin
 static inline u8	_rebind(const char *seq, const char *f, rl42_key_tree *node, rl42_fn_info *fninfo, const rl42_bind_mode bmode, const rl42_editing_mode emode) {
 	switch (bmode) {
 		case RL42_BM_WARN:
-			warn("rl42: rl42_bind(%s, %s): key sequence is already bound\n", seq, f);
+			rl42_warn("rl42: rl42_bind(%s, %s): key sequence is already bound\n", seq, f);
 			[[fallthrough]];
 		case RL42_BM_QUIET:
 			return 0;

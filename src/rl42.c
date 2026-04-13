@@ -48,11 +48,11 @@ char	*ft_readline(const char *prompt) {
 	u8				rv;
 
 	if (!rl42_init()) {
-		error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
+		rl42_error("rl42: unable to initialize: %s", (errno) ? strerror(errno) : "unknown error");
 		return NULL;
 	}
 	if (rl42_get(RL42_ENABLE_BRACKETED_PASTE).u64 == rl42_conf_on && ! term_set_bpm(BPM_ENABLED)) {
-		error("rl42: unable to enable bracketed paste mode: %s", (errno) ? strerror(errno) : "unknown error");
+		rl42_error("rl42: unable to enable bracketed paste mode: %s", (errno) ? strerror(errno) : "unknown error");
 		return NULL;
 	}
 	line = (rl42_line){
@@ -103,7 +103,7 @@ char	*ft_readline(const char *prompt) {
 				n_arg.set = 0;
 			}
 			if (!term_flush_outbuf())
-				error("rl42: unable to flush output buffer: %m");
+				rl42_error("rl42: unable to flush output buffer: %m");
 			prev_fn = match.fn->f;
 			match.fn = NULL;
 		}
@@ -111,7 +111,7 @@ char	*ft_readline(const char *prompt) {
 	ti42_tputs("\n", 1, term_putchar_unbuffered);
 	term_apply_settings(TERM_SETTINGS_DEFAULT);
 	if (rl42_get(RL42_ENABLE_BRACKETED_PASTE).u64 == rl42_conf_on && ! term_set_bpm(BPM_ENABLED))
-		error("rl42: unable to disable bracketed paste mode: %s", (errno) ? strerror(errno) : "unknown error");
+		rl42_error("rl42: unable to disable bracketed paste mode: %s", (errno) ? strerror(errno) : "unknown error");
 	out = (line.line) ? rl42str_to_cstr(line.line) : NULL;
 	term_cursor_delete_anchor(line.prompt.root);
 	term_cursor_delete_anchor(line.root);
@@ -122,7 +122,7 @@ char	*ft_readline(const char *prompt) {
 	_commit_hist(out);
 	return out;
 _rl42_malloc_fail:
-	error("rl42: unable to allocate memory: %s", (errno) ? strerror(errno) : "unknown error");
+	rl42_error("rl42: unable to allocate memory: %s", (errno) ? strerror(errno) : "unknown error");
 	term_cursor_delete_anchor(line.prompt.root);
 	term_cursor_delete_anchor(line.root);
 	darray_delete(line.prompt.prompt);

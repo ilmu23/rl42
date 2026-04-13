@@ -271,7 +271,7 @@ u8			move_to_end_of_word(rl42_line *line);
  * @param ... Variables required by the format
  * @returns @c <b>u8</b> 0
  */
-u8			error(const char *fmt, ...);
+u8			rl42_error(const char *fmt, ...);
 
 /** @brief Displays a warning message
  *
@@ -279,7 +279,7 @@ u8			error(const char *fmt, ...);
  * @param ... Variables required by the format
  * @returns @c <b>u8</b> 0
  */
-u8			warn(const char *fmt, ...);
+u8			rl42_warn(const char *fmt, ...);
 
 /** @brief Displays an info message
  *
@@ -287,4 +287,4 @@ u8			warn(const char *fmt, ...);
  * @param ... Variables required by the format
  * @returns @c <b>u8</b> 0
  */
-u8			info(const char *fmt, ...);
+u8			rl42_info(const char *fmt, ...);
