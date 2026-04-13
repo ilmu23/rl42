@@ -78,6 +78,10 @@ u8					rl42_set(const rl42_setting setting, const rl42_setting_val value);
  */
 rl42_setting_val	rl42_get(const rl42_setting setting);
 
+#define rl42_get_signed(setting)	(rl42_get(setting).i64)
+#define rl42_get_unsigned(setting)	(rl42_get(setting).u64)
+#define rl42_get_hl_color(setting)	(rl42_get(setting).hlc)
+
 /** @brief Cleans up all rl42 resources
  *
  * General cleanup function that, among other things,
