@@ -13,6 +13,8 @@
 
 #define rl42_completion_fn(name)	cdarray	name(const char *pattern, [[maybe_unused]] cdarray context)
 
+extern u8	rl42_completion_raw_context;
+
 /** @brief Sets the function used for performing completions
  *
  * Sets the function used by the 'complete' command to get
@@ -20,4 +22,4 @@
  * completion function
  * @param f Function to use for completions
  */
-void	set_completion_fn(rl42_completion_fn f);
+void	rl42_set_completion_fn(rl42_completion_fn f);

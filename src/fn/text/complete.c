@@ -16,6 +16,7 @@
 
 #define __RL42_INTERNAL
 #include "rl42.h"
+#include "complete.h"
 #include "function.h"
 
 #include "internal/_defs.h"
@@ -131,7 +132,14 @@ static inline _cmp_info	_get_target(rl42_line *line) {
 		_tmp = rl42str_to_cstr(tmp);
 		if (!_tmp)
 			goto __get_target_error;
-		target.context = cstr_split(_tmp, ' ', "'\"");
+		if (rl42_completion_raw_context) {
+			target.context = darray(const char *, 1, free);
+			if (!target.context)
+				goto __get_target_error;
+			darray_push((darray)target.context, _tmp);
+			_tmp = NULL;
+		} else
+			target.context = cstr_split(_tmp, ' ', "'\"");
 	}
 	darray_delete((darray)tmp);
 	free((void *)_tmp);

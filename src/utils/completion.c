@@ -63,6 +63,8 @@ static inline rl42_completion_fn(_complete_files);
 extern u16	term_height;
 extern u16	term_width;
 
+u8 rl42_completion_raw_context = 0;
+
 rl42_completion_fn	cmp_fn = _complete_files;
 static const char	*stat_chars[ST_FIFO + 1] = { "/", "*", "@", "%", "#", "=", "|" };
 
@@ -92,8 +94,12 @@ static inline u8	_cmp_map_case(const char c1, const char c2);
 
 static u8	(*compare[3])(const char, const char) = { _cmp, _cmp_ign_case, _cmp_map_case };
 
-void	set_completion_fn(rl42_completion_fn f) {
-	cmp_fn = (f) ? f : _complete_files;
+void	rl42_set_completion_fn(rl42_completion_fn f) {
+	if (f) {
+		rl42_completion_raw_context = 0;
+		cmp_fn = _complete_files;
+	} else
+		cmp_fn = f;
 }
 
 cdarray	cmp_get_common(cdarray completions, const size_t pattern_len) {
