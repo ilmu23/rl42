@@ -55,9 +55,11 @@ typedef struct __line {
 
 // Function for getting completions
 // 1st arg = pattern to complete
-// 2nd arg = darray of space separated strings before the pattern, NULL if nothing before pattern
+// 2nd arg (rl42_complete_raw_context: 0) = darray of space separated strings before the pattern, NULL if nothing before pattern
+// 2nd arg (rl42_complete_raw_context: 1) = darray with the only element being the entire line as a single c string
+// 3rd arg = position of the first character of the pattern in the line
 // Returns darray containing all possible completions or NULL if no completions were found
-typedef cdarray	(*rl42_completion_fn)(const char *, cdarray);
+typedef cdarray	(*rl42_completion_fn)(const char *, cdarray, const size_t);
 
 typedef u8	(*rl42_fn)(rl42_line *);
 

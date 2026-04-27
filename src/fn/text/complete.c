@@ -54,7 +54,7 @@ rl42_fn(complete) {
 		target = _get_target(line);
 	if (!target.pattern)
 		goto _complete_ret_cleanup;
-	completions = cmp_get_common(cmp_fn(target.pattern, target.context), strlen(target.pattern));
+	completions = cmp_get_common(cmp_fn(target.pattern, target.context, 0), strlen(target.pattern));
 	if (completions) {
 		state_flags |= STATE_KILL_DONT_UPDATE_RING;
 		switch (darray_size(completions)) {

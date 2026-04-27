@@ -376,6 +376,7 @@ static inline rl42_completion_fn(_complete_files) {
 	if (path_set)
 		free((void *)path);
 	return completions;
+	(void)start;
 }
 
 static inline stat_type	_get_file_type(const char *path) {

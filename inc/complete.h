@@ -11,7 +11,7 @@
 
 #include "internal/_data.h"
 
-#define rl42_completion_fn(name)	cdarray	name(const char *pattern, [[maybe_unused]] cdarray context)
+#define rl42_completion_fn(name)	cdarray	name(const char *pattern, [[maybe_unused]] cdarray context, const size_t start)
 
 extern u8	rl42_completion_raw_context;
 
