@@ -16,12 +16,12 @@ BUILD	=	normal
 ## COMPILER FLAGS
 
 CC				=	gcc
-cflags.common	=	-Wall -Wextra -Werror -Wpedantic -std=gnu2x -pedantic-errors -fPIC -I$(INCDIR)
-cflags.debug	=	-g -D__DEBUG_BUILD
-cflags.fsan		=	$(cflags.debug) -fsanitize=address,undefined
-cflags.normal	=	-s -O1
-cflags.extra	=	
-CFLAGS			=	$(cflags.common) $(cflags.$(BUILD)) $(cflags.extra)
+CFLAGS_COMMON	=	-Wall -Wextra -Werror -Wpedantic -std=gnu2x -pedantic-errors -fPIC -I$(INCDIR)
+CFLAGS_DEBUG	=	-g -D__DEBUG_BUILD
+CFLAGS_FSAN		=	$(CFLAGS_DEBUG) -fsanitize=address,undefined
+CFLAGS_NORMAL	=	-s -O1
+CFLAGS_EXTRA	?=	
+CFLAGS			=	$(CFLAGS_COMMON) $(CFLAGS_$(BUILD)) $(CFLAGS_EXTRA)
 
 ifdef USE_INTERNAL_CONTAINERS
 	CFLAGS	+=	-D__RL42_USE_INTERNAL_CONTAINERS
