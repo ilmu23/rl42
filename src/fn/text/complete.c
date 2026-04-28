@@ -54,7 +54,7 @@ rl42_fn(complete) {
 		target = _get_target(line);
 	if (!target.pattern)
 		goto _complete_ret_cleanup;
-	completions = cmp_get_common(cmp_fn(target.pattern, target.context, 0), strlen(target.pattern));
+	completions = cmp_get_common(cmp_fn(target.pattern, target.context, line->i), strlen(target.pattern));
 	if (completions) {
 		state_flags |= STATE_KILL_DONT_UPDATE_RING;
 		switch (darray_size(completions)) {
@@ -136,10 +136,14 @@ static inline _cmp_info	_get_target(rl42_line *line) {
 			target.context = darray(const char *, 1, free);
 			if (!target.context)
 				goto __get_target_error;
-			darray_push((darray)target.context, _tmp);
-			_tmp = NULL;
+			darray_push((darray)target.context, (const char *){rl42str_to_cstr(line->line)});
 		} else
 			target.context = cstr_split(_tmp, ' ', "'\"");
+	} else if (rl42_completion_raw_context) {
+		target.context = darray(const char *, 1, free);
+		if (!target.context)
+			goto __get_target_error;
+		darray_push((darray)target.context, (const char *){rl42str_to_cstr(line->line)});
 	}
 	darray_delete((darray)tmp);
 	free((void *)_tmp);
