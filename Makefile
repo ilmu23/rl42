@@ -37,8 +37,9 @@ endif
 
 ## LD FLAGS
 
-LD		=	ld
-LDFLAGS	=	-shared
+LD				=	ld
+LDFLAGS_EXTRA	?=	
+LDFLAGS			=	-shared
 
 ## DIRECTORIES
 
@@ -286,14 +287,15 @@ MAP_TEST_FILES			=	$(TESTDIR)/$(UTILDIR)/map.c \
 ### INTERACTIVE TESTER
 INTERACTIVE_TESTER	=	$(TESTBIN)/interactive
 
-ITBUILD	=	fsan
+ITBUILD	=	FSAN
 
-ITCFLAGS	=	$(cflags.common) $(cflags.$(ITBUILD)) $(cflags.extra)
+ITCFLAGS	=	$(CFLAGS_COMMON) $(CFLAGS_$(ITBUILD)) $(CFLAGS_EXTRA)
 
 ifeq ($(shell bash -c 'gcc -x c -<<< "#include <stdio.h> int main(void) { printf(\"%ld\n\", __STDC_VERSION__); }" && ./a.out && rm a.out'), 202311)
-	ITLDFLAGS	=	-L. -lrl42
+	TLDFLAGS	=	$(LDFLAGS_EXTRA)
+	ITLDFLAGS	=	-L. -lrl42 $(TLDFLAGS)
 else
-	TLDFLAGS	=	-lbsd
+	TLDFLAGS	=	$(LDFLAGS_EXTRA) -lbsd
 	ITLDFLAGS	=	-L. -lrl42 $(TLDFLAGS)
 endif
 
