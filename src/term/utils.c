@@ -32,8 +32,8 @@ const char	*scroll_down;
 
 static size_t	to_scroll;
 
-static void	_scroll_down(rl42_cursor_pos **anchor);
-static void	_scroll_up(rl42_cursor_pos **anchor);
+static void	_scroll_down(rl42_cursor_pos **anchor, [[maybe_unused]] void *arg);
+static void	_scroll_up(rl42_cursor_pos **anchor, [[maybe_unused]] void *arg);
 
 csi_match	term_find_csi(const char *buf, const size_t buf_size, const char ident) {
 	const char	*start;
@@ -96,22 +96,22 @@ u8	term_calculate_required_rows(rl42_line *line, const u8 scroll) {
 u8	term_scroll_display(size_t up, size_t down) {
 	if (up) {
 		to_scroll = up;
-		map_foreach(anchors, (void (*)(void *))_scroll_up);
+		map_foreach(anchors, _scroll_up, NULL);
 		if (!ti42_tputs(ti42_tparm(scroll_up, (i32)up), 1, term_putchar_unbuffered))
 			return 0;
 	} else if (down) {
 		to_scroll = down;
-		map_foreach(anchors, (void (*)(void *))_scroll_down);
+		map_foreach(anchors, _scroll_down, NULL);
 		if (!ti42_tputs(ti42_tparm(scroll_down, (i32)down), 1, term_putchar_unbuffered))
 			return 0;
 	}
 	return 1;
 }
 
-static void	_scroll_down(rl42_cursor_pos **anchor) {
+static void	_scroll_down(rl42_cursor_pos **anchor, [[maybe_unused]] void *arg) {
 	(*anchor)->row += to_scroll;
 }
 
-static void	_scroll_up(rl42_cursor_pos **anchor) {
+static void	_scroll_up(rl42_cursor_pos **anchor, [[maybe_unused]] void *arg) {
 	(*anchor)->row -= to_scroll;
 }
