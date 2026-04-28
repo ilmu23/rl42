@@ -28,6 +28,8 @@
 #define on_word(line)	((line->i < darray_size(line->line) && !is_space(*(u32 *)darray_get(line->line, line->i))) \
 						|| (line->i > 0 && !is_space(*(u32 *)darray_get(line->line, line->i - 1))))
 
+#define get_stat_char(cmp)	(((rl42_get_unsigned(RL42_VISIBLE_STATS) | rl42_get_unsigned(RL42_MARK_DIRECTORIES)) == rl42_conf_on) ? '/' : '\x0')
+
 typedef struct {
 	const char	*pattern;
 	cdarray		context;
@@ -39,9 +41,10 @@ static inline const char	*_substr(cdarray s, const size_t start, size_t len);
 static inline _cmp_info		_get_target(rl42_line *line);
 
 rl42_fn(complete) {
-	_cmp_info	target;
-	cdarray		completions;
-	u8			rv;
+	rl42_completion	*completion;
+	_cmp_info		target;
+	cdarray			completions;
+	u8				rv;
 
 	if (rl42_get(RL42_DISABLE_COMPLETION).u64 == rl42_conf_on)
 		return 1;
@@ -62,7 +65,8 @@ rl42_fn(complete) {
 				rv = 1;
 				break ;
 			case 1:
-				rv = cmp_insert(line, *(const char **)darray_get(completions, 0));
+				completion = darray_first(completions);
+				rv = cmp_insert(line, completion, get_stat_char(completion));
 				break ;
 			default:
 				rv = cmp_display(line, completions);

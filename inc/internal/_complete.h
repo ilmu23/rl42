@@ -9,6 +9,10 @@
 
 #pragma once
 
+#ifndef __RL42_INTERNAL
+#define __RL42_INTERNAL
+#endif
+
 #include "internal/_data.h"
 
 /** @brief Returns the common part of the completions, if one is found
@@ -34,7 +38,8 @@ u8		cmp_display(rl42_line *line, cdarray completions);
  *
  * @param line Line to insert completion into
  * @param completion Completion to insert
+ * @param stat_char Stat character to append to completion, if applicable
  * @returns @c <b>u8</b> Non-zero on success,
  * 0 on failure
  */
-u8		cmp_insert(rl42_line *line, const char *completion);
+u8		cmp_insert(rl42_line *line, const rl42_completion *completion, const u32 stat_char);

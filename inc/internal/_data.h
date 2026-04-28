@@ -17,6 +17,8 @@
 #include "internal/_darray.h"
 #else
 #include <libcont/darray.h>
+#define STRING	LC_MKEY_STRING
+#define INTEGER	LC_MKEY_INTEGER
 #endif
 
 // Stores a cursor position
@@ -77,6 +79,17 @@ typedef enum __bpm_state {
 	BPM_DISABLED = 1,
 	BPM_TOGGLE = 2,
 }	rl42_bpm_state;
+
+typedef enum __cmp_type {
+	CT_DIR = 0,
+	CT_EXEC = 1,
+	CT_SYMLINK = 2,
+	CT_CHAR_DEV = 3,
+	CT_BLOCK_DEV = 4,
+	CT_SOCKET = 5,
+	CT_FIFO = 6,
+	CT_OTHER = 7
+}	rl42_cmp_type;
 
 #ifdef __RL42_USE_INTERNAL_CONTAINERS
 #include "internal/_map.h"
@@ -196,6 +209,12 @@ typedef struct __cfg_line {
 		rl42_cfg_setting	setting;
 	}	line;
 }	rl42_cfg_line;
+
+typedef struct __completion {
+	rl42_cmp_type	type;
+	const char		*content;
+	size_t			len;
+}	rl42_completion;
 
 // Bit field for storing display options
 #if __STDC_VERSION__ >= 202311L
