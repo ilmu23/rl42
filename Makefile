@@ -11,7 +11,7 @@ NAME	=	librl42
 STATIC	=	$(NAME).a
 SHARED	=	$(NAME).so
 
-BUILD	=	normal
+BUILD	=	NORMAL
 
 ## COMPILER FLAGS
 
@@ -57,7 +57,7 @@ KILLDIR	=	kill
 TERMDIR	=	term
 UTILDIR	=	utils
 
-INSTALL_PATH	=	/usr
+INSTALL_PATH	?=	/usr
 
 ### RL42 FUNCTION DIRS
 
