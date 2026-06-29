@@ -60,8 +60,9 @@ typedef struct __line {
 // 2nd arg (rl42_complete_raw_context: 0) = darray of space separated strings before the pattern, NULL if nothing before pattern
 // 2nd arg (rl42_complete_raw_context: 1) = darray with the only element being the entire line as a single c string
 // 3rd arg = position of the first character of the pattern in the line
+// 4th arg = used for setting the length of the matched pattern in raw context mode
 // Returns darray containing all possible completions or NULL if no completions were found
-typedef cdarray	(*rl42_completion_fn)(const char *, cdarray, const size_t);
+typedef cdarray	(*rl42_completion_fn)(const char *, cdarray, const size_t, size_t *);
 
 typedef u8	(*rl42_fn)(rl42_line *);
 
@@ -213,6 +214,7 @@ typedef struct __cfg_line {
 typedef struct __completion {
 	rl42_cmp_type	type;
 	const char		*content;
+	size_t			start;
 	size_t			len;
 }	rl42_completion;
 

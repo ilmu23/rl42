@@ -28,7 +28,7 @@
 #define on_word(line)	((line->i < darray_size(line->line) && !is_space(*(u32 *)darray_get(line->line, line->i))) \
 						|| (line->i > 0 && !is_space(*(u32 *)darray_get(line->line, line->i - 1))))
 
-#define get_stat_char(cmp)	(((rl42_get_unsigned(RL42_VISIBLE_STATS) | rl42_get_unsigned(RL42_MARK_DIRECTORIES)) == rl42_conf_on) ? '/' : '\x0')
+extern const char	stat_chars[CT_OTHER + 1];
 
 typedef struct {
 	const char	*pattern;
@@ -44,6 +44,7 @@ rl42_fn(complete) {
 	rl42_completion	*completion;
 	_cmp_info		target;
 	cdarray			completions;
+	size_t			pattern_len;
 	u8				rv;
 
 	if (rl42_get(RL42_DISABLE_COMPLETION).u64 == rl42_conf_on)
@@ -57,7 +58,9 @@ rl42_fn(complete) {
 		target = _get_target(line);
 	if (!target.pattern)
 		goto _complete_ret_cleanup;
-	completions = cmp_get_common(cmp_fn(target.pattern, target.context, line->i), strlen(target.pattern));
+	pattern_len = strlen(target.pattern);
+	completions = cmp_fn(target.pattern, target.context, line->i, &pattern_len);
+	completions = cmp_get_common(completions, pattern_len);
 	if (completions) {
 		state_flags |= STATE_KILL_DONT_UPDATE_RING;
 		switch (darray_size(completions)) {
@@ -66,7 +69,9 @@ rl42_fn(complete) {
 				break ;
 			case 1:
 				completion = darray_first(completions);
-				rv = cmp_insert(line, completion, get_stat_char(completion));
+				if (rl42_completion_raw_context)
+					add_mark(kill_start, completion->start);
+				rv = cmp_insert(line, completion, stat_chars[completion->type]);
 				break ;
 			default:
 				rv = cmp_display(line, completions);

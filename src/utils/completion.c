@@ -56,7 +56,7 @@ u8 rl42_completion_raw_context = 0;
 
 rl42_completion_fn	cmp_fn = _complete_files;
 
-static const char	stat_chars[CT_OTHER + 1] = { '/', '*', '@', '%', '#', '=', '|', '\x0' };
+const char	stat_chars[CT_OTHER + 1] = { '/', '*', '@', '%', '#', '=', '|', '\x0' };
 
 // cmp_get_common
 static inline size_t	_find_longest(cdarray completions);
@@ -77,7 +77,7 @@ static inline u8			_is_sldir(const char *path);
 static inline u8			_is_dir(const char *path);
 
 // utils
-static void	_free_completion(const rl42_completion *cmp);
+void	_free_completion(const rl42_completion *cmp);
 
 // comparison modes
 static inline u8	_cmp(const char c1, const char c2);
@@ -164,6 +164,8 @@ u8	cmp_display(rl42_line *line, cdarray completions) {
 		mark_stats = DIRS;
 	else
 		mark_stats = NONE;
+	if (rl42_completion_raw_context)
+		add_mark(kill_start, ((rl42_completion *)darray_first(completions))->start);
 	pathed = _is_path(darray_get_t(rl42_completion, completions, 0).content);
 	starts = darray(size_t, count, NULL);
 	for (i = widest = 0; i < count; i++) {
@@ -300,15 +302,15 @@ u8	cmp_insert(rl42_line *line, const rl42_completion *completion, const u32 stat
 }
 
 static inline size_t	_find_longest(cdarray completions) {
-	size_t	longest;
-	size_t	count;
-	size_t	len;
-	size_t	i;
+	rl42_completion	*completion;
+	size_t			longest;
+	size_t			count;
+	size_t			i;
 
 	for (i = longest = 0, count = darray_size(completions); i < count; i++) {
-		len = strlen(darray_get_t(rl42_completion, completions, i).content);
-		if (len > longest)
-			longest = len;
+		completion = darray_get(completions, i);
+		if (completion->len > longest)
+			longest = completion->len;
 	}
 	return longest;
 }
@@ -538,7 +540,7 @@ static inline u8		_is_dir(const char *path) {
 	return (S_ISDIR(file.st_mode)) ? 1 : 0;
 }
 
-static void	_free_completion(const rl42_completion *cmp) {
+void	_free_completion(const rl42_completion *cmp) {
 	free((void *)cmp->content);
 }
 
